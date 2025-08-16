@@ -1,0 +1,127 @@
+Notas para la terminal
+
+(Lo guardamos en el disco que elijamos)
+
+mkdir SaludMap (crea la carpeta SaludMap)
+
+cd SaludMap (ingresamos a la carpeta SaludMap)
+
+npm i -g @nestjs/cli (instalamos nestjs en el entorno global del proyecto)
+
+nest new Backend (seleccionamos npm)
+
+(se finaliza la instalación e instalamos react+vite)
+
+npm créate vite@latest Frontend (npm créate vite@latest --crea el entorno con react y Frontend es la carpeta del proyecto dentro de SaludMap)
+
+si lo solicita el package colocar el nombre de "frontend"
+
+
+Elegimos React con JavaScript + SWC (SWC es un empaquetador 70 veces mas rápido)
+
+cambiamos a la carpeta del front
+
+cd Frontend
+
+(instalamos las dependencias)
+npm install
+
+
+(corremos el programa no es necesario en esta parte)
+npm run dev
+
+(volvemos a la carpeta principal del proyecto)
+
+cd .. (nos llevara a la carpeta de SaludMap)
+
+(dentro de la capeta de SaludMap abrimos Visual Studio Code desde el CMD)
+
+code . 
+
+(Abierto Visual studio code en la terminal de visual dentro de la carpeta SaludMap iniciamos GIT)
+
+git init
+
+(guardamos el proyecto)
+git add .
+
+(si tenemos problemas es porque Nest activa automáticamente git y este se encuentra activado en la carpeta de backend)
+
+(para cambiar esto entramos a la carpeta del backend con el comando)
+
+cd backend
+
+(y para remover el git de esta carpeta colocamos el siguiente comando)
+
+Remove-Item -Recurse -Force .git
+
+
+(Volvemos a la carpeta de SaludMap)
+
+cd ..
+
+(guardamos nuevamente los cambios)
+
+git add . 
+
+(creamos el commit)
+
+git commit -m "Proyecto Final con Nestjs y React"
+
+(cambiamos el nombre de la rama principal "master" x "main")
+
+git branch -M main
+
+(conectamos el proyecto con el repositorio)
+
+git remote add origin https://github.com/GabyAvila1993/SaludMap.git
+
+(subimos el proyecto al repositorio)
+
+git push -u origin main
+
+
+------CLONAR EL REPOSITORIO--------------
+
+(para clonar el repositorio ponemos lo siguiente)
+
+git clone https://github.com/GabyAvila1993/SaludMap.git
+
+
+(Instalar las dependencias)
+
+cd Frontend
+npm install
+
+cd ../backend
+npm install
+
+------Levantar los servidores-------
+
+cd Frontend
+npm run dev
+
+
+cd backend
+npm run start:dev
+
+continuaraaa…...
+
+
+
+--------- Instalaciones de dependencias --------------
+
+dentro del backend instalamos 
+
+npm install axios cors
+
+(axios --> para hacer requests a Overpass API)
+
+
+dentro del Frontend instalamos
+
+npm install react-leaflet leaflet axios
+
+react-leaflet y leaflet --> para mostrar el mapa y los marcadores
+
+axios --> para hacer requests al backend.

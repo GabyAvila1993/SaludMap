@@ -1,0 +1,17 @@
+[
+    {
+        "id": 1,
+        "nombre": "Hospital Central",
+        "direccion":"Godoy Cruz 475",
+        "latitud": 0,
+        "longitud": 0
+    },
+
+    {
+        "id": 2,
+        "nombre": "MaipuMed",
+        "direccion": "Ozamis 737",
+        "latitud": 0,
+        "longitud": 0
+    }
+]
