@@ -1,0 +1,5 @@
+Latitud      Longitud
+-32.938321, -69.231252 Potrerillos
+-31.2597261, -66.2862685 San Juan
+-31.6605849, -67.4883652 (lejanía mayor a 50km) San Juan
+-32.9716086, -68.7911936 Instituto CESIT
