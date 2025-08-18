@@ -48,3 +48,6 @@ export class PlacesService {
         };
     }
 }
+
+// Ruta Para probar en el Thunder Client
+// http://localhost:3000/places?lat=-32.9716086&lng=-68.7911936&types=hospital
