@@ -1,8 +1,10 @@
 .turnos-root {
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
     color: #ffffff;
-    max-height: 75vh;    /* ajustar según prefieras */
-    overflow: auto;      /* barra de scroll para todo el componente si excede */
+    max-height: 75vh;
+    /* ajustar según prefieras */
+    overflow: auto;
+    /* barra de scroll para todo el componente si excede */
     padding: 12px;
 }
 
@@ -27,8 +29,10 @@
 
 .turnos-left {
     flex: 1;
-    max-height: 60vh;    /* altura máxima para la columna */
-    overflow: auto;      /* barra para la lista si crece */
+    max-height: 60vh;
+    /* altura máxima para la columna */
+    overflow: auto;
+    /* barra para la lista si crece */
     padding-right: 8px;
 }
 
@@ -42,7 +46,8 @@
     list-style: none;
     padding: 0;
     margin: 0;
-    max-height: calc(60vh - 120px); /* ajusta para dejar espacio a encabezados/botones */
+    max-height: calc(60vh - 120px);
+    /* ajusta para dejar espacio a encabezados/botones */
     overflow: auto;
 }
 
@@ -137,14 +142,14 @@
 }
 
 .prof-type {
-  margin-top: 6px;
-  display: inline-block;
-  font-size: 12px;
-  color: #333;
-  background: #f1f3f5;
-  padding: 4px 8px;
-  border-radius: 999px;
-  border: 1px solid rgba(0,0,0,0.06);
+    margin-top: 6px;
+    display: inline-block;
+    font-size: 12px;
+    color: #333;
+    background: #f1f3f5;
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 /* Opcional: estilos de scrollbar (WebKit) */
@@ -152,12 +157,248 @@
 .turnos-right::-webkit-scrollbar,
 .prof-list::-webkit-scrollbar,
 .my-turns::-webkit-scrollbar {
-  width: 10px;
+    width: 10px;
 }
+
 .turnos-left::-webkit-scrollbar-thumb,
 .turnos-right::-webkit-scrollbar-thumb,
 .prof-list::-webkit-scrollbar-thumb,
 .my-turns::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,0.12);
+    background: rgba(0, 0, 0, 0.12);
+    border-radius: 6px;
+}
+
+/* Modal inspirado en el diseño proporcionado */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 1100;
+}
+
+.modal {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 520px;
+    background-color: #fff;
+    box-shadow: 0 15px 30px 0 rgba(0, 125, 171, 0.15);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.modal__header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.modal__title {
+    font-weight: 700;
+    font-size: 1.125rem;
+}
+
+.button {
+    appearance: none;
+    font: inherit;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.button--icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: transparent;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button--icon:hover {
+    background: #f2f2f2;
+}
+
+.modal__body {
+    padding: 1rem;
+}
+
+.modal__footer {
+    padding: 0 1.25rem 1.25rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.button--primary {
+    background-color: #007dab;
+    color: #fff;
+    padding: 0.65rem 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.button--primary:hover {
+    background-color: #006489;
+}
+
+/* Inputs */
+.input {
+    display: flex;
+    flex-direction: column;
+}
+
+.input+.input {
+    margin-top: 1rem;
+}
+
+.input__label {
+    font-weight: 700;
+    font-size: 0.875rem;
+}
+
+.input__field {
+    display: block;
+    margin-top: 0.5rem;
+    border: 1px solid #DDD;
+    border-radius: 6px;
+    padding: 0.6rem 0.75rem;
+    background: #fff;
+}
+
+.input__field:focus {
+    outline: none;
+    border-color: #007dab;
+    box-shadow: 0 0 0 1px #007dab, 0 0 0 4px rgba(0, 125, 171, 0.12);
+}
+
+.input__field--textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.input__description {
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    color: #777;
+}
+
+/* input con icono visible a la derecha */
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.input-with-icon .input__field {
+  width: 100%;
+  padding-right: 3.2rem; /* espacio para el botón */
+  color: #222 !important;
+  background: #fff !important;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.calendar-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.08);
+  cursor: pointer;
+  padding: 0;
+  z-index: 70;
+  color: #333 !important;
+}
+.calendar-btn:hover { background: #f4f4f4; }
+.calendar-btn svg { display: block; fill: currentColor !important; }
+
+/* Fix visual modal: asegurar texto legible dentro del modal de Turnos */
+.modal,
+.modal * {
+  color: unset; /* quitar herencia fuerte */
+}
+
+/* Texto principal del modal */
+.modal {
+  color: #222 !important;
+  background: #fff;
+}
+
+/* Título / labels / descripciones */
+.modal__title,
+.modal .input__label,
+.modal .input__description {
+  color: #222 !important;
+}
+
+/* Campos de entrada: texto y placeholder visibles */
+.modal .input__field {
+  color: #222 !important;
+  background: #fff !important;
+  border: 1px solid #e6e6e6 !important;
+}
+.modal .input__field::placeholder {
+  color: #9aa0a6 !important;
+}
+
+/* Botones: mantener contraste */
+.modal .button--primary {
+  background-color: #007dab !important;
+  color: #fff !important;
+}
+.modal .button--icon,
+.modal .button--icon svg {
+  color: #333 !important;
+  fill: currentColor !important;
+}
+
+/* Asegurar que overlay no tape el modal visualmente */
+.modal-overlay {
+  background: rgba(0,0,0,0.36) !important;
+  z-index: 1100;
+}
+
+/* asegurar visibilidad y accesibilidad del botón de cierre (X) */
+.modal__header { position: relative; }
+
+.modal__header .button--icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 5;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 6px;
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.06);
+  color: #333 !important;
+  cursor: pointer;
+}
+
+.modal__header .button--icon:hover,
+.modal__header .button--icon:focus {
+  background: #f2f2f2;
+  outline: none;
+}
+
+.modal__header .button--icon svg,
+.modal__header .button--icon svg path {
+  fill: currentColor !important;
+  stroke: none;
 }

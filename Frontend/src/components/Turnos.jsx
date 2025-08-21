@@ -23,7 +23,7 @@ export default function Turnos() {
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition((p) => {
       setPos({ lat: p.coords.latitude, lng: p.coords.longitude });
-    }, () => {}, { enableHighAccuracy: false });
+    }, () => { }, { enableHighAccuracy: false });
   }, []);
 
   // helper: distancia en metros entre dos coords
@@ -55,7 +55,7 @@ export default function Turnos() {
         }
 
         setLoading(true);
-        const types = ['hospital','clinic','doctors','veterinary'].join(',');
+        const types = ['hospital', 'clinic', 'doctors', 'veterinary'].join(',');
         const url = `/places?lat=${pos.lat}&lng=${pos.lng}&types=${types}&radius=3000`;
         console.log('[Turnos] fetching places ->', url);
         const res = await axios.get(url);
@@ -191,7 +191,7 @@ export default function Turnos() {
   return (
     <div className="turnos-root">
       <div className="turnos-header">
-        <div className="turnos-badge" style={{ background: '#FAFA44' }}>Turnos</div>
+        <div className="turnos-badge" style={{ background: '#47472eff' }}>Turnos</div>
         <h3>Solicitar Turnos</h3>
       </div>
 
@@ -206,19 +206,19 @@ export default function Turnos() {
               const name = p.tags?.name ?? p.properties?.name ?? 'Sin nombre';
               const addr = p.tags?.addr_full ?? p.tags?.address ?? '';
               const tipo = getTypeFromPlace(p);
-               return (
-                 <li key={i} className="prof-item">
-                   <div className="prof-info">
-                     <div className="prof-name">{name}</div>
-                     {addr && <div className="prof-addr">{addr}</div>}
-                     <div className="prof-type">{prettyType(tipo)}</div>
-                   </div>
-                   <div>
-                     <button className="btn-primary" onClick={() => openModal(p)}>Solicitar Turnos</button>
-                   </div>
-                 </li>
-               );
-             })}
+              return (
+                <li key={i} className="prof-item">
+                  <div className="prof-info">
+                    <div className="prof-name">{name}</div>
+                    {addr && <div className="prof-addr">{addr}</div>}
+                    <div className="prof-type">{prettyType(tipo)}</div>
+                  </div>
+                  <div>
+                    <button className="btn-primary" onClick={() => openModal(p)}>Solicitar Turnos</button>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </div>
 
@@ -246,18 +246,74 @@ export default function Turnos() {
       </div>
 
       {modalOpen && selected && (
-        <div className="turnos-modal">
-          <div className="turnos-modal-card">
-            <h4>Solicitar turno a</h4>
-            <div className="prof-name-large">{selected.tags?.name ?? selected.properties?.name ?? 'Profesional'}</div>
-            <div style={{ fontSize: 13, color: '#555', marginBottom: 8 }}>{prettyType(selectedType)}</div>
-            <label>Fecha y hora</label>
-            <input type="datetime-local" value={datetime} onChange={(e) => setDatetime(e.target.value)} />
-            <label>Observaciones (opcional)</label>
-            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} />
-            <div className="modal-actions">
-              <button className="btn-primary" onClick={solicitarTurno}>Confirmar</button>
-              <button className="btn-ghost" onClick={() => setModalOpen(false)}>Cancelar</button>
+        <div className="modal-overlay" role="dialog" aria-modal="true">
+          <div className="modal">
+            <div className="modal__header">
+              <span className="modal__title">Solicitar turno</span>
+              <button
+                className="button button--icon modal-close"
+                onClick={() => setModalOpen(false)}
+                aria-label="Cerrar"
+                title="Cerrar"
+              >
+                <span className="close-x" aria-hidden="true">×</span>
+              </button>
+            </div>
+
+            <div className="modal__body">
+              <div className="input">
+                <label className="input__label">Profesional</label>
+                <div className="input__field">{selected.tags?.name ?? selected.properties?.name ?? 'Profesional'}</div>
+                <p className="input__description">{selected.tags?.addr_full ?? selected.tags?.address ?? ''}</p>
+              </div>
+
+              <div className="input">
+                <label className="input__label">Tipo</label>
+                <div className="input__field">{prettyType(selectedType)}</div>
+              </div>
+
+              <div className="input">
+                <label className="input__label">Fecha y hora</label>
+                <div className="input-with-icon">
+                  <input
+                    id="turnos-datetime"
+                    className="input__field"
+                    type="datetime-local"
+                    value={datetime}
+                    onChange={(e) => setDatetime(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    className="calendar-btn"
+                    onClick={() => {
+                      const el = document.getElementById('turnos-datetime');
+                      /* showPicker() si está soportado, sino focus */
+                      if (el && typeof el.showPicker === 'function') {
+                        el.showPicker();
+                      } else {
+                        el?.focus();
+                      }
+                    }}
+                    aria-label="Abrir selector de fecha"
+                    title="Abrir selector de fecha"
+                  >
+                    {/* icono calendar inline */}
+                    <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path fill="none" d="M0 0h24v24H0z"/>
+                      <path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 14H5V9h14zM7 11h5v5H7z"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div className="input">
+                <label className="input__label">Observaciones (opcional)</label>
+                <textarea className="input__field input__field--textarea" value={notes} onChange={(e) => setNotes(e.target.value)} />
+              </div>
+            </div>
+
+            <div className="modal__footer">
+              <button className="button button--primary" onClick={solicitarTurno}>Confirmar turno</button>
             </div>
           </div>
         </div>

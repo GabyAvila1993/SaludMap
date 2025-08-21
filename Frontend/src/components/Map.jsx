@@ -92,7 +92,7 @@ export default function MapComponent() {
 
     const fail = (e) => {
       console.warn('geo err', e);
-      setError('No se pudo obtener ubicación exacta. Usa "Calibrar posición" o arrastra el marcador.');
+      setError('No se pudo obtener ubicación exacta. Arrastra el marcador.');
     };
 
     const id = navigator.geolocation.watchPosition(success, fail, {
