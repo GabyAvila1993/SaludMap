@@ -35,7 +35,7 @@ export default function GeoMap() {
     }, []);
 
     return (
-        <div style={{ height: '100vh' }}>
+        <div className="map-wrapper">
             <MapContainer center={pos ?? [-32.9, -68.8]} zoom={13} style={{ height: '100%' }}>
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 {pos && (
