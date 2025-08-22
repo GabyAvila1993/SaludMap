@@ -1,3 +1,4 @@
+
 import React from 'react';
 import './App.css';
 import MapComponent from './components/Map.jsx';
@@ -13,6 +14,17 @@ function App() {
         <MapComponent />
         <Turnos />
       </div>
+
+
+import { useEffect, useState } from 'react';
+import Mapa from './components/Map.jsx';
+
+function App() {
+  return (
+    <div>
+      <h1>SaludMap</h1>
+      <Mapa />
+ main
     </div>
   );
 }

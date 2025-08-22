@@ -125,3 +125,8 @@ npm install react-leaflet leaflet axios
 react-leaflet y leaflet --> para mostrar el mapa y los marcadores
 
 axios --> para hacer requests al backend.
+
+
+
+-------- ruta del thunder client -------
+http://localhost:3000/places?lat=-32.9716086&lng=-68.7911936&types=hospital
