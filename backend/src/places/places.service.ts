@@ -1,52 +1,43 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import axios from 'axios';
 
 @Injectable()
 export class PlacesService {
-    private readonly defaultTypes = ['hospital', 'clinic', 'doctors', 'veterinary'];
-    private readonly searchRadio = [5000, 10000, 20000, 30000, 50000];
+  // Obtener lugares usando Overpass (mirrors, POST)
+  async obtenerLugares(lat: number, lng: number, types?: string[], radius = 3000) {
+    const endpoints = [
+      'https://overpass-api.de/api/interpreter',
+      'https://overpass.kumi.systems/api/interpreter',
+      'https://lz4.overpass-api.de/api/interpreter',
+    ];
 
-    async obtenerLugares(
-        latitud: number,
-        longitud: number,
-        amenityTypes: string[] = this.defaultTypes
-    ) {
-        // Recorremos cada distancia de búsqueda
-        for (const distancia of this.searchRadio) {
-            const queries: string[] = [];
+    const amenities = (types && types.length) ? types : ['hospital', 'clinic', 'doctors', 'veterinary'];
 
-            for (const type of amenityTypes) {
-                const query = `node["amenity"="${type}"](around:${distancia}, ${latitud}, ${longitud});`;
-                queries.push(query);
-            }
+    const filters = amenities.map(a =>
+      `node["amenity"="${a}"](around:${radius},${lat},${lng});
+       way["amenity"="${a}"](around:${radius},${lat},${lng});
+       relation["amenity"="${a}"](around:${radius},${lat},${lng});`
+    ).join('\n');
 
-            const consultasCombinadas = queries.join('\n');
+    const query = `[out:json][timeout:25];
+    (
+      ${filters}
+    );
+    out center;`;
 
-            const overpassQuery = `[out:json];
-        (${consultasCombinadas});
-        out;`;
-
-            const encodedQuery = encodeURIComponent(overpassQuery);
-            const apiUrl = `https://overpass-api.de/api/interpreter?data=${encodedQuery}`;
-
-            const response = await axios.get(apiUrl);
-            const lugaresEncontrados = response.data.elements;
-
-            if (lugaresEncontrados.length > 0) {
-                return {
-                    lugares: lugaresEncontrados,
-                    lejania: distancia
-                };
-            }
-        }
-
-        // Si no se encontró nada en ningún radio
-        const distanciaMaxima = this.searchRadio[this.searchRadio.length - 1];
-        return {
-            lugares: ["No hay servicios cercanos"],
-            lejania: distanciaMaxima
-        };
+    let lastError: any = null;
+    for (const url of endpoints) {
+      try {
+        const res = await axios.post(url, query, { headers: { 'Content-Type': 'text/plain' }, timeout: 20000, maxRedirects: 2 });
+        if (res.status === 200 && res.data) return { lugares: res.data.elements ?? [], lejania: radius };
+        lastError = res;
+      } catch (err) {
+        lastError = err;
+      }
     }
+    const message = 'No se pudo obtener datos de Overpass (timeout o servidor ocupado).';
+    throw new HttpException({ error: message, detail: lastError?.message ?? String(lastError) }, HttpStatus.SERVICE_UNAVAILABLE);
+  }
 }
 
 // Ruta Para probar en el Thunder Client

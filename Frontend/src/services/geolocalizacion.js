@@ -1,6 +1,23 @@
 // Función para obtener la ubicación del usuario una sola vez
 // Utiliza la API de Geolocalización del navegador
 export function obtenerUbicacionUnaVez(callback) {
+Gabriel
+  if (!('geolocation' in navigator)) {
+    console.warn('Geolocalización no disponible en este navegador');
+    callback(null);
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    (posicion) => {
+      const { latitude: latitud, longitude: longitud } = posicion.coords;
+      callback({ lat: latitud, lng: longitud });
+    },
+    (error) => {
+      console.error('Error al obtener la ubicación', error);
+      callback(null);
+    },
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+  );
     if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(
         (posicion) => {
@@ -16,10 +33,28 @@ export function obtenerUbicacionUnaVez(callback) {
     console.warn("Geolocalización no disponible en este navegador");
     callback(null);
     }
+  main
 }
 
 // Función para observar cambios en la ubicación
 export function observarUbicacion(callback) {
+Gabriel
+  if (!('geolocation' in navigator)) {
+    console.warn('Geolocalización no disponible en este navegador');
+    return null;
+  }
+  const watchId = navigator.geolocation.watchPosition(
+    (posicion) => {
+      const { latitude: latitud, longitude: longitud } = posicion.coords;
+      callback({ lat: latitud, lng: longitud });
+    },
+    (error) => {
+      console.error('Error al observar la ubicación', error);
+    },
+    { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
+  );
+  return watchId;
+
     if ("geolocation" in navigator) {
     const watchId = navigator.geolocation.watchPosition(
         (posicion) => {
@@ -40,11 +75,19 @@ export function observarUbicacion(callback) {
     console.warn("Geolocalización no disponible en este navegador");
     return null;
     }
+ main
 }
 
 // Función para detener la observación
 export function detenerObservacion(watchId) {
+
+  if (watchId != null && 'geolocation' in navigator) {
+    navigator.geolocation.clearWatch(watchId);
+  }
+}
+
     if (watchId !== null) {
     navigator.geolocation.clearWatch(watchId);
     }
 }
+main

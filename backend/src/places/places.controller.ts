@@ -1,35 +1,34 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, BadRequestException } from '@nestjs/common';
 import { PlacesService } from './places.service';
 
-@Controller('places') 
+@Controller('places')
 export class PlacesController {
-  // Inyectamos el servicio que maneja la lógica
   constructor(private readonly placesService: PlacesService) {}
 
-  // Endpoint GET para buscar lugares cercanos
   @Get()
   async buscarLugares(
-    @Query('lat') latitud: number,         
-    @Query('lng') longitud: number,        
-    @Query('types') tipos?: string | string[] 
+    @Query('lat') latStr?: string,
+    @Query('lng') lngStr?: string,
+    @Query('types') tipos?: string | string[],
+    @Query('radius') radius?: string,
   ) {
-    // Normalizamos el parámetro 'types' para que siempre sea un array
-    let tiposDeAmenity: string[] | undefined;
+    const latitud = latStr ? parseFloat(latStr) : NaN;
+    const longitud = lngStr ? parseFloat(lngStr) : NaN;
 
-    if (Array.isArray(tipos)) {
-      tiposDeAmenity = tipos;
-    } else if (typeof tipos === 'string') {
-      tiposDeAmenity = tipos.split(',');
+    if (Number.isNaN(latitud) || Number.isNaN(longitud)) {
+      throw new BadRequestException('lat y lng son requeridos y deben ser números');
     }
 
-    // Llamamos al servicio para obtener los lugares
-    const resultado = await this.placesService.obtenerLugares(
-      latitud,
-      longitud,
-      tiposDeAmenity
-    );
+    let tiposDeAmenity: string[] | undefined;
+    if (Array.isArray(tipos)) {
+      tiposDeAmenity = tipos;
+    } else if (typeof tipos === 'string' && tipos.length > 0) {
+      tiposDeAmenity = tipos.split(',').map((s) => s.trim()).filter(Boolean);
+    }
 
+    const rad = radius ? parseInt(radius, 10) : 3000;
+
+    const resultado = await this.placesService.obtenerLugares(latitud, longitud, tiposDeAmenity, rad);
     return resultado;
   }
 }
-
