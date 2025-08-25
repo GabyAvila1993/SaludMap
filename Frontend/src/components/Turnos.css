@@ -9,11 +9,13 @@
 .turnos-root {
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
     color: var(--color-text);
-    max-height: 75vh;
-    overflow: auto;
+    min-height: 100vh; /* Cambiado de max-height a min-height */
+    overflow: visible; /* Cambiado de auto a visible */
     padding: clamp(1rem, 2vw, 2rem);
     display: grid;
-    place-content: center;
+    place-content: start center; /* Cambiado de center a start center */
+    margin-top: 40px; /* Aumentado un poco más */
+    padding-top: 2rem; /* Agregado padding superior adicional */
 }
 
 /* ---------- HEADER ---------- */
@@ -25,12 +27,13 @@
     gap: 1rem;
     margin-bottom: 2rem;
     background: var(--color-bg-dark);
-    padding: 1rem 2rem;
+    padding: 1.5rem 2rem; /* Aumentado el padding vertical */
     border-radius: var(--radius);
     border: 1px solid rgba(255, 224, 166, 0.3);
     position: relative;
-
-
+    min-height: 80px; /* Agregado altura mínima */
+    width: 100%; /* Asegurar que tome todo el ancho disponible */
+    box-sizing: border-box; /* Incluir padding y border en el cálculo del ancho */
 }
 
 .turnos-header h3 {
@@ -177,7 +180,7 @@
 }
 
 .modal-close:hover {
-    
+
     transform: scale(1.1);
 }
 
@@ -224,17 +227,62 @@
     border: 2px solid #ffe0a6;
     color: #ffe0a6;
     font-weight: bold;
-    padding: 0.5rem 1rem;
+    padding: 0.1rem 0.5rem;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
+.correo {
+    font-weight: 700;
+    font-size: .9rem;
+    color: var(--color-primary);
+    text-transform: uppercase;
+}
+
+.correo {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.correo__label {
+    font-weight: 700;
+    font-size: .9rem;
+    color: var(--color-primary);
+    text-transform: uppercase;
+}
+
+.correo__field {
+    padding: .8rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 224, 166, .3);
+    background: rgba(255, 255, 255, .05);
+    color: var(--color-text);
+}
+
+.correo__field:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    background: rgba(255, 224, 166, .1);
+}
+
 .modal__footer {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
     margin-top: 2rem;
+}
 
+.footer-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-right {
+    flex-shrink: 0;
 }
 
 .button--primary:hover {

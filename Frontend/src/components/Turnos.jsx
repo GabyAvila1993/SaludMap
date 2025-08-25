@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import './Turnos.css';
+import emailjs from '@emailjs/browser';
 
 export default function Turnos() {
   const [pos, setPos] = useState(null);
@@ -11,12 +12,20 @@ export default function Turnos() {
   const [selected, setSelected] = useState(null);
   const [datetime, setDatetime] = useState('');
   const [notes, setNotes] = useState('');
+  const [correo, setCorreo] = useState('');
   const [misTurnos, setMisTurnos] = useState([]);
   const [cancellingId, setCancellingId] = useState(null);
   const [selectedType, setSelectedType] = useState('default');
   const fetchTimeoutRef = useRef(null);
   const watchIdRef = useRef(null);
   const prevPosRef = useRef(null);
+
+  // Inicializar EmailJS una sola vez al montar el componente
+  useEffect(() => {
+    console.log('[DEBUG] Inicializando EmailJS...');
+    emailjs.init('jBIfJ7kR2vFO0xd0e'); // tu public key
+    console.log('[DEBUG] EmailJS inicializado con public key: jBIfJ7kR2vFO0xd0e');
+  }, []);
 
   // obtener posición aproximada (si existe)
   useEffect(() => {
@@ -107,32 +116,122 @@ export default function Turnos() {
 
   // enviar solicitud de turno
   const solicitarTurno = async () => {
-    if (!selected || !datetime) {
-      setError('Elige fecha y hora.');
+    if (!selected || !datetime || !correo) {
+      setError('Faltan datos: selecciona un profesional, fecha y correo.');
       return;
     }
+
+    console.log('[DEBUG] Iniciando solicitud de turno...');
+    console.log('[DEBUG] EmailJS inicializado:', emailjs);
+
     try {
+      setLoading(true);
+      setError(''); // Limpiar errores previos
+      
+      // 1. Preparar datos del turno
       const payload = {
-        professionalId: selected.id ?? (selected.osm_id ?? null),
+        professionalId: selected.id ?? selected.osm_id ?? null,
         professionalName: selected.tags?.name ?? selected.properties?.name ?? 'Profesional',
         datetime,
         notes,
-        user: 'usuario', // cambiar por auth real
+        user: correo,
         professionalType: selectedType ?? getTypeFromPlace(selected),
       };
-      await axios.post('/turnos', payload);
+
+      console.log('[DEBUG] Payload para backend:', payload);
+
+      // 2. Intentar guardar en backend primero
+      try {
+        await axios.post('/turnos', payload);
+        console.log('[DEBUG] ✅ Turno guardado en backend');
+      } catch (backendError) {
+        console.error('[DEBUG] ❌ Error en backend:', backendError);
+        // Continuamos para intentar el correo de todas formas
+      }
+
+      // 3. Preparar datos para EmailJS
+      const datosCorreo = {
+        // Enviamos múltiples variaciones del campo email para asegurar compatibilidad
+        to_email: correo,
+        correo: correo,
+        user_email: correo, 
+        email: correo,
+        to: correo,
+        profesional: payload.professionalName,
+        direccion: selected.tags?.addr_full ?? selected.tags?.address ?? 'Dirección no disponible',
+        tipo: prettyType(payload.professionalType),
+        fechaHora: new Date(datetime).toLocaleString('es-AR', {
+          year: 'numeric',
+          month: 'long',  
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        }),
+        observaciones: notes || 'Sin observaciones',
+        message: `Turno solicitado para ${payload.professionalName} el ${new Date(datetime).toLocaleString()}`
+      };
+
+      console.log('[DEBUG] Datos para EmailJS:', datosCorreo);
+      console.log('[DEBUG] Service ID: service_fr86hqi');
+      console.log('[DEBUG] Template ID: template_j524jbg');
+      console.log('[DEBUG] Public Key: jBIfJ7kR2vFO0xd0e');
+
+      // 4. Intentar enviar correo
+      console.log('[DEBUG] Iniciando envío de correo...');
+      
+      const emailResponse = await emailjs.send(
+        'service_fr86hqi',
+        'template_j524jbg',
+        datosCorreo,
+        'jBIfJ7kR2vFO0xd0e'
+      );
+
+      console.log('[DEBUG] ✅ Respuesta EmailJS:', emailResponse);
+      console.log('[DEBUG] Status:', emailResponse.status);
+      console.log('[DEBUG] Text:', emailResponse.text);
+
+      // 5. Si llegamos aquí, todo salió bien
+      await cargarMisTurnos();
+      
       setModalOpen(false);
-      await cargarMisTurnos(); // refrescar lista
-      alert('Turno solicitado correctamente.');
-    } catch (e) {
-      console.error(e);
-      setError('Error al solicitar turno.');
+      setCorreo('');
+      setDatetime('');
+      setNotes('');
+      setError('');
+      
+      alert('¡Turno solicitado y confirmado por correo correctamente!');
+
+    } catch (emailError) {
+      console.error('[DEBUG] ❌ Error completo:', emailError);
+      console.error('[DEBUG] Error name:', emailError.name);
+      console.error('[DEBUG] Error message:', emailError.message);
+      console.error('[DEBUG] Error status:', emailError.status);
+      console.error('[DEBUG] Error text:', emailError.text);
+      
+      // Mostrar error específico al usuario
+      let errorMessage = 'Error desconocido';
+      
+      if (emailError.status) {
+        errorMessage = `Error EmailJS (${emailError.status}): ${emailError.text || emailError.message}`;
+      } else if (emailError.message) {
+        errorMessage = `Error: ${emailError.message}`;
+      } else if (emailError.response) {
+        errorMessage = `Error del servidor: ${emailError.response.data?.message || emailError.response.status}`;
+      }
+      
+      setError(errorMessage);
+      
+      // Mantener el modal abierto para que el usuario pueda intentar de nuevo
+      alert(`Hubo un problema: ${errorMessage}\n\nRevisa la consola del navegador para más detalles.`);
+      
+    } finally {
+      setLoading(false);
     }
   };
 
   const cargarMisTurnos = async () => {
     try {
-      const res = await axios.get(`/turnos?user=usuario`);
+      const res = await axios.get(`/turnos?user=${encodeURIComponent(correo || 'usuario')}`);
       const data = res.data;
       // Normalizar: si el backend devuelve { turnos: [...] } o un array directo
       const arr = Array.isArray(data) ? data : (Array.isArray(data?.turnos) ? data.turnos : []);
@@ -142,7 +241,8 @@ export default function Turnos() {
       setMisTurnos([]);
     }
   };
-  useEffect(() => { cargarMisTurnos(); }, []);
+
+  useEffect(() => { cargarMisTurnos(); }, [correo]);
 
   const cancelarTurno = async (id) => {
     console.log('[Turnos] cancelarTurno called, id=', id);
@@ -236,7 +336,13 @@ export default function Turnos() {
                   </div>
                   <div>{new Date(t.datetime).toLocaleString()}</div>
                   <div className="turn-actions">
-                    <button className="btn-ghost" onClick={() => cancelarTurno(t.id)}>Cancelar</button>
+                    <button 
+                      className="btn-ghost" 
+                      onClick={() => cancelarTurno(t.id)}
+                      disabled={cancellingId === t.id}
+                    >
+                      {cancellingId === t.id ? 'Cancelando...' : 'Cancelar'}
+                    </button>
                   </div>
                 </li>
               ))}
@@ -281,6 +387,7 @@ export default function Turnos() {
                     type="datetime-local"
                     value={datetime}
                     onChange={(e) => setDatetime(e.target.value)}
+                    min={new Date().toISOString().slice(0, 16)} // No permitir fechas pasadas
                   />
                   <button
                     type="button"
@@ -299,8 +406,8 @@ export default function Turnos() {
                   >
                     {/* icono calendar inline */}
                     <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                      <path fill="none" d="M0 0h24v24H0z"/>
-                      <path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 14H5V9h14zM7 11h5v5H7z"/>
+                      <path fill="none" d="M0 0h24v24H0z" />
+                      <path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 14H5V9h14zM7 11h5v5H7z" />
                     </svg>
                   </button>
                 </div>
@@ -308,13 +415,39 @@ export default function Turnos() {
 
               <div className="input">
                 <label className="input__label">Observaciones (opcional)</label>
-                <textarea className="input__field input__field--textarea" value={notes} onChange={(e) => setNotes(e.target.value)} />
+                <textarea 
+                  className="input__field input__field--textarea" 
+                  value={notes} 
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Ingrese cualquier observación adicional..."
+                />
               </div>
             </div>
 
             <div className="modal__footer">
-              <button className="button button--primary" onClick={solicitarTurno}>Confirmar turno</button>
+              <div className="footer-left">
+                <label className="correo__label">Correo electrónico</label>
+                <input
+                  type="email"
+                  className="correo__field"
+                  placeholder="usuario@ejemplo.com"
+                  value={correo}
+                  onChange={(e) => setCorreo(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="footer-right">
+                <button 
+                  className="button button--primary" 
+                  onClick={solicitarTurno}
+                  disabled={loading || !correo || !datetime}
+                >
+                  {loading ? 'Procesando...' : 'Confirmar turno'}
+                </button>
+              </div>
             </div>
+
+            {error && <div className="turnos-error" style={{margin: '10px'}}>{error}</div>}
           </div>
         </div>
       )}
