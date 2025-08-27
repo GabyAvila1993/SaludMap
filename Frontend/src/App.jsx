@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import MapComponent from './components/Map.jsx';
-import Turnos from './components/Turnos';
+import Turnos from './components/turnos/Turnos.jsx';
 import Background from './components/Background.jsx';
 
 function App() {
