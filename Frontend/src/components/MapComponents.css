@@ -44,7 +44,7 @@
     max-width: 95%;
     margin: 16px auto;
     border-radius: 10px;
-    overflow: hidden;
+    /* overflow: hidden; */ /* comentar o eliminar */
     box-shadow: 0 2px 12px #ffffff;
     position: relative;
 }
@@ -196,23 +196,26 @@
 }
 
 .map-buttons {
-    margin-top: 10px;
-    /* espacio entre mapa y botones */
-    display: flex;
-    gap: 10px;
+  position: absolute; /* flota sobre el mapa */
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column; /* vertical */
+  gap: 10px;
+  z-index: 10000; /* sobre el mapa */
 }
 
 .map-buttons button {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 6px;
-    background-color: #6c63ff;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #6c63ff;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
 }
 
 .map-buttons button:hover {
-    background-color: #574bdb;
+  background-color: #574bdb;
 }
