@@ -4,12 +4,30 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   server: {
-   proxy: {
-  '/places': {
-    target: 'http://localhost:3000', // puerto real del backend
-    changeOrigin: true,
+    port: 5173,
+    host: true,
+    proxy: {
+      '/places': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false
+      },
+      '/turnos': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false
+      }
+    }
   },
-},
-
+  build: {
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: undefined
+      }
+    }
   },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'leaflet', 'react-leaflet', 'axios', 'idb']
+  }
 });

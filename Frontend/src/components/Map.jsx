@@ -1,317 +1,420 @@
-import React, { useEffect, useState, useRef } from 'react';
-import axios from 'axios';
-import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import './Map.css';
+// INICIO CAMBIO - Archivo: src/components/Map.jsx - Integración con servicios
+import React, { useState, useEffect, useRef } from 'react';
+import { MapContainer, Marker, Popup, Circle, useMap } from 'react-leaflet';
 import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import axios from 'axios';
+import locationService from '../services/locationService';
+import SaveLocationModal from './SaveLocationModal';
+import SavedLocationsList from './SavedLocationsList';
+import OfflineTileLayer from './OfflineTileLayer';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+import offlineTileService from '../services/offlineTileService.js';
+import { savePlaces, getNearbyPlaces, saveNamedLocation } from '../services/db.js';
+import './Map.css';
 
-// Fix ícono por defecto en Vite / React
+// Fix ícono por defecto
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
+    iconRetinaUrl: markerIcon2x,
+    iconUrl: markerIcon,
+    shadowUrl: markerShadow,
 });
 
 export default function MapComponent() {
-  const [pos, setPos] = useState(null); // posición en tiempo real del gps
-  const [calPos, setCalPos] = useState(null); // posición calibrada por muestreo
-  const [manualPos, setManualPos] = useState(null); // si el usuario arrastra el marcador
-  const [accuracy, setAccuracy] = useState(null);
-  const [lugares, setLugares] = useState([]);
-  const [error, setError] = useState('');
-  const [sampling, setSampling] = useState(false);
-  const mapRef = useRef(null);
-  const [mapReady, setMapReady] = useState(false);
+    const [currentLocation, setCurrentLocation] = useState(null);
+    const [lugares, setLugares] = useState([]);
+    const [error, setError] = useState('');
+    const [isCalibrating, setIsCalibrating] = useState(false);
+    const [offlineMode, setOfflineMode] = useState(false);
+    const [isOnline, setIsOnline] = useState(navigator.onLine);
+    const [downloadProgress, setDownloadProgress] = useState(0);
+    const [showSaveLocationModal, setShowSaveLocationModal] = useState(false);
+    const [showSavedLocationsList, setShowSavedLocationsList] = useState(false);
 
-  const samplesRef = useRef([]);
-  const watchIdRef = useRef(null);
+    const mapRef = useRef(null);
+    const unsubscribeRef = useRef(null);
 
-  // Icono explícito para usuario (círculo azul)
-  const userIcon = L.divIcon({
-    html: `<div class="user-icon"></div>`,
-    className: '',
-    iconSize: [24, 24],
-    iconAnchor: [12, 12],
-    popupAnchor: [0, -12],
-  });
+    // Icono para usuario
+    const userIcon = L.divIcon({
+        html: `<div class="user-icon"></div>`,
+        className: '',
+        iconSize: [24, 24],
+        iconAnchor: [12, 12],
+        popupAnchor: [0, -12],
+    });
 
-  // broadcast de posición para otros componentes
-  const broadcastPos = (p, source = 'gps') => {
-    try {
-      // log temporal para depuración
-      console.log('[Map] broadcastPos ->', { lat: p.lat, lng: p.lng, source });
-      window.dispatchEvent(new CustomEvent('saludmap:pos-changed', { detail: { lat: p.lat, lng: p.lng, source } }));
-    } catch (e) {
-      console.error('[Map] broadcastPos error', e);
-    }
-  };
+    // Iconos por tipo
+    const iconDefs = {
+        hospital: { color: '#e74c3c', label: 'H' },
+        clinic: { color: '#3498db', label: 'C' },
+        doctors: { color: '#2ecc71', label: 'D' },
+        veterinary: { color: '#9b59b6', label: 'V' },
+        default: { color: '#34495e', label: '?' },
+    };
 
-  // Iconos por tipo (divIcons)
-  const iconDefs = {
-    hospital: { color: '#e74c3c', label: 'H' },
-    clinic: { color: '#3498db', label: 'C' },
-    doctors: { color: '#2ecc71', label: 'D' },
-    veterinary: { color: '#9b59b6', label: 'V' },
-    default: { color: '#34495e', label: '?' },
-  };
-  const createDivIcon = (color, label) => {
-    const html = `<div style="
+    const createDivIcon = (color, label) => {
+        const html = `<div style="
       display:flex;align-items:center;justify-content:center;
       width:36px;height:36px;border-radius:18px;background:${color};
       color:#fff;font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,0.6);
       border:2px solid rgba(255,255,255,0.6);
     ">${label}</div>`;
-    return L.divIcon({ html, className: '', iconSize: [36, 36], iconAnchor: [18, 36], popupAnchor: [0, -36] });
-  };
-  const iconCache = {};
-  const getIconForType = (t) => {
-    const def = iconDefs[t] ?? iconDefs.default;
-    const key = `${def.color}-${def.label}`;
-    if (!iconCache[key]) iconCache[key] = createDivIcon(def.color, def.label);
-    return iconCache[key];
-  };
-
-  // Geolocalización con watchPosition (alta precisión)
-  useEffect(() => {
-    if (!navigator.geolocation) {
-      setError('Geolocalización no soportada por el navegador.');
-      return;
-    }
-
-    const success = (p) => {
-      const coords = { lat: p.coords.latitude, lng: p.coords.longitude };
-      setPos(coords);
-      setAccuracy(p.coords.accuracy);
-      if (mapRef.current && !manualPos && !calPos) mapRef.current.setView([coords.lat, coords.lng], 15);
-      // notificar cambio de posicion GPS
-      broadcastPos(coords, 'gps');
+        return L.divIcon({ html, className: '', iconSize: [36, 36], iconAnchor: [18, 36], popupAnchor: [0, -36] });
     };
 
-    const fail = (e) => {
-      console.warn('geo err', e);
-      setError('No se pudo obtener ubicación exacta. Arrastra el marcador.');
+    const iconCache = {};
+    const getIconForType = (type) => {
+        const def = iconDefs[type] ?? iconDefs.default;
+        const key = `${def.color}-${def.label}`;
+        if (!iconCache[key]) iconCache[key] = createDivIcon(def.color, def.label);
+        return iconCache[key];
     };
 
-    const id = navigator.geolocation.watchPosition(success, fail, {
-      enableHighAccuracy: true,
-      timeout: 20000,
-      maximumAge: 0,
-    });
-    watchIdRef.current = id;
+    // Configurar servicios al montar componente
+    useEffect(() => {
+        // Suscribirse a cambios de ubicación
+        const unsubscribe = locationService.subscribe(handleLocationChange);
+        unsubscribeRef.current = unsubscribe;
 
-    return () => {
-      if (watchIdRef.current != null) navigator.geolocation.clearWatch(watchIdRef.current);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+        // Configurar callback de progreso de descarga offline
+        offlineTileService.setProgressCallback(setDownloadProgress);
 
-  // Fetch places usando la posición efectiva (manual > calibrada > realtime)
-  useEffect(() => {
-    const effective = manualPos ?? calPos ?? pos;
-    if (!effective) return;
+        // Cargar última ubicación conocida
+        locationService.loadLastKnownLocation();
 
-    const fetchPlaces = async () => {
-      try {
-        const types = ['hospital', 'clinic', 'doctors', 'veterinary'].join(',');
-        const res = await axios.get(`/places?lat=${effective.lat}&lng=${effective.lng}&types=${types}`);
-        const data = res.data;
-        let resultados = [];
-        if (Array.isArray(data)) resultados = data;
-        else if (Array.isArray(data.lugares)) resultados = data.lugares;
-        else if (Array.isArray(data.elements)) resultados = data.elements;
-        else if (Array.isArray(data.features)) resultados = data.features;
-        else resultados = data.elements ?? data.lugares ?? [];
-        setLugares(resultados);
-      } catch (e) {
-        console.error('Error al obtener places:', e);
-        setError('Error al conectar con el backend (/places).');
-      }
-    };
+        // Iniciar seguimiento de ubicación
+        locationService.startWatching();
 
-    fetchPlaces();
-  }, [pos, calPos, manualPos]);
+        // Detectar cambios de conectividad
+        const handleOnline = () => setIsOnline(true);
+        const handleOffline = () => setIsOnline(false);
+        
+        // Escuchar evento para centrar mapa
+        const handleCenterMap = (event) => {
+            if (mapRef.current) {
+                mapRef.current.setView([event.detail.lat, event.detail.lng], 15, {
+                    animate: true,
+                    duration: 0.5
+                });
+            }
+        };
+        
+        window.addEventListener('online', handleOnline);
+        window.addEventListener('offline', handleOffline);
+        window.addEventListener('centerMapOnLocation', handleCenterMap);
 
-  // Calibrar: tomar N muestras por watch temporal o por getCurrentPosition repetido
-  const calibrarPosicion = async (durationMs = 6000, maxSamples = 12) => {
-    if (!navigator.geolocation) {
-      setError('Geolocalización no soportada.');
-      return;
-    }
-    if (sampling) return;
-    setSampling(true);
-    samplesRef.current = [];
-    setError('');
-    const tempId = navigator.geolocation.watchPosition(
-      (p) => {
-        samplesRef.current.push({ lat: p.coords.latitude, lng: p.coords.longitude, acc: p.coords.accuracy, t: Date.now() });
-        if (samplesRef.current.length >= maxSamples) {
-          finishSampling(tempId);
+        return () => {
+            if (unsubscribeRef.current) {
+                unsubscribeRef.current();
+            }
+            locationService.stopWatching();
+            window.removeEventListener('online', handleOnline);
+            window.removeEventListener('offline', handleOffline);
+            window.removeEventListener('centerMapOnLocation', handleCenterMap);
+        };
+    }, []);
+
+    // Manejar cambios de ubicación
+    const handleLocationChange = async (location) => {
+        setCurrentLocation(location);
+        setError('');
+
+        // Centrar mapa en nueva ubicación con animación
+        if (mapRef.current) {
+            mapRef.current.setView([location.lat, location.lng], 15, {
+                animate: true,
+                duration: 0.5
+            });
         }
-      },
-      (e) => {
-        console.warn('calib err', e);
-      },
-      { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 }
-    );
 
-    setTimeout(() => {
-      finishSampling(tempId);
-    }, durationMs);
-  };
+        // Buscar lugares cercanos
+        await fetchNearbyPlaces(location);
+    };
 
-  const finishSampling = (tempId) => {
-    if (tempId != null) navigator.geolocation.clearWatch(tempId);
-    const samples = samplesRef.current.slice();
-    if (!samples.length) {
-      setError('No se recogieron muestras. Reintenta al aire libre con GPS activo.');
-      setSampling(false);
-      return;
+    // Buscar lugares (online/offline)
+    const fetchNearbyPlaces = async (location) => {
+        try {
+            let places = [];
+
+            // Si estamos online, intentar buscar online primero
+            if (isOnline) {
+                try {
+                    const types = ['hospital', 'clinic', 'doctors', 'veterinary'].join(',');
+                    const response = await axios.get(
+                        `/places?lat=${location.lat}&lng=${location.lng}&types=${types}`
+                    );
+
+                    places = normalizeApiResponse(response.data);
+
+                    // Guardar en IndexedDB para uso offline
+                    if (places.length > 0) {
+                        await savePlaces(places);
+                    }
+                    setOfflineMode(false);
+                } catch (onlineError) {
+                    console.log('Error en búsqueda online, usando cache offline');
+                    // Si falla online, usar cache offline
+                    const offlinePlaces = await getNearbyPlaces(location);
+                    places = offlinePlaces;
+                    setOfflineMode(true);
+                }
+            } else {
+                // Si estamos offline, usar solo cache
+                const offlinePlaces = await getNearbyPlaces(location);
+                places = offlinePlaces;
+                setOfflineMode(true);
+            }
+
+            setLugares(places);
+        } catch (error) {
+            console.error('Error obteniendo lugares:', error);
+
+            // Intentar cargar desde cache offline
+            const cachedPlaces = await getNearbyPlaces(location);
+            if (cachedPlaces.length > 0) {
+                setLugares(cachedPlaces);
+                setOfflineMode(true);
+                setError('Modo offline: mostrando lugares guardados');
+            } else {
+                setError('Error de conexión y sin datos offline disponibles');
+            }
+        }
+    };
+
+    // Normalizar respuesta de API
+    const normalizeApiResponse = (data) => {
+        let results = [];
+        if (Array.isArray(data)) results = data;
+        else if (Array.isArray(data.lugares)) results = data.lugares;
+        else if (Array.isArray(data.elements)) results = data.elements;
+        else if (Array.isArray(data.features)) results = data.features;
+        else results = data.elements ?? data.lugares ?? [];
+
+        return results.map(place => ({
+            ...place,
+            lat: place.lat ?? place.center?.lat ?? place.geometry?.coordinates?.[1],
+            lng: place.lng ?? place.lon ?? place.center?.lon ?? place.geometry?.coordinates?.[0],
+            type: getTypeFromPlace(place)
+        }));
+    };
+
+    // Determinar tipo de lugar
+    const getTypeFromPlace = (place) => {
+        const tags = place.tags ?? place.properties ?? {};
+        const amenity = (tags.amenity || tags.healthcare || '').toString().toLowerCase();
+        const name = (tags.name || '').toString().toLowerCase();
+
+        if (amenity.includes('hospital') || name.includes('hospital')) return 'hospital';
+        if (amenity.includes('clinic') || name.includes('clínica') || name.includes('clinic')) return 'clinic';
+        if (amenity.includes('veterinary') || name.includes('veterin')) return 'veterinary';
+        if (amenity.includes('doctor') || name.includes('doctor') || name.includes('médic')) return 'doctors';
+
+        return 'default';
+    };
+
+    // Actualizar ubicación
+    const handleCalibrate = async () => {
+        if (isCalibrating) return;
+
+        setIsCalibrating(true);
+        setError('Obteniendo ubicación GPS...');
+
+        try {
+            const location = await locationService.calibratePosition();
+            // Forzar que el mapa se centre en la nueva ubicación
+            if (mapRef.current && location) {
+                mapRef.current.setView([location.lat, location.lng], 15, {
+                    animate: true,
+                    duration: 0.5
+                });
+            }
+            setError('Ubicación actualizada exitosamente');
+        } catch (error) {
+            setError('Error actualizando ubicación: ' + error.message);
+        } finally {
+            setIsCalibrating(false);
+        }
+    };
+
+    // Descargar área offline
+    const handleDownloadOffline = async () => {
+        if (!currentLocation) return;
+
+        try {
+            setError('Descargando mapa para uso offline...');
+            await offlineTileService.downloadTilesForArea(currentLocation);
+            setError('Área descargada para uso offline');
+        } catch (error) {
+            setError('Error descargando área offline: ' + error.message);
+        }
+    };
+
+    // Manejar arrastre del marcador
+    const handleMarkerDrag = async (event) => {
+        const { lat, lng } = event.target.getLatLng();
+        await locationService.setManualLocation(lat, lng);
+    };
+
+    // Component to handle map reference
+    const MapController = () => {
+        const map = useMap();
+        
+        useEffect(() => {
+            mapRef.current = map;
+        }, [map]);
+        
+        return null;
+    };
+
+    // Manejar guardar ubicación con nombre
+    const handleSaveLocation = async (locationData) => {
+        try {
+            await saveNamedLocation(
+                locationData.name,
+                locationData.lat,
+                locationData.lng,
+                locationData.description
+            );
+            setError(`Ubicación "${locationData.name}" guardada exitosamente`);
+        } catch (error) {
+            console.error('Error saving location:', error);
+            throw new Error('Error al guardar la ubicación: ' + error.message);
+        }
+    };
+
+    if (!currentLocation) {
+        return (
+            <div className="map-root">
+                <h3 className="map-title">Obteniendo ubicación...</h3>
+                {error && <div className="map-error">{error}</div>}
+            </div>
+        );
     }
-    const lats = samples.map((s) => s.lat).sort((a, b) => a - b);
-    const lngs = samples.map((s) => s.lng).sort((a, b) => a - b);
-    const accs = samples.map((s) => s.acc).sort((a, b) => a - b);
-    const median = (arr) => arr[Math.floor(arr.length / 2)];
-    const latMed = median(lats);
-    const lngMed = median(lngs);
-    const accMed = median(accs);
-    const calibrated = { lat: latMed, lng: lngMed };
-    setCalPos(calibrated);
-    setAccuracy(accMed);
-    if (mapRef.current) mapRef.current.setView([calibrated.lat, calibrated.lng], 17);
-    // notificar posicion calibrada
-    broadcastPos(calibrated, 'calibrated');
-    setSampling(false);
-  };
 
-  const handleMapCreated = (mapInstance) => {
-    mapRef.current = mapInstance;
-    setMapReady(true);
-  };
+    return (
+        <div className="map-root">
+            <h3 className="map-title">
+                Mapa de servicios cercanos
+                {!isOnline && <span className="offline-badge"> (Offline)</span>}
+            </h3>
 
-  const onRecenter = () => {
-    const effective = manualPos ?? calPos ?? pos;
-    if (!effective || !mapRef.current) return;
-    try {
-      if (typeof mapRef.current.invalidateSize === 'function') mapRef.current.invalidateSize();
-      if (typeof mapRef.current.flyTo === 'function') mapRef.current.flyTo([effective.lat, effective.lng], 15, { duration: 0.7 });
-      else mapRef.current.setView([effective.lat, effective.lng], 15);
-    } catch (err) {
-      console.error('[Map] error al recentrar', err);
-    }
-  };
+            {error && <div className="map-error">{error}</div>}
 
-  const getCoords = (item) => {
-    const lat = item.lat ?? item.center?.lat ?? item.geometry?.coordinates?.[1];
-    const lng = item.lon ?? item.center?.lon ?? item.geometry?.coordinates?.[0];
-    if (lat == null || lng == null) return null;
-    return [lat, lng];
-  };
+            <div className="map-controls">
+                <button onClick={handleCalibrate} disabled={isCalibrating}>
+                    {isCalibrating ? 'Actualizando...' : 'Actualizar ubicación'}
+                </button>
+                <button onClick={handleDownloadOffline}>
+                    Descargar área offline
+                </button>
+                <button onClick={() => setShowSaveLocationModal(true)} className="btn-save-location">
+                    Guardar Ubicación
+                </button>
+                <button onClick={() => setShowSavedLocationsList(true)} className="btn-view-locations">
+                    Ver Ubicaciones
+                </button>
+                {downloadProgress > 0 && downloadProgress < 100 && (
+                    <div className="progress">Descarga: {Math.round(downloadProgress)}%</div>
+                )}
+            </div>
 
-  const getTypeFromPlace = (place) => {
-    const tags = place.tags ?? place.properties ?? {};
-    const amenity = (tags.amenity || tags.healthcare || '').toString().toLowerCase();
-    if (amenity.includes('hospital')) return 'hospital';
-    if (amenity.includes('clinic')) return 'clinic';
-    if (amenity.includes('veterinary')) return 'veterinary';
-    if (amenity.includes('doctor') || amenity.includes('doctors') || tags.doctors) return 'doctors';
-    const name = (tags.name || '').toString().toLowerCase();
-    if (name.includes('hospital')) return 'hospital';
-    if (name.includes('clínica') || name.includes('clinica') || name.includes('clinic')) return 'clinic';
-    if (name.includes('veterin') || name.includes('vet')) return 'veterinary';
-    if (name.includes('dr ') || name.includes('doctor') || name.includes('médic') || name.includes('medic')) return 'doctors';
-    return 'default';
-  };
+            <div className="map-info">
+                Precisión: {currentLocation.accuracy ? `${Math.round(currentLocation.accuracy)}m` : '—'}
+                <span className="location-source">
+                    ({currentLocation.source === 'manual' ? 'Manual' :
+                        currentLocation.source === 'calibrated' ? 'Calibrado' : 'GPS'})
+                </span>
+            </div>
 
-  // ubicación a mostrar y su precisión
-  const displayPos = manualPos ?? calPos ?? pos;
-  const displayAcc = accuracy;
+            <div className="map-wrapper">
+                <MapContainer
+                    center={[currentLocation.lat, currentLocation.lng]}
+                    zoom={15}
+                    className="leaflet-map"
+                >
+                    <MapController />
+                    <OfflineTileLayer 
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    />
 
-  return (
-    <div className="map-root">
-      <h3 className="map-title">Mapa de servicios cercanos</h3>
+                    {currentLocation.accuracy && (
+                        <Circle
+                            center={[currentLocation.lat, currentLocation.lng]}
+                            radius={currentLocation.accuracy}
+                            pathOptions={{ color: '#007bff', fillOpacity: 0.08 }}
+                        />
+                    )}
 
-      {error && <div className="map-error">{error}</div>}
-
-      <div className="map-info-row">
-        <div className="map-precision">
-          <span>Precisión: {displayAcc ? `${Math.round(displayAcc)} m` : '—'}</span>
-          <span className="map-state">{manualPos ? ' (ajuste manual)' : calPos ? ' (calibrada)' : ''}</span>
-        </div>
-      </div>
-
-      {!displayPos ? (
-        <p>Obteniendo ubicación...</p>
-      ) : (
-        <div className="map-wrapper">
-          <MapContainer whenCreated={handleMapCreated} center={[displayPos.lat, displayPos.lng]} zoom={15} className="leaflet-map">
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            {displayAcc != null && <Circle center={[displayPos.lat, displayPos.lng]} radius={displayAcc} pathOptions={{ color: '#007bff', fillOpacity: 0.08 }} />}
-            <Marker
-              position={[displayPos.lat, displayPos.lng]}
-              icon={userIcon}
-              draggable={true}
-              zIndexOffset={1000}
-              eventHandlers={{
-                click: (e) => {
-                  const latlng = e.latlng;
-                  if (latlng) {
-                    const mpos = { lat: latlng.lat, lng: latlng.lng };
-                    setManualPos(mpos);
-                    setAccuracy(null);
-                    broadcastPos(mpos, 'manual');
-                  }
-                },
-                dragend: (e) => {
-                  const m = e.target;
-                  const latlng = m.getLatLng();
-                  setManualPos({ lat: latlng.lat, lng: latlng.lng });
-                  setAccuracy(null);
-                },
-              }}
-            >
-              <Popup>
-                <div className="popup-content">
-                  Tu ubicación {manualPos ? '(ajustada manualmente)' : calPos ? '(calibrada)' : '(GPS)'}
-                  <div className="popup-actions">
-                    <button
-                      onClick={() => {
-                        setManualPos(null);
-                        if (calPos && mapRef.current) mapRef.current.setView([calPos.lat, calPos.lng], 16);
-                      }}
-                      className="popup-btn"
+                    <Marker
+                        position={[currentLocation.lat, currentLocation.lng]}
+                        icon={userIcon}
+                        draggable={true}
+                        eventHandlers={{ dragend: handleMarkerDrag }}
                     >
-                      Quitar ajuste manual
-                    </button>
-                  </div>
-                </div>
-              </Popup>
-            </Marker>
+                        <Popup>
+                            <div className="popup-content">
+                                Tu ubicación ({currentLocation.source === 'manual' ? 'Manual' :
+                                    currentLocation.source === 'calibrated' ? 'Calibrada' : 'GPS'})
+                                <div className="popup-actions">
+                                    {currentLocation.source === 'manual' && (
+                                        <button
+                                            onClick={() => locationService.getCurrentPosition()}
+                                            className="popup-btn"
+                                        >
+                                            Volver a GPS
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </Popup>
+                    </Marker>
 
-            {lugares.map((lugar, i) => {
-              const coords = getCoords(lugar);
-              if (!coords) return null;
-              const nombre = lugar.tags?.name ?? lugar.properties?.name ?? lugar.tags?.amenity ?? 'Servicio';
-              const detalle = lugar.tags?.addr_full ?? lugar.tags?.address ?? lugar.properties?.address ?? '';
-              const tipo = getTypeFromPlace(lugar);
-              const icon = getIconForType(tipo);
-              return (
-                <Marker key={i} position={coords} icon={icon}>
-                  <Popup>
-                    <div className="popup-content">
-                      <strong>{nombre}</strong>
-                      {detalle && <div className="popup-detail">{detalle}</div>}
-                      <div className="popup-detail-type">Tipo detectado: {tipo}</div>
-                    </div>
-                  </Popup>
-                </Marker>
-              );
-            })}
-          </MapContainer>
+                    {lugares.map((lugar, index) => {
+                        const coords = [lugar.lat, lugar.lng];
+                        if (!coords[0] || !coords[1]) return null;
+
+                        const nombre = lugar.tags?.name ?? lugar.properties?.name ??
+                            lugar.tags?.amenity ?? 'Servicio de salud';
+                        const direccion = lugar.tags?.addr_full ?? lugar.tags?.address ??
+                            lugar.properties?.address ?? '';
+                        const tipo = lugar.type || 'default';
+
+                        return (
+                            <Marker key={index} position={coords} icon={getIconForType(tipo)}>
+                                <Popup>
+                                    <div className="popup-content">
+                                        <strong>{nombre}</strong>
+                                        {direccion && <div className="popup-detail">{direccion}</div>}
+                                        <div className="popup-type">Tipo: {tipo}</div>
+                                        {lugar.savedAt && (
+                                            <div className="popup-cached">
+                                                Guardado: {new Date(lugar.savedAt).toLocaleDateString()}
+                                            </div>
+                                        )}
+                                    </div>
+                                </Popup>
+                            </Marker>
+                        );
+                    })}
+                </MapContainer>
+            </div>
+
+            {/* Modales para ubicaciones guardadas */}
+            <SaveLocationModal
+                isOpen={showSaveLocationModal}
+                onClose={() => setShowSaveLocationModal(false)}
+                onSave={handleSaveLocation}
+                currentLocation={currentLocation}
+            />
+
+            <SavedLocationsList
+                isOpen={showSavedLocationsList}
+                onClose={() => setShowSavedLocationsList(false)}
+            />
         </div>
-      )}
-    </div>
-  );
+    );
 }
+// FIN CAMBIO - Archivo: src/components/Map.jsx

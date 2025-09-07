@@ -1,90 +1,387 @@
+.turnos-section {
+  width: 100%;
+  margin-top: 3rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+/* INICIO CAMBIO - Archivo: src/components/Map.css - Estilos mejorados */
 .map-root {
-  color: #ffffff;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem;
+  border: 1px solid rgba(255, 224, 166, 0.3);
+  border-radius: var(--radius);
+  background: rgba(2, 2, 2, 0.15);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 .map-title {
-  margin: 0 0 8px 0;
-  font-size: 1.2rem;
+  color: var(--color-primary);
+  text-align: center;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  font-size: clamp(1.1rem, 1.5vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: 0.2rem;
+}
+
+.offline-badge {
+  padding: 0.6rem 1.2rem;
+  border: 2px solid var(--color-primary);
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+  letter-spacing: 0.2rem;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  background: rgba(71, 71, 46, 0.8);
+  margin-left: 1rem;
 }
 
 .map-error {
-  color: orange;
-  margin-bottom: 8px;
+  background: rgba(255, 224, 166, 0.15);
+  border: 1px solid rgba(255, 224, 166, 0.3);
+  color: var(--color-primary);
+  padding: 1rem;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  text-align: center;
+  font-weight: 500;
 }
 
-.map-info-row {
-  margin-bottom: 8px;
+.map-controls {
   display: flex;
-  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  background: var(--color-bg-dark);
+  padding: 1.5rem 2rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 224, 166, 0.3);
+  position: relative;
+  min-height: 80px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.map-precision {
-  margin-left: 8px;
-  color: #ffffff;
-  display: flex;
-  gap: 12px;
-  align-items: center;
+.map-controls button {
+  background-color: var(--color-bg-dark);
+  color: var(--color-text);
+  border: none;
+  padding: 12px 24px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+  transition: var(--transition);
+  box-shadow: 0 4px 15px rgba(255, 224, 166, 0.3);
+  min-height: 48px;
 }
 
-.map-state {
-  color: #666;
+.map-controls button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 224, 166, 0.5);
+}
+
+.map-controls button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 8px rgba(255, 224, 166, 0.2);
+}
+
+.location-info {
+  padding: 1.5rem 2rem;
+  border: 1px solid rgba(255, 224, 166, 0.3);
+  border-radius: var(--radius);
+  background: var(--color-bg-dark);
+  margin-bottom: 2rem;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.location-info h3 {
+  font-size: clamp(1.2rem, 2vw, 1.8rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3rem;
+  background: linear-gradient(135deg, #ffffff, #ffe0a6);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  margin: 0;
+  margin-bottom: 0.5rem;
+}
+
+.location-info p {
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.2rem;
+  background: linear-gradient(135deg, #ffffff, #ffe0a6);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  margin: 0.25rem 0;
+}
+
+.map-info {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: #495057;
+}
+
+.location-source {
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+.map-info {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: rgba(255, 224, 166, 0.15);
+  border: 1px solid rgba(255, 224, 166, 0.3);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  color: var(--color-primary);
+  text-align: center;
+}
+
+.location-source {
+  font-weight: 600;
+  margin-left: 0.5rem;
 }
 
 .map-wrapper {
-  height: 70vh;
-  width: 900px;
-  max-width: 95%;
-  margin: 16px auto;
-  border-radius: 8px;
+  width: 100%;
+  max-width: 800px;
+  height: 500px;
+  border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(255, 224, 166, 0.3);
+  background: rgba(2, 2, 2, 0.15);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  position: relative;
+  margin: 0 auto;
+}
+
+.leaflet-map {
+  height: 500px;
+  width: 100%;
+  border-radius: var(--radius);
+}
+
+.map-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 2rem;
+  gap: 2rem;
+  max-width: 100vw;
+  margin: 0 auto;
+}
+
+/* Icono personalizado del usuario */
+.user-icon {
+  width: 24px;
+  height: 24px;
+  background: #007bff;
+  border: 3px solid white;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   position: relative;
 }
 
-/* clase aplicada a MapContainer (react-leaflet acepta className) */
-.leaflet-map {
-  height: 100%;
-  width: 100%;
-}
-
-.user-icon {
-  width: 18px;
-  height: 18px;
+.user-icon::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: white;
   border-radius: 50%;
-  background: #007bff;
-  border: 3px solid #fff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
-/* Popup content */
+/* Estilos para popups */
 .popup-content {
-  max-width: 260px;
-  color: #222;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.popup-content strong {
+  display: block;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
 }
 
 .popup-detail {
-  font-size: 12px;
-  margin-top: 4px;
+  color: #7f8c8d;
+  margin-bottom: 0.25rem;
 }
 
-.popup-detail-type {
-  margin-top: 6px;
-  font-size: 12px;
-  color: #666;
+.popup-type {
+  color: #3498db;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  text-transform: capitalize;
+}
+
+.popup-cached {
+  color: #27ae60;
+  font-size: 0.8rem;
+  font-style: italic;
 }
 
 .popup-actions {
-  margin-top: 6px;
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
 }
 
 .popup-btn {
-  padding: 6px 8px;
-  background: #000000;
-  color: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 6px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
   cursor: pointer;
-  font-size: 13px;
+  transition: background-color 0.2s;
 }
+
+.popup-btn:hover {
+  background: #c0392b;
+}
+
+/* Media Queries Responsive */
+@media (max-width: 1200px) {
+  .map-root {
+    max-width: 95%;
+    padding: 1rem 1.5rem;
+  }
+  
+  .leaflet-map {
+    height: 450px;
+  }
+}
+
+@media (max-width: 768px) {
+  .map-root {
+    max-width: 98%;
+    padding: 1rem;
+    margin: 0 auto;
+  }
+  
+  .leaflet-map {
+    height: 400px;
+  }
+  
+  .map-controls {
+    gap: 0.5rem;
+    flex-direction: column;
+  }
+  
+  .map-controls button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  
+  .map-title {
+    font-size: 1.2rem;
+    letter-spacing: 0.1rem;
+  }
+  
+  .offline-badge {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    margin-left: 0;
+    margin-top: 0.5rem;
+    display: block;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .map-root {
+    max-width: 100%;
+    padding: 0.75rem;
+    margin: 0;
+    border-radius: 0;
+  }
+  
+  .leaflet-map {
+    height: 350px;
+  }
+  
+  .map-controls button {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .map-title {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .map-error {
+    padding: 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  .map-info {
+    padding: 0.75rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Animaciones para estados de carga */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.map-controls button:disabled {
+  animation: pulse 1.5s infinite;
+}
+
+/* Mejoras para modo oscuro del sistema */
+@media (prefers-color-scheme: dark) {
+  .map-root {
+    color: #ecf0f1;
+  }
+  
+  .map-title {
+    color: #ecf0f1;
+  }
+  
+  .map-info {
+    background: #34495e;
+    color: #ecf0f1;
+  }
+  
+  .map-error {
+    background: #8b4513;
+    border-color: #a0522d;
+    color: #ffeaa7;
+  }
+}
+/* FIN CAMBIO - Archivo: src/components/Map.css */
