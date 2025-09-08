@@ -242,9 +242,10 @@ export default function Turnos() {
     };
 
     return (
-        <div className="turnos-root">
-            <div className="turnos-header">
-                <div className="turnos-badge" style={{ background: '#47472eff' }}>Turnos</div>
+        <div className="turnos-section">
+            <div className="turnos-root">
+                <div className="turnos-header">
+                    <div className="turnos-badge" style={{ background: '#47472eff' }}>Turnos</div>
                 <h3>Solicitar Turnos</h3>
 
                 {/* Campo de correo para ver turnos */}
@@ -309,6 +310,7 @@ export default function Turnos() {
                 onConfirm={handleSolicitarTurno}
                 prettyType={prettyType}
             />
+            </div>
         </div>
     );
 }

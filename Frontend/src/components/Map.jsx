@@ -286,15 +286,18 @@ export default function MapComponent() {
 
     if (!currentLocation) {
         return (
-            <div className="map-root">
-                <h3 className="map-title">Obteniendo ubicación...</h3>
-                {error && <div className="map-error">{error}</div>}
+            <div className="map-section">
+                <div className="map-root">
+                    <h3 className="map-title">Obteniendo ubicación...</h3>
+                    {error && <div className="map-error">{error}</div>}
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="map-root">
+        <div className="map-section">
+            <div className="map-root">
             <h3 className="map-title">
                 Mapa de servicios cercanos
                 {!isOnline && <span className="offline-badge"> (Offline)</span>}
@@ -414,6 +417,7 @@ export default function MapComponent() {
                 isOpen={showSavedLocationsList}
                 onClose={() => setShowSavedLocationsList(false)}
             />
+            </div>
         </div>
     );
 }
