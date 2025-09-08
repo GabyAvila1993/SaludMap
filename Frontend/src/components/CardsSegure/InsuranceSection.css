@@ -25,15 +25,16 @@
 }
 
 .insurance-title {
-    color: #47472e;
+    color: #000000b6;
     font-size: 2.5rem;
     margin-bottom: 15px;
     font-weight: bold;
 }
 
 .insurance-subtitle {
-    color: #666;
+    color: #000000b6;
     font-size: 1.2rem;
+    font-weight: bold;
     max-width: 700px;
     margin: 0 auto;
     line-height: 1.6;
@@ -47,10 +48,12 @@
     gap: 30px;
     margin-bottom: 40px;
     width: 100%;
+    
 }
 
 .insurance-card-wrapper {
     flex: 1;
+    
     min-width: 320px;
     max-width: 400px;
     display: flex;
@@ -58,10 +61,14 @@
 }
 
 .insurance-card {
+    
     width: 100%;
     border-radius: 12px;
     padding: 25px;
-    background-color: #fff;
+    background-color: #1e1d228f;
+    /* background-color: #1d057c8f; */
+    color: #ffffffec;
+    /* font-weight: bold; */
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -147,12 +154,12 @@
     content: '✓';
     position: absolute;
     left: 0;
-    color: #47472e;
-    font-weight: bold;
+    color: #17e404;
+    font-weight:bolder;
 }
 
 .coverage-item.selected::before {
-    color: #ffe0a6;
+    color: #f0ce0d;
 }
 
 .card-button {
@@ -180,7 +187,8 @@
 .selected-plan-section {
     text-align: center;
     padding: 25px;
-    background-color: #f8f9fa;
+    background-color: #1e1d228f;
+    color:#fff;
     border-radius: 12px;
     border: 2px solid #ffe0a6;
     margin-top: 30px;
@@ -191,13 +199,13 @@
 }
 
 .selected-plan-title {
-    color: #47472e;
+    color: #fff;
     margin-bottom: 15px;
     font-size: 1.3rem;
 }
 
 .selected-plan-description {
-    color: #666;
+    color: #ffff;
     margin-bottom: 25px;
     font-size: 1rem;
     line-height: 1.5;

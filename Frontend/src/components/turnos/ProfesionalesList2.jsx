@@ -14,7 +14,7 @@ export const ProfesionalesList = ({ lugares, loading, error, onOpenModal, getTyp
                     const name = p.name || 'Profesional sin nombre';
                     const addr = p.address || '';
                     const tipo = getTypeFromPlace(p);
-                    
+
                     return (
                         <li key={p.id || i} className="prof-item">
                             <div className="prof-info">
@@ -23,15 +23,15 @@ export const ProfesionalesList = ({ lugares, loading, error, onOpenModal, getTyp
                                 <div className="prof-type">{prettyType(tipo)}</div>
                                 {p.source && p.source !== 'api' && (
                                     <div className="prof-source">
-                                        {p.source === 'mock' ? '(Demo)' : 
-                                         p.source === 'cache' ? '(Guardado)' : 
-                                         `(${p.source})`}
+                                        {p.source === 'mock' ? '(Demo)' :
+                                            p.source === 'cache' ? '(Guardado)' :
+                                                `(${p.source})`}
                                     </div>
                                 )}
                             </div>
                             <div>
-                                <button 
-                                    className="btn-primary" 
+                                <button
+                                    className="btn-primary"
                                     onClick={() => onOpenModal(p)}
                                     title={`Solicitar turno con ${name}`}
                                 >

@@ -157,9 +157,10 @@
 
 .coords-value {
     font-family: monospace;
-    background-color: #f0f0f0;
+    background-color: #3a3a3ae1;
     padding: 0.1rem 0.3rem;
-    border-radius: 3px;
+    border-radius: 10px;
+    color: #ffffff;
 }
 
 .location-date {

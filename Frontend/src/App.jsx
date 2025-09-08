@@ -76,6 +76,8 @@ function App() {
         {/* Navigation Tabs */}
         <nav style={{
           display: 'flex',
+          alignItems: 'center',
+          textAlign:'center',
           justifyContent: 'center',
           gap: '10px',
           marginTop: '20px',
@@ -142,11 +144,12 @@ function App() {
       </main>
       
       <footer>
-        <p>&copy; 2024 SaludMap - Encuentra servicios de salud cercanos</p>
+        <div className='piepagina'>
+          <p className='texto'> 2025 SaludMap - Encuentra servicios de salud cercanos</p>
+        </div>
       </footer>
     </div>
   );
 }
 
 export default App;
-// FIN CAMBIO - Archivo: src/App.jsx

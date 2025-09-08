@@ -47,7 +47,8 @@
 
 .modal-header h3 {
     margin: 0;
-    color: #333;
+    color: #ffffff;
+    font-weight: bold;
     font-size: 1.25rem;
 }
 
@@ -82,8 +83,9 @@
 
 .form-group label {
     display: block;
+    font-weight: bold;
     margin-bottom: 0.5rem;
-    color: var(--color-primary);
+    color: #fff;
     font-weight: 600;
     text-transform: uppercase;
     font-size: 0.9rem;
@@ -110,8 +112,9 @@
     border: 2px solid var(--color-primary);
     border-radius: 6px;
     font-size: 1rem;
-    background: rgba(255, 224, 166, .1);
-    color: var(--color-primary);
+    background: #66666654;
+    /* color: #000000; */
+    color: #fff;
     transition: var(--transition);
     box-sizing: border-box;
 }
@@ -119,7 +122,7 @@
 .form-group input:focus,
 .form-group textarea:focus {
     outline: none;
-    background: rgba(255, 224, 166, .2);
+    background: rgba(56, 58, 56, 0.2);
     transform: scale(1.02);
 }
 
@@ -143,8 +146,8 @@
 
 .coordinates {
     font-family: monospace;
-    font-size: 0.9rem;
-    color: #666;
+    font-size: 1rem;
+    color: #fff;
     margin-top: 0.25rem;
 }
 
@@ -182,12 +185,15 @@
 }
 
 .btn-primary {
-    background-color: #007bff;
-    color: white;
+    background-color: #47472e;
+    color: fff;
+    padding: 3px;
+    margin: 2px;
+    border-radius: 10px;
 }
 
 .btn-primary:hover:not(:disabled) {
-    background-color: #0056b3;
+    background-color: #47472e;
 }
 
 .btn-primary:disabled {

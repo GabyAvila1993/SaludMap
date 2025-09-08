@@ -38,7 +38,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ plan, isOpen, onClose }) 
 
             // Generar y descargar PDF localmente
             const pdfDownloaded = downloadInsurancePDF(plan, userInfo);
-            
+
             if (!pdfDownloaded) {
                 throw new Error('Error generando el PDF de la tarjeta de seguro');
             }
@@ -46,11 +46,11 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ plan, isOpen, onClose }) 
             // Enviar correo de confirmación completo
             console.log('[DEBUG] Enviando correo de confirmación...');
             const emailResult = await sendInsuranceConfirmationEmail(plan, userInfo);
-            
+
             if (emailResult.success) {
                 setEmailSent(true);
                 console.log('[DEBUG] Correo enviado exitosamente:', emailResult);
-                
+
                 alert(`¡Seguro contratado exitosamente! 
                 
 ✅ Se ha descargado tu tarjeta de seguro
@@ -65,10 +65,10 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ plan, isOpen, onClose }) 
             onClose();
         } catch (error) {
             console.error('Error processing checkout:', error);
-            
+
             // Determinar el tipo de error para mostrar mensaje apropiado
             const errorMessage = error.message || 'Error desconocido';
-            
+
             if (errorMessage.includes('correo') || errorMessage.includes('email')) {
                 alert(`Seguro contratado, pero hubo un problema enviando el correo: ${errorMessage}. Tu seguro está activo y se descargó tu tarjeta.`);
             } else {
