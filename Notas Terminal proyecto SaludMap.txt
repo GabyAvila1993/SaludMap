@@ -122,6 +122,8 @@ dentro del Frontend instalamos
 
 npm install react-leaflet leaflet axios
 
+npm install opening_hours funcion de los horarios en el mapa para cada establecimiento
+
 react-leaflet y leaflet --> para mostrar el mapa y los marcadores
 
 axios --> para hacer requests al backend.

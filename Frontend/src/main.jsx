@@ -12,10 +12,13 @@ createRoot(document.getElementById('root')).render(
 
 // 👇 Registrar el Service Worker
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('/sw.js')
-      .then((reg) => console.log('[SW] Registrado:', reg.scope))
-      .catch((err) => console.error('[SW] Error al registrar:', err));
-  });
+  // Durante desarrollo, fuerza la des-registración para evitar cachés viejos
+  if (import.meta.env.DEV) {
+    navigator.serviceWorker.getRegistrations()
+      .then(regs => regs.forEach(r => r.unregister()))
+      .catch(() => {});
+  } else {
+    // aquí va la lógica de registro en producción (si la tienes)
+    // navigator.serviceWorker.register('/sw.js')...
+  }
 }

@@ -98,6 +98,17 @@
   min-height: 48px;
 }
 
+.btn-return-gps {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+}
+
 .map-controls button:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(255, 224, 166, 0.308);

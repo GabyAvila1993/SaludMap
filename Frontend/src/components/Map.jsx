@@ -1,6 +1,6 @@
 // INICIO CAMBIO - Archivo: src/components/Map.jsx - Integración con servicios
-import React, { useState, useEffect, useRef } from 'react';
-import { MapContainer, Marker, Popup, Circle, useMap } from 'react-leaflet';
+import React, { useState, useRef, useEffect } from 'react'
+import { MapContainer, Marker, Circle, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
@@ -14,6 +14,7 @@ import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import offlineTileService from '../services/offlineTileService.js';
 import { savePlaces, getNearbyPlaces, saveNamedLocation } from '../services/db.js';
 import './Map.css';
+import EstablishmentInfo from './EstablishmentInfo';
 
 // Fix ícono por defecto
 L.Icon.Default.mergeOptions({
@@ -32,6 +33,7 @@ export default function MapComponent() {
     const [downloadProgress, setDownloadProgress] = useState(0);
     const [showSaveLocationModal, setShowSaveLocationModal] = useState(false);
     const [showSavedLocationsList, setShowSavedLocationsList] = useState(false);
+    const [selectedPlace, setSelectedPlace] = useState(null);
 
     const mapRef = useRef(null);
     const unsubscribeRef = useRef(null);
@@ -238,6 +240,33 @@ export default function MapComponent() {
         }
     };
 
+    // Volver a GPS cuando el usuario pasó a manual
+    const handleReturnToGPS = async () => {
+        if (isCalibrating) return;
+
+        setIsCalibrating(true);
+        setError('Reactivando GPS...');
+
+        try {
+            const location = await locationService.calibratePosition();
+            // Asegurar que el watch vuelva a estar activo para actualizaciones automáticas
+            try { locationService.startWatching(); } catch (e) { /* noop */ }
+
+            if (mapRef.current && location) {
+                mapRef.current.setView([location.lat, location.lng], 15, {
+                    animate: true,
+                    duration: 0.5
+                });
+            }
+
+            setError('GPS reactivado');
+        } catch (error) {
+            setError('No se pudo reactivar GPS: ' + (error.message || String(error)));
+        } finally {
+            setIsCalibrating(false);
+        }
+    };
+
     // Descargar área offline
     const handleDownloadOffline = async () => {
         if (!currentLocation) return;
@@ -260,11 +289,25 @@ export default function MapComponent() {
     // Component to handle map reference
     const MapController = () => {
         const map = useMap();
-        
+
         useEffect(() => {
             mapRef.current = map;
+
+            // Force Leaflet to recalculate size and positions after mount.
+            // This avoids errors like "Cannot read properties of undefined (reading '_leaflet_pos')"
+            // which can happen when the map container changes size or becomes visible after render.
+            try {
+                setTimeout(() => {
+                    if (map && typeof map.invalidateSize === 'function') {
+                        map.invalidateSize();
+                    }
+                }, 50);
+            } catch (e) {
+                // noop
+            }
+
         }, [map]);
-        
+
         return null;
     };
 
@@ -309,6 +352,11 @@ export default function MapComponent() {
                 <button onClick={handleCalibrate} disabled={isCalibrating}>
                     {isCalibrating ? 'Actualizando...' : 'Actualizar ubicación'}
                 </button>
+                {currentLocation?.source === 'manual' && (
+                    <button onClick={handleReturnToGPS} disabled={isCalibrating} className="btn-return-gps">
+                        Volver a GPS
+                    </button>
+                )}
                 <button onClick={handleDownloadOffline}>
                     Descargar área offline
                 </button>
@@ -332,77 +380,69 @@ export default function MapComponent() {
             </div>
 
             <div className="map-wrapper">
-                <MapContainer
-                    center={[currentLocation.lat, currentLocation.lng]}
-                    zoom={15}
-                    className="leaflet-map"
-                >
-                    <MapController />
-                    <OfflineTileLayer 
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              <MapContainer
+                center={[currentLocation.lat, currentLocation.lng]}
+                zoom={15}
+                className="leaflet-map"
+                whenCreated={(mapInstance) => { mapRef.current = mapInstance }}
+                onClick={() => setSelectedPlace(null)}
+              >
+                <MapController />
+                <OfflineTileLayer 
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
+
+                {currentLocation.accuracy && (
+                    <Circle
+                        center={[currentLocation.lat, currentLocation.lng]}
+                        radius={currentLocation.accuracy}
+                        pathOptions={{ color: '#007bff', fillOpacity: 0.08 }}
                     />
+                )}
 
-                    {currentLocation.accuracy && (
-                        <Circle
-                            center={[currentLocation.lat, currentLocation.lng]}
-                            radius={currentLocation.accuracy}
-                            pathOptions={{ color: '#007bff', fillOpacity: 0.08 }}
-                        />
-                    )}
-
-                    <Marker
-                        position={[currentLocation.lat, currentLocation.lng]}
-                        icon={userIcon}
-                        draggable={true}
-                        eventHandlers={{ dragend: handleMarkerDrag }}
-                    >
-                        <Popup>
-                            <div className="popup-content">
-                                Tu ubicación ({currentLocation.source === 'manual' ? 'Manual' :
-                                    currentLocation.source === 'calibrated' ? 'Calibrada' : 'GPS'})
-                                <div className="popup-actions">
-                                    {currentLocation.source === 'manual' && (
-                                        <button
-                                            onClick={() => locationService.getCurrentPosition()}
-                                            className="popup-btn"
-                                        >
-                                            Volver a GPS
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
-                        </Popup>
-                    </Marker>
+                <Marker
+                    position={[currentLocation.lat, currentLocation.lng]}
+                    icon={userIcon}
+                    draggable={true}
+                    eventHandlers={{ dragend: handleMarkerDrag }}
+                />
 
                     {lugares.map((lugar, index) => {
-                        const coords = [lugar.lat, lugar.lng];
-                        if (!coords[0] || !coords[1]) return null;
+                        // Resolve coordinates from multiple possible property names
+                        const lat = lugar.lat ?? lugar.center?.lat ?? lugar.geometry?.coordinates?.[1] ?? lugar.latitude ?? lugar.y ?? lugar.center?.latitude;
+                        const lng = lugar.lng ?? lugar.lon ?? lugar.center?.lon ?? lugar.geometry?.coordinates?.[0] ?? lugar.longitude ?? lugar.x ?? lugar.center?.longitude;
+
+                        // If we can't resolve both lat and lng, skip rendering the marker
+                        if (lat == null || lng == null) return null;
+
+                        const coords = [lat, lng];
 
                         const nombre = lugar.tags?.name ?? lugar.properties?.name ??
                             lugar.tags?.amenity ?? 'Servicio de salud';
-                        const direccion = lugar.tags?.addr_full ?? lugar.tags?.address ??
-                            lugar.properties?.address ?? '';
-                        const tipo = lugar.type || 'default';
+                    const direccion = lugar.tags?.addr_full ?? lugar.tags?.address ??
+                        lugar.properties?.address ?? '';
+                    const tipo = lugar.type || 'default';
 
-                        return (
-                            <Marker key={index} position={coords} icon={getIconForType(tipo)}>
-                                <Popup>
-                                    <div className="popup-content">
-                                        <strong>{nombre}</strong>
-                                        {direccion && <div className="popup-detail">{direccion}</div>}
-                                        <div className="popup-type">Tipo: {tipo}</div>
-                                        {lugar.savedAt && (
-                                            <div className="popup-cached">
-                                                Guardado: {new Date(lugar.savedAt).toLocaleDateString()}
-                                            </div>
-                                        )}
-                                    </div>
-                                </Popup>
-                            </Marker>
-                        );
-                    })}
-                </MapContainer>
+                    return (
+                        <Marker
+                            key={index}
+                            position={coords}
+                            icon={getIconForType(tipo)}
+                            eventHandlers={{
+                                click: () => {
+                                    setSelectedPlace(lugar);
+                                }
+                            }}
+                        />
+                    );
+                })}
+              </MapContainer>
+
+              {/* tu panel grande (EstablishmentInfo) continúa funcionando */}
+                            {selectedPlace && (
+                                <EstablishmentInfo place={selectedPlace} onClose={() => setSelectedPlace(null)} />
+                            )}
             </div>
 
             {/* Modales para ubicaciones guardadas */}
