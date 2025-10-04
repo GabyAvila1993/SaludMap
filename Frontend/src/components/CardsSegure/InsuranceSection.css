@@ -65,9 +65,9 @@
     width: 100%;
     border-radius: 12px;
     padding: 25px;
-    background-color: #1e1d228f;
+    background-color: white;
     /* background-color: #1d057c8f; */
-    color: #ffffffec;
+    color: black;
     /* font-weight: bold; */
     cursor: pointer;
     transition: all 0.3s ease;
@@ -86,8 +86,8 @@
 
 .insurance-card.selected {
     border-color: #ffe0a6;
-    background-color: #47472e;
-    color: #fff;
+    background-color: white;
+    color: black;
     box-shadow: 0 8px 25px rgba(255, 224, 166, 0.4);
 }
 
@@ -99,7 +99,7 @@
 }
 
 .card-title.selected {
-    color: #ffe0a6;
+    color: #000000;
 }
 
 .card-price {
@@ -110,7 +110,7 @@
 }
 
 .card-price.selected {
-    color: #ffe0a6;
+    color: black;
 }
 
 .card-description {
@@ -124,6 +124,7 @@
 .card-coverage {
     margin-top: 20px;
     flex-grow: 1;
+    
 }
 
 .coverage-title {
@@ -134,7 +135,7 @@
 }
 
 .coverage-title.selected {
-    color: #ffe0a6;
+    color: black;
 }
 
 .coverage-list {
@@ -159,7 +160,7 @@
 }
 
 .coverage-item.selected::before {
-    color: #f0ce0d;
+    color: #17e404;
 }
 
 .card-button {
@@ -187,8 +188,8 @@
 .selected-plan-section {
     text-align: center;
     padding: 25px;
-    background-color: #1e1d228f;
-    color:#fff;
+    background-color: white;
+    color:black;
     border-radius: 12px;
     border: 2px solid #ffe0a6;
     margin-top: 30px;
@@ -199,13 +200,13 @@
 }
 
 .selected-plan-title {
-    color: #fff;
+    color: black;
     margin-bottom: 15px;
     font-size: 1.3rem;
 }
 
 .selected-plan-description {
-    color: #ffff;
+    color: black;
     margin-bottom: 25px;
     font-size: 1rem;
     line-height: 1.5;

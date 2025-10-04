@@ -109,16 +109,7 @@ function calcularTotal(precios) {
 
 ---
 
-## Testing y Verificación
 
-- Asegurar que cada componente o función importante tenga al menos una prueba unitaria.
-- Usar **Jest** o **Testing Library** según corresponda al entorno.
-- Mantener una cobertura mínima del **80%** en los tests.
-- Verificar que el código pase el **lint** antes de confirmar cambios.
-
----
 
 ## Fin del Archivo
 
-Estas reglas están diseñadas para mantener la calidad, coherencia y seguridad del código del proyecto.  
-Cline debe seguirlas y aplicarlas a todas las acciones, correcciones y sugerencias dentro de este entorno.
