@@ -22,6 +22,16 @@ model Ubicacion {
   createdAt DateTime  @default(now())
 }
 
+model Usuario {
+  id          Int       @id @default(autoincrement())
+  nombre      String
+  apellido    String
+  mail        String    @unique
+  contrasenia String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
 model Turno {
   id          Int       @id @default(autoincrement())
   fecha       DateTime

@@ -7,6 +7,8 @@ import './Turnos.css';
 import locationService from '../../services/locationService.js';
 import turnosService, { saveAppointment } from '../../services/turnosService.js';
 import { initializeEmailJS } from '../../services/emailService.js';
+import { useAuth } from '../Auth/AuthContext.jsx';
+import ModalAuth from '../Auth/ModalAuth.jsx';
 
 // Importar componentes
 import { ProfesionalesList } from './ProfesionalesList2.jsx';
@@ -19,22 +21,26 @@ const getTypeFromPlace = (place) => {
 };
 
 export default function Turnos() {
-    const { t } = useTranslation();
-    
-    // Función para traducir tipos de profesionales
-    const prettyType = (type) => {
-        return t(`appointments.types.${type}`, { defaultValue: t('appointments.types.default') });
-    };
-    
-    // Estados del modal
-    const [modalOpen, setModalOpen] = useState(false);
-    const [selected, setSelected] = useState(null);
-    const [datetime, setDatetime] = useState('');
-    const [notes, setNotes] = useState('');
-    const [correo, setCorreo] = useState('');
-    const [selectedType, setSelectedType] = useState('default');
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+	const { t } = useTranslation();
+	const { user } = useAuth();
+	
+	// Estados para modal de autenticación
+	const [showAuthModal, setShowAuthModal] = useState(false);
+	const [showRegister, setShowRegister] = useState(false);
+	
+	// Función para traducir tipos de profesionales
+	const prettyType = (type) => {
+		return t(`appointments.types.${type}`, { defaultValue: t('appointments.types.default') });
+	};
+	
+	// Estados del modal
+	const [modalOpen, setModalOpen] = useState(false);
+	const [selected, setSelected] = useState(null);
+	const [datetime, setDatetime] = useState('');
+	const [notes, setNotes] = useState('');
+	const [selectedType, setSelectedType] = useState('default');
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState('');
 
     // Estados de lugares y turnos
     const [lugares, setLugares] = useState([]);
@@ -81,16 +87,16 @@ export default function Turnos() {
         };
     }, []);
 
-    // Cargar turnos cuando cambie el correo
-    useEffect(() => {
-        if (correo) {
-            console.log('[Turnos] Cargando turnos para correo:', correo);
-            cargarMisTurnos(correo);
-        } else {
-            console.log('[Turnos] Limpiando turnos');
-            setMisTurnos([]);
-        }
-    }, [correo]);
+	// Cargar turnos cuando cambie el usuario autenticado
+	useEffect(() => {
+		if (user?.mail) {
+			console.log('[Turnos] Cargando turnos para usuario:', user.mail);
+			cargarMisTurnos(user.mail);
+		} else {
+			console.log('[Turnos] Limpiando turnos');
+			setMisTurnos([]);
+		}
+	}, [user]);
 
     // Funciones de turnos (mock - reemplazar con tu lógica real)
     const cargarMisTurnos = async (emailUsuario) => {
@@ -195,83 +201,125 @@ export default function Turnos() {
         setModalOpen(true);
     };
 
-    const handleSolicitarTurno = async () => {
-        if (!selected || !datetime || !correo) {
-            setError(t('appointments.missingData'));
-            return;
-        }
+	const handleSolicitarTurno = async () => {
+		if (!user) {
+			setError('Debes iniciar sesión para solicitar un turno');
+			return;
+		}
 
-        try {
-            setLoading(true);
-            setError('');
+		if (!selected || !datetime) {
+			setError(t('appointments.missingData'));
+			return;
+		}
 
-            await solicitarTurno(selected, datetime, notes, correo, selectedType);
+		try {
+			setLoading(true);
+			setError('');
 
-            setModalOpen(false);
-            setDatetime('');
-            setNotes('');
-            setError('');
+			await solicitarTurno(selected, datetime, notes, user.mail, selectedType);
 
-            alert(t('appointments.successMessage'));
+			setModalOpen(false);
+			setDatetime('');
+			setNotes('');
+			setError('');
 
-        } catch (emailError) {
-            console.error('[Turnos] Error completo:', emailError);
+			alert(t('appointments.successMessage'));
 
-            const errorMessage = emailError.message || t('common.error');
-            setError(errorMessage);
-            alert(`${t('appointments.errorMessage')}: ${errorMessage}`);
+		} catch (emailError) {
+			console.error('[Turnos] Error completo:', emailError);
 
-        } finally {
-            setLoading(false);
-        }
-    };
+			const errorMessage = emailError.message || t('common.error');
+			setError(errorMessage);
+			alert(`${t('appointments.errorMessage')}: ${errorMessage}`);
 
-    const handleCancelarTurno = async (id) => {
-        if (!correo) {
-            alert(t('appointments.errorCancelNoEmail'));
-            return;
-        }
+		} finally {
+			setLoading(false);
+		}
+	};
 
-        const confirmCancel = window.confirm(t('appointments.confirmCancel'));
-        if (!confirmCancel) return;
+	const handleCancelarTurno = async (id) => {
+		if (!user?.mail) {
+			alert(t('appointments.errorCancelNoEmail'));
+			return;
+		}
 
-        await cancelarTurno(id, correo);
-    };
+		const confirmCancel = window.confirm(t('appointments.confirmCancel'));
+		if (!confirmCancel) return;
 
-    return (
-        <div className="turnos-section">
-            <div className="turnos-root">
-                <div className="turnos-header">
-                    <div className="turnos-badge" style={{ background: '#47472eff' }}>{t('appointments.badge')}</div>
-                <h3>{t('appointments.requestAppointments')}</h3>
+		await cancelarTurno(id, user.mail);
+	};
 
-                {/* Campo de correo para ver turnos */}
-                <div style={{ marginTop: '10px' }}>
-                    {/* <label style={{
-                        display: 'block',
-{{ ... }}
-                        marginBottom: '5px',
-                        color: 'var(--color-primary)'
-                    }}>
-                        Ver mis turnos (ingresa tu correo):
-                    </label>
-                    <input
-                        type="email"
-                        placeholder="usuario@ejemplo.com"
-                        value={correo}
-                        onChange={(e) => setCorreo(e.target.value)}
-                        style={{
-                            padding: '8px',
-                            borderRadius: '4px',
-                            border: '1px solid rgba(255, 224, 166, 0.3)',
-                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                            color: 'var(--color-text)',
-                            fontSize: '14px',
-                            width: '250px'
-                        }}
-                    /> */}
-                </div>
-            </div>
+	// Si no está autenticado, mostrar mensaje para iniciar sesión
+	if (!user) {
+		return (
+			<div className="turnos-section">
+				<div className="turnos-root">
+					<div className="turnos-header">
+						<div className="turnos-badge" style={{ background: '#47472eff' }}>{t('appointments.badge')}</div>
+						<h3>{t('appointments.requestAppointments')}</h3>
+					</div>
+					<div className="turnos-auth-required">
+						<div style={{
+							textAlign: 'center',
+							padding: '3rem 2rem',
+							backgroundColor: 'rgba(255, 224, 166, 0.1)',
+							borderRadius: '12px',
+							border: '2px solid var(--color-primary)',
+							maxWidth: '500px',
+							margin: '2rem auto'
+						}}>
+							<div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔒</div>
+							<h3 style={{ color: 'var(--color-primary)', marginBottom: '1rem' }}>
+								Autenticación Requerida
+							</h3>
+							<p style={{ color: 'var(--color-text)', marginBottom: '2rem' }}>
+								Debes iniciar sesión para ver y solicitar turnos médicos
+							</p>
+							<button
+								onClick={() => {
+									setShowRegister(false);
+									setShowAuthModal(true);
+								}}
+								style={{
+									padding: '12px 32px',
+									fontSize: '1.1rem',
+									backgroundColor: 'var(--color-bg-dark)',
+									color: 'var(--color-text)',
+									border: 'none',
+									borderRadius: 'var(--radius)',
+									cursor: 'pointer',
+									fontWeight: 'bold',
+									transition: 'var(--transition)',
+									boxShadow: '0 4px 15px rgba(255, 224, 166, 0.3)'
+								}}
+							>
+								Iniciar Sesión
+							</button>
+						</div>
+					</div>
+					
+					{/* Modal de Autenticación */}
+					<ModalAuth
+						open={showAuthModal}
+						onClose={() => setShowAuthModal(false)}
+						showRegister={showRegister}
+						setShowRegister={setShowRegister}
+					/>
+				</div>
+			</div>
+		);
+	}
+
+	return (
+		<div className="turnos-section">
+			<div className="turnos-root">
+				<div className="turnos-header">
+					<div className="turnos-badge" style={{ background: '#47472eff' }}>{t('appointments.badge')}</div>
+					<h3>{t('appointments.requestAppointments')}</h3>
+					<div style={{ marginTop: '10px', color: 'var(--color-primary)' }}>
+						Usuario: <strong>{user.nombre} {user.apellido}</strong> ({user.mail})
+					</div>
+				</div>
 
             <div className="turnos-body">
                 <ProfesionalesList
@@ -291,24 +339,24 @@ export default function Turnos() {
                 />
             </div>
 
-            <TurnoModal
-                modalOpen={modalOpen}
-                selected={selected}
-                selectedType={selectedType}
-                datetime={datetime}
-                setDatetime={setDatetime}
-                notes={notes}
-                setNotes={setNotes}
-                correo={correo}
-                setCorreo={setCorreo}
-                loading={loading}
-                error={error}
-                onClose={() => setModalOpen(false)}
-                onConfirm={handleSolicitarTurno}
-                prettyType={prettyType}
-            />
-            </div>
-        </div>
-    );
+				<TurnoModal
+					modalOpen={modalOpen}
+					selected={selected}
+					selectedType={selectedType}
+					datetime={datetime}
+					setDatetime={setDatetime}
+					notes={notes}
+					setNotes={setNotes}
+					correo={user.mail}
+					setCorreo={() => {}} // No permitir cambiar el correo
+					loading={loading}
+					error={error}
+					onClose={() => setModalOpen(false)}
+					onConfirm={handleSolicitarTurno}
+					prettyType={prettyType}
+				/>
+			</div>
+		</div>
+	);
 }
 // FIN CAMBIO - Archivo: src/components/Turnos.jsx

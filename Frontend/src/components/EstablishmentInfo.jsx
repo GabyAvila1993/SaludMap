@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import opening_hours from "opening_hours";
 import './EstablishmentInfo.css';
+import { useAuth } from './Auth/AuthContext.jsx';
+import ModalAuth from './Auth/ModalAuth.jsx';
 
 export default function EstablishmentInfo({ place, onClose }) {
-  if (!place) return null;
+	const { user } = useAuth();
+	const [showAuthModal, setShowAuthModal] = useState(false);
+	const [showRegister, setShowRegister] = useState(false);
+
+	if (!place) return null;
 
   const nombre = place.tags?.name ?? place.properties?.name ?? place.tags?.amenity ?? 'Servicio de salud';
   const coords = [
@@ -120,10 +126,34 @@ export default function EstablishmentInfo({ place, onClose }) {
     }
   };
 
-  const osmLink = (lat, lon) => `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=18/${lat}/${lon}`;
+	const osmLink = (lat, lon) => `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=18/${lat}/${lon}`;
 
-  return (
-    <div className="establishment-info">
+	/**
+	 * Maneja la solicitud de turno
+	 * Si no está autenticado, abre el modal de login
+	 * Si está autenticado, redirige a la sección de turnos
+	 */
+	const handleSolicitarTurno = () => {
+		if (!user) {
+			setShowRegister(false);
+			setShowAuthModal(true);
+		} else {
+			// Cambiar a la pestaña de turnos
+			const event = new CustomEvent('saludmap:change-tab', { detail: { tab: 'turnos' } });
+			window.dispatchEvent(event);
+			onClose();
+		}
+	};
+
+	/**
+	 * Maneja la llamada telefónica
+	 */
+	const handleLlamar = (telefono) => {
+		window.location.href = `tel:${telefono}`;
+	};
+
+	return (
+		<div className="establishment-info">
       <div className="establishment-card">
         <div className="card-header">
           <div className="card-title">{nombre}</div>
@@ -194,20 +224,94 @@ export default function EstablishmentInfo({ place, onClose }) {
               </div>
             )}
 
-            <div className="info-row">
-              <div className="info-label">COORDENADAS</div>
-              <div className="info-value">
-                {coords[0]?.toFixed(6) ?? '—'}, {coords[1]?.toFixed(6) ?? '—'}
-                <div className="extra-actions">
-                  <button onClick={() => copyToClipboard(`${coords[0]},${coords[1]}`)}>Copiar</button>
-                  <a target="_blank" rel="noreferrer" href={osmLink(coords[0], coords[1])}>Abrir en OSM</a>
-                </div>
-              </div>
-            </div>
+						<div className="info-row">
+							<div className="info-label">COORDENADAS</div>
+							<div className="info-value">
+								{coords[0]?.toFixed(6) ?? '—'}, {coords[1]?.toFixed(6) ?? '—'}
+								<div className="extra-actions">
+									<button onClick={() => copyToClipboard(`${coords[0]},${coords[1]}`)}>Copiar</button>
+									<a target="_blank" rel="noreferrer" href={osmLink(coords[0], coords[1])}>Abrir en OSM</a>
+								</div>
+							</div>
+						</div>
 
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+						{/* Botones de acción */}
+						<div className="action-buttons" style={{ 
+							marginTop: '2rem',
+							display: 'flex',
+							gap: '1rem',
+							flexWrap: 'wrap'
+						}}>
+							{/* Botón de Llamar si hay teléfono */}
+							{phones.length > 0 && (
+								<button
+									onClick={() => handleLlamar(phones[0])}
+									style={{
+										flex: '1',
+										minWidth: '150px',
+										padding: '12px 20px',
+										backgroundColor: '#2b8b8c',
+										color: '#fff',
+										border: 'none',
+										borderRadius: '8px',
+										fontSize: '1rem',
+										fontWeight: 'bold',
+										cursor: 'pointer',
+										display: 'flex',
+										alignItems: 'center',
+										justifyContent: 'center',
+										gap: '8px',
+										transition: 'all 0.3s ease',
+										boxShadow: '0 2px 8px rgba(43, 139, 140, 0.3)'
+									}}
+									onMouseOver={(e) => e.target.style.backgroundColor = '#1f6668'}
+									onMouseOut={(e) => e.target.style.backgroundColor = '#2b8b8c'}
+								>
+									📞 Llamar
+								</button>
+							)}
+
+							{/* Botón de Solicitar Turno */}
+							<button
+								onClick={handleSolicitarTurno}
+								style={{
+									flex: '1',
+									minWidth: '150px',
+									padding: '12px 20px',
+									backgroundColor: user ? '#47472e' : '#ff6b6b',
+									color: '#fff',
+									border: 'none',
+									borderRadius: '8px',
+									fontSize: '1rem',
+									fontWeight: 'bold',
+									cursor: 'pointer',
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									gap: '8px',
+									transition: 'all 0.3s ease',
+									boxShadow: user 
+										? '0 2px 8px rgba(255, 224, 166, 0.3)'
+										: '0 2px 8px rgba(255, 107, 107, 0.3)'
+								}}
+								onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'}
+								onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
+							>
+								{user ? '📅 Solicitar Turno' : '🔒 Iniciar Sesión y Solicitar Turno'}
+							</button>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+			{/* Modal de Autenticación */}
+			<ModalAuth
+				open={showAuthModal}
+				onClose={() => setShowAuthModal(false)}
+				showRegister={showRegister}
+				setShowRegister={setShowRegister}
+			/>
+		</div>
+	);
 }

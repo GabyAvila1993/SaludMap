@@ -36,6 +36,7 @@ Cline debe tener en cuenta estas tecnologías para aplicar buenas prácticas, si
 - En **TypeScript**, utilizar comentarios tipo **JSDoc** para describir las funciones.
 - Añadir comentarios breves en partes críticas del código para explicar su propósito o lógica.
 - En los componentes de React, describir brevemente su rol o comportamiento esperado.
+- Si no hay un archivo llamado Documentación.md, crearlo en la raíz del proyecto y si lo hay, separa cada cambio que realices por medio de una barra lineal que contenga estos simboloes /* -------------- */ 
 
 Ejemplo:
 ```ts

@@ -3,29 +3,46 @@ import { useTranslation } from 'react-i18next';
 import InsuranceCard from './InsuranceCard';
 import CheckoutModal from './CheckoutModal';
 import { insurancePlans } from './insurancePlans';
+import { useAuth } from '../Auth/AuthContext.jsx';
+import ModalAuth from '../Auth/ModalAuth.jsx';
 import './InsuranceSection.css';
 
 const InsuranceSection = () => {
-    const { t } = useTranslation();
-    const [selectedPlan, setSelectedPlan] = useState(null);
-    const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+	const { t } = useTranslation();
+	const { user } = useAuth();
+	const [selectedPlan, setSelectedPlan] = useState(null);
+	const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+	const [showAuthModal, setShowAuthModal] = useState(false);
+	const [showRegister, setShowRegister] = useState(false);
 
-    const handleSelectPlan = (plan) => {
-        setSelectedPlan(plan);
-    };
+	const handleSelectPlan = (plan) => {
+		setSelectedPlan(plan);
+	};
 
-    const handleContractPlan = () => {
-        if (selectedPlan) {
-            setIsCheckoutOpen(true);
-        }
-    };
+	/**
+	 * Maneja la contratación del plan
+	 * Verifica si el usuario está autenticado antes de proceder
+	 */
+	const handleContractPlan = () => {
+		if (!user) {
+			// Si no está autenticado, mostrar modal de login
+			setShowRegister(false);
+			setShowAuthModal(true);
+			return;
+		}
 
-    const handleCloseCheckout = () => {
-        setIsCheckoutOpen(false);
-        setSelectedPlan(null);
-    };
+		// Si está autenticado, proceder con la contratación
+		if (selectedPlan) {
+			setIsCheckoutOpen(true);
+		}
+	};
 
-    return (
+	const handleCloseCheckout = () => {
+		setIsCheckoutOpen(false);
+		setSelectedPlan(null);
+	};
+
+	return (
         <div className="insurance-section">
             <div className="insurance-container">
                 <div className="insurance-header">
@@ -66,14 +83,28 @@ const InsuranceSection = () => {
                     </div>
                 )}
 
-                <CheckoutModal
-                    plan={selectedPlan}
-                    isOpen={isCheckoutOpen}
-                    onClose={handleCloseCheckout}
-                />
-            </div>
-        </div>
-    );
+				<CheckoutModal
+					plan={selectedPlan}
+					isOpen={isCheckoutOpen}
+					onClose={handleCloseCheckout}
+				/>
+
+				{/* Modal de Autenticación */}
+				<ModalAuth
+					open={showAuthModal}
+					onClose={() => {
+						setShowAuthModal(false);
+						// Después de cerrar, si el usuario se autenticó, proceder con la contratación
+						if (user && selectedPlan) {
+							setIsCheckoutOpen(true);
+						}
+					}}
+					showRegister={showRegister}
+					setShowRegister={setShowRegister}
+				/>
+			</div>
+		</div>
+	);
 };
 
 export default InsuranceSection;

@@ -4,11 +4,14 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.jsx';
 import './i18n/config'; // Importar configuración de i18n
+import { AuthProvider } from './components/Auth/AuthContext.jsx';
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
+	<StrictMode>
+		<AuthProvider>
+			<App />
+		</AuthProvider>
+	</StrictMode>,
 );
 
 // 👇 Registrar el Service Worker
