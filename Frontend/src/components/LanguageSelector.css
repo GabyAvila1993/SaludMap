@@ -1,0 +1,103 @@
+.language-selector {
+  position: relative;
+  display: inline-block;
+}
+
+.language-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #47472e;
+  color: #fff;
+  border: 2px solid #ffe0a6;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(255, 224, 166, 0.3);
+}
+
+.language-button:hover {
+  background-color: #5a5a3a;
+  box-shadow: 0 4px 8px rgba(255, 224, 166, 0.4);
+  transform: translateY(-1px);
+}
+
+.language-button .flag {
+  font-size: 1.2rem;
+}
+
+.language-button .lang-code {
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.language-button .arrow {
+  font-size: 0.7rem;
+  margin-left: 4px;
+}
+
+.language-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background-color: #47472e;
+  border: 2px solid #ffe0a6;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  min-width: 160px;
+  overflow: hidden;
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  background-color: transparent;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.language-option:hover {
+  background-color: #5a5a3a;
+}
+
+.language-option.active {
+  background-color: #ffe0a6;
+  color: #47472e;
+  font-weight: bold;
+}
+
+.language-option .flag {
+  font-size: 1.3rem;
+}
+
+.language-option .lang-name {
+  flex: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .language-button {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+
+  .language-dropdown {
+    min-width: 140px;
+  }
+
+  .language-option {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+}

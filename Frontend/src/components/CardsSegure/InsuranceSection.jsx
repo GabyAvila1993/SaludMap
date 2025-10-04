@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import InsuranceCard from './InsuranceCard';
 import CheckoutModal from './CheckoutModal';
 import { insurancePlans } from './insurancePlans';
 import './InsuranceSection.css';
 
 const InsuranceSection = () => {
+    const { t } = useTranslation();
     const [selectedPlan, setSelectedPlan] = useState(null);
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
@@ -28,11 +30,10 @@ const InsuranceSection = () => {
             <div className="insurance-container">
                 <div className="insurance-header">
                     <h2 className="insurance-title">
-                        Planes de Seguro Médico
+                        {t('insurance.insurancePlans')}
                     </h2>
                     <p className="insurance-subtitle">
-                        Protege tu salud y la de tu familia con nuestros planes de seguro médico. 
-                        Elige el plan que mejor se adapte a tus necesidades.
+                        {t('insurance.subtitle')}
                     </p>
                 </div>
 
@@ -51,16 +52,16 @@ const InsuranceSection = () => {
                 {selectedPlan && (
                     <div className="selected-plan-section">
                         <h3 className="selected-plan-title">
-                            Plan seleccionado: {selectedPlan.name}
+                            {t('insurance.selectedPlan')}: {t(`insurance.plans.${selectedPlan.id}.name`)}
                         </h3>
                         <p className="selected-plan-description">
-                            ${selectedPlan.price}/mes - {selectedPlan.description}
+                            ${selectedPlan.price}{t('insurance.perMonth')} - {t(`insurance.plans.${selectedPlan.id}.description`)}
                         </p>
                         <button
                             onClick={handleContractPlan}
                             className="contract-button"
                         >
-                            Contratar Plan
+                            {t('insurance.contractPlan')}
                         </button>
                     </div>
                 )}

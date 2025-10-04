@@ -1,5 +1,6 @@
 // INICIO CAMBIO - Archivo: src/components/TurnoModal2.jsx - Modal actualizado
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const TurnoModal = ({
     modalOpen,
@@ -17,10 +18,12 @@ export const TurnoModal = ({
     onConfirm,
     prettyType
 }) => {
+    const { t } = useTranslation();
+    
     if (!modalOpen || !selected) return null;
 
     // Obtener datos del profesional usando la nueva estructura normalizada
-    const professionalName = selected.name || 'Profesional sin nombre';
+    const professionalName = selected.name || t('appointments.professional');
     const professionalAddress = selected.address || '';
     const professionalType = prettyType(selectedType);
 
@@ -28,12 +31,12 @@ export const TurnoModal = ({
         <div className="modal-overlay" role="dialog" aria-modal="true">
             <div className="modal">
                 <div className="modal__header">
-                    <span className="modal__title">Solicitar turno</span>
+                    <span className="modal__title">{t('appointments.requestAppointment')}</span>
                     <button
                         className="button button--icon modal-close"
                         onClick={onClose}
-                        aria-label="Cerrar"
-                        title="Cerrar"
+                        aria-label={t('map.close')}
+                        title={t('map.close')}
                     >
                         <span className="close-x" aria-hidden="true">×</span>
                     </button>
@@ -41,27 +44,27 @@ export const TurnoModal = ({
 
                 <div className="modal__body">
                     <div className="input">
-                        <label className="input__label">Profesional</label>
+                        <label className="input__label">{t('appointments.professional')}</label>
                         <div className="input__field">{professionalName}</div>
                         {professionalAddress && (
                             <p className="input__description">{professionalAddress}</p>
                         )}
                         {selected.source && selected.source !== 'api' && (
                             <p className="input__description">
-                                Fuente: {selected.source === 'mock' ? 'Datos de ejemplo' : 
-                                        selected.source === 'cache' ? 'Datos guardados' : 
-                                        selected.source}
+                                {selected.source === 'mock' ? t('appointments.source.demo') : 
+                                    selected.source === 'cache' ? t('appointments.source.saved') : 
+                                    selected.source}
                             </p>
                         )}
                     </div>
 
                     <div className="input">
-                        <label className="input__label">Tipo de servicio</label>
+                        <label className="input__label">{t('appointments.serviceType')}</label>
                         <div className="input__field">{professionalType}</div>
                     </div>
 
                     <div className="input">
-                        <label className="input__label">Fecha y hora</label>
+                        <label className="input__label">{t('appointments.dateTime')}</label>
                         <div className="input-with-icon">
                             <input
                                 id="turnos-datetime"
@@ -82,8 +85,8 @@ export const TurnoModal = ({
                                         el?.focus();
                                     }
                                 }}
-                                aria-label="Abrir selector de fecha"
-                                title="Abrir selector de fecha"
+                                aria-label={t('appointments.openDatePicker')}
+                                title={t('appointments.openDatePicker')}
                                 style={{
                                     position: 'absolute',
                                     right: '8px',
@@ -105,12 +108,12 @@ export const TurnoModal = ({
                     </div>
 
                     <div className="input">
-                        <label className="input__label">Observaciones (opcional)</label>
+                        <label className="input__label">{t('appointments.observations')}</label>
                         <textarea
                             className="input__field input__field--textarea"
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
-                            placeholder="Ingrese cualquier observación adicional..."
+                            placeholder={t('appointments.observationsPlaceholder')}
                             rows="3"
                         />
                     </div>
@@ -118,11 +121,11 @@ export const TurnoModal = ({
 
                 <div className="modal__footer">
                     <div className="footer-left">
-                        <label className="correo__label">Correo electrónico</label>
+                        <label className="correo__label">{t('appointments.email')}</label>
                         <input
                             type="email"
                             className="correo__field"
-                            placeholder="usuario@ejemplo.com"
+                            placeholder={t('appointments.emailPlaceholder')}
                             value={correo}
                             onChange={(e) => setCorreo(e.target.value)}
                             required
@@ -134,7 +137,7 @@ export const TurnoModal = ({
                             onClick={onConfirm}
                             disabled={loading || !correo || !datetime}
                         >
-                            {loading ? 'Procesando...' : 'Confirmar turno'}
+                            {loading ? t('common.processing') : t('appointments.confirmAppointment')}
                         </button>
                     </div>
                 </div>

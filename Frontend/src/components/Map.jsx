@@ -1,6 +1,12 @@
 // INICIO CAMBIO - Archivo: src/components/Map.jsx - Integración con servicios
+<<<<<<< HEAD
 import React, { useState, useRef, useEffect } from 'react'
 import { MapContainer, Marker, Circle, useMap } from 'react-leaflet';
+=======
+import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { MapContainer, Marker, Popup, Circle, useMap } from 'react-leaflet';
+>>>>>>> a6b91c6342463559b7e40fc06740075a453e6fd5
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
@@ -24,6 +30,7 @@ L.Icon.Default.mergeOptions({
 });
 
 export default function MapComponent() {
+    const { t } = useTranslation();
     const [currentLocation, setCurrentLocation] = useState(null);
     const [lugares, setLugares] = useState([]);
     const [error, setError] = useState('');
@@ -342,15 +349,15 @@ export default function MapComponent() {
         <div className="map-section">
             <div className="map-root">
             <h3 className="map-title">
-                Mapa de servicios cercanos
-                {!isOnline && <span className="offline-badge"> (Offline)</span>}
+                {t('map.nearbyServicesMap')}
+                {!isOnline && <span className="offline-badge"> {t('map.offline')}</span>}
             </h3>
 
             {error && <div className="map-error">{error}</div>}
 
             <div className="map-controls">
                 <button onClick={handleCalibrate} disabled={isCalibrating}>
-                    {isCalibrating ? 'Actualizando...' : 'Actualizar ubicación'}
+                    {isCalibrating ? t('map.updating') : t('map.updateLocation')}
                 </button>
                 {currentLocation?.source === 'manual' && (
                     <button onClick={handleReturnToGPS} disabled={isCalibrating} className="btn-return-gps">
@@ -358,28 +365,29 @@ export default function MapComponent() {
                     </button>
                 )}
                 <button onClick={handleDownloadOffline}>
-                    Descargar área offline
+                    {t('map.downloadOfflineArea')}
                 </button>
                 <button onClick={() => setShowSaveLocationModal(true)} className="btn-save-location">
-                    Guardar Ubicación
+                    {t('map.saveLocation')}
                 </button>
                 <button onClick={() => setShowSavedLocationsList(true)} className="btn-view-locations">
-                    Ver Ubicaciones
+                    {t('map.viewLocations')}
                 </button>
                 {downloadProgress > 0 && downloadProgress < 100 && (
-                    <div className="progress">Descarga: {Math.round(downloadProgress)}%</div>
+                    <div className="progress">{t('map.downloading')}: {Math.round(downloadProgress)}%</div>
                 )}
             </div>
 
             <div className="map-info">
-                Precisión: {currentLocation.accuracy ? `${Math.round(currentLocation.accuracy)}m` : '—'}
+                {t('map.accuracy')}: {currentLocation.accuracy ? `${Math.round(currentLocation.accuracy)}${t('map.meters')}` : '—'}
                 <span className="location-source">
-                    ({currentLocation.source === 'manual' ? 'Manual' :
-                        currentLocation.source === 'calibrated' ? 'Calibrado' : 'GPS'})
+                    ({currentLocation.source === 'manual' ? t('map.locationSource.manual') :
+                        currentLocation.source === 'calibrated' ? t('map.locationSource.calibrated') : t('map.locationSource.gps')})
                 </span>
             </div>
 
             <div className="map-wrapper">
+<<<<<<< HEAD
               <MapContainer
                 center={[currentLocation.lat, currentLocation.lng]}
                 zoom={15}
@@ -398,6 +406,16 @@ export default function MapComponent() {
                         center={[currentLocation.lat, currentLocation.lng]}
                         radius={currentLocation.accuracy}
                         pathOptions={{ color: '#007bff', fillOpacity: 0.08 }}
+=======
+                <MapContainer
+                    center={[currentLocation.lat, currentLocation.lng]}
+                    className="leaflet-map"
+                >
+                    <MapController />
+                    <OfflineTileLayer 
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+>>>>>>> a6b91c6342463559b7e40fc06740075a453e6fd5
                     />
                 )}
 

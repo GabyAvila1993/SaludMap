@@ -1,0 +1,182 @@
+{
+  "common": {
+    "loading": "Cargando ubicación...",
+    "allowLocation": "Por favor, permite el acceso a tu ubicación",
+    "appName": "SaludMap",
+    "appDescription": "Encuentra servicios de salud cercanos",
+    "processing": "Procesando...",
+    "success": "Éxito",
+    "error": "Error",
+    "required": "Requerido"
+  },
+  "nav": {
+    "map": "Mapa",
+    "appointments": "Turnos",
+    "insurance": "Seguros"
+  },
+  "map": {
+    "title": "Mapa de Servicios de Salud",
+    "nearbyServicesMap": "Mapa de servicios cercanos",
+    "myLocation": "Mi Ubicación",
+    "searchPlaceholder": "Buscar servicios de salud...",
+    "saveLocation": "Guardar Ubicación",
+    "viewLocations": "Ver Ubicaciones",
+    "calibrateGPS": "Calibrar GPS",
+    "updateLocation": "Actualizar ubicación",
+    "updating": "Actualizando...",
+    "downloadOfflineArea": "Descargar área offline",
+    "downloadArea": "Descargar Área",
+    "downloading": "Descarga",
+    "offline": "(Offline)",
+    "accuracy": "Precisión",
+    "meters": "metros",
+    "locationSource": {
+      "manual": "Manual",
+      "calibrated": "Calibrado",
+      "gps": "GPS"
+    },
+    "searching": "Buscando...",
+    "noResults": "No se encontraron resultados",
+    "savedLocations": "Ubicaciones Guardadas",
+    "close": "Cerrar",
+    "goToLocation": "Ir a Ubicación",
+    "delete": "Eliminar",
+    "saveLocationTitle": "Guardar Ubicación",
+    "locationName": "Nombre de la ubicación",
+    "locationNamePlaceholder": "Ej: Casa, Trabajo, Hospital Central...",
+    "locationNameRequired": "El nombre es obligatorio",
+    "noLocationAvailable": "No hay ubicación actual disponible",
+    "errorSaving": "Error al guardar la ubicación",
+    "description": "Descripción (opcional)",
+    "descriptionPlaceholder": "Agrega una descripción o notas adicionales...",
+    "coordinates": "Coordenadas",
+    "save": "Guardar",
+    "saving": "Guardando...",
+    "cancel": "Cancelar",
+    "loadingLocations": "Cargando ubicaciones...",
+    "noSavedLocations": "No tienes ubicaciones guardadas",
+    "noSavedLocationsSubtitle": "Guarda ubicaciones importantes para acceder rápidamente a ellas",
+    "errorLoading": "Error al cargar las ubicaciones guardadas",
+    "errorGoingTo": "Error al ir a la ubicación",
+    "errorDeleting": "Error al eliminar la ubicación",
+    "confirmDelete": "¿Estás seguro de que quieres eliminar",
+    "savedOn": "Guardada"
+  },
+  "appointments": {
+    "title": "Gestión de Turnos",
+    "badge": "Turnos",
+    "requestAppointments": "Solicitar Turnos",
+    "myAppointments": "Mis Turnos",
+    "newAppointment": "Nuevo Turno",
+    "requestAppointment": "Solicitar turno",
+    "date": "Fecha",
+    "time": "Hora",
+    "dateTime": "Fecha y hora",
+    "doctor": "Médico",
+    "professional": "Profesional",
+    "professionalWithoutName": "Profesional sin nombre",
+    "specialty": "Especialidad",
+    "location": "Ubicación",
+    "status": "Estado",
+    "pending": "Pendiente",
+    "confirmed": "Confirmado",
+    "cancelled": "Cancelado",
+    "noAppointments": "No tienes turnos programados",
+    "noAppointmentsRegistered": "No tenés turnos registrados.",
+    "cancel": "Cancelar Turno",
+    "cancelling": "Cancelando...",
+    "confirm": "Confirmar Turno",
+    "confirmAppointment": "Confirmar turno",
+    "nearbyProfessionals": "Profesionales cercanos",
+    "loadingProfessionals": "Cargando profesionales...",
+    "noProfessionalsFound": "No se encontraron profesionales cerca.",
+    "serviceType": "Tipo de servicio",
+    "observations": "Observaciones (opcional)",
+    "observationsPlaceholder": "Ingrese cualquier observación adicional...",
+    "email": "Correo electrónico",
+    "emailPlaceholder": "usuario@ejemplo.com",
+    "viewMyAppointments": "Ver mis turnos (ingresa tu correo):",
+    "missingData": "Faltan datos: selecciona un profesional, fecha y correo.",
+    "successMessage": "¡Turno solicitado correctamente!",
+    "errorMessage": "Hubo un problema",
+    "confirmCancel": "¿Estás seguro de que quieres cancelar este turno?",
+    "errorCancelNoEmail": "Error: No se puede cancelar sin correo del usuario",
+    "openDatePicker": "Abrir selector de fecha",
+    "source": {
+      "demo": "(Demo)",
+      "saved": "(Guardado)"
+    },
+    "types": {
+      "hospital": "Hospital",
+      "clinic": "Clínica",
+      "doctors": "Médico",
+      "veterinary": "Veterinaria",
+      "default": "Servicio de salud"
+    }
+  },
+  "insurance": {
+    "title": "Seguros Médicos",
+    "insurancePlans": "Planes de Seguro Médico",
+    "myInsurance": "Mi Seguro",
+    "coverage": "Cobertura",
+    "coverageIncluded": "Cobertura incluida:",
+    "plan": "Plan",
+    "cardNumber": "Número de Tarjeta",
+    "validUntil": "Válido hasta",
+    "benefits": "Beneficios",
+    "network": "Red de Prestadores",
+    "subtitle": "Protege tu salud y la de tu familia con nuestros planes de seguro médico. Elige el plan que mejor se adapte a tus necesidades.",
+    "selectPlan": "Seleccionar Plan",
+    "selected": "Seleccionado",
+    "selectedPlan": "Plan seleccionado",
+    "contractPlan": "Contratar Plan",
+    "contractInsurance": "Contratar Seguro",
+    "perMonth": "/mes",
+    "fullName": "Nombre completo",
+    "phone": "Teléfono",
+    "address": "Dirección",
+    "contractFor": "Contratar por",
+    "plans": {
+      "basic": {
+        "name": "Plan Básico",
+        "description": "Cobertura médica esencial para consultas y emergencias básicas",
+        "coverage": [
+          "Consultas médicas generales",
+          "Emergencias básicas",
+          "Medicamentos básicos",
+          "Análisis de laboratorio básicos"
+        ]
+      },
+      "premium": {
+        "name": "Plan Premium",
+        "description": "Cobertura médica completa con especialistas y procedimientos avanzados",
+        "coverage": [
+          "Consultas médicas generales y especialistas",
+          "Emergencias y hospitalización",
+          "Medicamentos y tratamientos especializados",
+          "Análisis de laboratorio completos",
+          "Cirugías menores y mayores",
+          "Rehabilitación y fisioterapia"
+        ]
+      },
+      "family": {
+        "name": "Plan Familiar",
+        "description": "Cobertura médica completa para toda la familia",
+        "coverage": [
+          "Cobertura para hasta 4 miembros de la familia",
+          "Consultas médicas generales y especialistas",
+          "Emergencias y hospitalización",
+          "Medicamentos y tratamientos especializados",
+          "Análisis de laboratorio completos",
+          "Cirugías menores y mayores",
+          "Rehabilitación y fisioterapia",
+          "Atención pediátrica especializada",
+          "Atención geriátrica"
+        ]
+      }
+    }
+  },
+  "footer": {
+    "copyright": "© 2024 SaludMap - Encuentra servicios de salud cercanos"
+  }
+}

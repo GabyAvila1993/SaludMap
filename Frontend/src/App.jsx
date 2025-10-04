@@ -1,12 +1,15 @@
 // INICIO CAMBIO - Archivo: src/App.jsx - Ejemplo de implementación
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import MapComponent from './components/Map.jsx';
 import Turnos from './components/turnos/Turnos.jsx';
 import InsuranceSection from './components/CardsSegure/InsuranceSection.jsx';
+import LanguageSelector from './components/LanguageSelector.jsx';
 import locationService from './services/locationService.js';
 import { cleanOldTiles } from './services/db.js';
 
 function App() {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [activeTab, setActiveTab] = useState('mapa');
@@ -47,9 +50,9 @@ function App() {
         flexDirection: 'column',
         gap: '1rem'
       }}>
-        <div>Cargando ubicación...</div>
+        <div>{t('common.loading')}</div>
         <div style={{ fontSize: '0.875rem', color: '#666' }}>
-          Por favor, permite el acceso a tu ubicación
+          {t('common.allowLocation')}
         </div>
       </div>
     );
@@ -71,7 +74,10 @@ function App() {
   return (
     <div className="app">
       <header>
-        <h1>SaludMap</h1>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 20px' }}>
+          <h1>{t('common.appName')}</h1>
+          <LanguageSelector />
+        </div>
         
         {/* Navigation Tabs */}
         <nav style={{
@@ -98,7 +104,7 @@ function App() {
               transition: 'all 0.3s ease'
             }}
           >
-            🗺️ Mapa
+            🗺️ {t('nav.map')}
           </button>
           
           <button
@@ -116,7 +122,7 @@ function App() {
               transition: 'all 0.3s ease'
             }}
           >
-            📅 Turnos
+            📅 {t('nav.appointments')}
           </button>
           
           <button
@@ -134,7 +140,7 @@ function App() {
               transition: 'all 0.3s ease'
             }}
           >
-            🛡️ Seguros
+            🛡️ {t('nav.insurance')}
           </button>
         </nav>
       </header>
@@ -142,11 +148,8 @@ function App() {
       <main style={{ minHeight: 'calc(100vh - 200px)' }}>
         {renderActiveSection()}
       </main>
-      
       <footer>
-        <div className='piepagina'>
-          <p className='texto'> 2025 SaludMap - Encuentra servicios de salud cercanos</p>
-        </div>
+        <p>{t('footer.copyright')}</p>
       </footer>
     </div>
   );

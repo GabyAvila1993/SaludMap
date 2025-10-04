@@ -1,0 +1,182 @@
+{
+  "common": {
+    "loading": "Loading location...",
+    "allowLocation": "Please allow access to your location",
+    "appName": "SaludMap",
+    "appDescription": "Find nearby health services",
+    "processing": "Processing...",
+    "success": "Success",
+    "error": "Error",
+    "required": "Required"
+  },
+  "nav": {
+    "map": "Map",
+    "appointments": "Appointments",
+    "insurance": "Insurance"
+  },
+  "map": {
+    "title": "Health Services Map",
+    "nearbyServicesMap": "Nearby services map",
+    "myLocation": "My Location",
+    "searchPlaceholder": "Search health services...",
+    "saveLocation": "Save Location",
+    "viewLocations": "View Locations",
+    "calibrateGPS": "Calibrate GPS",
+    "updateLocation": "Update location",
+    "updating": "Updating...",
+    "downloadOfflineArea": "Download offline area",
+    "downloadArea": "Download Area",
+    "downloading": "Download",
+    "offline": "(Offline)",
+    "accuracy": "Accuracy",
+    "meters": "meters",
+    "locationSource": {
+      "manual": "Manual",
+      "calibrated": "Calibrated",
+      "gps": "GPS"
+    },
+    "searching": "Searching...",
+    "noResults": "No results found",
+    "savedLocations": "Saved Locations",
+    "close": "Close",
+    "goToLocation": "Go to Location",
+    "delete": "Delete",
+    "saveLocationTitle": "Save Location",
+    "locationName": "Location name",
+    "locationNamePlaceholder": "E.g: Home, Work, Central Hospital...",
+    "locationNameRequired": "Name is required",
+    "noLocationAvailable": "No current location available",
+    "errorSaving": "Error saving location",
+    "description": "Description (optional)",
+    "descriptionPlaceholder": "Add a description or additional notes...",
+    "coordinates": "Coordinates",
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "loadingLocations": "Loading locations...",
+    "noSavedLocations": "You have no saved locations",
+    "noSavedLocationsSubtitle": "Save important locations to quickly access them",
+    "errorLoading": "Error loading saved locations",
+    "errorGoingTo": "Error going to location",
+    "errorDeleting": "Error deleting location",
+    "confirmDelete": "Are you sure you want to delete",
+    "savedOn": "Saved on"
+  },
+  "appointments": {
+    "title": "Appointment Management",
+    "badge": "Appointments",
+    "requestAppointments": "Request Appointments",
+    "myAppointments": "My Appointments",
+    "newAppointment": "New Appointment",
+    "requestAppointment": "Request appointment",
+    "date": "Date",
+    "time": "Time",
+    "dateTime": "Date and time",
+    "doctor": "Doctor",
+    "professional": "Professional",
+    "professionalWithoutName": "Professional without name",
+    "specialty": "Specialty",
+    "location": "Location",
+    "status": "Status",
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "cancelled": "Cancelled",
+    "noAppointments": "You have no scheduled appointments",
+    "noAppointmentsRegistered": "You have no registered appointments.",
+    "cancel": "Cancel Appointment",
+    "cancelling": "Cancelling...",
+    "confirm": "Confirm Appointment",
+    "confirmAppointment": "Confirm appointment",
+    "nearbyProfessionals": "Nearby professionals",
+    "loadingProfessionals": "Loading professionals...",
+    "noProfessionalsFound": "No professionals found nearby.",
+    "serviceType": "Service type",
+    "observations": "Observations (optional)",
+    "observationsPlaceholder": "Enter any additional observations...",
+    "email": "Email",
+    "emailPlaceholder": "user@example.com",
+    "viewMyAppointments": "View my appointments (enter your email):",
+    "missingData": "Missing data: select a professional, date and email.",
+    "successMessage": "Appointment requested successfully!",
+    "errorMessage": "There was a problem",
+    "confirmCancel": "Are you sure you want to cancel this appointment?",
+    "errorCancelNoEmail": "Error: Cannot cancel without user email",
+    "openDatePicker": "Open date picker",
+    "source": {
+      "demo": "(Demo)",
+      "saved": "(Saved)"
+    },
+    "types": {
+      "hospital": "Hospital",
+      "clinic": "Clinic",
+      "doctors": "Doctor",
+      "veterinary": "Veterinary",
+      "default": "Health service"
+    }
+  },
+  "insurance": {
+    "title": "Health Insurance",
+    "insurancePlans": "Health Insurance Plans",
+    "myInsurance": "My Insurance",
+    "coverage": "Coverage",
+    "coverageIncluded": "Coverage included:",
+    "plan": "Plan",
+    "cardNumber": "Card Number",
+    "validUntil": "Valid Until",
+    "benefits": "Benefits",
+    "network": "Provider Network",
+    "subtitle": "Protect your health and your family's with our health insurance plans. Choose the plan that best suits your needs.",
+    "selectPlan": "Select Plan",
+    "selected": "Selected",
+    "selectedPlan": "Selected plan",
+    "contractPlan": "Contract Plan",
+    "contractInsurance": "Contract Insurance",
+    "perMonth": "/month",
+    "fullName": "Full name",
+    "phone": "Phone",
+    "address": "Address",
+    "contractFor": "Contract for",
+    "plans": {
+      "basic": {
+        "name": "Basic Plan",
+        "description": "Essential medical coverage for consultations and basic emergencies",
+        "coverage": [
+          "General medical consultations",
+          "Basic emergencies",
+          "Basic medications",
+          "Basic laboratory tests"
+        ]
+      },
+      "premium": {
+        "name": "Premium Plan",
+        "description": "Complete medical coverage with specialists and advanced procedures",
+        "coverage": [
+          "General medical consultations and specialists",
+          "Emergencies and hospitalization",
+          "Specialized medications and treatments",
+          "Complete laboratory tests",
+          "Minor and major surgeries",
+          "Rehabilitation and physiotherapy"
+        ]
+      },
+      "family": {
+        "name": "Family Plan",
+        "description": "Complete medical coverage for the whole family",
+        "coverage": [
+          "Coverage for up to 4 family members",
+          "General medical consultations and specialists",
+          "Emergencies and hospitalization",
+          "Specialized medications and treatments",
+          "Complete laboratory tests",
+          "Minor and major surgeries",
+          "Rehabilitation and physiotherapy",
+          "Specialized pediatric care",
+          "Geriatric care"
+        ]
+      }
+    }
+  },
+  "footer": {
+    "copyright": "© 2024 SaludMap - Find nearby health services"
+  }
+}
