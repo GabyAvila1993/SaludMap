@@ -30,6 +30,7 @@ export const ProfesionalesList = ({ lugares, loading, error, onOpenModal, getTyp
                                             p.source === 'cache' ? '(Guardado)' :
                                                 `(${p.source})`}
 
+
                                     </div>
                                 )}
                             </div>

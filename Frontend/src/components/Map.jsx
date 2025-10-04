@@ -402,6 +402,7 @@ export default function MapComponent() {
                         center={[currentLocation.lat, currentLocation.lng]}
                         radius={currentLocation.accuracy}
                         pathOptions={{ color: '#007bff', fillOpacity: 0.08 }}
+
                     />
                 )}
 
