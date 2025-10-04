@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getSavedLocations, deleteSavedLocation } from '../services/db.js';
 import locationService from '../services/locationService.js';
 import './SavedLocationsList.css';
 
 export default function SavedLocationsList({ isOpen, onClose }) {
+    const { t } = useTranslation();
     const [savedLocations, setSavedLocations] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
@@ -21,7 +23,7 @@ export default function SavedLocationsList({ isOpen, onClose }) {
             const locations = await getSavedLocations();
             setSavedLocations(locations);
         } catch (err) {
-            setError('Error al cargar las ubicaciones guardadas');
+            setError(t('map.errorLoading'));
             console.error('Error loading saved locations:', err);
         } finally {
             setIsLoading(false);
@@ -37,13 +39,13 @@ export default function SavedLocationsList({ isOpen, onClose }) {
             }));
             onClose();
         } catch (err) {
-            setError('Error al ir a la ubicación');
+            setError(t('map.errorGoingTo'));
             console.error('Error going to location:', err);
         }
     };
 
     const handleDeleteLocation = async (locationId, locationName) => {
-        if (!confirm(`¿Estás seguro de que quieres eliminar "${locationName}"?`)) {
+        if (!confirm(`${t('map.confirmDelete')} "${locationName}"?`)) {
             return;
         }
 
@@ -51,7 +53,7 @@ export default function SavedLocationsList({ isOpen, onClose }) {
             await deleteSavedLocation(locationId);
             setSavedLocations(prev => prev.filter(loc => loc.id !== locationId));
         } catch (err) {
-            setError('Error al eliminar la ubicación');
+            setError(t('map.errorDeleting'));
             console.error('Error deleting location:', err);
         }
     };
@@ -83,7 +85,7 @@ export default function SavedLocationsList({ isOpen, onClose }) {
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content locations-modal" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
-                    <h3>Ubicaciones Guardadas</h3>
+                    <h3>{t('map.savedLocations')}</h3>
                     <button className="modal-close" onClick={onClose}>×</button>
                 </div>
 
@@ -91,13 +93,13 @@ export default function SavedLocationsList({ isOpen, onClose }) {
                     {error && <div className="error-message">{error}</div>}
 
                     {isLoading ? (
-                        <div className="loading-message">Cargando ubicaciones...</div>
+                        <div className="loading-message">{t('map.loadingLocations')}</div>
                     ) : savedLocations.length === 0 ? (
                         <div className="empty-message">
                             <div className="empty-icon">📍</div>
-                            <p>No tienes ubicaciones guardadas</p>
+                            <p>{t('map.noSavedLocations')}</p>
                             <p className="empty-subtitle">
-                                Guarda ubicaciones importantes para acceder rápidamente a ellas
+                                {t('map.noSavedLocationsSubtitle')}
                             </p>
                         </div>
                     ) : (
@@ -131,13 +133,13 @@ export default function SavedLocationsList({ isOpen, onClose }) {
 
                                         <div className="location-details">
                                             <div className="location-coords">
-                                                <span className="coords-label">Coordenadas:</span>
+                                                <span className="coords-label">{t('map.coordinates')}:</span>
                                                 <span className="coords-value">
                                                     {location.lat.toFixed(6)}, {location.lng.toFixed(6)}
                                                 </span>
                                             </div>
                                             <div className="location-date">
-                                                Guardada: {formatDate(location.timestamp)}
+                                                {t('map.savedOn')}: {formatDate(location.timestamp)}
                                             </div>
                                         </div>
                                     </div>
@@ -149,7 +151,7 @@ export default function SavedLocationsList({ isOpen, onClose }) {
 
                 <div className="modal-footer">
                     <button className="btn-secondary" onClick={onClose}>
-                        Cerrar
+                        {t('map.close')}
                     </button>
                 </div>
             </div>

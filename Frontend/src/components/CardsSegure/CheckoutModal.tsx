@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { PDFGenerator, InsurancePlan, UserInfo } from './PDFGenerator';
 import { sendInsuranceConfirmationEmail, downloadInsurancePDF, initializeEmailJS } from '../../services/emailSegurosService';
 import { sendTestEmail, initializeEmailJS as initTest } from '../../services/emailSegurosServiceTest';
@@ -10,6 +11,8 @@ interface CheckoutModalProps {
 }
 
 const CheckoutModal: React.FC<CheckoutModalProps> = ({ plan, isOpen, onClose }) => {
+    const { t } = useTranslation();
+    
     const [userInfo, setUserInfo] = useState<UserInfo>({
         name: '',
         email: '',
@@ -110,7 +113,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ plan, isOpen, onClose }) 
                     alignItems: 'center',
                     marginBottom: '20px'
                 }}>
-                    <h2 style={{ margin: 0, color: '#47472e' }}>Contratar Seguro</h2>
+                    <h2 style={{ margin: 0, color: '#47472e' }}>{t('insurance.contractInsurance')}</h2>
                     <button
                         onClick={onClose}
                         style={{
@@ -132,19 +135,19 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ plan, isOpen, onClose }) 
                     marginBottom: '20px',
                     border: '1px solid #ffe0a6'
                 }}>
-                    <h3 style={{ margin: '0 0 10px 0', color: '#47472e' }}>{plan.name}</h3>
+                    <h3 style={{ margin: '0 0 10px 0', color: '#47472e' }}>{t(`insurance.plans.${plan.id}.name`)}</h3>
                     <p style={{ margin: '0 0 10px 0', fontSize: '1.2rem', fontWeight: 'bold', color: '#47472e' }}>
-                        ${plan.price}/mes
+                        ${plan.price}{t('insurance.perMonth')}
                     </p>
                     <p style={{ margin: 0, fontSize: '0.9rem', color: '#666' }}>
-                        {plan.description}
+                        {t(`insurance.plans.${plan.id}.description`)}
                     </p>
                 </div>
 
                 <form onSubmit={handleSubmit}>
                     <div style={{ marginBottom: '15px' }}>
                         <label style={{ display: 'block', marginBottom: '5px', color: '#47472e', fontWeight: 'bold' }}>
-                            Nombre completo *
+                            {t('insurance.fullName')} *
                         </label>
                         <input
                             type="text"
@@ -163,7 +166,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ plan, isOpen, onClose }) 
 
                     <div style={{ marginBottom: '15px' }}>
                         <label style={{ display: 'block', marginBottom: '5px', color: '#47472e', fontWeight: 'bold' }}>
-                            Email *
+                            {t('appointments.email')} *
                         </label>
                         <input
                             type="email"
@@ -182,7 +185,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ plan, isOpen, onClose }) 
 
                     <div style={{ marginBottom: '15px' }}>
                         <label style={{ display: 'block', marginBottom: '5px', color: '#47472e', fontWeight: 'bold' }}>
-                            Teléfono *
+                            {t('insurance.phone')} *
                         </label>
                         <input
                             type="tel"
@@ -201,7 +204,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ plan, isOpen, onClose }) 
 
                     <div style={{ marginBottom: '20px' }}>
                         <label style={{ display: 'block', marginBottom: '5px', color: '#47472e', fontWeight: 'bold' }}>
-                            Dirección *
+                            {t('insurance.address')} *
                         </label>
                         <textarea
                             required
@@ -233,7 +236,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ plan, isOpen, onClose }) 
                                 fontSize: '16px'
                             }}
                         >
-                            Cancelar
+                            {t('map.cancel')}
                         </button>
                         <button
                             type="submit"
@@ -249,7 +252,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ plan, isOpen, onClose }) 
                                 boxShadow: '0 2px 4px rgba(255, 224, 166, 0.3)'
                             }}
                         >
-                            {isProcessing ? 'Procesando...' : `Contratar por $${plan.price}/mes`}
+                            {isProcessing ? t('common.processing') : `${t('insurance.contractFor')} $${plan.price}${t('insurance.perMonth')}`}
                         </button>
                     </div>
                 </form>

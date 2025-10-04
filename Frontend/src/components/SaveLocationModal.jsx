@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './SaveLocationModal.css';
 
 export default function SaveLocationModal({ isOpen, onClose, onSave, currentLocation }) {
+    const { t } = useTranslation();
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -11,12 +13,12 @@ export default function SaveLocationModal({ isOpen, onClose, onSave, currentLoca
         e.preventDefault();
         
         if (!name.trim()) {
-            setError('El nombre es obligatorio');
+            setError(t('map.locationNameRequired'));
             return;
         }
 
         if (!currentLocation) {
-            setError('No hay ubicación actual disponible');
+            setError(t('map.noLocationAvailable'));
             return;
         }
 
@@ -36,7 +38,7 @@ export default function SaveLocationModal({ isOpen, onClose, onSave, currentLoca
             setDescription('');
             onClose();
         } catch (err) {
-            setError(err.message || 'Error al guardar la ubicación');
+            setError(err.message || t('map.errorSaving'));
         } finally {
             setIsLoading(false);
         }
@@ -55,31 +57,31 @@ export default function SaveLocationModal({ isOpen, onClose, onSave, currentLoca
         <div className="modal-overlay" onClick={handleClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
-                    <h3>Guardar Ubicación</h3>
+                    <h3>{t('map.saveLocationTitle')}</h3>
                     <button className="modal-close" onClick={handleClose}>×</button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="modal-form">
                     <div className="form-group">
-                        <label htmlFor="location-name">Nombre de la ubicación *</label>
+                        <label htmlFor="location-name">{t('map.locationName')} *</label>
                         <input
                             id="location-name"
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder="Ej: Casa, Trabajo, Hospital Central..."
+                            placeholder={t('map.locationNamePlaceholder')}
                             maxLength={50}
                             disabled={isLoading}
                         />
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="location-description">Descripción (opcional)</label>
+                        <label htmlFor="location-description">{t('map.description')}</label>
                         <textarea
                             id="location-description"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            placeholder="Agrega una descripción o notas adicionales..."
+                            placeholder={t('map.descriptionPlaceholder')}
                             maxLength={200}
                             rows={3}
                             disabled={isLoading}
@@ -88,14 +90,14 @@ export default function SaveLocationModal({ isOpen, onClose, onSave, currentLoca
 
                     {currentLocation && (
                         <div className="location-info">
-                            <strong>Coordenadas:</strong>
+                            <strong>{t('map.coordinates')}:</strong>
                             <div className="coordinates">
                                 Lat: {currentLocation.lat.toFixed(6)}, 
                                 Lng: {currentLocation.lng.toFixed(6)}
                             </div>
                             {currentLocation.accuracy && (
                                 <div className="accuracy">
-                                    Precisión: ~{Math.round(currentLocation.accuracy)}m
+                                    {t('map.accuracy')}: ~{Math.round(currentLocation.accuracy)}m
                                 </div>
                             )}
                         </div>
@@ -110,14 +112,14 @@ export default function SaveLocationModal({ isOpen, onClose, onSave, currentLoca
                             disabled={isLoading}
                             className="btn-secondary"
                         >
-                            Cancelar
+                            {t('map.cancel')}
                         </button>
                         <button 
                             type="submit" 
                             disabled={isLoading || !name.trim()}
                             className="btn-primary"
                         >
-                            {isLoading ? 'Guardando...' : 'Guardar Ubicación'}
+                            {isLoading ? t('map.saving') : t('map.saveLocation')}
                         </button>
                     </div>
                 </form>

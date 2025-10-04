@@ -1,0 +1,182 @@
+{
+  "common": {
+    "loading": "Chargement de l'emplacement...",
+    "allowLocation": "Veuillez autoriser l'accès à votre position",
+    "appName": "SaludMap",
+    "appDescription": "Trouvez des services de santé à proximité",
+    "processing": "Traitement...",
+    "success": "Succès",
+    "error": "Erreur",
+    "required": "Requis"
+  },
+  "nav": {
+    "map": "Carte",
+    "appointments": "Rendez-vous",
+    "insurance": "Assurance"
+  },
+  "map": {
+    "title": "Carte des Services de Santé",
+    "nearbyServicesMap": "Carte des services à proximité",
+    "myLocation": "Ma Position",
+    "searchPlaceholder": "Rechercher des services de santé...",
+    "saveLocation": "Enregistrer l'Emplacement",
+    "viewLocations": "Voir les Emplacements",
+    "calibrateGPS": "Calibrer GPS",
+    "updateLocation": "Mettre à jour la position",
+    "updating": "Mise à jour...",
+    "downloadOfflineArea": "Télécharger la zone hors ligne",
+    "downloadArea": "Télécharger la Zone",
+    "downloading": "Téléchargement",
+    "offline": "(Hors ligne)",
+    "accuracy": "Précision",
+    "meters": "mètres",
+    "locationSource": {
+      "manual": "Manuel",
+      "calibrated": "Calibré",
+      "gps": "GPS"
+    },
+    "searching": "Recherche en cours...",
+    "noResults": "Aucun résultat trouvé",
+    "savedLocations": "Emplacements Enregistrés",
+    "close": "Fermer",
+    "goToLocation": "Aller à l'Emplacement",
+    "delete": "Supprimer",
+    "saveLocationTitle": "Enregistrer l'Emplacement",
+    "locationName": "Nom de l'emplacement",
+    "locationNamePlaceholder": "Ex: Maison, Travail, Hôpital Central...",
+    "locationNameRequired": "Le nom est obligatoire",
+    "noLocationAvailable": "Aucun emplacement actuel disponible",
+    "errorSaving": "Erreur lors de l'enregistrement de l'emplacement",
+    "description": "Description (optionnel)",
+    "descriptionPlaceholder": "Ajoutez une description ou des notes supplémentaires...",
+    "coordinates": "Coordonnées",
+    "save": "Enregistrer",
+    "saving": "Enregistrement...",
+    "cancel": "Annuler",
+    "loadingLocations": "Chargement des emplacements...",
+    "noSavedLocations": "Vous n'avez aucun emplacement enregistré",
+    "noSavedLocationsSubtitle": "Enregistrez des emplacements importants pour y accéder rapidement",
+    "errorLoading": "Erreur lors du chargement des emplacements enregistrés",
+    "errorGoingTo": "Erreur lors de l'accès à l'emplacement",
+    "errorDeleting": "Erreur lors de la suppression de l'emplacement",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer",
+    "savedOn": "Enregistré le"
+  },
+  "appointments": {
+    "title": "Gestion des Rendez-vous",
+    "badge": "Rendez-vous",
+    "requestAppointments": "Demander des Rendez-vous",
+    "myAppointments": "Mes Rendez-vous",
+    "newAppointment": "Nouveau Rendez-vous",
+    "requestAppointment": "Demander un rendez-vous",
+    "date": "Date",
+    "time": "Heure",
+    "dateTime": "Date et heure",
+    "doctor": "Médecin",
+    "professional": "Professionnel",
+    "professionalWithoutName": "Professionnel sans nom",
+    "specialty": "Spécialité",
+    "location": "Emplacement",
+    "status": "Statut",
+    "pending": "En attente",
+    "confirmed": "Confirmé",
+    "cancelled": "Annulé",
+    "noAppointments": "Vous n'avez aucun rendez-vous programmé",
+    "noAppointmentsRegistered": "Vous n'avez aucun rendez-vous enregistré.",
+    "cancel": "Annuler le Rendez-vous",
+    "cancelling": "Annulation...",
+    "confirm": "Confirmer le Rendez-vous",
+    "confirmAppointment": "Confirmer le rendez-vous",
+    "nearbyProfessionals": "Professionnels à proximité",
+    "loadingProfessionals": "Chargement des professionnels...",
+    "noProfessionalsFound": "Aucun professionnel trouvé à proximité.",
+    "serviceType": "Type de service",
+    "observations": "Observations (optionnel)",
+    "observationsPlaceholder": "Entrez des observations supplémentaires...",
+    "email": "Email",
+    "emailPlaceholder": "utilisateur@exemple.com",
+    "viewMyAppointments": "Voir mes rendez-vous (entrez votre email):",
+    "missingData": "Données manquantes: sélectionnez un professionnel, une date et un email.",
+    "successMessage": "Rendez-vous demandé avec succès!",
+    "errorMessage": "Il y a eu un problème",
+    "confirmCancel": "Êtes-vous sûr de vouloir annuler ce rendez-vous?",
+    "errorCancelNoEmail": "Erreur: Impossible d'annuler sans l'email de l'utilisateur",
+    "openDatePicker": "Ouvrir le sélecteur de date",
+    "source": {
+      "demo": "(Démo)",
+      "saved": "(Enregistré)"
+    },
+    "types": {
+      "hospital": "Hôpital",
+      "clinic": "Clinique",
+      "doctors": "Médecin",
+      "veterinary": "Vétérinaire",
+      "default": "Service de santé"
+    }
+  },
+  "insurance": {
+    "title": "Assurance Santé",
+    "insurancePlans": "Plans d'Assurance Santé",
+    "myInsurance": "Mon Assurance",
+    "coverage": "Couverture",
+    "coverageIncluded": "Couverture incluse:",
+    "plan": "Plan",
+    "cardNumber": "Numéro de Carte",
+    "validUntil": "Valide jusqu'au",
+    "benefits": "Avantages",
+    "network": "Réseau de Prestataires",
+    "subtitle": "Protégez votre santé et celle de votre famille avec nos plans d'assurance santé. Choisissez le plan qui correspond le mieux à vos besoins.",
+    "selectPlan": "Sélectionner le Plan",
+    "selected": "Sélectionné",
+    "selectedPlan": "Plan sélectionné",
+    "contractPlan": "Souscrire au Plan",
+    "contractInsurance": "Souscrire une Assurance",
+    "perMonth": "/mois",
+    "fullName": "Nom complet",
+    "phone": "Téléphone",
+    "address": "Adresse",
+    "contractFor": "Souscrire pour",
+    "plans": {
+      "basic": {
+        "name": "Plan Basique",
+        "description": "Couverture médicale essentielle pour les consultations et les urgences de base",
+        "coverage": [
+          "Consultations médicales générales",
+          "Urgences de base",
+          "Médicaments de base",
+          "Analyses de laboratoire de base"
+        ]
+      },
+      "premium": {
+        "name": "Plan Premium",
+        "description": "Couverture médicale complète avec spécialistes et procédures avancées",
+        "coverage": [
+          "Consultations médicales générales et spécialistes",
+          "Urgences et hospitalisation",
+          "Médicaments et traitements spécialisés",
+          "Analyses de laboratoire complètes",
+          "Chirurgies mineures et majeures",
+          "Réadaptation et physiothérapie"
+        ]
+      },
+      "family": {
+        "name": "Plan Familial",
+        "description": "Couverture médicale complète pour toute la famille",
+        "coverage": [
+          "Couverture pour jusqu'à 4 membres de la famille",
+          "Consultations médicales générales et spécialistes",
+          "Urgences et hospitalisation",
+          "Médicaments et traitements spécialisés",
+          "Analyses de laboratoire complètes",
+          "Chirurgies mineures et majeures",
+          "Réadaptation et physiothérapie",
+          "Soins pédiatriques spécialisés",
+          "Soins gériatriques"
+        ]
+      }
+    }
+  },
+  "footer": {
+    "copyright": "© 2024 SaludMap - Trouvez des services de santé à proximité"
+  }
+}

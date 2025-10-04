@@ -1,5 +1,6 @@
 // INICIO CAMBIO - Archivo: src/components/Turnos.jsx - Integrado con nuevos servicios
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './Turnos.css';
 
 // Importar nuevos servicios
@@ -17,18 +18,14 @@ const getTypeFromPlace = (place) => {
     return place.type || 'default';
 };
 
-const prettyType = (type) => {
-    const types = {
-        hospital: 'Hospital',
-        clinic: 'Clínica',
-        doctors: 'Médico',
-        veterinary: 'Veterinaria',
-        default: 'Servicio de salud'
-    };
-    return types[type] || types.default;
-};
-
 export default function Turnos() {
+    const { t } = useTranslation();
+    
+    // Función para traducir tipos de profesionales
+    const prettyType = (type) => {
+        return t(`appointments.types.${type}`, { defaultValue: t('appointments.types.default') });
+    };
+    
     // Estados del modal
     const [modalOpen, setModalOpen] = useState(false);
     const [selected, setSelected] = useState(null);
@@ -200,7 +197,7 @@ export default function Turnos() {
 
     const handleSolicitarTurno = async () => {
         if (!selected || !datetime || !correo) {
-            setError('Faltan datos: selecciona un profesional, fecha y correo.');
+            setError(t('appointments.missingData'));
             return;
         }
 
@@ -215,14 +212,14 @@ export default function Turnos() {
             setNotes('');
             setError('');
 
-            alert('¡Turno solicitado correctamente!');
+            alert(t('appointments.successMessage'));
 
         } catch (emailError) {
             console.error('[Turnos] Error completo:', emailError);
 
-            const errorMessage = emailError.message || 'Error desconocido';
+            const errorMessage = emailError.message || t('common.error');
             setError(errorMessage);
-            alert(`Hubo un problema: ${errorMessage}`);
+            alert(`${t('appointments.errorMessage')}: ${errorMessage}`);
 
         } finally {
             setLoading(false);
@@ -231,11 +228,11 @@ export default function Turnos() {
 
     const handleCancelarTurno = async (id) => {
         if (!correo) {
-            alert('Error: No se puede cancelar sin correo del usuario');
+            alert(t('appointments.errorCancelNoEmail'));
             return;
         }
 
-        const confirmCancel = window.confirm('¿Estás seguro de que quieres cancelar este turno?');
+        const confirmCancel = window.confirm(t('appointments.confirmCancel'));
         if (!confirmCancel) return;
 
         await cancelarTurno(id, correo);
@@ -245,14 +242,14 @@ export default function Turnos() {
         <div className="turnos-section">
             <div className="turnos-root">
                 <div className="turnos-header">
-                    <div className="turnos-badge" style={{ background: '#47472eff' }}>Turnos</div>
-                <h3>Solicitar Turnos</h3>
+                    <div className="turnos-badge" style={{ background: '#47472eff' }}>{t('appointments.badge')}</div>
+                <h3>{t('appointments.requestAppointments')}</h3>
 
                 {/* Campo de correo para ver turnos */}
                 <div style={{ marginTop: '10px' }}>
                     {/* <label style={{
                         display: 'block',
-                        fontSize: '12px',
+{{ ... }}
                         marginBottom: '5px',
                         color: 'var(--color-primary)'
                     }}>
