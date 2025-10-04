@@ -26,15 +26,10 @@ export const ProfesionalesList = ({ lugares, loading, error, onOpenModal, getTyp
                                 <div className="prof-type">{prettyType(tipo)}</div>
                                 {p.source && p.source !== 'api' && (
                                     <div className="prof-source">
-<<<<<<< HEAD
                                         {p.source === 'mock' ? '(Demo)' :
                                             p.source === 'cache' ? '(Guardado)' :
                                                 `(${p.source})`}
-=======
-                                        {p.source === 'mock' ? t('appointments.source.demo') : 
-                                         p.source === 'cache' ? t('appointments.source.saved') : 
-                                         `(${p.source})`}
->>>>>>> a6b91c6342463559b7e40fc06740075a453e6fd5
+
                                     </div>
                                 )}
                             </div>

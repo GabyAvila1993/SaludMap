@@ -1,14 +1,11 @@
 // INICIO CAMBIO - Archivo: src/components/Map.jsx - Integración con servicios
-<<<<<<< HEAD
-import React, { useState, useRef, useEffect } from 'react'
-import { MapContainer, Marker, Circle, useMap } from 'react-leaflet';
-=======
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MapContainer, Marker, Popup, Circle, useMap } from 'react-leaflet';
->>>>>>> a6b91c6342463559b7e40fc06740075a453e6fd5
+
 import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import 'leaflet/dist/leaflet.css'; 
 import axios from 'axios';
 import locationService from '../services/locationService';
 import SaveLocationModal from './SaveLocationModal';
@@ -387,7 +384,6 @@ export default function MapComponent() {
             </div>
 
             <div className="map-wrapper">
-<<<<<<< HEAD
               <MapContainer
                 center={[currentLocation.lat, currentLocation.lng]}
                 zoom={15}
@@ -406,16 +402,6 @@ export default function MapComponent() {
                         center={[currentLocation.lat, currentLocation.lng]}
                         radius={currentLocation.accuracy}
                         pathOptions={{ color: '#007bff', fillOpacity: 0.08 }}
-=======
-                <MapContainer
-                    center={[currentLocation.lat, currentLocation.lng]}
-                    className="leaflet-map"
-                >
-                    <MapController />
-                    <OfflineTileLayer 
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
->>>>>>> a6b91c6342463559b7e40fc06740075a453e6fd5
                     />
                 )}
 
