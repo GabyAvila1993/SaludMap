@@ -127,3 +127,22 @@ npm install opening_hours funcion de los horarios en el mapa para cada estableci
 react-leaflet y leaflet --> para mostrar el mapa y los marcadores
 
 axios --> para hacer requests al backend.
+
+
+
+
+martin:
+
+
+dependencias para login
+
+backend 
+
+npm install bcryptjs jsonwebtoken mongoose passport passport-jwt passport-local
+npm install -D @types/bcryptjs @types/jsonwebtoken @types/passport @types/passport-jwt @types/passport-local @types/mongoose
+npm install -D typescript ts-node nodemon
+
+
+front
+
+npm install axios  
