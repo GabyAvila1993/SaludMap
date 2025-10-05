@@ -18,10 +18,11 @@ export const apiConfig = API_CONFIG[environment];
 
 // Crear instancia de axios configurada
 const api = axios.create({
-  baseURL: apiConfig.baseURL,
+  baseURL: '/api',
+  timeout: 5000,
   headers: {
-    'Content-Type': 'application/json',
-  },
+    'Content-Type': 'application/json'
+  }
 });
 
 // Helper para construir URLs de endpoints

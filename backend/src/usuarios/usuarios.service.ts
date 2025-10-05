@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 
 @Injectable()
 export class UsuariosService {
+  constructor() {}
   async crearUsuario(data: { nombre: string; apellido: string; mail: string; contrasenia: string }) {
     const existe = await prisma.usuario.findUnique({ where: { mail: data.mail } });
     if (existe) throw new ConflictException('El mail ya está registrado');

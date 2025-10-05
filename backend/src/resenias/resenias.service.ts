@@ -46,7 +46,7 @@ export class ReseniasService {
     }
 
     // 5. Verificar que la fecha y hora han pasado (o es muy reciente para testing)
-    const fechaTurno = this.construirFechaTurno(turno.fecha, turno.hora);
+    const fechaTurno = this.construirFechaTurno(turno.fecha, turno.hora || '00:00');
     const ahora = new Date();
     const dosHorasAtras = new Date(ahora.getTime() - 2 * 60 * 60 * 1000);
 
@@ -67,16 +67,15 @@ export class ReseniasService {
   /**
    * Construye una fecha completa a partir de fecha y hora
    */
-  private construirFechaTurno(fecha: Date, hora: string): Date {
-    const fechaBase = new Date(fecha);
+  private construirFechaTurno(fecha: Date, hora: string | null): Date {
+    if (!hora) {
+      return fecha; // Si no hay hora específica, retorna solo la fecha
+    }
+    
     const [horas, minutos] = hora.split(':').map(Number);
-    
-    fechaBase.setHours(horas || 0);
-    fechaBase.setMinutes(minutos || 0);
-    fechaBase.setSeconds(0);
-    fechaBase.setMilliseconds(0);
-    
-    return fechaBase;
+    const fechaTurno = new Date(fecha);
+    fechaTurno.setHours(horas, minutos);
+    return fechaTurno;
   }
 
   /**
@@ -210,7 +209,7 @@ export class ReseniasService {
 
     // Filtrar turnos que ya pasaron O son muy recientes (últimas 2 horas)
     const turnosDisponibles = turnos.filter((turno) => {
-      const fechaTurno = this.construirFechaTurno(turno.fecha, turno.hora);
+      const fechaTurno = this.construirFechaTurno(turno.fecha, turno.hora || '00:00');
       // Permitir si ya pasó O si es dentro de las últimas 2 horas
       return fechaTurno <= ahora || fechaTurno >= dosHorasAtras;
     });

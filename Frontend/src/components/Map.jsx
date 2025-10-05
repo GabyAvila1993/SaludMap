@@ -138,7 +138,7 @@ export default function MapComponent() {
 
         // Centrar mapa en nueva ubicación con animación
         if (mapRef.current) {
-            mapRef.current.setView([location.lat, location.lng], 15, {
+            mapRef.current.setView([location.lat, location.lng], 50, {
                 animate: true,
                 duration: 0.5
             });
