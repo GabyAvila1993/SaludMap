@@ -18,6 +18,9 @@ import offlineTileService from '../services/offlineTileService.js';
 import { savePlaces, getNearbyPlaces, saveNamedLocation } from '../services/db.js';
 import './Map.css';
 import EstablishmentInfo from './EstablishmentInfo';
+import Resenias from './Resenias/Resenias';
+import { useResenias } from '../hooks/useResenias';
+import establecimientosService from '../services/establecimientosService';
 
 // Fix ícono por defecto
 L.Icon.Default.mergeOptions({
@@ -38,9 +41,15 @@ export default function MapComponent() {
     const [showSaveLocationModal, setShowSaveLocationModal] = useState(false);
     const [showSavedLocationsList, setShowSavedLocationsList] = useState(false);
     const [selectedPlace, setSelectedPlace] = useState(null);
+    const [selectedEstablecimiento, setSelectedEstablecimiento] = useState(null);
+    const [loadingEstablecimiento, setLoadingEstablecimiento] = useState(false);
 
     const mapRef = useRef(null);
     const unsubscribeRef = useRef(null);
+
+    // Hook de reseñas (solo si tenemos establecimiento)
+    const { resenias, loading: loadingResenias, promedioEstrellas, totalResenias } = 
+        useResenias(selectedEstablecimiento?.id);
 
     // Icono para usuario
     const userIcon = L.divIcon({
@@ -149,7 +158,7 @@ export default function MapComponent() {
                 try {
                     const types = ['hospital', 'clinic', 'doctors', 'veterinary'].join(',');
                     const response = await axios.get(
-                        `/places?lat=${location.lat}&lng=${location.lng}&types=${types}`
+                        `/api/places?lat=${location.lat}&lng=${location.lng}&types=${types}`
                     );
 
                     places = normalizeApiResponse(response.data);
@@ -257,7 +266,7 @@ export default function MapComponent() {
             try { locationService.startWatching(); } catch (e) { /* noop */ }
 
             if (mapRef.current && location) {
-                mapRef.current.setView([location.lat, location.lng], 15, {
+                mapRef.current.setView([location.lat, location.lng], 50, {
                     animate: true,
                     duration: 0.5
                 });
@@ -288,6 +297,28 @@ export default function MapComponent() {
     const handleMarkerDrag = async (event) => {
         const { lat, lng } = event.target.getLatLng();
         await locationService.setManualLocation(lat, lng);
+    };
+
+    // Manejar selección de lugar y cargar establecimiento
+    const handlePlaceSelect = async (lugar) => {
+        setSelectedPlace(lugar);
+        setLoadingEstablecimiento(true);
+        
+        try {
+            const est = await establecimientosService.findOrCreate(lugar);
+            setSelectedEstablecimiento(est);
+        } catch (error) {
+            console.error('Error cargando establecimiento:', error);
+            setSelectedEstablecimiento(null);
+        } finally {
+            setLoadingEstablecimiento(false);
+        }
+    };
+
+    // Manejar cierre de lugar seleccionado
+    const handlePlaceClose = () => {
+        setSelectedPlace(null);
+        setSelectedEstablecimiento(null);
     };
 
     // Component to handle map reference
@@ -343,6 +374,7 @@ export default function MapComponent() {
     }
 
     return (
+        <>
         <div className="map-section">
             <div className="map-root">
             <h3 className="map-title">
@@ -389,7 +421,7 @@ export default function MapComponent() {
                 zoom={15}
                 className="leaflet-map"
                 whenCreated={(mapInstance) => { mapRef.current = mapInstance }}
-                onClick={() => setSelectedPlace(null)}
+                onClick={handlePlaceClose}
               >
                 <MapController />
                 <OfflineTileLayer 
@@ -436,7 +468,7 @@ export default function MapComponent() {
                             icon={getIconForType(tipo)}
                             eventHandlers={{
                                 click: () => {
-                                    setSelectedPlace(lugar);
+                                    handlePlaceSelect(lugar);
                                 }
                             }}
                         />
@@ -446,7 +478,7 @@ export default function MapComponent() {
 
               {/* tu panel grande (EstablishmentInfo) continúa funcionando */}
                             {selectedPlace && (
-                                <EstablishmentInfo place={selectedPlace} onClose={() => setSelectedPlace(null)} />
+                                <EstablishmentInfo place={selectedPlace} onClose={handlePlaceClose} />
                             )}
             </div>
 
@@ -464,6 +496,29 @@ export default function MapComponent() {
             />
             </div>
         </div>
+
+        {/* Sección de reseñas FUERA del contenedor del mapa */}
+        {selectedPlace && selectedEstablecimiento && (
+            <div className="resenias-section">
+                <div className="resenias-header-info">
+                    <h3 className="resenias-title">
+                        Reseñas de {selectedPlace.tags?.name ?? selectedPlace.properties?.name ?? 'este lugar'}
+                    </h3>
+                </div>
+                
+                {loadingEstablecimiento ? (
+                    <div className="resenias-loading">Cargando reseñas...</div>
+                ) : (
+                    <Resenias 
+                        resenias={resenias}
+                        promedioEstrellas={promedioEstrellas}
+                        totalResenias={totalResenias}
+                        loading={loadingResenias}
+                    />
+                )}
+            </div>
+        )}
+        </>
     );
 }
 // FIN CAMBIO - Archivo: src/components/Map.jsx

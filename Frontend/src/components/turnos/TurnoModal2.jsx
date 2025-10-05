@@ -43,6 +43,47 @@ export const TurnoModal = ({
                 </div>
 
                 <div className="modal__body">
+                    {/* Indicador de establecimiento seleccionado desde el mapa */}
+                    {selected.establecimientoNombre && selected.establecimientoId && (
+                        <div style={{
+                            padding: '12px 16px',
+                            background: 'linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)',
+                            border: '2px solid #4caf50',
+                            borderRadius: '8px',
+                            marginBottom: '1.5rem',
+                            boxShadow: '0 2px 4px rgba(76, 175, 80, 0.2)'
+                        }}>
+                            <div style={{ 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                gap: '8px',
+                                color: '#2e7d32',
+                                fontWeight: '600'
+                            }}>
+                                <span style={{ fontSize: '1.2rem' }}>📍</span>
+                                <span>Establecimiento del Mapa:</span>
+                            </div>
+                            <div style={{ 
+                                marginTop: '4px', 
+                                marginLeft: '28px',
+                                color: '#1b5e20',
+                                fontWeight: '700',
+                                fontSize: '1.05rem'
+                            }}>
+                                {selected.establecimientoNombre}
+                            </div>
+                            <div style={{ 
+                                marginTop: '4px', 
+                                marginLeft: '28px',
+                                fontSize: '0.85rem',
+                                color: '#558b2f',
+                                fontStyle: 'italic'
+                            }}>
+                                Tu turno quedará vinculado a este establecimiento
+                            </div>
+                        </div>
+                    )}
+
                     <div className="input">
                         <label className="input__label">{t('appointments.professional')}</label>
                         <div className="input__field">{professionalName}</div>

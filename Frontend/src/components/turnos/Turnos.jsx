@@ -1,9 +1,8 @@
-// INICIO CAMBIO - Archivo: src/components/Turnos.jsx - Integrado con nuevos servicios
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './Turnos.css';
 
-// Importar nuevos servicios
+// Importar servicios
 import locationService from '../../services/locationService.js';
 import turnosService, { saveAppointment } from '../../services/turnosService.js';
 import { initializeEmailJS } from '../../services/emailService.js';
@@ -15,7 +14,7 @@ import { ProfesionalesList } from './ProfesionalesList2.jsx';
 import { MisTurnosList } from './MisTurnosList2.jsx';
 import { TurnoModal } from './TurnoModal2.jsx';
 
-// Utilidades (mantener compatibilidad)
+// Utilidades
 const getTypeFromPlace = (place) => {
     return place.type || 'default';
 };
@@ -42,164 +41,289 @@ export default function Turnos() {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState('');
 
-    // Estados de lugares y turnos
-    const [lugares, setLugares] = useState([]);
-    const [loadingPlaces, setLoadingPlaces] = useState(false);
-    const [errorPlaces, setErrorPlaces] = useState('');
-    const [misTurnos, setMisTurnos] = useState([]);
-    const [cancellingId, setCancellingId] = useState(null);
+	// Estados de lugares y turnos
+	const [lugares, setLugares] = useState([]);
+	const [loadingPlaces, setLoadingPlaces] = useState(false);
+	const [errorPlaces, setErrorPlaces] = useState('');
+	const [misTurnos, setMisTurnos] = useState([]);
+	const [cancellingId, setCancellingId] = useState(null);
+	
+	// Estado para establecimiento pre-seleccionado desde el mapa
+	const [preSelectedEstablecimiento, setPreSelectedEstablecimiento] = useState(null);
+	const [preSelectedPlace, setPreSelectedPlace] = useState(null);
 
-    // Suscribirse a cambios de profesionales
-    useEffect(() => {
-        // Inicializar EmailJS
-        initializeEmailJS();
-        
-        const unsubscribe = turnosService.subscribe(({ lugares, loading, error }) => {
-            setLugares(lugares || []);
-            setLoadingPlaces(loading || false);
-            setErrorPlaces(error || '');
-        });
+	// Función para abrir modal - DEFINIR ANTES DE LOS useEffect
+	const openModal = (prof) => {
+		const tags = prof.tags || prof.properties || {};
+		const normalizedProf = {
+			...prof,
+			name: prof.name || tags.name || prof.properties?.name || tags.amenity || 'Establecimiento de salud',
+			address: prof.direccion || prof.address || tags.addr_full || tags['addr:full'] || tags.address || prof.properties?.address || '',
+			establecimientoId: preSelectedEstablecimiento?.id,
+			establecimientoNombre: preSelectedEstablecimiento?.nombre || tags.name || 'Establecimiento'
+		};
+		
+		console.log('[Turnos] Abriendo modal con:', normalizedProf);
+		
+		setSelected(normalizedProf);
+		setDatetime('');
+		setNotes('');
+		setSelectedType(getTypeFromPlace(prof));
+		setModalOpen(true);
+	};
 
-        // Inicializar servicio
-        turnosService.initialize();
+	// Suscribirse a cambios de profesionales
+	useEffect(() => {
+		initializeEmailJS();
+		
+		const unsubscribe = turnosService.subscribe(({ lugares, loading, error }) => {
+			const lugaresNormalizados = (lugares || []).map(lugar => {
+				const tags = lugar.tags || lugar.properties || {};
+				return {
+					...lugar,
+					name: lugar.name || tags.name || lugar.properties?.name || tags.amenity || 'Establecimiento de salud',
+					address: lugar.address || lugar.direccion || tags.addr_full || tags['addr:full'] || tags.address || lugar.properties?.address || ''
+				};
+			});
+			
+			setLugares(lugaresNormalizados);
+			setLoadingPlaces(loading || false);
+			setErrorPlaces(error || '');
+		});
 
-        return unsubscribe;
-    }, []);
+		turnosService.initialize();
 
-    // Suscribirse a eventos de ubicación del mapa
-    useEffect(() => {
-        const handleLocationChange = (e) => {
-            console.log('[Turnos] Recibido evento de ubicación:', e.detail);
-            const { lat, lng, source } = e.detail;
+		return unsubscribe;
+	}, []);
 
-            if (lat && lng) {
-                if (source === 'manual') {
-                    // Establecer ubicación manual en el servicio
-                    locationService.setManualLocation(lat, lng);
-                }
-                // El servicio automáticamente notificará a los suscriptores
-            }
-        };
+	// Suscribirse a eventos de ubicación del mapa
+	useEffect(() => {
+		const handleLocationChange = (e) => {
+			console.log('[Turnos] Evento de ubicación recibido:', e.detail);
+			const { lat, lng, source } = e.detail;
 
-        window.addEventListener('saludmap:pos-changed', handleLocationChange);
-        return () => {
-            window.removeEventListener('saludmap:pos-changed', handleLocationChange);
-        };
-    }, []);
+			if (lat && lng) {
+				if (source === 'manual') {
+					locationService.setManualLocation(lat, lng);
+				}
+			}
+		};
 
-	// Cargar turnos cuando cambie el usuario autenticado
+		window.addEventListener('saludmap:pos-changed', handleLocationChange);
+		return () => {
+			window.removeEventListener('saludmap:pos-changed', handleLocationChange);
+		};
+	}, []);
+
+	// Escuchar eventos del mapa para solicitud de turno
+	useEffect(() => {
+		console.log('[Turnos] Registrando listener para eventos del mapa');
+		
+		const handleChangeTab = (e) => {
+			console.log('[Turnos] Evento recibido:', e.detail);
+			
+			if (e.detail?.tab !== 'turnos') {
+				console.log('[Turnos] Tab no es "turnos", ignorando');
+				return;
+			}
+
+			const { establecimiento, place } = e.detail;
+			
+			console.log('[Turnos] Verificando datos recibidos:');
+			console.log('[Turnos] - Establecimiento:', establecimiento);
+			console.log('[Turnos] - Place:', place);
+
+			// Validar que el establecimiento tenga datos completos
+			if (!establecimiento) {
+				console.error('[Turnos] No se recibió establecimiento');
+				alert('Error: No se recibió información del establecimiento. Por favor intenta nuevamente.');
+				return;
+			}
+
+			if (!establecimiento.id) {
+				console.error('[Turnos] Establecimiento sin ID:', establecimiento);
+				alert('Error: El establecimiento no tiene un ID válido. Por favor intenta nuevamente.');
+				return;
+			}
+
+			if (!place) {
+				console.error('[Turnos] No se recibió place');
+				alert('Error: No se recibió información del lugar. Por favor intenta nuevamente.');
+				return;
+			}
+
+			console.log('[Turnos] Datos válidos, estableciendo pre-selección');
+			console.log('[Turnos] - Establecimiento ID:', establecimiento.id);
+			console.log('[Turnos] - Establecimiento Nombre:', establecimiento.nombre);
+
+			// Establecer pre-selección
+			setPreSelectedEstablecimiento(establecimiento);
+			setPreSelectedPlace(place);
+
+			// Abrir modal automáticamente
+			console.log('[Turnos] Programando apertura de modal en 300ms');
+			setTimeout(() => {
+				console.log('[Turnos] Ejecutando openModal');
+				openModal(place);
+			}, 300);
+		};
+
+		window.addEventListener('saludmap:change-tab', handleChangeTab);
+		console.log('[Turnos] Listener registrado exitosamente');
+		
+		return () => {
+			console.log('[Turnos] Removiendo listener');
+			window.removeEventListener('saludmap:change-tab', handleChangeTab);
+		};
+	}, [preSelectedEstablecimiento, preSelectedPlace]);
+
+	// Verificar sessionStorage al montar (respaldo)
+	useEffect(() => {
+		console.log('[Turnos] Verificando sessionStorage al montar');
+		
+		const storedEstablecimiento = sessionStorage.getItem('selectedEstablecimiento');
+		const storedPlace = sessionStorage.getItem('selectedPlace');
+		
+		if (storedEstablecimiento && storedPlace) {
+			console.log('[Turnos] Datos encontrados en sessionStorage');
+			
+			try {
+				const establecimiento = JSON.parse(storedEstablecimiento);
+				const place = JSON.parse(storedPlace);
+				
+				console.log('[Turnos] Datos parseados:');
+				console.log('[Turnos] - Establecimiento:', establecimiento);
+				console.log('[Turnos] - Place:', place);
+
+				// Validar datos
+				if (!establecimiento.id) {
+					console.error('[Turnos] Establecimiento en storage sin ID');
+					sessionStorage.removeItem('selectedEstablecimiento');
+					sessionStorage.removeItem('selectedPlace');
+					return;
+				}
+
+				setPreSelectedEstablecimiento(establecimiento);
+				setPreSelectedPlace(place);
+				
+				// Abrir modal automáticamente
+				setTimeout(() => {
+					console.log('[Turnos] Abriendo modal desde sessionStorage');
+					openModal(place);
+				}, 500);
+				
+				// Limpiar sessionStorage
+				sessionStorage.removeItem('selectedEstablecimiento');
+				sessionStorage.removeItem('selectedPlace');
+				console.log('[Turnos] sessionStorage limpiado');
+			} catch (error) {
+				console.error('[Turnos] Error parseando sessionStorage:', error);
+				sessionStorage.removeItem('selectedEstablecimiento');
+				sessionStorage.removeItem('selectedPlace');
+			}
+		} else {
+			console.log('[Turnos] No hay datos en sessionStorage');
+		}
+	}, []);
+
+	// Cargar turnos cuando cambie el usuario
 	useEffect(() => {
 		if (user?.mail) {
 			console.log('[Turnos] Cargando turnos para usuario:', user.mail);
 			cargarMisTurnos(user.mail);
 		} else {
-			console.log('[Turnos] Limpiando turnos');
+			console.log('[Turnos] Sin usuario, limpiando turnos');
 			setMisTurnos([]);
 		}
 	}, [user]);
 
-    // Funciones de turnos (mock - reemplazar con tu lógica real)
-    const cargarMisTurnos = async (emailUsuario) => {
-        try {
-            // Aquí deberías llamar a tu API real de turnos
-            console.log('[Turnos] Simulando carga de turnos para:', emailUsuario);
+	// Funciones de turnos
+	const cargarMisTurnos = async (emailUsuario) => {
+		try {
+			console.log('[Turnos] Cargando turnos para:', emailUsuario);
+			// Aquí deberías implementar la llamada a tu API
+			const turnosSimulados = [];
+			setMisTurnos(turnosSimulados);
+		} catch (error) {
+			console.error('[Turnos] Error cargando turnos:', error);
+			setMisTurnos([]);
+		}
+	};
 
-            // Simulación de turnos
-            const turnosSimulados = [
-                {
-                    id: 1,
-                    professionalName: 'Dr. Juan Pérez',
-                    professionalType: 'doctors',
-                    datetime: new Date(Date.now() + 86400000).toISOString(), // Mañana
-                    notes: 'Consulta general'
-                }
-            ];
+	const solicitarTurno = async (profesional, fechaHora, observaciones, correo, tipo) => {
+		try {
+			setLoading(true);
+			console.log('[Turnos] Solicitando turno con datos:');
+			console.log('[Turnos] - Profesional:', profesional.name);
+			console.log('[Turnos] - Fecha/Hora:', fechaHora);
+			console.log('[Turnos] - Correo:', correo);
+			console.log('[Turnos] - Establecimiento ID:', preSelectedEstablecimiento?.id);
 
-            setMisTurnos(turnosSimulados);
-        } catch (error) {
-            console.error('[Turnos] Error cargando turnos:', error);
-            setMisTurnos([]);
-        }
-    };
+			const { sendAppointmentEmail } = await import('../../services/emailService.js');
+			
+			const { emailResponse, payload } = await sendAppointmentEmail(
+				profesional,
+				fechaHora,
+				observaciones,
+				correo,
+				tipo,
+				prettyType
+			);
 
-    const solicitarTurno = async (profesional, fechaHora, observaciones, correo, tipo) => {
-        try {
-            setLoading(true);
-            console.log('[Turnos] Solicitando turno:', {
-                profesional: profesional.name,
-                fechaHora,
-                correo
-            });
+			// Agregar establecimientoId si está disponible
+			if (preSelectedEstablecimiento?.id) {
+				payload.establecimientoId = preSelectedEstablecimiento.id;
+				console.log('[Turnos] Turno vinculado al establecimiento ID:', preSelectedEstablecimiento.id);
+			}
 
-            // Importar dinámicamente el emailService
-            const { sendAppointmentEmail } = await import('../../services/emailService.js');
-            
-            // Enviar email de confirmación
-            const { emailResponse, payload } = await sendAppointmentEmail(
-                profesional,
-                fechaHora,
-                observaciones,
-                correo,
-                tipo,
-                prettyType
-            );
+			console.log('[Turnos] Guardando turno con payload:', payload);
+			const response = await saveAppointment(payload);
+			console.log('[Turnos] Turno guardado exitosamente:', response);
+			
+			setLoading(false);
 
-            // Crear turno en el backend
-            console.log('[DEBUG] Llamando saveAppointment con payload:', payload);
-            const response = await saveAppointment(payload);
-            console.log('[Turnos] Turno guardado:', response);
-            
-            setLoading(false);
+			// Agregar a lista local
+			const nuevoTurno = {
+				id: response.id || Date.now(),
+				professionalName: profesional.name || 'Profesional',
+				professionalType: tipo,
+				datetime: fechaHora,
+				notes: observaciones,
+				email: correo,
+				establecimientoId: preSelectedEstablecimiento?.id
+			};
 
-            // Agregar a la lista local
-            const nuevoTurno = {
-                id: response.id || Date.now(),
-                professionalName: profesional.name || 'Profesional',
-                professionalType: tipo,
-                datetime: fechaHora,
-                notes: observaciones,
-                email: correo
-            };
+			setMisTurnos(prev => [...prev, nuevoTurno]);
+			
+			// Limpiar pre-selección después de crear el turno
+			setPreSelectedEstablecimiento(null);
+			setPreSelectedPlace(null);
 
-            setMisTurnos(prev => [...prev, nuevoTurno]);
+		} catch (error) {
+			console.error('[Turnos] Error solicitando turno:', error);
+			setLoading(false);
+			throw error;
+		} finally {
+			setLoading(false);
+		}
+	};
 
-        } catch (error) {
-            console.error('[Turnos] Error solicitando turno:', error);
-            console.error('[Turnos] Error completo:', error);
-            setLoading(false);
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    };
+	const cancelarTurno = async (turnoId, correo) => {
+		try {
+			setCancellingId(turnoId);
+			console.log('[Turnos] Cancelando turno:', turnoId);
 
-    const cancelarTurno = async (turnoId, correo) => {
-        try {
-            setCancellingId(turnoId);
-            console.log('[Turnos] Cancelando turno:', turnoId);
+			await new Promise(resolve => setTimeout(resolve, 1000));
 
-            // Aquí deberías llamar a tu API real para cancelar el turno
-            await new Promise(resolve => setTimeout(resolve, 1000));
+			setMisTurnos(prev => prev.filter(t => t.id !== turnoId));
 
-            // Remover de la lista local
-            setMisTurnos(prev => prev.filter(t => t.id !== turnoId));
-
-        } catch (error) {
-            console.error('[Turnos] Error cancelando turno:', error);
-            alert('Error cancelando turno: ' + error.message);
-        } finally {
-            setCancellingId(null);
-        }
-    };
-
-    // Funciones del modal
-    const openModal = (prof) => {
-        setSelected(prof);
-        setDatetime('');
-        setNotes('');
-        setSelectedType(getTypeFromPlace(prof));
-        setModalOpen(true);
-    };
+		} catch (error) {
+			console.error('[Turnos] Error cancelando turno:', error);
+			alert('Error cancelando turno: ' + error.message);
+		} finally {
+			setCancellingId(null);
+		}
+	};
 
 	const handleSolicitarTurno = async () => {
 		if (!user) {
@@ -249,7 +373,7 @@ export default function Turnos() {
 		await cancelarTurno(id, user.mail);
 	};
 
-	// Si no está autenticado, mostrar mensaje para iniciar sesión
+	// Si no está autenticado
 	if (!user) {
 		return (
 			<div className="turnos-section">
@@ -298,7 +422,6 @@ export default function Turnos() {
 						</div>
 					</div>
 					
-					{/* Modal de Autenticación */}
 					<ModalAuth
 						open={showAuthModal}
 						onClose={() => setShowAuthModal(false)}
@@ -321,23 +444,73 @@ export default function Turnos() {
 					</div>
 				</div>
 
-            <div className="turnos-body">
-                <ProfesionalesList
-                    lugares={lugares}
-                    loading={loadingPlaces}
-                    error={errorPlaces}
-                    onOpenModal={openModal}
-                    getTypeFromPlace={getTypeFromPlace}
-                    prettyType={prettyType}
-                />
+				<div className="turnos-body">
+					{!preSelectedEstablecimiento ? (
+						<ProfesionalesList
+							lugares={lugares}
+							loading={loadingPlaces}
+							error={errorPlaces}
+							onOpenModal={openModal}
+							getTypeFromPlace={getTypeFromPlace}
+							prettyType={prettyType}
+						/>
+					) : (
+						<div className="turnos-left">
+							<div style={{
+								padding: '2rem',
+								textAlign: 'center',
+								background: 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)',
+								borderRadius: '12px',
+								border: '2px solid #2196f3'
+							}}>
+								<div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>📍</div>
+								<h4 style={{ color: '#1976d2', marginBottom: '0.5rem' }}>
+									Establecimiento Seleccionado
+								</h4>
+								<p style={{ color: '#0d47a1', fontSize: '1.1rem', fontWeight: '600', marginBottom: '1rem' }}>
+									{preSelectedEstablecimiento.nombre}
+								</p>
+								<p style={{ color: '#1565c0', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+									{preSelectedEstablecimiento.direccion || 'Sin dirección disponible'}
+								</p>
+								<button
+									onClick={() => openModal(preSelectedPlace)}
+									style={{
+										padding: '12px 24px',
+										fontSize: '1rem',
+										backgroundColor: '#2196f3',
+										color: 'white',
+										border: 'none',
+										borderRadius: '8px',
+										cursor: 'pointer',
+										fontWeight: '600',
+										transition: 'all 0.3s ease',
+										boxShadow: '0 4px 12px rgba(33, 150, 243, 0.3)'
+									}}
+									onMouseOver={(e) => {
+										e.target.style.backgroundColor = '#1976d2';
+										e.target.style.transform = 'translateY(-2px)';
+										e.target.style.boxShadow = '0 6px 16px rgba(33, 150, 243, 0.4)';
+									}}
+									onMouseOut={(e) => {
+										e.target.style.backgroundColor = '#2196f3';
+										e.target.style.transform = 'translateY(0)';
+										e.target.style.boxShadow = '0 4px 12px rgba(33, 150, 243, 0.3)';
+									}}
+								>
+									📅 Solicitar Turno
+								</button>
+							</div>
+						</div>
+					)}
 
-                <MisTurnosList
-                    misTurnos={misTurnos}
-                    onCancelTurno={handleCancelarTurno}
-                    cancellingId={cancellingId}
-                    prettyType={prettyType}
-                />
-            </div>
+					<MisTurnosList
+						misTurnos={misTurnos}
+						onCancelTurno={handleCancelarTurno}
+						cancellingId={cancellingId}
+						prettyType={prettyType}
+					/>
+				</div>
 
 				<TurnoModal
 					modalOpen={modalOpen}
@@ -348,7 +521,7 @@ export default function Turnos() {
 					notes={notes}
 					setNotes={setNotes}
 					correo={user.mail}
-					setCorreo={() => {}} // No permitir cambiar el correo
+					setCorreo={() => {}}
 					loading={loading}
 					error={error}
 					onClose={() => setModalOpen(false)}
@@ -359,4 +532,3 @@ export default function Turnos() {
 		</div>
 	);
 }
-// FIN CAMBIO - Archivo: src/components/Turnos.jsx

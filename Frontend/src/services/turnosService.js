@@ -65,7 +65,7 @@ class TurnosService {
             // Si no hay datos offline, intentar cargar online
             const types = ['hospital', 'clinic', 'doctors', 'veterinary'].join(',');
             const response = await axios.get(
-                `/places?lat=${location.lat}&lng=${location.lng}&types=${types}`
+                `/api/places?lat=${location.lat}&lng=${location.lng}&types=${types}`
             );
 
             const places = this.normalizeApiResponse(response.data);
@@ -123,7 +123,7 @@ const turnosService = new TurnosService();
 export const saveAppointment = async (payload) => {
     try {
         console.log('[DEBUG] Enviando payload al backend:', payload);
-        const response = await axios.post('/turnos', payload);
+        const response = await axios.post('/api/turnos', payload);
         console.log('[DEBUG] ✅ Turno guardado en backend:', response.data);
         return response.data;
     } catch (error) {
@@ -141,7 +141,7 @@ export const fetchMisTurnos = async (correo) => {
     }
 
     console.log('[DEBUG] Fetching turnos para:', correo);
-    const res = await axios.get(`/turnos?user=${encodeURIComponent(correo)}`);
+    const res = await axios.get(`/api/turnos?user=${encodeURIComponent(correo)}`);
     const data = res.data;
     console.log('[DEBUG] Respuesta completa del servidor:', data);
 
@@ -156,7 +156,7 @@ export const cancelAppointment = async (id) => {
         throw new Error('No se pudo cancelar: id de turno inexistente');
     }
 
-    const url = `/turnos/${encodeURIComponent(id)}`;
+    const url = `/api/turnos/${encodeURIComponent(id)}`;
     console.log('[Turnos] PUT', url);
     const res = await axios.put(url, { action: 'cancel' });
     console.log('[Turnos] respuesta cancel completa:', res);

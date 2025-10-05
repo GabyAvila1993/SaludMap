@@ -94,13 +94,52 @@ export class EstablecimientosService {
    * Busca o crea un establecimiento
    */
   async findOrCreate(dto: CrearEstablecimientoDto) {
+    // Buscar primero
     const existente = await this.findByCoordinates(dto.lat, dto.lng);
     
     if (existente) {
       return existente;
     }
 
-    return await this.create(dto);
+    // Intentar crear, pero manejar si otro request ya lo creó (race condition)
+    try {
+      return await this.prisma.establecimiento.create({
+        data: {
+          lat: dto.lat,
+          lng: dto.lng,
+          nombre: dto.nombre,
+          tipo: dto.tipo,
+          direccion: dto.direccion,
+          telefono: dto.telefono,
+          horarios: dto.horarios,
+          metadata: dto.metadata || {},
+        },
+        include: {
+          resenias: {
+            include: {
+              usuario: {
+                select: {
+                  id: true,
+                  nombre: true,
+                  apellido: true,
+                },
+              },
+            },
+            orderBy: {
+              createdAt: 'desc',
+            },
+          },
+        },
+      });
+    } catch (error) {
+      // Si falla por duplicado (race condition), buscar de nuevo
+      const retry = await this.findByCoordinates(dto.lat, dto.lng);
+      if (retry) {
+        return retry;
+      }
+      // Si aún así no existe, lanzar el error original
+      throw error;
+    }
   }
 
   /**

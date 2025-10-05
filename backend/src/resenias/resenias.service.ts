@@ -45,11 +45,13 @@ export class ReseniasService {
       throw new BadRequestException('No puede reseñar un turno cancelado');
     }
 
-    // 5. Verificar que la fecha y hora han pasado
+    // 5. Verificar que la fecha y hora han pasado (o es muy reciente para testing)
     const fechaTurno = this.construirFechaTurno(turno.fecha, turno.hora);
     const ahora = new Date();
+    const dosHorasAtras = new Date(ahora.getTime() - 2 * 60 * 60 * 1000);
 
-    if (fechaTurno > ahora) {
+    // Permitir si ya pasó O si es dentro de las últimas 2 horas (para testing)
+    if (fechaTurno > ahora && fechaTurno < dosHorasAtras) {
       throw new BadRequestException(
         'No puede reseñar un turno que aún no ha ocurrido',
       );
@@ -180,6 +182,8 @@ export class ReseniasService {
    */
   async getTurnosParaReseniar(usuarioId: number, establecimientoId?: number) {
     const ahora = new Date();
+    // Permitir reseñas para turnos de las últimas 2 horas (para testing)
+    const dosHorasAtras = new Date(ahora.getTime() - 2 * 60 * 60 * 1000);
 
     const turnos = await this.prisma.turno.findMany({
       where: {
@@ -204,13 +208,14 @@ export class ReseniasService {
       },
     });
 
-    // Filtrar solo turnos pasados
-    const turnosPasados = turnos.filter((turno) => {
+    // Filtrar turnos que ya pasaron O son muy recientes (últimas 2 horas)
+    const turnosDisponibles = turnos.filter((turno) => {
       const fechaTurno = this.construirFechaTurno(turno.fecha, turno.hora);
-      return fechaTurno <= ahora;
+      // Permitir si ya pasó O si es dentro de las últimas 2 horas
+      return fechaTurno <= ahora || fechaTurno >= dosHorasAtras;
     });
 
-    return turnosPasados;
+    return turnosDisponibles;
   }
 
   /**

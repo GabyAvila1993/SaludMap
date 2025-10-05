@@ -408,4 +408,67 @@
     color: #ffeaa7;
   }
 }
+/* Sección de Reseñas - Fuera del mapa */
+.resenias-section {
+  width: 100%;
+  max-width: 1400px;
+  margin: 3rem auto;
+  padding: 2rem;
+  border: 1px solid rgba(255, 224, 166, 0.3);
+  border-radius: var(--radius);
+  background: rgba(2, 2, 2, 0.15);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-sizing: border-box;
+}
+
+.resenias-header-info {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.resenias-title {
+  color: var(--color-primary);
+  font-size: clamp(1.2rem, 2vw, 1.8rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2rem;
+  margin: 0;
+}
+
+.resenias-loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-primary);
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+/* Responsive para reseñas */
+@media (max-width: 768px) {
+  .resenias-section {
+    max-width: 98%;
+    margin: 2rem auto;
+    padding: 1.5rem;
+  }
+  
+  .resenias-title {
+    font-size: 1.2rem;
+    letter-spacing: 0.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .resenias-section {
+    max-width: 100%;
+    margin: 1.5rem 0;
+    padding: 1rem;
+    border-radius: 0;
+  }
+  
+  .resenias-title {
+    font-size: 1rem;
+  }
+}
+
 /* FIN CAMBIO - Archivo: src/components/Map.css */

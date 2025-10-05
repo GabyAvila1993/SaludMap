@@ -7,15 +7,11 @@ export default defineConfig({
     port: 5173,
     host: true,
     proxy: {
-      '/places': {
+      '/api': {
         target: 'http://localhost:3000',
         changeOrigin: true,
-        secure: false
-      },
-      '/turnos': {
-        target: 'http://localhost:3000',
-        changeOrigin: true,
-        secure: false
+        secure: false,
+        rewrite: (path) => path
       }
     }
   },

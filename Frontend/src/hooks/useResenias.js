@@ -1,3 +1,4 @@
+// src/hooks/useResenias.js
 import { useState, useEffect, useCallback } from 'react';
 import reseniasService from '../services/reseniasService';
 
@@ -13,27 +14,40 @@ export function useResenias(establecimientoId) {
 
   // Cargar reseñas del establecimiento
   const cargarResenias = useCallback(async () => {
-    if (!establecimientoId) return;
+    if (!establecimientoId) {
+      setResenias([]);
+      setTotalResenias(0);
+      setPromedioEstrellas(0);
+      return;
+    }
 
     setLoading(true);
     setError(null);
 
     try {
+      console.log('[useResenias] Cargando reseñas para establecimiento:', establecimientoId);
+      
       const data = await reseniasService.obtenerResenias(establecimientoId);
-      setResenias(data);
-      setTotalResenias(data.length);
+      
+      console.log('[useResenias] Reseñas obtenidas:', data);
+      
+      setResenias(data || []);
+      setTotalResenias(data?.length || 0);
 
       // Calcular promedio de estrellas
-      if (data.length > 0) {
-        const suma = data.reduce((acc, r) => acc + r.puntuacion, 0);
-        setPromedioEstrellas((suma / data.length).toFixed(1));
+      if (data && data.length > 0) {
+        const suma = data.reduce((acc, r) => acc + (r.puntuacion || 0), 0);
+        const promedio = (suma / data.length).toFixed(1);
+        setPromedioEstrellas(parseFloat(promedio));
       } else {
         setPromedioEstrellas(0);
       }
     } catch (err) {
-      console.error('Error cargando reseñas:', err);
+      console.error('[useResenias] Error cargando reseñas:', err);
       setError(err.message || 'Error cargando reseñas');
       setResenias([]);
+      setTotalResenias(0);
+      setPromedioEstrellas(0);
     } finally {
       setLoading(false);
     }
@@ -46,6 +60,7 @@ export function useResenias(establecimientoId) {
 
   // Refrescar reseñas manualmente
   const refrescar = useCallback(() => {
+    console.log('[useResenias] Refrescando reseñas...');
     cargarResenias();
   }, [cargarResenias]);
 
@@ -69,20 +84,29 @@ export function useValidarResenia(turnoId) {
   const [mensaje, setMensaje] = useState('');
 
   useEffect(() => {
-    if (!turnoId) return;
+    if (!turnoId) {
+      setPuedeReseniar(false);
+      setMensaje('');
+      return;
+    }
 
     const validar = async () => {
       setLoading(true);
       setError(null);
 
       try {
+        console.log('[useValidarResenia] Validando turno:', turnoId);
+        
         const resultado = await reseniasService.validarPuedeReseniar(turnoId);
-        setPuedeReseniar(resultado.valido);
-        setMensaje(resultado.mensaje);
+        
+        console.log('[useValidarResenia] Resultado:', resultado);
+        
+        setPuedeReseniar(resultado.valido || false);
+        setMensaje(resultado.mensaje || '');
       } catch (err) {
-        console.error('Error validando reseña:', err);
+        console.error('[useValidarResenia] Error validando reseña:', err);
         setPuedeReseniar(false);
-        setError(err.response?.data?.message || err.message);
+        setError(err.response?.data?.message || err.message || 'Error validando');
         setMensaje('No puede dejar una reseña para este turno');
       } finally {
         setLoading(false);
@@ -97,6 +121,11 @@ export function useValidarResenia(turnoId) {
 
 /**
  * Hook para obtener turnos que pueden ser reseñados
+ * Filtra turnos que:
+ * - Ya pasaron (fecha < hoy)
+ * - Pertenecen al establecimiento especificado (si se proporciona)
+ * - No tienen reseña asociada
+ * - Pertenecen al usuario autenticado
  */
 export function useTurnosParaReseniar(establecimientoId = null) {
   const [turnos, setTurnos] = useState([]);
@@ -108,11 +137,16 @@ export function useTurnosParaReseniar(establecimientoId = null) {
     setError(null);
 
     try {
+      console.log('[useTurnosParaReseniar] Cargando turnos para establecimiento:', establecimientoId);
+      
       const data = await reseniasService.getTurnosParaReseniar(establecimientoId);
-      setTurnos(data);
+      
+      console.log('[useTurnosParaReseniar] Turnos obtenidos:', data);
+      
+      setTurnos(data || []);
     } catch (err) {
-      console.error('Error cargando turnos:', err);
-      setError(err.message);
+      console.error('[useTurnosParaReseniar] Error cargando turnos:', err);
+      setError(err.message || 'Error cargando turnos disponibles');
       setTurnos([]);
     } finally {
       setLoading(false);
