@@ -12,14 +12,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Ubicacion {
+model Establecimiento {
   id        Int       @id @default(autoincrement())
-  nombre    String
-  direccion String
   lat       Float
   lng       Float
+  nombre    String
+  tipo      String    // hospital, clinic, doctors, etc.
+  direccion String?
+  telefono  String?
+  horarios  String?   @db.Text
+  metadata  Json?     // datos adicionales de OSM/Leaflet
   turnos    Turno[]
+  resenias  Resenia[]
   createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  
+  @@unique([lat, lng]) // Identificador único basado en coordenadas
+  @@index([lat, lng])
 }
 
 model Usuario {
@@ -28,15 +37,55 @@ model Usuario {
   apellido    String
   mail        String    @unique
   contrasenia String
+  turnos      Turno[]
+  resenias    Resenia[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
 
 model Turno {
-  id          Int       @id @default(autoincrement())
-  fecha       DateTime
-  paciente    String
-  ubicacionId Int
-  ubicacion   Ubicacion @relation(fields: [ubicacionId], references: [id])
-  createdAt   DateTime  @default(now())
+  id                Int             @id @default(autoincrement())
+  fecha             DateTime
+  hora              String          // Hora del turno (formato HH:MM)
+  usuarioId         Int
+  usuario           Usuario         @relation(fields: [usuarioId], references: [id])
+  establecimientoId Int
+  establecimiento   Establecimiento @relation(fields: [establecimientoId], references: [id])
+  profesionalNombre String?
+  profesionalTipo   String?
+  notas             String?         @db.Text
+  estado            String          @default("scheduled") // scheduled, completed, cancelled
+  resenia           Resenia?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  
+  @@index([usuarioId])
+  @@index([establecimientoId])
+}
+
+model Resenia {
+  id                Int             @id @default(autoincrement())
+  usuarioId         Int
+  usuario           Usuario         @relation(fields: [usuarioId], references: [id])
+  establecimientoId Int
+  establecimiento   Establecimiento @relation(fields: [establecimientoId], references: [id])
+  turnoId           Int             @unique // Solo una reseña por turno
+  turno             Turno           @relation(fields: [turnoId], references: [id])
+  puntuacion        Int             // 1-5 estrellas
+  comentario        String          @db.Text
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  
+  @@index([establecimientoId])
+  @@index([usuarioId])
+}
+
+// Tabla legacy de ubicaciones (mantener por compatibilidad)
+model Ubicacion {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  direccion String
+  lat       Float
+  lng       Float
+  createdAt DateTime @default(now())
 }

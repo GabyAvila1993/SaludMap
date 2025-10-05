@@ -149,7 +149,7 @@
   display: block;
   border: 2px solid var(--color-primary);
   outline: none;
-  width: 100%;
+  width: 90%;
   padding: 0.8rem 1rem;
   margin: 20px 0 0 0;
   font-size: 1rem;
@@ -161,13 +161,13 @@
 
 .login input[type="text"]:focus,
 .login input[type="password"]:focus {
-  background: rgba(255, 224, 166, .2);
+  background: rgba(29, 36, 53, 0.671);
   transform: scale(1.02);
 }
 
 .login input[type="text"]::placeholder,
 .login input[type="password"]::placeholder {
-  color: rgba(255, 224, 166, 0.6);
+  color: rgba(209, 196, 173, 0.925);
 }
 /* .login input:focus {
   animation: bounce 1s;
@@ -199,11 +199,13 @@
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
+  text-align: center;
 }
 .btn {
   background-color: var(--color-bg-dark);
   color: var(--color-text);
   border: none;
+  margin: 15px;
   padding: 12px 24px;
   border-radius: var(--radius);
   cursor: pointer;
@@ -212,8 +214,11 @@
   text-transform: uppercase;
   letter-spacing: 0.1rem;
   transition: var(--transition);
-  box-shadow: 0 4px 15px rgba(255, 224, 166, 0.3);
+  box-shadow: 0 4px 10px rgba(252, 164, 2, 0.3);
   min-height: 48px;
+  align-items: center;
+  text-align: center;
+  display: flex;
 }
 
 .btn:hover {
@@ -223,11 +228,13 @@
 .btn-link {
   background: none;
   border: none;
+  margin: 15px;
   color: var(--color-primary);
   cursor: pointer;
   text-decoration: underline;
   font-size: 1em;
   transition: var(--transition);
+  justify-content: center;
 }
 
 .btn-link:hover {

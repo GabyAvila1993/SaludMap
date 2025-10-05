@@ -123,12 +123,3 @@ id | nombre | apellido | mail              | contrasenia  | createdAt           
 La contraseña debe estar hasheada (no en texto plano).
 
 ---
-
-## ❓ Si hay algún error
-
-Si aparece algún error al ejecutar el script, envíame el mensaje de error exacto.
-
----
-
-**Desarrollador:** Cline AI  
-**Fecha:** 10/04/2025

@@ -1,13 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import opening_hours from "opening_hours";
 import './EstablishmentInfo.css';
 import { useAuth } from './Auth/AuthContext.jsx';
 import ModalAuth from './Auth/ModalAuth.jsx';
+import Resenias from './Resenias/Resenias.jsx';
+import CrearResenia from './Resenias/CrearResenia.jsx';
+import { useResenias } from '../hooks/useResenias';
+import establecimientosService from '../services/establecimientosService';
 
 export default function EstablishmentInfo({ place, onClose }) {
 	const { user } = useAuth();
 	const [showAuthModal, setShowAuthModal] = useState(false);
 	const [showRegister, setShowRegister] = useState(false);
+	const [showCrearResenia, setShowCrearResenia] = useState(false);
+	const [establecimiento, setEstablecimiento] = useState(null);
+	const [loadingEstablecimiento, setLoadingEstablecimiento] = useState(true);
+
+	// Hook de reseñas (solo si tenemos establecimiento)
+	const { resenias, loading: loadingResenias, promedioEstrellas, totalResenias, refrescar } = 
+		useResenias(establecimiento?.id);
+
+	// Cargar o crear establecimiento cuando se abre el modal
+	useEffect(() => {
+		const initEstablecimiento = async () => {
+			if (!place) return;
+			
+			setLoadingEstablecimiento(true);
+			try {
+				const est = await establecimientosService.findOrCreate(place);
+				setEstablecimiento(est);
+			} catch (error) {
+				console.error('Error inicializando establecimiento:', error);
+			} finally {
+				setLoadingEstablecimiento(false);
+			}
+		};
+
+		initEstablecimiento();
+	}, [place]);
 
 	if (!place) return null;
 
@@ -128,28 +158,33 @@ export default function EstablishmentInfo({ place, onClose }) {
 
 	const osmLink = (lat, lon) => `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=18/${lat}/${lon}`;
 
-	/**
-	 * Maneja la solicitud de turno
-	 * Si no está autenticado, abre el modal de login
-	 * Si está autenticado, redirige a la sección de turnos
-	 */
 	const handleSolicitarTurno = () => {
 		if (!user) {
 			setShowRegister(false);
 			setShowAuthModal(true);
 		} else {
-			// Cambiar a la pestaña de turnos
 			const event = new CustomEvent('saludmap:change-tab', { detail: { tab: 'turnos' } });
 			window.dispatchEvent(event);
 			onClose();
 		}
 	};
 
-	/**
-	 * Maneja la llamada telefónica
-	 */
 	const handleLlamar = (telefono) => {
 		window.location.href = `tel:${telefono}`;
+	};
+
+	const handleDejarResenia = () => {
+		if (!user) {
+			setShowRegister(false);
+			setShowAuthModal(true);
+		} else {
+			setShowCrearResenia(true);
+		}
+	};
+
+	const handleReseniaCreada = () => {
+		setShowCrearResenia(false);
+		refrescar();
 	};
 
 	return (
@@ -235,77 +270,49 @@ export default function EstablishmentInfo({ place, onClose }) {
 							</div>
 						</div>
 
-						{/* Botones de acción */}
-						<div className="action-buttons" style={{ 
-							marginTop: '2rem',
-							display: 'flex',
-							gap: '1rem',
-							flexWrap: 'wrap'
-						}}>
-							{/* Botón de Llamar si hay teléfono */}
+						<div className="action-buttons" style={{ marginTop: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
 							{phones.length > 0 && (
-								<button
-									onClick={() => handleLlamar(phones[0])}
-									style={{
-										flex: '1',
-										minWidth: '150px',
-										padding: '12px 20px',
-										backgroundColor: '#2b8b8c',
-										color: '#fff',
-										border: 'none',
-										borderRadius: '8px',
-										fontSize: '1rem',
-										fontWeight: 'bold',
-										cursor: 'pointer',
-										display: 'flex',
-										alignItems: 'center',
-										justifyContent: 'center',
-										gap: '8px',
-										transition: 'all 0.3s ease',
-										boxShadow: '0 2px 8px rgba(43, 139, 140, 0.3)'
-									}}
-									onMouseOver={(e) => e.target.style.backgroundColor = '#1f6668'}
-									onMouseOut={(e) => e.target.style.backgroundColor = '#2b8b8c'}
-								>
+								<button onClick={() => handleLlamar(phones[0])} className="action-btn">
 									📞 Llamar
 								</button>
 							)}
-
-							{/* Botón de Solicitar Turno */}
-							<button
-								onClick={handleSolicitarTurno}
-								style={{
-									flex: '1',
-									minWidth: '150px',
-									padding: '12px 20px',
-									backgroundColor: user ? '#47472e' : '#ff6b6b',
-									color: '#fff',
-									border: 'none',
-									borderRadius: '8px',
-									fontSize: '1rem',
-									fontWeight: 'bold',
-									cursor: 'pointer',
-									display: 'flex',
-									alignItems: 'center',
-									justifyContent: 'center',
-									gap: '8px',
-									transition: 'all 0.3s ease',
-									boxShadow: user 
-										? '0 2px 8px rgba(255, 224, 166, 0.3)'
-										: '0 2px 8px rgba(255, 107, 107, 0.3)'
-								}}
-								onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'}
-								onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
-							>
-								{user ? '📅 Solicitar Turno' : '🔒 Iniciar Sesión y Solicitar Turno'}
+							<button onClick={handleSolicitarTurno} className="action-btn">
+								{user ? '📅 Solicitar Turno' : '🔒 Iniciar Sesión'}
 							</button>
+							{establecimiento && (
+								<button onClick={handleDejarResenia} className="action-btn">
+									⭐ Dejar Reseña
+								</button>
+							)}
 						</div>
+
+						{/* Sección de Reseñas */}
+						{establecimiento && !showCrearResenia && (
+							<div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '2px solid #e9ecef' }}>
+								<Resenias 
+									resenias={resenias}
+									promedioEstrellas={promedioEstrellas}
+									totalResenias={totalResenias}
+									loading={loadingResenias}
+								/>
+							</div>
+						)}
+
+						{/* Formulario para crear reseña */}
+						{showCrearResenia && establecimiento && (
+							<div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '2px solid #e9ecef' }}>
+								<CrearResenia
+									establecimientoId={establecimiento.id}
+									onSuccess={handleReseniaCreada}
+									onCancel={() => setShowCrearResenia(false)}
+								/>
+							</div>
+						)}
 
 					</div>
 				</div>
 			</div>
 
-			{/* Modal de Autenticación */}
 			<ModalAuth
 				open={showAuthModal}
 				onClose={() => setShowAuthModal(false)}

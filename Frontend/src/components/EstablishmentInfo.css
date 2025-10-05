@@ -131,7 +131,46 @@
 }
 
 .extra-actions button:hover {
-  background: #1d4ed8;
+  background: rgba(24, 103, 105, 0.15);
+}
+
+/* Botones de acción */
+.action-btn {
+  flex: 1;
+  min-width: 150px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #2b8b8c 0%, #1f6668 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(43, 139, 140, 0.3);
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(43, 139, 140, 0.4);
+}
+
+.action-btn:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .action-btn {
+    width: 100%;
+  }
 }
 
 .extra-actions a {

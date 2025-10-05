@@ -155,7 +155,7 @@ export default function ModalAuth({ open, onClose, showRegister, setShowRegister
 					)}
 				</div>
 				<button 
-					className="btn-link" 
+					className="btn-link cerrar" 
 					style={{ marginTop: 10 }} 
 					onClick={onClose}
 					disabled={loading}

@@ -1,0 +1,209 @@
+.resenias-container {
+  width: 100%;
+  padding: 1.5rem 0;
+}
+
+.loading-resenias {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-style: italic;
+}
+
+.no-resenias {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 2px dashed #dee2e6;
+}
+
+.no-resenias p {
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+  color: #495057;
+}
+
+.no-resenias-subtitle {
+  font-size: 0.95rem !important;
+  color: #6c757d !important;
+}
+
+/* Header de reseñas */
+.resenias-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.resenias-header h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+  color: #2b8b8c;
+  font-weight: bold;
+}
+
+/* Promedio de estrellas */
+.promedio-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #ffe0a6 0%, #ffd700 100%);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
+}
+
+.promedio-numero {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #2b8b8c;
+  line-height: 1;
+}
+
+.promedio-texto {
+  font-size: 0.9rem;
+  color: #495057;
+  margin-left: auto;
+}
+
+/* Estrellas */
+.estrellas {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.star {
+  color: #ffd700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.star.small {
+  font-size: 1rem;
+}
+
+.star.medium {
+  font-size: 1.5rem;
+}
+
+.star.large {
+  font-size: 2rem;
+}
+
+.star.empty {
+  color: #dee2e6;
+}
+
+/* Lista de reseñas */
+.resenias-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Item de reseña */
+.resenia-item {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.resenia-item:hover {
+  box-shadow: 0 4px 12px rgba(43, 139, 140, 0.15);
+  transform: translateY(-2px);
+}
+
+.resenia-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.resenia-usuario {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.usuario-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2b8b8c 0%, #1f6668 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(43, 139, 140, 0.3);
+}
+
+.usuario-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.usuario-nombre {
+  font-weight: 600;
+  color: #212529;
+  font-size: 1rem;
+}
+
+.resenia-fecha {
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.resenia-comentario {
+  color: #495057;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 3px solid #2b8b8c;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .resenias-container {
+    padding: 1rem 0;
+  }
+
+  .promedio-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.75rem;
+  }
+
+  .promedio-texto {
+    margin-left: 0;
+  }
+
+  .resenia-item {
+    padding: 1rem;
+  }
+
+  .resenia-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .usuario-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .resenias-header h3 {
+    font-size: 1.25rem;
+  }
+}
