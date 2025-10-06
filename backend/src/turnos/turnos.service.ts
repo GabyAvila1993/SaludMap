@@ -1,42 +1,132 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { randomUUID } from 'crypto';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { PrismaClient, Prisma } from '@prisma/client';
+import { CrearTurnoDto, ActualizarTurnoDto } from './dto/turno.dto';
+
+const prisma = new PrismaClient();
 
 @Injectable()
 export class TurnosService {
-  private turnos: any[] = [];
+  async createTurno(data: CrearTurnoDto) {
+    try {
+      console.log('[TurnosService] Creando turno con datos:', data);
+      
+      // Validaciones
+      if (!data.usuarioId) {
+        throw new BadRequestException('usuarioId es requerido');
+      }
+      
+      if (!data.establecimientoId) {
+        throw new BadRequestException('establecimientoId es requerido');
+      }
 
-  createTurno(payload: any) {
-    const t = {
-      id: randomUUID(),
-      user: payload.user ?? 'usuario',
-      professionalId: payload.professionalId ?? null,
-      professionalName: payload.professionalName ?? 'Profesional',
-      professionalType: payload.professionalType ?? 'default',
-      datetime: payload.datetime,
-      notes: payload.notes ?? '',
-      status: 'scheduled',
-      createdAt: new Date().toISOString(),
-    };
-    this.turnos.push(t);
-    return t;
-  }
+      // Verificar que el usuario existe
+      const usuario = await prisma.usuario.findUnique({
+        where: { id: data.usuarioId }
+      });
 
-  listTurnos(user?: string) {
-    const base = user ? this.turnos.filter((t) => t.user === user) : this.turnos;
-    // por defecto no devolver turnos cancelados
-    return base.filter((t) => t.status !== 'cancelled');
-  }
+      if (!usuario) {
+        throw new NotFoundException(`Usuario con ID ${data.usuarioId} no encontrado`);
+      }
 
-  updateTurno(id: string, body: any) {
-    const idx = this.turnos.findIndex((t) => t.id === id);
-    if (idx === -1) throw new NotFoundException('Turno no encontrado');
-    const turno = this.turnos[idx];
-    if (body.action === 'cancel') {
-      turno.status = 'cancelled';
-    } else if (body.datetime) {
-      turno.datetime = body.datetime;
+      // Verificar que el establecimiento existe
+      const establecimiento = await prisma.establecimiento.findUnique({
+        where: { id: data.establecimientoId }
+      });
+
+      if (!establecimiento) {
+        throw new NotFoundException(`Establecimiento con ID ${data.establecimientoId} no encontrado`);
+      }
+
+      // Crear el turno
+      const turno = await prisma.turno.create({
+        data: {
+          usuarioId: data.usuarioId,
+          establecimientoId: data.establecimientoId,
+          fecha: new Date(data.fecha),
+          hora: data.hora,
+          estado: 'pendiente'
+        },
+        include: {
+          usuario: true,
+          establecimiento: true
+        }
+      });
+
+      console.log('[TurnosService] Turno creado exitosamente:', turno);
+      return turno;
+      
+    } catch (error) {
+      console.error('[TurnosService] Error al crear turno:', error);
+      throw error;
     }
-    this.turnos[idx] = turno;
-    return turno;
+  }
+
+  async listTurnos(userEmail?: string) {
+    try {
+      const turnos = await prisma.turno.findMany({
+        where: userEmail ? {
+          usuario: {
+            mail: userEmail
+          },
+          NOT: {
+            estado: 'cancelado'
+          }
+        } : {
+          NOT: {
+            estado: 'cancelado'
+          }
+        },
+        include: {
+          usuario: true,
+          establecimiento: true
+        }
+      });
+
+      return turnos;
+    } catch (error) {
+      console.error('[TurnosService] Error al listar turnos:', error);
+      throw error;
+    }
+  }
+
+  async updateTurno(id: number, data: ActualizarTurnoDto) {
+    try {
+      const turno = await prisma.turno.findUnique({
+        where: { id }
+      });
+
+      if (!turno) {
+        throw new NotFoundException('Turno no encontrado');
+      }
+
+      const updateData: any = {};
+
+      if (data.action === 'cancelar') {
+        updateData.estado = 'cancelado';
+      }
+
+      if (data.fecha) {
+        updateData.fecha = new Date(data.fecha);
+      }
+
+      if (data.hora) {
+        updateData.hora = data.hora;
+      }
+
+      const turnoActualizado = await prisma.turno.update({
+        where: { id },
+        data: updateData,
+        include: {
+          usuario: true,
+          establecimiento: true
+        }
+      });
+
+      return turnoActualizado;
+
+    } catch (error) {
+      console.error('[TurnosService] Error al actualizar turno:', error);
+      throw error;
+    }
   }
 }

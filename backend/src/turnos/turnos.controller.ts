@@ -1,22 +1,53 @@
-import { Controller, Post, Body, Get, Query, Put, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query, BadRequestException } from '@nestjs/common';
 import { TurnosService } from './turnos.service';
 
 @Controller('turnos')
 export class TurnosController {
-  constructor(private readonly turnosService: TurnosService) {}
+  constructor(private turnosService: TurnosService) {}
 
   @Post()
-  create(@Body() payload: any) {
-    return this.turnosService.createTurno(payload);
+  async createTurno(@Body() data: {
+    usuarioId: number;
+    establecimientoId: number;
+    fecha: string;
+    hora: string;
+  }) {
+    console.log('[TurnosController] Recibiendo solicitud:', data);
+    
+    // Validaciones
+    if (!data.usuarioId) {
+      throw new BadRequestException('usuarioId es requerido');
+    }
+
+    if (!data.establecimientoId) {
+      throw new BadRequestException('establecimientoId es requerido');
+    }
+
+    if (!data.fecha) {
+      throw new BadRequestException('fecha es requerida');
+    }
+
+    if (!data.hora) {
+      throw new BadRequestException('hora es requerida');
+    }
+    
+    try {
+      const turno = await this.turnosService.createTurno({
+        ...data,
+        fecha: new Date(data.fecha)
+      });
+
+      console.log('[TurnosController] Turno creado exitosamente');
+      return turno;
+    } catch (error) {
+      console.error('[TurnosController] Error:', error.message);
+      throw error;
+    }
   }
 
   @Get()
-  list(@Query('user') user?: string) {
-    return this.turnosService.listTurnos(user);
-  }
-
-  @Put(':id')
-  update(@Param('id') id: string, @Body() body: any) {
-    return this.turnosService.updateTurno(id, body);
+  async listTurnos(@Query('user') userEmail?: string) {
+    console.log('[TurnosController] Listando turnos para:', userEmail || 'todos');
+    return this.turnosService.listTurnos(userEmail);
   }
 }

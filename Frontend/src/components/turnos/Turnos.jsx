@@ -4,7 +4,7 @@ import './Turnos.css';
 
 // Importar servicios
 import locationService from '../../services/locationService.js';
-import turnosService, { saveAppointment } from '../../services/turnosService.js';
+import turnosService, { saveAppointment, guardarTurno } from '../../services/turnosService.js';
 import { initializeEmailJS } from '../../services/emailService.js';
 import { useAuth } from '../Auth/AuthContext.jsx';
 import ModalAuth from '../Auth/ModalAuth.jsx';
@@ -16,22 +16,22 @@ import { TurnoModal } from './TurnoModal2.jsx';
 
 // Utilidades
 const getTypeFromPlace = (place) => {
-    return place.type || 'default';
+	return place.type || 'default';
 };
 
 export default function Turnos() {
 	const { t } = useTranslation();
 	const { user } = useAuth();
-	
+
 	// Estados para modal de autenticación
 	const [showAuthModal, setShowAuthModal] = useState(false);
 	const [showRegister, setShowRegister] = useState(false);
-	
+
 	// Función para traducir tipos de profesionales
 	const prettyType = (type) => {
 		return t(`appointments.types.${type}`, { defaultValue: t('appointments.types.default') });
 	};
-	
+
 	// Estados del modal
 	const [modalOpen, setModalOpen] = useState(false);
 	const [selected, setSelected] = useState(null);
@@ -47,24 +47,30 @@ export default function Turnos() {
 	const [errorPlaces, setErrorPlaces] = useState('');
 	const [misTurnos, setMisTurnos] = useState([]);
 	const [cancellingId, setCancellingId] = useState(null);
-	
+
 	// Estado para establecimiento pre-seleccionado desde el mapa
 	const [preSelectedEstablecimiento, setPreSelectedEstablecimiento] = useState(null);
 	const [preSelectedPlace, setPreSelectedPlace] = useState(null);
 
 	// Función para abrir modal - DEFINIR ANTES DE LOS useEffect
-	const openModal = (prof) => {
+	// Acepta establecimientoOverride para pasar el establecimiento directamente
+	const openModal = (prof, establecimientoOverride = null) => {
 		const tags = prof.tags || prof.properties || {};
+		
+		// Usar el establecimiento pasado o el del estado
+		const est = establecimientoOverride || preSelectedEstablecimiento;
+		
 		const normalizedProf = {
 			...prof,
 			name: prof.name || tags.name || prof.properties?.name || tags.amenity || 'Establecimiento de salud',
 			address: prof.direccion || prof.address || tags.addr_full || tags['addr:full'] || tags.address || prof.properties?.address || '',
-			establecimientoId: preSelectedEstablecimiento?.id,
-			establecimientoNombre: preSelectedEstablecimiento?.nombre || tags.name || 'Establecimiento'
+			establecimientoId: est?.id,
+			establecimientoNombre: est?.nombre || tags.name || 'Establecimiento'
 		};
-		
+
 		console.log('[Turnos] Abriendo modal con:', normalizedProf);
-		
+		console.log('[Turnos] - establecimientoId:', normalizedProf.establecimientoId);
+
 		setSelected(normalizedProf);
 		setDatetime('');
 		setNotes('');
@@ -75,7 +81,7 @@ export default function Turnos() {
 	// Suscribirse a cambios de profesionales
 	useEffect(() => {
 		initializeEmailJS();
-		
+
 		const unsubscribe = turnosService.subscribe(({ lugares, loading, error }) => {
 			const lugaresNormalizados = (lugares || []).map(lugar => {
 				const tags = lugar.tags || lugar.properties || {};
@@ -85,7 +91,7 @@ export default function Turnos() {
 					address: lugar.address || lugar.direccion || tags.addr_full || tags['addr:full'] || tags.address || lugar.properties?.address || ''
 				};
 			});
-			
+
 			setLugares(lugaresNormalizados);
 			setLoadingPlaces(loading || false);
 			setErrorPlaces(error || '');
@@ -118,17 +124,17 @@ export default function Turnos() {
 	// Escuchar eventos del mapa para solicitud de turno
 	useEffect(() => {
 		console.log('[Turnos] Registrando listener para eventos del mapa');
-		
+
 		const handleChangeTab = (e) => {
 			console.log('[Turnos] Evento recibido:', e.detail);
-			
+
 			if (e.detail?.tab !== 'turnos') {
 				console.log('[Turnos] Tab no es "turnos", ignorando');
 				return;
 			}
 
 			const { establecimiento, place } = e.detail;
-			
+
 			console.log('[Turnos] Verificando datos recibidos:');
 			console.log('[Turnos] - Establecimiento:', establecimiento);
 			console.log('[Turnos] - Place:', place);
@@ -160,37 +166,37 @@ export default function Turnos() {
 			setPreSelectedEstablecimiento(establecimiento);
 			setPreSelectedPlace(place);
 
-			// Abrir modal automáticamente
-			console.log('[Turnos] Programando apertura de modal en 300ms');
+			// Abrir modal automáticamente, pasando el establecimiento directamente
+			console.log('[Turnos] Programando apertura de modal en 100ms');
 			setTimeout(() => {
-				console.log('[Turnos] Ejecutando openModal');
-				openModal(place);
-			}, 300);
+				console.log('[Turnos] Ejecutando openModal con establecimiento:', establecimiento.id);
+				openModal(place, establecimiento);
+			}, 100);
 		};
 
 		window.addEventListener('saludmap:change-tab', handleChangeTab);
 		console.log('[Turnos] Listener registrado exitosamente');
-		
+
 		return () => {
 			console.log('[Turnos] Removiendo listener');
 			window.removeEventListener('saludmap:change-tab', handleChangeTab);
 		};
-	}, [preSelectedEstablecimiento, preSelectedPlace]);
+	}, []); // Sin dependencias para evitar re-creación del listener
 
 	// Verificar sessionStorage al montar (respaldo)
 	useEffect(() => {
 		console.log('[Turnos] Verificando sessionStorage al montar');
-		
+
 		const storedEstablecimiento = sessionStorage.getItem('selectedEstablecimiento');
 		const storedPlace = sessionStorage.getItem('selectedPlace');
-		
+
 		if (storedEstablecimiento && storedPlace) {
 			console.log('[Turnos] Datos encontrados en sessionStorage');
-			
+
 			try {
 				const establecimiento = JSON.parse(storedEstablecimiento);
 				const place = JSON.parse(storedPlace);
-				
+
 				console.log('[Turnos] Datos parseados:');
 				console.log('[Turnos] - Establecimiento:', establecimiento);
 				console.log('[Turnos] - Place:', place);
@@ -205,17 +211,17 @@ export default function Turnos() {
 
 				setPreSelectedEstablecimiento(establecimiento);
 				setPreSelectedPlace(place);
-				
-				// Abrir modal automáticamente
-				setTimeout(() => {
-					console.log('[Turnos] Abriendo modal desde sessionStorage');
-					openModal(place);
-				}, 500);
-				
+
 				// Limpiar sessionStorage
 				sessionStorage.removeItem('selectedEstablecimiento');
 				sessionStorage.removeItem('selectedPlace');
 				console.log('[Turnos] sessionStorage limpiado');
+
+				// Abrir modal automáticamente, pasando el establecimiento directamente
+				setTimeout(() => {
+					console.log('[Turnos] Abriendo modal desde sessionStorage con establecimiento:', establecimiento.id);
+					openModal(place, establecimiento);
+				}, 100);
 			} catch (error) {
 				console.error('[Turnos] Error parseando sessionStorage:', error);
 				sessionStorage.removeItem('selectedEstablecimiento');
@@ -260,7 +266,7 @@ export default function Turnos() {
 			console.log('[Turnos] - Establecimiento ID:', preSelectedEstablecimiento?.id);
 
 			const { sendAppointmentEmail } = await import('../../services/emailService.js');
-			
+
 			const { emailResponse, payload } = await sendAppointmentEmail(
 				profesional,
 				fechaHora,
@@ -279,7 +285,7 @@ export default function Turnos() {
 			console.log('[Turnos] Guardando turno con payload:', payload);
 			const response = await saveAppointment(payload);
 			console.log('[Turnos] Turno guardado exitosamente:', response);
-			
+
 			setLoading(false);
 
 			// Agregar a lista local
@@ -294,7 +300,7 @@ export default function Turnos() {
 			};
 
 			setMisTurnos(prev => [...prev, nuevoTurno]);
-			
+
 			// Limpiar pre-selección después de crear el turno
 			setPreSelectedEstablecimiento(null);
 			setPreSelectedPlace(null);
@@ -325,39 +331,40 @@ export default function Turnos() {
 		}
 	};
 
-	const handleSolicitarTurno = async () => {
-		if (!user) {
-			setError('Debes iniciar sesión para solicitar un turno');
-			return;
-		}
-
-		if (!selected || !datetime) {
-			setError(t('appointments.missingData'));
-			return;
-		}
-
+	const handleSolicitarTurno = async (datos) => {
 		try {
-			setLoading(true);
-			setError('');
+			console.log('[Turnos] Datos recibidos del modal:', datos);
+			console.log('[Turnos] Preparando datos para guardar:', {
+				usuarioId: user.id,
+				establecimientoId: datos.establecimientoId,
+				fecha: datos.fecha,
+				hora: datos.hora
+			});
 
-			await solicitarTurno(selected, datetime, notes, user.mail, selectedType);
+			if (!datos.establecimientoId) {
+				alert('Error: No hay establecimiento seleccionado. Por favor intenta nuevamente.');
+				return;
+			}
 
+			const turnoGuardado = await guardarTurno({
+				usuarioId: user.id,
+				establecimientoId: datos.establecimientoId,
+				fecha: datos.fecha,
+				hora: datos.hora
+			});
+
+			console.log('[Turnos] Turno guardado exitosamente:', turnoGuardado);
+			
+			// Cerrar modal y limpiar estados
 			setModalOpen(false);
-			setDatetime('');
-			setNotes('');
-			setError('');
+			setPreSelectedEstablecimiento(null);
+			setPreSelectedPlace(null);
+			
+			alert('Turno solicitado exitosamente');
 
-			alert(t('appointments.successMessage'));
-
-		} catch (emailError) {
-			console.error('[Turnos] Error completo:', emailError);
-
-			const errorMessage = emailError.message || t('common.error');
-			setError(errorMessage);
-			alert(`${t('appointments.errorMessage')}: ${errorMessage}`);
-
-		} finally {
-			setLoading(false);
+		} catch (error) {
+			console.error('[Turnos] Error al guardar turno:', error);
+			alert('Error al solicitar turno: ' + (error.message || 'Error desconocido'));
 		}
 	};
 
@@ -421,7 +428,7 @@ export default function Turnos() {
 							</button>
 						</div>
 					</div>
-					
+
 					<ModalAuth
 						open={showAuthModal}
 						onClose={() => setShowAuthModal(false)}
@@ -474,7 +481,7 @@ export default function Turnos() {
 									{preSelectedEstablecimiento.direccion || 'Sin dirección disponible'}
 								</p>
 								<button
-									onClick={() => openModal(preSelectedPlace)}
+									onClick={() => openModal(preSelectedPlace, preSelectedEstablecimiento)}
 									style={{
 										padding: '12px 24px',
 										fontSize: '1rem',
@@ -521,7 +528,7 @@ export default function Turnos() {
 					notes={notes}
 					setNotes={setNotes}
 					correo={user.mail}
-					setCorreo={() => {}}
+					setCorreo={() => { }}
 					loading={loading}
 					error={error}
 					onClose={() => setModalOpen(false)}

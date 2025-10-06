@@ -119,19 +119,43 @@ class TurnosService {
 // Singleton
 const turnosService = new TurnosService();
 
-// Funciones de API originales (mantener compatibilidad)
+// ✅ FUNCIÓN AGREGADA: saveAppointment (era la que faltaba)
 export const saveAppointment = async (payload) => {
-    try {
-        console.log('[DEBUG] Enviando payload al backend:', payload);
-        const response = await axios.post('/api/turnos', payload);
-        console.log('[DEBUG] ✅ Turno guardado en backend:', response.data);
-        return response.data;
-    } catch (error) {
-        console.error('[DEBUG] ❌ Error guardando turno:', error);
-        console.error('[DEBUG] Error response:', error.response?.data);
-        console.error('[DEBUG] Error status:', error.response?.status);
-        throw error;
+  try {
+    console.log('[TurnosService] Guardando turno con payload:', payload);
+
+    const response = await fetch('/api/turnos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        usuarioId: payload.usuarioId,
+        establecimientoId: payload.establecimientoId,
+        fecha: payload.fecha,
+        hora: payload.hora
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `Error HTTP: ${response.status}`);
     }
+
+    const data = await response.json();
+    console.log('[TurnosService] Turno guardado exitosamente:', data);
+    return data;
+
+  } catch (error) {
+    console.error('[TurnosService] Error guardando turno:', error);
+    throw error;
+  }
+};
+
+// Funciones de API originales (mantener compatibilidad)
+export const guardarTurno = async (payload) => {
+  // Esta función ahora simplemente llama a saveAppointment
+  return saveAppointment(payload);
 };
 
 export const fetchMisTurnos = async (correo) => {

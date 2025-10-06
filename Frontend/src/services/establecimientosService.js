@@ -70,13 +70,14 @@ class EstablecimientosService {
    */
   buildAddress(place) {
     const tags = place.tags || place.properties || {};
+    const properties = place.properties || {};
     
     // Intentar obtener dirección completa primero
     const fullAddress = tags.addr_full || 
                        tags['addr:full'] || 
                        tags.address ||
                        place.address ||
-                       place.properties?.address;
+                       properties.address;
     
     if (fullAddress && fullAddress.trim()) {
       return String(fullAddress).trim();
@@ -85,7 +86,7 @@ class EstablecimientosService {
     // Construir desde componentes individuales
     const street = tags['addr:street'] || tags.street || tags['street:name'];
     const number = tags['addr:housenumber'] || tags.housenumber || tags['street:number'];
-    const city = tags['addr:city'] || tags.city || props.city || tags.town || tags.village;
+    const city = tags['addr:city'] || tags.city || properties.city || tags.town || tags.village;
     
     const parts = [];
     if (street) parts.push(String(street).trim());

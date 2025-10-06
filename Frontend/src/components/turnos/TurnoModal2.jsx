@@ -27,6 +27,36 @@ export const TurnoModal = ({
     const professionalAddress = selected.address || '';
     const professionalType = prettyType(selectedType);
 
+    // ✅ FUNCIÓN AGREGADA: Manejar confirmación con todos los datos
+    const handleConfirm = () => {
+        if (!datetime) {
+            alert('Por favor selecciona fecha y hora');
+            return;
+        }
+
+        if (!correo) {
+            alert('Por favor ingresa tu correo electrónico');
+            return;
+        }
+
+        // Separar fecha y hora del datetime-local
+        const [fecha, hora] = datetime.split('T');
+
+        // Preparar datos completos
+        const datos = {
+            establecimientoId: selected.establecimientoId,
+            fecha: fecha,
+            hora: hora,
+            observaciones: notes,
+            correo: correo,
+            professionalName: professionalName,
+            professionalType: selectedType
+        };
+
+        console.log('[TurnoModal] Enviando datos:', datos);
+        onConfirm(datos);
+    };
+
     return (
         <div className="modal-overlay" role="dialog" aria-modal="true">
             <div className="modal">
@@ -175,7 +205,7 @@ export const TurnoModal = ({
                     <div className="footer-right">
                         <button
                             className="button button--primary"
-                            onClick={onConfirm}
+                            onClick={handleConfirm}
                             disabled={loading || !correo || !datetime}
                         >
                             {loading ? t('common.processing') : t('appointments.confirmAppointment')}
