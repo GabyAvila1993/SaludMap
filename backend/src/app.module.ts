@@ -18,11 +18,11 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
     }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      global: true, // IMPORTANTE: Añade esta línea
+      global: true,
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET') || 'tu-secreto-super-seguro-cambiar-en-produccion',
         signOptions: {
-          expiresIn: configService.get<string>('JWT_EXPIRES_IN') || '24h'
+          expiresIn: configService.get<string>('JWT_EXPIRES_IN') || '24h',
         },
       }),
       inject: [ConfigService],

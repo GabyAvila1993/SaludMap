@@ -9,7 +9,7 @@ import {
   UseGuards,
   Request,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard'; 
 import { ReseniasService } from './resenias.service';
 import { CrearReseniaDto } from './dto/crear-resenia.dto';
 
