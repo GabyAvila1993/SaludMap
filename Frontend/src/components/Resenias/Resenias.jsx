@@ -18,7 +18,7 @@ const Estrellas = ({ puntuacion, size = 'medium' }) => {
   }
   return <div className="estrellas">{stars}</div>;
 };
-
+/* Agregamos un boton de reseñas */
 /**
  * Componente individual para una reseña
  */
