@@ -13,17 +13,25 @@ export class AuthMiddleware implements NestMiddleware {
       return res.status(401).json({ message: 'Token no proporcionado' });
     }
 
-    const token = authHeader.split(' ')[1]; // Bearer TOKEN
+    const token = authHeader.split(' ')[1];
 
     try {
+      // AÑADE ESTOS LOGS TEMPORALES
+      console.log('Token recibido:', token);
+      console.log('JWT_SECRET configurado:', process.env.JWT_SECRET);
+      
       const decoded = this.jwtService.verify(token);
-      // Agregar el usuario al request con el formato correcto
+      
+      console.log('Token decodificado correctamente:', decoded);
+      
       (req as any).user = {
         userId: decoded.sub,
         mail: decoded.mail
       };
       next();
     } catch (error) {
+      // AÑADE ESTE LOG
+      console.error('Error al verificar token:', error.message);
       return res.status(401).json({ message: 'Token inválido o expirado' });
     }
   }

@@ -1,5 +1,14 @@
-/* --------- INICIO DEL ARCHIVO src/resenias/resenias.controller.ts ----------- */
-import { Controller, Get, Post, Body, Param, Query, UseGuards, Request } from '@nestjs/common';
+/* --------- ARCHIVO src/resenias/resenias.controller.ts ----------- */
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ReseniasService } from './resenias.service';
 import { CrearReseniaDto } from './dto/crear-resenia.dto';
@@ -10,11 +19,14 @@ export class ReseniasController {
 
   @UseGuards(JwtAuthGuard)
   @Get('turnos-para-reseniar')
-  async getTurnosParaReseniar(@Request() req, @Query('establecimientoId') establecimientoId?: string) {
+  async getTurnosParaReseniar(
+    @Request() req,
+    @Query('establecimientoId') establecimientoId?: string,
+  ) {
     const usuarioId = req.user.userId;
     return this.reseniasService.getTurnosParaReseniar(
-      usuarioId, 
-      establecimientoId ? +establecimientoId : undefined
+      usuarioId,
+      establecimientoId ? +establecimientoId : undefined,
     );
   }
 
