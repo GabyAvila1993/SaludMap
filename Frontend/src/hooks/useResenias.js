@@ -66,6 +66,22 @@ export function useResenias(establecimientoId) {
     cargarResenias();
   }, [cargarResenias]);
 
+  // Agregar nueva reseña al estado local (para actualización automática)
+  const agregarReseniaLocal = useCallback((nuevaResenia) => {
+    console.log('[useResenias] Agregando reseña local:', nuevaResenia);
+    setResenias(prevResenias => [nuevaResenia, ...prevResenias]);
+    setTotalResenias(prevTotal => prevTotal + 1);
+
+    // Recalcular promedio
+    setResenias(prevResenias => {
+      const nuevasResenias = [nuevaResenia, ...prevResenias];
+      const suma = nuevasResenias.reduce((acc, r) => acc + (r.puntuacion || 0), 0);
+      const promedio = (suma / nuevasResenias.length).toFixed(1);
+      setPromedioEstrellas(parseFloat(promedio));
+      return nuevasResenias;
+    });
+  }, []);
+
   return {
     resenias,
     loading,
@@ -73,6 +89,7 @@ export function useResenias(establecimientoId) {
     promedioEstrellas,
     totalResenias,
     refrescar,
+    agregarReseniaLocal,
   };
 }
 

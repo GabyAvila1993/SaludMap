@@ -78,7 +78,7 @@ export default function Resenias({ resenias, promedioEstrellas, totalResenias, l
   }
 
   return (
-    <div className="resenias-container">
+    <div id="resenias-section" className="resenias-container">
       <div className="resenias-header">
         <h3>Reseñas ({totalResenias})</h3>
         {totalResenias > 0 && (

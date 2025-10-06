@@ -19,7 +19,7 @@ export default function EstablishmentInfo({ place, onClose }) {
 	const [processingTurno, setProcessingTurno] = useState(false);
 
 	// Hook de reseñas (solo si tenemos establecimiento)
-	const { resenias, loading: loadingResenias, promedioEstrellas, totalResenias, refrescar } = 
+	const { resenias, loading: loadingResenias, promedioEstrellas, totalResenias, refrescar, agregarReseniaLocal } =
 		useResenias(establecimiento?.id);
 
 	// Cargar o crear establecimiento cuando se abre el modal
@@ -289,7 +289,18 @@ export default function EstablishmentInfo({ place, onClose }) {
 
 	const handleReseniaCreada = () => {
 		setShowCrearResenia(false);
+		// Actualizar automáticamente el estado local de reseñas
 		refrescar();
+	};
+
+	const scrollToReseniasSection = () => {
+		const reseniasSection = document.getElementById('resenias-section');
+		if (reseniasSection) {
+			reseniasSection.scrollIntoView({
+				behavior: 'smooth',
+				block: 'start'
+			});
+		}
 	};
 
 	// Determinar el texto del botón de turno
@@ -385,15 +396,17 @@ export default function EstablishmentInfo({ place, onClose }) {
 						</div>
 
 						{error && (
-							<div style={{ 
-								marginTop: '1rem', 
-								padding: '0.75rem', 
-								backgroundColor: '#fff3cd', 
+							<div style={{
+								marginTop: '1rem',
+								padding: '1rem',
+								background: 'linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%)',
 								color: '#856404',
-								borderRadius: '8px',
-								border: '1px solid #ffeaa7'
+								borderRadius: '12px',
+								border: '1px solid #d4af37',
+								borderLeft: '4px solid #d4af37',
+								fontWeight: '600'
 							}}>
-								{error}
+								⚠️ {error}
 							</div>
 						)}
 
@@ -414,6 +427,11 @@ export default function EstablishmentInfo({ place, onClose }) {
 							{establecimiento && (
 								<button onClick={handleDejarResenia} className="action-btn">
 									Dejar Reseña
+								</button>
+							)}
+							{establecimiento && (
+								<button onClick={scrollToReseniasSection} className="action-btn">
+									Ver Reseñas
 								</button>
 							)}
 						</div>
