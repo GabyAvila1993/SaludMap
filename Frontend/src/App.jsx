@@ -6,7 +6,7 @@ import Turnos from './components/turnos/Turnos.jsx';
 import InsuranceSection from './components/CardsSegure/InsuranceSection.jsx';
 import LanguageSelector from './components/LanguageSelector.jsx';
 import ModalAuth from './components/Auth/ModalAuth.jsx';
-import { useAuth } from './components/Auth/AuthContext.jsx';
+import { AuthProvider, useAuth } from './components/Auth/AuthContext';
 import locationService from './services/locationService.js';
 import { cleanOldTiles } from './services/db.js';
 
@@ -87,24 +87,46 @@ function App() {
   };
 
 	return (
-		<div className="app">
-			<header>
-				<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 20px' }}>
-					<h1>{t('common.appName')}</h1>
-					<div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-						<LanguageSelector />
-						{user ? (
-							<div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-								<span style={{ color: '#47472e', fontWeight: 'bold' }}>
-									👤 {user.nombre} {user.apellido}
-								</span>
+		<AuthProvider>
+			<div className="app">
+				<header>
+					<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 20px' }}>
+						<h1>{t('common.appName')}</h1>
+						<div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+							<LanguageSelector />
+							{user ? (
+								<div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+									<span style={{ color: '#47472e', fontWeight: 'bold' }}>
+										👤 {user.nombre} {user.apellido}
+									</span>
+									<button
+										onClick={logout}
+										style={{
+											padding: '8px 16px',
+											border: 'none',
+											borderRadius: '6px',
+											backgroundColor: '#ff6b6b',
+											color: '#fff',
+											cursor: 'pointer',
+											fontSize: '0.9rem',
+											fontWeight: 'bold',
+											transition: 'all 0.3s ease'
+										}}
+									>
+										Cerrar Sesión
+									</button>
+								</div>
+							) : (
 								<button
-									onClick={logout}
+									onClick={() => {
+										setShowRegister(false);
+										setShowAuthModal(true);
+									}}
 									style={{
 										padding: '8px 16px',
 										border: 'none',
 										borderRadius: '6px',
-										backgroundColor: '#ff6b6b',
+										backgroundColor: '#47472e',
 										color: '#fff',
 										cursor: 'pointer',
 										fontSize: '0.9rem',
@@ -112,32 +134,11 @@ function App() {
 										transition: 'all 0.3s ease'
 									}}
 								>
-									Cerrar Sesión
+									Iniciar Sesión
 								</button>
-							</div>
-						) : (
-							<button
-								onClick={() => {
-									setShowRegister(false);
-									setShowAuthModal(true);
-								}}
-								style={{
-									padding: '8px 16px',
-									border: 'none',
-									borderRadius: '6px',
-									backgroundColor: '#47472e',
-									color: '#fff',
-									cursor: 'pointer',
-									fontSize: '0.9rem',
-									fontWeight: 'bold',
-									transition: 'all 0.3s ease'
-								}}
-							>
-								Iniciar Sesión
-							</button>
-						)}
+							)}
+						</div>
 					</div>
-				</div>
         
         {/* Navigation Tabs */}
         <nav style={{
@@ -220,6 +221,7 @@ function App() {
 				setShowRegister={setShowRegister}
 			/>
 		</div>
+		</AuthProvider>
 	);
 }
 

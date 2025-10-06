@@ -124,11 +124,20 @@ export const saveAppointment = async (payload) => {
   try {
     console.log('[TurnosService] Guardando turno con payload:', payload);
 
+    // Obtener el token JWT del localStorage
+    const token = localStorage.getItem('token');
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    
+    // Agregar el token si existe
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const response = await fetch('/api/turnos', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers,
       body: JSON.stringify({
         usuarioId: payload.usuarioId,
         establecimientoId: payload.establecimientoId,

@@ -1,11 +1,13 @@
 // src/hooks/useResenias.js
 import { useState, useEffect, useCallback } from 'react';
 import reseniasService from '../services/reseniasService';
+import { useAuth } from '../components/Auth/AuthContext';
 
 /**
  * Hook personalizado para manejar reseñas
  */
 export function useResenias(establecimientoId) {
+  const { user } = useAuth();
   const [resenias, setResenias] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -128,11 +130,18 @@ export function useValidarResenia(turnoId) {
  * - Pertenecen al usuario autenticado
  */
 export function useTurnosParaReseniar(establecimientoId = null) {
+  const { user } = useAuth();
   const [turnos, setTurnos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const cargarTurnos = useCallback(async () => {
+    if (!user) {
+      console.log('[useTurnosParaReseniar] No hay usuario autenticado');
+      setTurnos([]);
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -145,13 +154,13 @@ export function useTurnosParaReseniar(establecimientoId = null) {
       
       setTurnos(data || []);
     } catch (err) {
-      console.error('[useTurnosParaReseniar] Error cargando turnos:', err);
+      console.error('[useTurnosParaReseniar] Error:', err);
       setError(err.message || 'Error cargando turnos disponibles');
       setTurnos([]);
     } finally {
       setLoading(false);
     }
-  }, [establecimientoId]);
+  }, [establecimientoId, user]);
 
   useEffect(() => {
     cargarTurnos();

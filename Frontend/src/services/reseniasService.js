@@ -1,17 +1,30 @@
-import api from '../config/api';
+import axios from 'axios';
 
 class ReseniasService {
+  constructor() {
+    this.api = axios.create({
+      baseURL: import.meta.env.VITE_API_URL || '/api',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Interceptor para agregar el token a todas las peticiones
+    this.api.interceptors.request.use((config) => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    });
+  }
+
   /**
    * Valida si el usuario puede dejar una reseña para un turno
    */
   async validarPuedeReseniar(turnoId) {
     try {
-      const token = localStorage.getItem('token');
-      const response = await api.get(`/resenias/validar/${turnoId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await this.api.get(`/resenias/validar/${turnoId}`);
       return response.data;
     } catch (error) {
       console.error('Error validando reseña:', error);
@@ -24,19 +37,13 @@ class ReseniasService {
    */
   async crearResenia(turnoId, establecimientoId, puntuacion, comentario) {
     try {
-      const token = localStorage.getItem('token');
-      const response = await api.post(
+      const response = await this.api.post(
         '/resenias',
         {
           turnoId,
           establecimientoId,
           puntuacion,
           comentario,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
         }
       );
       return response.data;
@@ -51,7 +58,7 @@ class ReseniasService {
    */
   async obtenerResenias(establecimientoId) {
     try {
-      const response = await api.get(`/resenias/establecimiento/${establecimientoId}`);
+      const response = await this.api.get(`/resenias/establecimiento/${establecimientoId}`);
       return response.data;
     } catch (error) {
       console.error('Error obteniendo reseñas:', error);
@@ -64,12 +71,7 @@ class ReseniasService {
    */
   async misResenias() {
     try {
-      const token = localStorage.getItem('token');
-      const response = await api.get('/resenias/mis-resenias', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await this.api.get('/resenias/mis-resenias');
       return response.data;
     } catch (error) {
       console.error('Error obteniendo mis reseñas:', error);
@@ -80,22 +82,15 @@ class ReseniasService {
   /**
    * Obtiene los turnos que el usuario puede reseñar
    */
-  async getTurnosParaReseniar(establecimientoId = null) {
+  async getTurnosParaReseniar(establecimientoId) {
     try {
-      const token = localStorage.getItem('token');
-      const url = establecimientoId
-        ? `/resenias/turnos-para-reseniar?establecimientoId=${establecimientoId}`
-        : '/resenias/turnos-para-reseniar';
-      
-      const response = await api.get(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await this.api.get(`/resenias/turnos-para-reseniar`, {
+        params: { establecimientoId }
       });
       return response.data;
     } catch (error) {
-      console.error('Error obteniendo turnos para reseñar:', error);
-      return [];
+      console.error('Error al obtener turnos:', error);
+      throw error;
     }
   }
 
@@ -104,7 +99,7 @@ class ReseniasService {
    */
   async obtenerResenia(id) {
     try {
-      const response = await api.get(`/resenias/${id}`);
+      const response = await this.api.get(`/resenias/${id}`);
       return response.data;
     } catch (error) {
       console.error('Error obteniendo reseña:', error);

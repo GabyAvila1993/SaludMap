@@ -41,6 +41,10 @@ export function AuthProvider({ children }) {
 			const userData = await authService.login({ mail, contrasenia });
 			setUser(userData);
 			localStorage.setItem('saludmap_user', JSON.stringify(userData));
+			// Guardar el token JWT separadamente para las peticiones API
+			if (userData.token) {
+				localStorage.setItem('token', userData.token);
+			}
 		} catch (error) {
 			console.error('Error en login:', error);
 			throw error;
@@ -61,6 +65,10 @@ export function AuthProvider({ children }) {
 			const userData = await authService.register({ nombre, apellido, mail, contrasenia });
 			setUser(userData);
 			localStorage.setItem('saludmap_user', JSON.stringify(userData));
+			// Guardar el token JWT separadamente para las peticiones API
+			if (userData.token) {
+				localStorage.setItem('token', userData.token);
+			}
 		} catch (error) {
 			console.error('Error en registro:', error);
 			throw error;
@@ -74,6 +82,7 @@ export function AuthProvider({ children }) {
 	const logout = () => {
 		setUser(null);
 		localStorage.removeItem('saludmap_user');
+		localStorage.removeItem('token');
 	};
 
 	return (

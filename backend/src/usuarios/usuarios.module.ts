@@ -1,10 +1,19 @@
+/* --------- INICIO DEL ARCHIVO src/usuarios/usuarios.module.ts ----------- */
 import { Module } from '@nestjs/common';
-import { UsuariosService } from './usuarios.service';
+import { JwtModule } from '@nestjs/jwt';
 import { UsuariosController } from './usuarios.controller';
+import { UsuariosService } from './usuarios.service';
 
 @Module({
-  providers: [UsuariosService],
+  imports: [
+    JwtModule.register({
+      secret: process.env.JWT_SECRET || 'tu-secreto-super-seguro-cambiar-en-produccion',
+      signOptions: { expiresIn: '24h' },
+    }),
+  ],
   controllers: [UsuariosController],
-  exports: [UsuariosService],
+  providers: [ UsuariosService],
+  exports: [ UsuariosService],
 })
 export class UsuariosModule {}
+/* --------- FIN DEL ARCHIVO src/usuarios/usuarios.module.ts ----------- */
