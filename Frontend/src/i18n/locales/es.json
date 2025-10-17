@@ -37,6 +37,14 @@
     },
     "searching": "Buscando...",
     "noResults": "No se encontraron resultados",
+    "filters": {
+      "hospital": "Hospital",
+      "clinic": "Clínica",
+      "doctors": "Médico",
+      "veterinary": "Veterinaria",
+      "title": "Filtros",
+      "all": "Todos"
+    },
     "savedLocations": "Ubicaciones Guardadas",
     "close": "Cerrar",
     "goToLocation": "Ir a Ubicación",
@@ -112,7 +120,11 @@
       "doctors": "Médico",
       "veterinary": "Veterinaria",
       "default": "Servicio de salud"
-    }
+    },
+    "completed": "Completado",
+    "noPending": "No tenés turnos pendientes",
+    "noCompleted": "No tenés turnos completados",
+    "noCancelled": "No tenés turnos cancelados"
   },
   "insurance": {
     "title": "Seguros Médicos",

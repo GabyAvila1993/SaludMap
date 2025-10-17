@@ -35,37 +35,86 @@ class LocationService {
 
     // Obtener ubicación una vez
     async getCurrentPosition() {
-        return new Promise((resolve, reject) => {
-            if (!navigator.geolocation) {
-                reject(new Error('Geolocalización no disponible'));
-                return;
-            }
+        // Implementar reintentos y fallback para evitar errores por timeout
+        if (!navigator.geolocation) {
+            throw new Error('Geolocalización no disponible');
+        }
 
-            navigator.geolocation.getCurrentPosition(
-                async (position) => {
-                    const location = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude,
-                        accuracy: position.coords.accuracy,
-                        source: 'gps',
+        const options = {
+            enableHighAccuracy: true,
+            timeout: 20000,
+            maximumAge: 0
+        };
+
+        const maxAttempts = 3;
+        let lastError = null;
+
+        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+            try {
+                const position = await this._getPositionPromise(options);
+                const location = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                    accuracy: position.coords.accuracy,
+                    source: 'gps',
+                    timestamp: Date.now()
+                };
+
+                await saveLocation(location);
+                this.notify(location);
+                return location;
+            } catch (error) {
+                lastError = error;
+                console.warn(`[LocationService] getCurrentPosition attempt ${attempt} failed:`, error);
+                // small backoff before retry
+                if (attempt < maxAttempts) await new Promise(r => setTimeout(r, 500 * attempt));
+            }
+        }
+
+        // Si fallaron los reintentos, intentar usar la última ubicación conocida
+        try {
+            const last = await getLastLocation();
+            if (last) {
+                console.warn('[LocationService] Usando última ubicación conocida como fallback');
+                this.notify(last);
+                return last;
+            }
+        } catch (err) {
+            console.warn('[LocationService] Error al obtener última ubicación:', err);
+        }
+
+        // Intentar un fallback por IP (público) como último recurso
+        try {
+            const resp = await fetch('https://ipapi.co/json/');
+            if (resp.ok) {
+                const data = await resp.json();
+                if (data && data.latitude && data.longitude) {
+                    const ipLoc = {
+                        lat: Number(data.latitude),
+                        lng: Number(data.longitude),
+                        accuracy: null,
+                        source: 'ip',
                         timestamp: Date.now()
                     };
-
-                    // Guardar en IndexedDB
-                    await saveLocation(location);
-                    this.notify(location);
-                    resolve(location);
-                },
-                (error) => {
-                    console.error('Error GPS:', error);
-                    reject(error);
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 15000,
-                    maximumAge: 0
+                    console.warn('[LocationService] Usando geolocalización por IP como fallback');
+                    try { await saveLocation(ipLoc); } catch (_) { /* noop */ }
+                    this.notify(ipLoc);
+                    return ipLoc;
                 }
-            );
+            }
+        } catch (err) {
+            console.warn('[LocationService] Fallback IP falló:', err);
+        }
+
+        // Emitir evento de error para que la UI pueda reaccionar
+        window.dispatchEvent(new CustomEvent('saludmap:pos-error', { detail: { error: lastError } }));
+        throw lastError;
+    }
+
+    // Helper para envolver getCurrentPosition en una Promise
+    _getPositionPromise(options) {
+        return new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, options);
         });
     }
 
@@ -73,11 +122,16 @@ class LocationService {
     startWatching() {
         if (this.isWatching || !navigator.geolocation) return;
 
+        const options = {
+            enableHighAccuracy: true,
+            maximumAge: 15000,
+            timeout: 30000
+        };
+
         this.watchId = navigator.geolocation.watchPosition(
             async (position) => {
                 // No sobrescribir ubicaciones manuales con GPS automático
                 if (this.currentLocation && this.currentLocation.source === 'manual') {
-                    // Nunca sobrescribir ubicaciones manuales automáticamente
                     return;
                 }
 
@@ -89,15 +143,27 @@ class LocationService {
                     timestamp: Date.now()
                 };
 
-                await saveLocation(location);
+                try {
+                    await saveLocation(location);
+                } catch (err) {
+                    console.warn('[LocationService] Error guardando ubicación:', err);
+                }
                 this.notify(location);
             },
-            (error) => console.warn('Error en watchPosition:', error),
-            {
-                enableHighAccuracy: true,
-                maximumAge: 10000, // Aumentar para evitar actualizaciones frecuentes
-                timeout: 20000
-            }
+            (error) => {
+                console.warn('[LocationService] Error en watchPosition:', error);
+                // Si es timeout, emitir evento y usar fallback
+                if (error && error.code === error.TIMEOUT) {
+                    window.dispatchEvent(new CustomEvent('saludmap:pos-error', { detail: { error } }));
+                    // Usar última ubicación conocida para mantener la app funcional
+                    this.loadLastKnownLocation().catch(() => {});
+                }
+                // Si el permiso fue denegado, detener watch para evitar logs repetidos
+                if (error && error.code === error.PERMISSION_DENIED) {
+                    this.stopWatching();
+                }
+            },
+            options
         );
 
         this.isWatching = true;
@@ -114,57 +180,38 @@ class LocationService {
 
     // Calibrar posición - versión simplificada y confiable
     async calibratePosition() {
-        return new Promise((resolve, reject) => {
-            if (!navigator.geolocation) {
-                reject(new Error('Geolocalización no disponible'));
-                return;
+        // Reintentar un par de veces para evitar fallos por timeout
+        if (!navigator.geolocation) throw new Error('Geolocalización no disponible');
+
+        const options = { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 };
+        const attempts = 2;
+        let lastErr = null;
+
+        for (let i = 1; i <= attempts; i++) {
+            try {
+                const position = await this._getPositionPromise(options);
+                const calibratedLocation = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                    accuracy: position.coords.accuracy,
+                    source: 'calibrated',
+                    samples: 1,
+                    timestamp: Date.now()
+                };
+
+                await saveLocation(calibratedLocation);
+                this.notify(calibratedLocation);
+                return calibratedLocation;
+            } catch (error) {
+                lastErr = error;
+                console.warn(`[LocationService] calibratePosition attempt ${i} failed:`, error);
+                if (i < attempts) await new Promise(r => setTimeout(r, 400 * i));
             }
+        }
 
-            // Usar getCurrentPosition que es más simple y confiable
-            navigator.geolocation.getCurrentPosition(
-                async (position) => {
-                    const calibratedLocation = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude,
-                        accuracy: position.coords.accuracy,
-                        source: 'calibrated',
-                        samples: 1,
-                        timestamp: Date.now()
-                    };
-
-                    try {
-                        await saveLocation(calibratedLocation);
-                        this.notify(calibratedLocation);
-                        resolve(calibratedLocation);
-                    } catch (error) {
-                        reject(new Error('Error guardando ubicación: ' + error.message));
-                    }
-                },
-                (error) => {
-                    let errorMessage = 'Error obteniendo ubicación: ';
-                    switch(error.code) {
-                        case error.PERMISSION_DENIED:
-                            errorMessage += 'Permisos de ubicación denegados';
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            errorMessage += 'Ubicación no disponible';
-                            break;
-                        case error.TIMEOUT:
-                            errorMessage += 'Tiempo de espera agotado';
-                            break;
-                        default:
-                            errorMessage += 'Error desconocido';
-                            break;
-                    }
-                    reject(new Error(errorMessage));
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 0
-                }
-            );
-        });
+        // Emitir evento para UI
+        window.dispatchEvent(new CustomEvent('saludmap:pos-error', { detail: { error: lastErr } }));
+        throw lastErr;
     }
 
     // Establecer ubicación manual

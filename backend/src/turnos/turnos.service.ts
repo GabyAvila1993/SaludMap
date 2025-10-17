@@ -61,21 +61,17 @@ export class TurnosService {
     }
   }
 
-  async listTurnos(userEmail?: string) {
+  async listTurnos(userEmail?: string, includeCancelled = false) {
     try {
       const turnos = await prisma.turno.findMany({
         where: userEmail ? {
           usuario: {
             mail: userEmail
           },
-          NOT: {
-            estado: 'cancelado'
-          }
-        } : {
-          NOT: {
-            estado: 'cancelado'
-          }
-        },
+          ...(includeCancelled ? {} : { NOT: { estado: 'cancelado' } })
+        } : (
+          includeCancelled ? {} : { NOT: { estado: 'cancelado' } }
+        ),
         include: {
           usuario: true,
           establecimiento: true

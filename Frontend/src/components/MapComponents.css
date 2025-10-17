@@ -39,14 +39,14 @@
 
 /* Contenedor principal */
 .map-wrapper {
-    height: 70vh;
-    width: 900px;
-    max-width: 95%;
-    margin: 16px auto;
+    width: 100%;
+    max-width: 1200px;
+    margin: 12px auto;
     border-radius: 10px;
-    /* overflow: hidden; */ /* comentar o eliminar */
-    box-shadow: 0 2px 12px #ffffff;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
     position: relative;
+    height: min(76vh, 900px);
 }
 
 /* Aplicable a MapContainer con className="leaflet-map" */
@@ -115,14 +115,11 @@
 .map-layout {
     display: flex;
     justify-content: center;
-    /* centra el bloque del 90% */
     gap: 20px;
-    /* espacio entre mapa y botones */
-    width: 90%;
-    /* ocupa el 90% de la pantalla */
+    width: 92%;
     margin: 0 auto;
-    /* deja 10% de margen repartido */
-    height: 100vh;
+    /* permitir que el layout crezca según el contenido y la altura del mapa */
+    min-height: 70vh;
 }
 
 /* Mapa ocupa el 70% */

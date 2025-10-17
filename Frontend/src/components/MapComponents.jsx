@@ -18,7 +18,56 @@ const userIcon = L.divIcon({
 function Recentrar({ position }) {
   const map = useMap();
   useEffect(() => {
-    if (position) map.setView(position, map.getZoom());
+    if (!position) return;
+
+    let userInteracting = false;
+    let lastInteraction = 0;
+
+    const onUserStart = () => {
+      userInteracting = true;
+      lastInteraction = Date.now();
+    };
+    const onUserEnd = () => {
+      lastInteraction = Date.now();
+      setTimeout(() => {
+        if (Date.now() - lastInteraction > 1200) userInteracting = false;
+      }, 1200);
+    };
+
+    try {
+      map.on('movestart', onUserStart);
+      map.on('zoomstart', onUserStart);
+      map.on('moveend', onUserEnd);
+      map.on('zoomend', onUserEnd);
+    } catch (e) {
+      // noop
+    }
+
+    try {
+      // No recenter if user is interacting.
+      if (userInteracting) return;
+
+      const center = map.getCenter();
+      const target = L.latLng(position[0], position[1]);
+      const dist = center ? center.distanceTo(target) : Infinity;
+      const DISTANCE_THRESHOLD = 25; // meters
+      if (dist > DISTANCE_THRESHOLD) {
+        map.setView(position, map.getZoom());
+      }
+    } catch (e) {
+      // noop
+    }
+
+    return () => {
+      try {
+        map.off('movestart', onUserStart);
+        map.off('zoomstart', onUserStart);
+        map.off('moveend', onUserEnd);
+        map.off('zoomend', onUserEnd);
+      } catch (e) {
+        // noop
+      }
+    };
   }, [position, map]);
   return null;
 }

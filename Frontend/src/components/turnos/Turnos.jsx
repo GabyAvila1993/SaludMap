@@ -4,7 +4,7 @@ import './Turnos.css';
 
 // Importar servicios
 import locationService from '../../services/locationService.js';
-import turnosService, { saveAppointment, guardarTurno } from '../../services/turnosService.js';
+import turnosService, { saveAppointment, guardarTurno, fetchMisTurnos, cancelAppointment } from '../../services/turnosService.js';
 import { initializeEmailJS } from '../../services/emailService.js';
 import { useAuth } from '../Auth/AuthContext.jsx';
 import ModalAuth from '../Auth/ModalAuth.jsx';
@@ -13,6 +13,7 @@ import ModalAuth from '../Auth/ModalAuth.jsx';
 import { ProfesionalesList } from './ProfesionalesList2.jsx';
 import { MisTurnosList } from './MisTurnosList2.jsx';
 import { TurnoModal } from './TurnoModal2.jsx';
+import establecimientosService from '../../services/establecimientosService';
 
 // Utilidades
 const getTypeFromPlace = (place) => {
@@ -48,18 +49,55 @@ export default function Turnos() {
 	const [misTurnos, setMisTurnos] = useState([]);
 	const [cancellingId, setCancellingId] = useState(null);
 
+	// Helper: ordenar por datetime descendente (más reciente primero)
+	const sortTurnosDesc = (arr = []) => {
+		try {
+			return [...arr].sort((a, b) => {
+				const ta = Date.parse(a.datetime || a.fecha || '') || 0;
+				const tb = Date.parse(b.datetime || b.fecha || '') || 0;
+				return tb - ta;
+			});
+		} catch (e) {
+			return [...arr];
+		}
+	};
+
 	// Estado para establecimiento pre-seleccionado desde el mapa
 	const [preSelectedEstablecimiento, setPreSelectedEstablecimiento] = useState(null);
 	const [preSelectedPlace, setPreSelectedPlace] = useState(null);
 
 	// Función para abrir modal - DEFINIR ANTES DE LOS useEffect
 	// Acepta establecimientoOverride para pasar el establecimiento directamente
-	const openModal = (prof, establecimientoOverride = null) => {
+	const openModal = async (prof, establecimientoOverride = null) => {
 		const tags = prof.tags || prof.properties || {};
-		
+
 		// Usar el establecimiento pasado o el del estado
-		const est = establecimientoOverride || preSelectedEstablecimiento;
-		
+		let est = establecimientoOverride || preSelectedEstablecimiento;
+
+		// Si no existe establecimiento, intentar crear/obtener uno desde el servicio
+		if (!est) {
+			try {
+				console.log('[Turnos] No hay establecimiento preseleccionado, intentando findOrCreate para place:', prof);
+
+				// Normalizar coordenadas en el objeto antes de enviarlo al servicio
+				const placeForCreate = {
+					...prof,
+					lat: prof.lat ?? prof.center?.lat ?? prof.geometry?.coordinates?.[1] ?? prof.latitude ?? prof.y ?? prof.properties?.lat,
+					lng: prof.lng ?? prof.lon ?? prof.center?.lon ?? prof.geometry?.coordinates?.[0] ?? prof.longitude ?? prof.x ?? prof.properties?.lng,
+				};
+
+				const estResult = await establecimientosService.findOrCreate(placeForCreate);
+				est = estResult;
+				setPreSelectedEstablecimiento(estResult);
+				setPreSelectedPlace(placeForCreate);
+				console.log('[Turnos] Establecimiento obtenido/creado:', estResult?.id);
+			} catch (error) {
+				console.error('[Turnos] Error obteniendo/creando establecimiento al abrir modal:', error);
+				alert('Error al preparar el establecimiento para solicitar turno. Por favor intenta desde el mapa o reintenta.');
+				return;
+			}
+		}
+
 		const normalizedProf = {
 			...prof,
 			name: prof.name || tags.name || prof.properties?.name || tags.amenity || 'Establecimiento de salud',
@@ -175,11 +213,18 @@ export default function Turnos() {
 		};
 
 		window.addEventListener('saludmap:change-tab', handleChangeTab);
+		// Listener para forzar recarga de turnos (por ejemplo tras publicar una reseña)
+		const handleRefreshTurnos = () => {
+			console.log('[Turnos] Evento saludmap:refresh-turnos recibido, recargando turnos');
+			if (user && user.mail) cargarMisTurnos(user.mail);
+		};
+		window.addEventListener('saludmap:refresh-turnos', handleRefreshTurnos);
 		console.log('[Turnos] Listener registrado exitosamente');
 
 		return () => {
 			console.log('[Turnos] Removiendo listener');
 			window.removeEventListener('saludmap:change-tab', handleChangeTab);
+			window.removeEventListener('saludmap:refresh-turnos', handleRefreshTurnos);
 		};
 	}, []); // Sin dependencias para evitar re-creación del listener
 
@@ -247,9 +292,20 @@ export default function Turnos() {
 	const cargarMisTurnos = async (emailUsuario) => {
 		try {
 			console.log('[Turnos] Cargando turnos para:', emailUsuario);
-			// Aquí deberías implementar la llamada a tu API
-			const turnosSimulados = [];
-			setMisTurnos(turnosSimulados);
+			// Llamar al servicio que obtiene los turnos del backend
+			const turnos = await fetchMisTurnos(emailUsuario);
+			// Normalizar a la forma usada por la UI si es necesario
+			const lista = (turnos || []).map(t => ({
+				id: t.id,
+				professionalName: t.establecimiento?.nombre || t.professionalName || 'Profesional',
+				professionalType: t.establecimiento?.tipo || t.professionalType || 'default',
+				datetime: t.fecha ? new Date(t.fecha).toISOString() : (t.datetime || ''),
+				notes: t.observaciones || t.notes || '',
+				email: t.usuario?.mail || t.email || emailUsuario,
+				establecimientoId: t.establecimientoId || t.establecimiento?.id,
+				estado: t.estado || 'pendiente'
+			}));
+			setMisTurnos(sortTurnosDesc(lista));
 		} catch (error) {
 			console.error('[Turnos] Error cargando turnos:', error);
 			setMisTurnos([]);
@@ -299,7 +355,7 @@ export default function Turnos() {
 				establecimientoId: preSelectedEstablecimiento?.id
 			};
 
-			setMisTurnos(prev => [...prev, nuevoTurno]);
+			setMisTurnos(prev => sortTurnosDesc([...prev, nuevoTurno]));
 
 			// Limpiar pre-selección después de crear el turno
 			setPreSelectedEstablecimiento(null);
@@ -317,15 +373,23 @@ export default function Turnos() {
 	const cancelarTurno = async (turnoId, correo) => {
 		try {
 			setCancellingId(turnoId);
-			console.log('[Turnos] Cancelando turno:', turnoId);
+			console.log('[Turnos] Cancelando turno (API):', turnoId);
 
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			// Llamar al servicio para cancelar de forma persistente
+		const res = await cancelAppointment(turnoId);
 
-			setMisTurnos(prev => prev.filter(t => t.id !== turnoId));
+			// Axios devuelve un objeto con status
+			if (res && (res.status === 200 || res.status === 204)) {
+				console.log('[Turnos] Cancelación confirmada por servidor:', res.status);
+				setMisTurnos(prev => prev.filter(t => t.id !== turnoId));
+			} else {
+				console.warn('[Turnos] Respuesta inesperada al cancelar:', res);
+				throw new Error('No se pudo cancelar el turno en el servidor');
+			}
 
 		} catch (error) {
 			console.error('[Turnos] Error cancelando turno:', error);
-			alert('Error cancelando turno: ' + error.message);
+			alert('Error cancelando turno: ' + (error.message || 'Error desconocido'));
 		} finally {
 			setCancellingId(null);
 		}
@@ -340,6 +404,33 @@ export default function Turnos() {
 				fecha: datos.fecha,
 				hora: datos.hora
 			});
+
+			// Si el modal no incluyó establecimientoId (race condition o apertura desde lista),
+			// intentar usar la pre-selección almacenada en el estado padre.
+			if (!datos.establecimientoId && preSelectedEstablecimiento?.id) {
+				console.log('[Turnos] establecimientoId faltante en datos del modal, usando preSelectedEstablecimiento:', preSelectedEstablecimiento.id);
+				datos.establecimientoId = preSelectedEstablecimiento.id;
+			}
+
+			// Si aún no tenemos establecimientoId intentar crear/obtener uno basado en el selected (último recurso)
+			if (!datos.establecimientoId && !preSelectedEstablecimiento?.id && selected) {
+				try {
+					console.log('[Turnos] No hay establecimiento disponible; intentando findOrCreate a último recurso con selected:', selected);
+					const placeForCreate = {
+						...selected,
+						lat: selected.lat ?? selected.center?.lat ?? selected.geometry?.coordinates?.[1] ?? selected.latitude ?? selected.y ?? selected.properties?.lat,
+						lng: selected.lng ?? selected.lon ?? selected.center?.lon ?? selected.geometry?.coordinates?.[0] ?? selected.longitude ?? selected.x ?? selected.properties?.lng,
+					};
+					const estResult = await establecimientosService.findOrCreate(placeForCreate);
+					if (estResult?.id) {
+						datos.establecimientoId = estResult.id;
+						setPreSelectedEstablecimiento(estResult);
+						console.log('[Turnos] Establecimiento creado/obtenido en último recurso:', estResult.id);
+					}
+				} catch (err) {
+					console.error('[Turnos] Error en último recurso findOrCreate:', err);
+				}
+			}
 
 			if (!datos.establecimientoId) {
 				alert('Error: No hay establecimiento seleccionado. Por favor intenta nuevamente.');
@@ -356,10 +447,31 @@ export default function Turnos() {
 			console.log('[Turnos] Turno guardado exitosamente:', turnoGuardado);
 			
 			// Cerrar modal y limpiar estados
+			// Agregar el turno guardado a la lista local de turnos para mostrarlo en "Mis Turnos"
+			try {
+				const fechaServidor = turnoGuardado?.fecha ? String(turnoGuardado.fecha) : `${datos.fecha}`;
+				const horaServidor = turnoGuardado?.hora ?? datos.hora;
+				const datetimeIso = `${fechaServidor.split('T')[0]}T${horaServidor}`;
+
+				const nuevoTurno = {
+					id: turnoGuardado?.id || Date.now(),
+					professionalName: datos.professionalName || selected?.name || 'Profesional',
+					professionalType: datos.professionalType || selectedType,
+					datetime: datetimeIso,
+					notes: datos.observaciones || datos.observaciones || '',
+					email: datos.correo || user.mail,
+					establecimientoId: datos.establecimientoId,
+					estado: turnoGuardado?.estado || 'pendiente'
+				};
+
+				setMisTurnos(prev => sortTurnosDesc([...prev, nuevoTurno]));
+			} catch (err) {
+				console.warn('[Turnos] No se pudo agregar turno a la lista local:', err);
+			}
+
 			setModalOpen(false);
 			setPreSelectedEstablecimiento(null);
 			setPreSelectedPlace(null);
-			
 			alert('Turno solicitado exitosamente');
 
 		} catch (error) {

@@ -37,6 +37,17 @@ export default function MapComponent() {
     const [isCalibrating, setIsCalibrating] = useState(false);
     const [offlineMode, setOfflineMode] = useState(false);
     const [isOnline, setIsOnline] = useState(navigator.onLine);
+    // Filtros para tipos de establecimientos
+    const [filters, setFilters] = useState({
+        hospital: true,
+        clinic: true,
+        doctors: true,
+        veterinary: true
+    });
+    const toggleAllFilters = () => {
+        const allActive = Object.values(filters).every(Boolean);
+        setFilters({ hospital: !allActive, clinic: !allActive, doctors: !allActive, veterinary: !allActive });
+    };
     const [downloadProgress, setDownloadProgress] = useState(0);
     const [showSaveLocationModal, setShowSaveLocationModal] = useState(false);
     const [showSavedLocationsList, setShowSavedLocationsList] = useState(false);
@@ -46,6 +57,8 @@ export default function MapComponent() {
 
     const mapRef = useRef(null);
     const unsubscribeRef = useRef(null);
+    const lastUserInteractionAt = useRef(0);
+    const userInteracting = useRef(false);
 
     // Hook de reseñas (solo si tenemos establecimiento)
     const { resenias, loading: loadingResenias, promedioEstrellas, totalResenias } = 
@@ -109,10 +122,16 @@ export default function MapComponent() {
         // Escuchar evento para centrar mapa
         const handleCenterMap = (event) => {
             if (mapRef.current) {
-                mapRef.current.setView([event.detail.lat, event.detail.lng], 15, {
-                    animate: true,
-                    duration: 0.5
-                });
+                // No forzamos recentrado si el usuario está interactuando
+                if (userInteracting.current) return;
+                try {
+                    mapRef.current.setView([event.detail.lat, event.detail.lng], 15, {
+                        animate: true,
+                        duration: 0.5
+                    });
+                } catch (e) {
+                    // noop
+                }
             }
         };
         
@@ -138,10 +157,24 @@ export default function MapComponent() {
 
         // Centrar mapa en nueva ubicación con animación
         if (mapRef.current) {
-            mapRef.current.setView([location.lat, location.lng], 50, {
-                animate: true,
-                duration: 0.5
-            });
+            try {
+                // No re-centremos si el usuario está interactuando con el mapa
+                if (userInteracting.current) return;
+
+                // Si la distancia al centro actual es muy pequeña, evitamos hacer setView para no provocar zoom/ajustes innecesarios
+                const center = mapRef.current.getCenter();
+                const dist = center ? center.distanceTo(L.latLng(location.lat, location.lng)) : Infinity;
+                const DISTANCE_THRESHOLD = 25; // metros
+                if (dist < DISTANCE_THRESHOLD) return;
+
+                // Usar un zoom razonable (15) para evitar zoom extremo
+                mapRef.current.setView([location.lat, location.lng], 15, {
+                    animate: true,
+                    duration: 0.5
+                });
+            } catch (e) {
+                // noop
+            }
         }
 
         // Buscar lugares cercanos
@@ -156,7 +189,9 @@ export default function MapComponent() {
             // Si estamos online, intentar buscar online primero
             if (isOnline) {
                 try {
-                    const types = ['hospital', 'clinic', 'doctors', 'veterinary'].join(',');
+                    // Enviar sólo los tipos seleccionados por el usuario
+                    const selectedTypes = Object.keys(filters).filter(k => filters[k]);
+                    const types = selectedTypes.join(',') || 'hospital,clinic,doctors,veterinary';
                     const response = await axios.get(
                         `/api/places?lat=${location.lat}&lng=${location.lng}&types=${types}`
                     );
@@ -197,6 +232,13 @@ export default function MapComponent() {
             }
         }
     };
+
+    // Obtener array de lugares filtrados a partir del filtro de UI
+    const visibleLugares = lugares.filter(l => {
+        const tipo = l.type || l.tipo || 'default';
+        // Mostrar sólo si el tipo está seleccionado (si no está en filtros, ocultar)
+        return !!filters[tipo];
+    });
 
     // Normalizar respuesta de API
     const normalizeApiResponse = (data) => {
@@ -240,10 +282,12 @@ export default function MapComponent() {
             const location = await locationService.calibratePosition();
             // Forzar que el mapa se centre en la nueva ubicación
             if (mapRef.current && location) {
-                mapRef.current.setView([location.lat, location.lng], 15, {
-                    animate: true,
-                    duration: 0.5
-                });
+                if (!userInteracting.current) {
+                    mapRef.current.setView([location.lat, location.lng], 15, {
+                        animate: true,
+                        duration: 0.5
+                    });
+                }
             }
             setError('Ubicación actualizada exitosamente');
         } catch (error) {
@@ -266,10 +310,12 @@ export default function MapComponent() {
             try { locationService.startWatching(); } catch (e) { /* noop */ }
 
             if (mapRef.current && location) {
-                mapRef.current.setView([location.lat, location.lng], 50, {
-                    animate: true,
-                    duration: 0.5
-                });
+                if (!userInteracting.current) {
+                    mapRef.current.setView([location.lat, location.lng], 15, {
+                        animate: true,
+                        duration: 0.5
+                    });
+                }
             }
 
             setError('GPS reactivado');
@@ -341,6 +387,41 @@ export default function MapComponent() {
                 // noop
             }
 
+            // Track user interactions to avoid fighting the user's pan/zoom actions.
+            const onUserInteractionStart = () => {
+                userInteracting.current = true;
+                lastUserInteractionAt.current = Date.now();
+            };
+            const onUserInteractionEnd = () => {
+                // keep interaction flag for a short grace period
+                lastUserInteractionAt.current = Date.now();
+                setTimeout(() => {
+                    // only clear if no further interaction
+                    if (Date.now() - lastUserInteractionAt.current > 1200) {
+                        userInteracting.current = false;
+                    }
+                }, 1200);
+            };
+
+            try {
+                map.on('movestart', onUserInteractionStart);
+                map.on('zoomstart', onUserInteractionStart);
+                map.on('moveend', onUserInteractionEnd);
+                map.on('zoomend', onUserInteractionEnd);
+            } catch (e) {
+                // noop if events not available
+            }
+
+            return () => {
+                try {
+                    map.off('movestart', onUserInteractionStart);
+                    map.off('zoomstart', onUserInteractionStart);
+                    map.off('moveend', onUserInteractionEnd);
+                    map.off('zoomend', onUserInteractionEnd);
+                } catch (e) {
+                    // noop
+                }
+            };
         }, [map]);
 
         return null;
@@ -402,6 +483,7 @@ export default function MapComponent() {
                 <button onClick={() => setShowSavedLocationsList(true)} className="btn-view-locations">
                     {t('map.viewLocations')}
                 </button>
+                {/* filtros movidos a la barra lateral para mejor visibilidad */}
                 {downloadProgress > 0 && downloadProgress < 100 && (
                     <div className="progress">{t('map.downloading')}: {Math.round(downloadProgress)}%</div>
                 )}
@@ -415,7 +497,8 @@ export default function MapComponent() {
                 </span>
             </div>
 
-            <div className="map-wrapper">
+                        <div className="map-layout">
+                            <div className="map-wrapper">
               <MapContainer
                 center={[currentLocation.lat, currentLocation.lng]}
                 zoom={15}
@@ -445,7 +528,7 @@ export default function MapComponent() {
                     eventHandlers={{ dragend: handleMarkerDrag }}
                 />
 
-                    {lugares.map((lugar, index) => {
+                    {visibleLugares.map((lugar, index) => {
                         // Resolve coordinates from multiple possible property names
                         const lat = lugar.lat ?? lugar.center?.lat ?? lugar.geometry?.coordinates?.[1] ?? lugar.latitude ?? lugar.y ?? lugar.center?.latitude;
                         const lng = lugar.lng ?? lugar.lon ?? lugar.center?.lon ?? lugar.geometry?.coordinates?.[0] ?? lugar.longitude ?? lugar.x ?? lugar.center?.longitude;
@@ -476,11 +559,35 @@ export default function MapComponent() {
                 })}
               </MapContainer>
 
-              {/* tu panel grande (EstablishmentInfo) continúa funcionando */}
-                            {selectedPlace && (
-                                <EstablishmentInfo place={selectedPlace} onClose={handlePlaceClose} />
-                            )}
-            </div>
+                            {/* tu panel grande (EstablishmentInfo) continúa funcionando */}
+                                {selectedPlace && (
+                                        <EstablishmentInfo place={selectedPlace} onClose={handlePlaceClose} />
+                                )}
+                            </div>
+
+                            <aside className="map-sidebar">
+                                <div className="sidebar-inner">
+                                    <h4 className="filters-title">{t('map.filters.title') || 'Filtros'}</h4>
+                                    <button className={`filter-btn ${Object.values(filters).every(Boolean) ? 'active' : ''}`} onClick={toggleAllFilters} style={{ width: '100%', marginBottom: '8px' }}>
+                                        {t('map.filters.all') || 'Todos'}
+                                    </button>
+                                    <div className="filters-vertical">
+                                        <button type="button" className={`filter-btn ${filters.hospital ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, hospital: !f.hospital }))}>
+                                            🏥 {t('map.filters.hospital')}
+                                        </button>
+                                        <button type="button" className={`filter-btn ${filters.clinic ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, clinic: !f.clinic }))}>
+                                            🏩 {t('map.filters.clinic')}
+                                        </button>
+                                        <button type="button" className={`filter-btn ${filters.doctors ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, doctors: !f.doctors }))}>
+                                            👨‍⚕️ {t('map.filters.doctors')}
+                                        </button>
+                                        <button type="button" className={`filter-btn ${filters.veterinary ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, veterinary: !f.veterinary }))}>
+                                            🐾 {t('map.filters.veterinary')}
+                                        </button>
+                                    </div>
+                                </div>
+                            </aside>
+                        </div>
 
             {/* Modales para ubicaciones guardadas */}
             <SaveLocationModal

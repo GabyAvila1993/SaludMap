@@ -37,6 +37,14 @@
     },
     "searching": "Searching...",
     "noResults": "No results found",
+    "filters": {
+      "hospital": "Hospital",
+      "clinic": "Clinic",
+      "doctors": "Doctor",
+      "veterinary": "Veterinary",
+      "title": "Filters",
+      "all": "All"
+    },
     "savedLocations": "Saved Locations",
     "close": "Close",
     "goToLocation": "Go to Location",
@@ -113,6 +121,11 @@
       "veterinary": "Veterinary",
       "default": "Health service"
     }
+    ,
+    "completed": "Completed",
+    "noPending": "You have no pending appointments",
+    "noCompleted": "You have no completed appointments",
+    "noCancelled": "You have no cancelled appointments"
   },
   "insurance": {
     "title": "Health Insurance",

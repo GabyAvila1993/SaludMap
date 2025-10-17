@@ -21,7 +21,12 @@ export const useTurnos = () => { // CAMBIO: Sin parámetro correo para evitar de
             console.log('[DEBUG] Cargando turnos para correo:', correo);
             const arr = await fetchMisTurnos(correo);
             console.log('[DEBUG] Turnos recibidos:', arr);
-            setMisTurnos(arr);
+            const sortDesc = (a = []) => [...a].sort((x, y) => {
+                const tx = Date.parse(x.datetime || x.fecha || '') || 0;
+                const ty = Date.parse(y.datetime || y.fecha || '') || 0;
+                return ty - tx;
+            });
+            setMisTurnos(sortDesc(arr));
         } catch (e) {
             console.warn('Error cargando mis turnos', e);
             setMisTurnos([]);

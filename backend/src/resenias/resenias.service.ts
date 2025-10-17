@@ -41,7 +41,8 @@ export class ReseniasService {
     }
 
     // 4. Verificar que el turno no está cancelado
-    if (turno.estado === 'cancelled') {
+    // Aceptar ambas variantes ('cancelado' en español y 'cancelled' en inglés)
+    if (turno.estado === 'cancelado' || turno.estado === 'cancelled') {
       throw new BadRequestException('No puede reseñar un turno cancelado');
     }
 
@@ -51,10 +52,9 @@ export class ReseniasService {
     const dosHorasAtras = new Date(ahora.getTime() - 2 * 60 * 60 * 1000);
 
     // Permitir si ya pasó O si es dentro de las últimas 2 horas (para testing)
-    if (fechaTurno > ahora && fechaTurno < dosHorasAtras) {
-      throw new BadRequestException(
-        'No puede reseñar un turno que aún no ha ocurrido',
-      );
+    // Rechazar únicamente si la fecha del turno está en el futuro
+    if (fechaTurno > ahora) {
+      throw new BadRequestException('No puede reseñar un turno que aún no ha ocurrido');
     }
 
     return {
@@ -118,10 +118,10 @@ export class ReseniasService {
       },
     });
 
-    // Opcionalmente, actualizar el estado del turno a 'completed'
+    // Opcionalmente, actualizar el estado del turno a 'completado' (usar español consistente con UI)
     await this.prisma.turno.update({
       where: { id: dto.turnoId },
-      data: { estado: 'completed' },
+      data: { estado: 'completado' },
     });
 
     return resenia;

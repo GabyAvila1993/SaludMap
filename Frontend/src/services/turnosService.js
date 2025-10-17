@@ -1,6 +1,6 @@
 import axios from 'axios';
 import locationService from './locationService.js';
-import { getNearbyPlaces } from './db.js';
+import { getNearbyPlaces, savePlaces } from './db.js';
 
 // Servicio compatible con el componente Turnos.jsx
 class TurnosService {
@@ -50,31 +50,28 @@ class TurnosService {
         this.notify({ loading: true, error: '' });
         
         try {
-            // Intentar cargar desde cache offline primero
-            const offlinePlaces = await getNearbyPlaces(location);
-            
-            if (offlinePlaces.length > 0) {
-                this.notify({ 
-                    lugares: offlinePlaces, 
-                    loading: false, 
-                    error: '' 
-                });
-                return;
+            // Preferir búsqueda online cuando el navegador está online.
+            // Cargar offline solo como fallback en caso de falla o cuando estemos offline.
+            let places = [];
+            try {
+                const types = ['hospital', 'clinic', 'doctors', 'veterinary'].join(',');
+                const response = await axios.get(
+                    `/api/places?lat=${location.lat}&lng=${location.lng}&types=${types}`
+                );
+
+                places = this.normalizeApiResponse(response.data);
+
+                // Guardar en cache offline para uso posterior
+                if (places.length > 0) {
+                    try { await savePlaces(places); } catch (e) { console.warn('[TurnosService] No se pudo guardar cache de lugares:', e); }
+                }
+            } catch (onlineError) {
+                console.warn('TurnosService: error fetching online places, falling back to cache', onlineError);
+                const offlinePlaces = await getNearbyPlaces(location);
+                places = offlinePlaces;
             }
 
-            // Si no hay datos offline, intentar cargar online
-            const types = ['hospital', 'clinic', 'doctors', 'veterinary'].join(',');
-            const response = await axios.get(
-                `/api/places?lat=${location.lat}&lng=${location.lng}&types=${types}`
-            );
-
-            const places = this.normalizeApiResponse(response.data);
-            
-            this.notify({ 
-                lugares: places, 
-                loading: false, 
-                error: '' 
-            });
+            this.notify({ lugares: places, loading: false, error: '' });
 
         } catch (error) {
             console.error('Error loading places for turnos:', error);
@@ -174,7 +171,8 @@ export const fetchMisTurnos = async (correo) => {
     }
 
     console.log('[DEBUG] Fetching turnos para:', correo);
-    const res = await axios.get(`/api/turnos?user=${encodeURIComponent(correo)}`);
+    // Solicitar también los turnos cancelados para poder mostrarlos en la UI agrupados
+    const res = await axios.get(`/api/turnos?user=${encodeURIComponent(correo)}&includeCancelled=true`);
     const data = res.data;
     console.log('[DEBUG] Respuesta completa del servidor:', data);
 
@@ -191,7 +189,8 @@ export const cancelAppointment = async (id) => {
 
     const url = `/api/turnos/${encodeURIComponent(id)}`;
     console.log('[Turnos] PUT', url);
-    const res = await axios.put(url, { action: 'cancel' });
+    // El backend espera la acción 'cancelar' (cadena en español)
+    const res = await axios.put(url, { action: 'cancelar' });
     console.log('[Turnos] respuesta cancel completa:', res);
     return res;
 };

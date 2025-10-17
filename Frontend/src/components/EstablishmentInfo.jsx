@@ -291,6 +291,15 @@ export default function EstablishmentInfo({ place, onClose }) {
 		setShowCrearResenia(false);
 		// Actualizar automáticamente el estado local de reseñas
 		refrescar();
+		// Informar al resto de la app que las reseñas/turnos pueden haber cambiado
+		try {
+			const ev = new CustomEvent('saludmap:refresh-turnos');
+			window.dispatchEvent(ev);
+			console.log('[EstablishmentInfo] Disparado evento saludmap:refresh-turnos');
+		} catch (e) {
+			// no crítico
+			console.warn('[EstablishmentInfo] No se pudo disparar evento refresh-turnos', e);
+		}
 	};
 
 	const scrollToReseniasSection = () => {

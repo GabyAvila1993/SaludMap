@@ -37,6 +37,14 @@
     },
     "searching": "Recherche en cours...",
     "noResults": "Aucun résultat trouvé",
+    "filters": {
+      "hospital": "Hôpital",
+      "clinic": "Clinique",
+      "doctors": "Médecin",
+      "veterinary": "Vétérinaire",
+      "title": "Filtres",
+      "all": "Tous"
+    },
     "savedLocations": "Emplacements Enregistrés",
     "close": "Fermer",
     "goToLocation": "Aller à l'Emplacement",
@@ -113,6 +121,11 @@
       "veterinary": "Vétérinaire",
       "default": "Service de santé"
     }
+    ,
+    "completed": "Terminé",
+    "noPending": "Vous n'avez aucun rendez-vous en attente",
+    "noCompleted": "Vous n'avez aucun rendez-vous terminé",
+    "noCancelled": "Vous n'avez aucun rendez-vous annulé"
   },
   "insurance": {
     "title": "Assurance Santé",
