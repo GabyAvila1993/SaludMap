@@ -97,7 +97,7 @@ class LocationService {
                         timestamp: Date.now()
                     };
                     console.warn('[LocationService] Usando geolocalización por IP como fallback');
-                    try { await saveLocation(ipLoc); } catch (_) { /* noop */ }
+                    try { await saveLocation(ipLoc); } catch { /* noop */ }
                     this.notify(ipLoc);
                     return ipLoc;
                 }

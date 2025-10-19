@@ -13,6 +13,7 @@ import ModalAuth from '../Auth/ModalAuth.jsx';
 import { ProfesionalesList } from './ProfesionalesList2.jsx';
 import { MisTurnosList } from './MisTurnosList2.jsx';
 import { TurnoModal } from './TurnoModal2.jsx';
+import CostComparator from './CostComparator.jsx';
 import establecimientosService from '../../services/establecimientosService';
 
 // Utilidades
@@ -40,7 +41,7 @@ export default function Turnos() {
 	const [notes, setNotes] = useState('');
 	const [selectedType, setSelectedType] = useState('default');
 	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState('');
+	const [error, _setError] = useState('');
 
 	// Estados de lugares y turnos
 	const [lugares, setLugares] = useState([]);
@@ -57,14 +58,17 @@ export default function Turnos() {
 				const tb = Date.parse(b.datetime || b.fecha || '') || 0;
 				return tb - ta;
 			});
-		} catch (e) {
-			return [...arr];
-		}
+		} catch {
+				return [...arr];
+			}
 	};
 
 	// Estado para establecimiento pre-seleccionado desde el mapa
 	const [preSelectedEstablecimiento, setPreSelectedEstablecimiento] = useState(null);
 	const [preSelectedPlace, setPreSelectedPlace] = useState(null);
+
+	// Comparador de costos
+	const [showCostComparator, setShowCostComparator] = useState(false);
 
 	// Función para abrir modal - DEFINIR ANTES DE LOS useEffect
 	// Acepta establecimientoOverride para pasar el establecimiento directamente
@@ -141,10 +145,10 @@ export default function Turnos() {
 	}, []);
 
 	// Suscribirse a eventos de ubicación del mapa
-	useEffect(() => {
-		const handleLocationChange = (e) => {
-			console.log('[Turnos] Evento de ubicación recibido:', e.detail);
-			const { lat, lng, source } = e.detail;
+ 	useEffect(() => {
+ 		const handleLocationChange = (_e) => {
+ 			console.log('[Turnos] Evento de ubicación recibido:', _e.detail);
+ 			const { lat, lng, source } = _e.detail;
 
 			if (lat && lng) {
 				if (source === 'manual') {
@@ -163,15 +167,15 @@ export default function Turnos() {
 	useEffect(() => {
 		console.log('[Turnos] Registrando listener para eventos del mapa');
 
-		const handleChangeTab = (e) => {
-			console.log('[Turnos] Evento recibido:', e.detail);
+ 		const handleChangeTab = (_e) => {
+ 			console.log('[Turnos] Evento recibido:', _e.detail);
 
-			if (e.detail?.tab !== 'turnos') {
-				console.log('[Turnos] Tab no es "turnos", ignorando');
-				return;
-			}
+ 			if (_e.detail?.tab !== 'turnos') {
+ 				console.log('[Turnos] Tab no es "turnos", ignorando');
+ 				return;
+ 			}
 
-			const { establecimiento, place } = e.detail;
+ 			const { establecimiento, place } = _e.detail;
 
 			console.log('[Turnos] Verificando datos recibidos:');
 			console.log('[Turnos] - Establecimiento:', establecimiento);
@@ -214,7 +218,7 @@ export default function Turnos() {
 
 		window.addEventListener('saludmap:change-tab', handleChangeTab);
 		// Listener para forzar recarga de turnos (por ejemplo tras publicar una reseña)
-		const handleRefreshTurnos = () => {
+			const handleRefreshTurnos = () => {
 			console.log('[Turnos] Evento saludmap:refresh-turnos recibido, recargando turnos');
 			if (user && user.mail) cargarMisTurnos(user.mail);
 		};
@@ -312,22 +316,22 @@ export default function Turnos() {
 		}
 	};
 
-	const solicitarTurno = async (profesional, fechaHora, observaciones, correo, tipo) => {
+	const _solicitarTurno = async (profesional, fechaHora, observaciones, _correo, tipo) => {
 		try {
 			setLoading(true);
 			console.log('[Turnos] Solicitando turno con datos:');
 			console.log('[Turnos] - Profesional:', profesional.name);
 			console.log('[Turnos] - Fecha/Hora:', fechaHora);
-			console.log('[Turnos] - Correo:', correo);
+			console.log('[Turnos] - Correo:', _correo);
 			console.log('[Turnos] - Establecimiento ID:', preSelectedEstablecimiento?.id);
 
 			const { sendAppointmentEmail } = await import('../../services/emailService.js');
 
-			const { emailResponse, payload } = await sendAppointmentEmail(
+			const { payload } = await sendAppointmentEmail(
 				profesional,
 				fechaHora,
 				observaciones,
-				correo,
+				_correo,
 				tipo,
 				prettyType
 			);
@@ -351,7 +355,7 @@ export default function Turnos() {
 				professionalType: tipo,
 				datetime: fechaHora,
 				notes: observaciones,
-				email: correo,
+				email: _correo,
 				establecimientoId: preSelectedEstablecimiento?.id
 			};
 
@@ -370,7 +374,7 @@ export default function Turnos() {
 		}
 	};
 
-	const cancelarTurno = async (turnoId, correo) => {
+	const cancelarTurno = async (turnoId) => {
 		try {
 			setCancellingId(turnoId);
 			console.log('[Turnos] Cancelando turno (API):', turnoId);
@@ -558,6 +562,7 @@ export default function Turnos() {
 				<div className="turnos-header">
 					<div className="turnos-badge" style={{ background: '#47472eff' }}>{t('appointments.badge')}</div>
 					<h3>{t('appointments.requestAppointments')}</h3>
+					<button onClick={() => setShowCostComparator(true)} style={{marginLeft: '12px'}} className="button--primary">Comparar costos</button>
 					<div style={{ marginTop: '10px', color: 'var(--color-primary)' }}>
 						Usuario: <strong>{user.nombre} {user.apellido}</strong> ({user.mail})
 					</div>
@@ -606,15 +611,15 @@ export default function Turnos() {
 										transition: 'all 0.3s ease',
 										boxShadow: '0 4px 12px rgba(33, 150, 243, 0.3)'
 									}}
-									onMouseOver={(e) => {
-										e.target.style.backgroundColor = '#1976d2';
-										e.target.style.transform = 'translateY(-2px)';
-										e.target.style.boxShadow = '0 6px 16px rgba(33, 150, 243, 0.4)';
+									onMouseOver={(evt) => {
+										evt.target.style.backgroundColor = '#1976d2';
+										evt.target.style.transform = 'translateY(-2px)';
+										evt.target.style.boxShadow = '0 6px 16px rgba(33, 150, 243, 0.4)';
 									}}
-									onMouseOut={(e) => {
-										e.target.style.backgroundColor = '#2196f3';
-										e.target.style.transform = 'translateY(0)';
-										e.target.style.boxShadow = '0 4px 12px rgba(33, 150, 243, 0.3)';
+									onMouseOut={(evt) => {
+										evt.target.style.backgroundColor = '#2196f3';
+										evt.target.style.transform = 'translateY(0)';
+										evt.target.style.boxShadow = '0 4px 12px rgba(33, 150, 243, 0.3)';
 									}}
 								>
 									📅 Solicitar Turno
@@ -647,6 +652,10 @@ export default function Turnos() {
 					onConfirm={handleSolicitarTurno}
 					prettyType={prettyType}
 				/>
+
+				{showCostComparator && (
+					<CostComparator places={lugares} onClose={() => setShowCostComparator(false)} />
+				)}
 			</div>
 		</div>
 	);

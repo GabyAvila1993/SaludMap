@@ -10,8 +10,6 @@ class OfflineTileService {
 
     // Crear URL personalizada para tiles offline
     createOfflineTileLayer() {
-        const self = this;
-
         return {
             url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             options: {

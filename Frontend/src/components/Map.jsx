@@ -35,7 +35,7 @@ export default function MapComponent() {
     const [lugares, setLugares] = useState([]);
     const [error, setError] = useState('');
     const [isCalibrating, setIsCalibrating] = useState(false);
-    const [offlineMode, setOfflineMode] = useState(false);
+    const [_offlineMode, setOfflineMode] = useState(false);
     const [isOnline, setIsOnline] = useState(navigator.onLine);
     // Filtros para tipos de establecimientos
     const [filters, setFilters] = useState({
@@ -129,7 +129,7 @@ export default function MapComponent() {
                         animate: true,
                         duration: 0.5
                     });
-                } catch (e) {
+                } catch {
                     // noop
                 }
             }
@@ -172,7 +172,7 @@ export default function MapComponent() {
                     animate: true,
                     duration: 0.5
                 });
-            } catch (e) {
+            } catch {
                 // noop
             }
         }
@@ -203,7 +203,7 @@ export default function MapComponent() {
                         await savePlaces(places);
                     }
                     setOfflineMode(false);
-                } catch (onlineError) {
+            } catch {
                     console.log('Error en búsqueda online, usando cache offline');
                     // Si falla online, usar cache offline
                     const offlinePlaces = await getNearbyPlaces(location);
@@ -307,7 +307,7 @@ export default function MapComponent() {
         try {
             const location = await locationService.calibratePosition();
             // Asegurar que el watch vuelva a estar activo para actualizaciones automáticas
-            try { locationService.startWatching(); } catch (e) { /* noop */ }
+            try { locationService.startWatching(); } catch { /* noop */ }
 
             if (mapRef.current && location) {
                 if (!userInteracting.current) {
@@ -383,7 +383,7 @@ export default function MapComponent() {
                         map.invalidateSize();
                     }
                 }, 50);
-            } catch (e) {
+            } catch {
                 // noop
             }
 
@@ -403,14 +403,14 @@ export default function MapComponent() {
                 }, 1200);
             };
 
-            try {
-                map.on('movestart', onUserInteractionStart);
-                map.on('zoomstart', onUserInteractionStart);
-                map.on('moveend', onUserInteractionEnd);
-                map.on('zoomend', onUserInteractionEnd);
-            } catch (e) {
-                // noop if events not available
-            }
+                    try {
+                        map.on('movestart', onUserInteractionStart);
+                        map.on('zoomstart', onUserInteractionStart);
+                        map.on('moveend', onUserInteractionEnd);
+                        map.on('zoomend', onUserInteractionEnd);
+                    } catch {
+                        // noop
+                    }
 
             return () => {
                 try {
@@ -418,7 +418,7 @@ export default function MapComponent() {
                     map.off('zoomstart', onUserInteractionStart);
                     map.off('moveend', onUserInteractionEnd);
                     map.off('zoomend', onUserInteractionEnd);
-                } catch (e) {
+                } catch {
                     // noop
                 }
             };
@@ -539,9 +539,9 @@ export default function MapComponent() {
                         const coords = [lat, lng];
 
                         const nombre = lugar.tags?.name ?? lugar.properties?.name ??
-                            lugar.tags?.amenity ?? 'Servicio de salud';
-                    const direccion = lugar.tags?.addr_full ?? lugar.tags?.address ??
-                        lugar.properties?.address ?? '';
+                                lugar.tags?.amenity ?? 'Servicio de salud';
+                        const direccion = lugar.tags?.addr_full ?? lugar.tags?.address ??
+                            lugar.properties?.address ?? '';
                     const tipo = lugar.type || 'default';
 
                     return (
@@ -549,6 +549,8 @@ export default function MapComponent() {
                             key={index}
                             position={coords}
                             icon={getIconForType(tipo)}
+                                title={nombre}
+                                alt={direccion}
                             eventHandlers={{
                                 click: () => {
                                     handlePlaceSelect(lugar);

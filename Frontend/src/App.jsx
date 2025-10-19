@@ -14,7 +14,7 @@ function App() {
 	const { t } = useTranslation();
 	const { user, logout } = useAuth();
 	const [isLoading, setIsLoading] = useState(true);
-	const [currentLocation, setCurrentLocation] = useState(null);
+	const [, setCurrentLocation] = useState(null);
 	const [activeTab, setActiveTab] = useState('mapa');
 	const [showAuthModal, setShowAuthModal] = useState(false);
 	const [showRegister, setShowRegister] = useState(false);

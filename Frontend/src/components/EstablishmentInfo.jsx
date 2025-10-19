@@ -19,7 +19,7 @@ export default function EstablishmentInfo({ place, onClose }) {
 	const [processingTurno, setProcessingTurno] = useState(false);
 
 	// Hook de reseñas (solo si tenemos establecimiento)
-	const { resenias, loading: loadingResenias, promedioEstrellas, totalResenias, refrescar, agregarReseniaLocal } =
+	const { resenias, loading: loadingResenias, promedioEstrellas, totalResenias, refrescar, agregarReseniaLocal: _agregarReseniaLocal } =
 		useResenias(establecimiento?.id);
 
 	// Cargar o crear establecimiento cuando se abre el modal
@@ -171,7 +171,7 @@ export default function EstablishmentInfo({ place, onClose }) {
 		}
 	};
 
-	const osmLink = (lat, lon) => `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=18/${lat}/${lon}`;
+	const _osmLink = (lat, lon) => `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=18/${lat}/${lon}`;
 
 	const handleSolicitarTurno = async () => {
 		// Verificar autenticación
@@ -296,9 +296,9 @@ export default function EstablishmentInfo({ place, onClose }) {
 			const ev = new CustomEvent('saludmap:refresh-turnos');
 			window.dispatchEvent(ev);
 			console.log('[EstablishmentInfo] Disparado evento saludmap:refresh-turnos');
-		} catch (e) {
+		} catch {
 			// no crítico
-			console.warn('[EstablishmentInfo] No se pudo disparar evento refresh-turnos', e);
+			console.warn('[EstablishmentInfo] No se pudo disparar evento refresh-turnos');
 		}
 	};
 

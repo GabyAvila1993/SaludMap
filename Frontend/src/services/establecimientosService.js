@@ -122,7 +122,7 @@ class EstablecimientosService {
   /**
    * Busca un establecimiento por coordenadas
    */
-  async findByCoordinates(lat, lng, radius = 0.0001) {
+  async findByCoordinates(lat, lng) {
     try {
       console.log(`[EstablecimientosService] Buscando establecimiento en: ${lat}, ${lng}`);
       

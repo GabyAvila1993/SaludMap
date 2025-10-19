@@ -68,7 +68,7 @@ export default function SavedLocationsList({ isOpen, onClose }) {
         });
     };
 
-    const calculateDistance = (lat1, lng1, lat2, lng2) => {
+    const _calculateDistance = (lat1, lng1, lat2, lng2) => {
         const R = 6371; // Radio de la Tierra en km
         const dLat = (lat2 - lat1) * Math.PI / 180;
         const dLng = (lng2 - lng1) * Math.PI / 180;

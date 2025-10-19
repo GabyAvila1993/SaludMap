@@ -9,7 +9,7 @@ export const initializeEmailJS = () => {
 };
 
 // Generar PDF como base64 para adjuntar al correo
-const generatePDFBase64 = async (plan, userInfo) => {
+const _generatePDFBase64 = async (plan, userInfo) => {
     try {
         // Crear un nuevo documento PDF
         const { jsPDF } = await import('jspdf');
@@ -52,7 +52,7 @@ const generatePDFBase64 = async (plan, userInfo) => {
 };
 
 // Plantilla HTML para el correo de confirmación de seguro
-const createInsuranceEmailTemplate = (plan, userInfo, orderId) => {
+const _createInsuranceEmailTemplate = (plan, userInfo, orderId) => {
     return `
     <div style="font-family: system-ui, sans-serif, Arial; font-size: 14px; color: #333; padding: 14px 8px; background-color: #f5f5f5;">
         <div style="max-width: 600px; margin: auto; background-color: #fff">

@@ -39,7 +39,7 @@ function Recentrar({ position }) {
       map.on('zoomstart', onUserStart);
       map.on('moveend', onUserEnd);
       map.on('zoomend', onUserEnd);
-    } catch (e) {
+    } catch {
       // noop
     }
 
@@ -54,7 +54,7 @@ function Recentrar({ position }) {
       if (dist > DISTANCE_THRESHOLD) {
         map.setView(position, map.getZoom());
       }
-    } catch (e) {
+    } catch {
       // noop
     }
 
@@ -64,7 +64,7 @@ function Recentrar({ position }) {
         map.off('zoomstart', onUserStart);
         map.off('moveend', onUserEnd);
         map.off('zoomend', onUserEnd);
-      } catch (e) {
+      } catch {
         // noop
       }
     };
@@ -120,8 +120,8 @@ export default function MapComponents() {
         );
         const data = await res.json();
         return data.lugares ?? data.elements ?? [];
-      } catch (e) {
-        console.warn('No se pudo precargar lugares:', lat, lng, e);
+      } catch {
+        console.warn('No se pudo precargar lugares:', lat, lng);
         return [];
       }
     });

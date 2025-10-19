@@ -7,7 +7,7 @@ import { useAuth } from '../components/Auth/AuthContext';
  * Hook personalizado para manejar reseñas
  */
 export function useResenias(establecimientoId) {
-  const { user } = useAuth();
+  const { user: _user } = useAuth();
   const [resenias, setResenias] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);

@@ -10,7 +10,7 @@ const SAVED_LOCATIONS_STORE = 'saved_locations';
 
 export async function getDB() {
     return openDB(DB_NAME, DB_VERSION, {
-        upgrade(db, oldVersion) {
+        upgrade(db) {
             // Store para lugares/servicios
             if (!db.objectStoreNames.contains(PLACES_STORE)) {
                 const placesStore = db.createObjectStore(PLACES_STORE, { keyPath: 'id', autoIncrement: true });

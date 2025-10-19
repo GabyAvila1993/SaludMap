@@ -6,8 +6,12 @@
  * - Ya pasaron (fecha < hoy)
  * - No tienen reseña asociada
  */
+import { useEffect, useState } from 'react';
+import { useAuth } from '../components/Auth/AuthContext';
+import reseniasService from '../services/reseniasService';
+
 export function useTurnosParaReseniar(establecimientoId) {
-  const { user } = useAuth();
+  const { user } = useAuth() || {};
   const [turnos, setTurnos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

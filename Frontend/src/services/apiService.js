@@ -13,11 +13,11 @@ class ApiService {
     const url = buildApiUrl(endpoint);
     
     const config = {
-      headers: this.defaultHeaders,
+      // merge options first, then ensure headers include defaults + any provided headers
       ...options,
       headers: {
         ...this.defaultHeaders,
-        ...options.headers,
+        ...(options && options.headers ? options.headers : {}),
       },
     };
 

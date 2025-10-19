@@ -1,7 +1,7 @@
 // INICIO CAMBIO - Archivo: src/services/turnosService.js - Archivo nuevo para integrar turnos
+import React, { useState, useEffect } from 'react';
 import locationService from './locationService.js';
 import placesApiService from './placesApiService.js';
-import { savePlaces } from './db.js';
 
 class TurnosService {
     constructor() {
@@ -111,13 +111,13 @@ class TurnosService {
 
 // Hook personalizado para usar en componentes React
 export function useProfesionales() {
-    const [state, setState] = React.useState({
+    const [state, setState] = useState({
         lugares: [],
         loading: false,
         error: null
     });
 
-    React.useEffect(() => {
+    useEffect(() => {
         const unsubscribe = turnosService.subscribe(setState);
         turnosService.initialize();
 
