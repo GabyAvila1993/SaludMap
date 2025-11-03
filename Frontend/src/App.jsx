@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Routes, Route } from 'react-router-dom';
 import MapComponent from './components/Map.jsx';
 import Turnos from './components/turnos/Turnos.jsx';
 import InsuranceSection from './components/CardsSegure/InsuranceSection.jsx';
@@ -9,6 +10,8 @@ import ChatBot from './components/ChatBot/ChatBot.jsx';
 import { useAuth } from './components/Auth/AuthContext';
 import locationService from './services/locationService.js';
 import { cleanOldTiles } from './services/db.js';
+import Analytics from './components/Analytics/Analytics';
+
 
 function App() {
 	const { t } = useTranslation();
@@ -18,6 +21,7 @@ function App() {
 	const [activeTab, setActiveTab] = useState('mapa');
 	const [showAuthModal, setShowAuthModal] = useState(false);
 	const [showRegister, setShowRegister] = useState(false);
+	const [selectedEstablishment, setSelectedEstablishment] = useState(null);
 
 	useEffect(() => {
 		// Limpiar tiles antiguos al iniciar la app
@@ -76,7 +80,11 @@ function App() {
   const renderActiveSection = () => {
     switch (activeTab) {
       case 'mapa':
-        return <MapComponent />;
+        return <MapComponent onEstablishmentSelect={setSelectedEstablishment} />;
+      case 'analytics':
+        return selectedEstablishment ? 
+          <Analytics establishmentId={selectedEstablishment.id} /> : 
+          <div>Por favor seleccione un establecimiento en el mapa</div>;
       case 'turnos':
         return <Turnos />;
       case 'seguros':
@@ -202,6 +210,24 @@ function App() {
             }}
           >
             🛡️ {t('nav.insurance')}
+          </button>
+
+          <button
+            onClick={() => setActiveTab('analytics')}
+            style={{
+              padding: '12px 24px',
+              border: 'none',
+              borderRadius: '8px',
+              backgroundColor: activeTab === 'analytics' ? '#47472e' : '#f0f0f0',
+              color: activeTab === 'analytics' ? '#fff' : '#47472e',
+              cursor: 'pointer',
+              fontSize: '1rem',
+              fontWeight: activeTab === 'analytics' ? 'bold' : 'normal',
+              boxShadow: activeTab === 'analytics' ? '0 2px 4px rgba(255, 224, 166, 0.3)' : 'none',
+              transition: 'all 0.3s ease'
+            }}
+          >
+            📊 Estadísticas
           </button>
         </nav>
       </header>

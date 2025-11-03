@@ -143,6 +143,11 @@ npm install -D @types/bcryptjs @types/jsonwebtoken @types/passport @types/passpo
 npm install -D typescript ts-node nodemon
 
 
+
 front
 
 npm install axios  
+npm install react-router-dom
+npm install chart.js react-chartjs-2
+npm install xlsx file-saver
+npm install exceljs

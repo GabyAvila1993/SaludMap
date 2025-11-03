@@ -7,6 +7,7 @@ import Resenias from './Resenias/Resenias.jsx';
 import CrearResenia from './Resenias/CrearResenia.jsx';
 import { useResenias } from '../hooks/useResenias';
 import establecimientosService from '../services/establecimientosService';
+import Analytics from './Analytics/Analytics';
 
 export default function EstablishmentInfo({ place, onClose }) {
 	const { user } = useAuth();
@@ -17,6 +18,8 @@ export default function EstablishmentInfo({ place, onClose }) {
 	const [loadingEstablecimiento, setLoadingEstablecimiento] = useState(true);
 	const [error, setError] = useState('');
 	const [processingTurno, setProcessingTurno] = useState(false);
+	// Añade un nuevo estado
+	const [showStats, setShowStats] = useState(false);
 
 	// Hook de reseñas (solo si tenemos establecimiento)
 	const { resenias, loading: loadingResenias, promedioEstrellas, totalResenias, refrescar, agregarReseniaLocal: _agregarReseniaLocal } =
@@ -443,7 +446,22 @@ export default function EstablishmentInfo({ place, onClose }) {
 									Ver Reseñas
 								</button>
 							)}
+							{establecimiento && (
+								<button 
+									onClick={() => setShowStats(!showStats)}
+									className="action-btn"
+								>
+									📊 Estadísticas
+								</button>
+							)}
 						</div>
+
+						{showStats && establecimiento && (
+							<Analytics 
+								establecimientoId={establecimiento.id} 
+								place={place} // Pasar el objeto place completo
+							/>
+						)}
 
 						{establecimiento && !showCrearResenia && (
 							<div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '2px solid #e9ecef' }}>
