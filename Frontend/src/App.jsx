@@ -1,4 +1,3 @@
-// INICIO CAMBIO - Archivo: src/App.jsx - Ejemplo de implementación
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MapComponent from './components/Map.jsx';
@@ -6,7 +5,8 @@ import Turnos from './components/turnos/Turnos.jsx';
 import InsuranceSection from './components/CardsSegure/InsuranceSection.jsx';
 import LanguageSelector from './components/LanguageSelector.jsx';
 import ModalAuth from './components/Auth/ModalAuth.jsx';
-import { AuthProvider, useAuth } from './components/Auth/AuthContext';
+import ChatBot from './components/ChatBot/ChatBot.jsx';
+import { useAuth } from './components/Auth/AuthContext';
 import locationService from './services/locationService.js';
 import { cleanOldTiles } from './services/db.js';
 
@@ -87,10 +87,10 @@ function App() {
   };
 
 	return (
-		<AuthProvider>
-			<div className="app">
-				<header>
-					<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 20px' }}>
+    <div className="app">
+      <ChatBot />
+      <header>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 20px' }}>
 						<h1>{t('common.appName')}</h1>
 						<div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
 							<LanguageSelector />
@@ -206,23 +206,21 @@ function App() {
         </nav>
       </header>
       
-			<main style={{ minHeight: 'calc(100vh - 200px)' }}>
-				{renderActiveSection()}
-			</main>
-			<footer>
-				<p>{t('footer.copyright')}</p>
-			</footer>
+      <main style={{ minHeight: 'calc(100vh - 200px)' }}>
+        {renderActiveSection()}
+      </main>
+      <footer>
+        <p>{t('footer.copyright')}</p>
+      </footer>
 
-			{/* Modal de Autenticación */}
-			<ModalAuth
-				open={showAuthModal}
-				onClose={() => setShowAuthModal(false)}
-				showRegister={showRegister}
-				setShowRegister={setShowRegister}
-			/>
-		</div>
-		</AuthProvider>
-	);
+      <ModalAuth
+        open={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        showRegister={showRegister}
+        setShowRegister={setShowRegister}
+      />
+    </div>
+  );
 }
 
 export default App;

@@ -12,7 +12,7 @@
 
 /* INICIO CAMBIO - Archivo: src/components/Map.css - Estilos mejorados */
 .map-section {
-  width: 100%;
+  width: calc(100% - 80px); /* Restamos el espacio para el botón del chat */
   min-height: 100vh;
   padding: 20px;
   box-sizing: border-box;
@@ -20,11 +20,19 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  margin-right: 80px; /* Espacio para el botón del chat */
+}
+
+@media (min-width: 768px) {
+  .map-section.chat-open {
+    width: calc(100% - 420px); /* Cuando el chat está abierto */
+    margin-right: 420px;
+  }
 }
 
 .map-root {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
   /* menos padding para que el mapa tenga más espacio útil vertical */
   padding: 1rem 1.5rem 0.75rem;

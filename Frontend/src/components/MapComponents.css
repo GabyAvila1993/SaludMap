@@ -39,14 +39,31 @@
 
 /* Contenedor principal */
 .map-wrapper {
-    width: 100%;
+    width: 95%;
     max-width: 1200px;
-    margin: 12px auto;
-    border-radius: 10px;
+    margin: 8px auto;
+    border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 12px rgba(0,0,0,0.08);
     position: relative;
-    height: min(76vh, 900px);
+    height: min(70vh, 900px);
+}
+
+@media (min-width: 768px) {
+    .map-wrapper {
+        width: 90%;
+        margin: 10px auto;
+        border-radius: 10px;
+        height: min(73vh, 900px);
+    }
+}
+
+@media (min-width: 1024px) {
+    .map-wrapper {
+        width: 100%;
+        margin: 12px auto;
+        height: min(76vh, 900px);
+    }
 }
 
 /* Aplicable a MapContainer con className="leaflet-map" */

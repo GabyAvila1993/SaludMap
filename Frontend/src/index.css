@@ -1,3 +1,4 @@
+/*--------------- Inicio index.css -------------------*/
 :root {
 	font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
 	line-height: 1.5;
@@ -5,7 +6,6 @@
 
 	color-scheme: light dark;
 	color: rgba(255, 255, 255, 0.87);
-	/* background-color: #6d2c2c; */
 
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;
@@ -26,24 +26,28 @@ a {
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
+
 body {
   margin: 0;
   display: flex;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
 
   /* Fondo con gradiente armónico */
   background: 
     radial-gradient(100% 100% at 50% 50%, 
-      #b5e2e1 0%,    /* centro muy claro, aporta luz */
-      #66aaaa 35%,   /* transición suave */
-      #2b8b8c 65%,   /* color principal */
-      #1f6668 85%,   /* más oscuro en bordes internos */
-      #dfecec 100%   /* gris frío en los bordes */
+      #b5e2e1 0%,
+      #66aaaa 35%,
+      #2b8b8c 65%,
+      #1f6668 85%,
+      #dfecec 100%
     );
 
   background-attachment: fixed;
@@ -54,51 +58,104 @@ body {
   justify-content: center;
 }
 
-
-.body h1{
+.body h1 {
   justify-content: center;
   align-items: center;
+  text-align: center;
 }
 
-
-
 h1 {
-  font-size: 3.2em;
+  font-size: clamp(1.8rem, 5vw, 3.2rem);
   line-height: 1.1;
   color: #fff;
-  align-items: center;
-  justify-content: center;
+  text-align: center;
+  padding: 0 1rem;
 }
 
 button {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
-  font-size: 1em;
+  font-size: clamp(0.875rem, 2vw, 1rem);
   font-weight: 500;
   font-family: inherit;
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
+  min-width: 44px;
+  min-height: 44px;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* Media Queries para index.css */
+@media (max-width: 768px) {
+  body {
+    padding: 0.5rem;
+  }
+
+  h1 {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    padding: 0 0.5rem;
+  }
+
+  button {
+    padding: 0.5em 1em;
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    font-size: 14px;
+  }
+
+  body {
+    padding: 0.25rem;
+  }
+
+  h1 {
+    font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+    padding: 0 0.25rem;
+  }
+
+  button {
+    padding: 0.7em 1em;
+    font-size: 0.9rem;
+  }
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
-  /* background-color: #ffffff; */
   }
+  
   a:hover {
     color: #747bff;
   }
+  
   button {
-  /* background-color: #f9f9f9; */
-  color: #f9f9f9;
+    color: #f9f9f9;
   }
 }
+
+/* Orientación landscape en móviles */
+@media (max-width: 768px) and (orientation: landscape) {
+  body {
+    min-height: 100vh;
+    padding: 0.5rem;
+  }
+
+  h1 {
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+  }
+}
+/*--------------- Fin index.css -------------------*/

@@ -15,15 +15,32 @@
     position: relative;
     background-color: rgba(23, 23, 23, 0.95);
     border: 2px solid #ffe0a6;
-    border-radius: 12px;
+    border-radius: 8px;
     box-shadow: 0 8px 32px rgba(255, 224, 166, 0.2);
-    padding: 2rem;
-    max-width: 500px;
-    width: 100%;
+    padding: 1rem;
+    width: 95%;
+    max-width: 100%;
     color: #f0f0f0;
     animation: fadeIn 0.3s ease-in-out;
-    max-height: 90vh;
+    max-height: 95vh;
     overflow-y: auto;
+}
+
+@media (min-width: 768px) {
+    .modal {
+        padding: 1.5rem;
+        max-width: 450px;
+        border-radius: 10px;
+        max-height: 90vh;
+    }
+}
+
+@media (min-width: 1024px) {
+    .modal {
+        padding: 2rem;
+        max-width: 500px;
+        border-radius: 12px;
+    }
 }
 
 @keyframes fadeIn {

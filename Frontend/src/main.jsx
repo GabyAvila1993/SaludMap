@@ -2,15 +2,12 @@ import React from 'react';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
-import App from './App.jsx';
+import AppWrapper from './AppWrapper.jsx';
 import './i18n/config'; // Importar configuración de i18n
-import { AuthProvider } from './components/Auth/AuthContext.jsx';
 
 createRoot(document.getElementById('root')).render(
 	<StrictMode>
-		<AuthProvider>
-			<App />
-		</AuthProvider>
+		<AppWrapper />
 	</StrictMode>,
 );
 

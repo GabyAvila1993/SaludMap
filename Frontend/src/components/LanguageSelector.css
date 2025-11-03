@@ -6,17 +6,37 @@
 .language-button {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
+  gap: 4px;
+  padding: 6px 12px;
   background-color: #47472e;
   color: #fff;
-  border: 2px solid #ffe0a6;
-  border-radius: 8px;
+  border: 1px solid #ffe0a6;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 500;
   transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(255, 224, 166, 0.3);
+}
+
+@media (min-width: 768px) {
+  .language-button {
+    gap: 6px;
+    padding: 7px 14px;
+    font-size: 0.87rem;
+    border-width: 1.5px;
+    border-radius: 7px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .language-button {
+    gap: 8px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    border-width: 2px;
+    border-radius: 8px;
+  }
 }
 
 .language-button:hover {
