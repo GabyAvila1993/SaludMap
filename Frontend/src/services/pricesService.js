@@ -24,18 +24,21 @@ export async function fetchPricesForPlaces(placeIds = [], service = 'consulta_ge
     const key = typeof p === 'string' ? p : (p.id || p.establecimientoId || p.name || p.nombre || JSON.stringify(p));
     const seed = deterministicPriceSeed(String(key));
 
-    // Rango base por tipo
+    // Rango base por tipo en Dólares (USD)
     const baseByType = {
-      consulta_general: 800,
-      urgencias: 2500,
-      consulta_privada: 1500
+      consulta_general: 40, // USD
+      urgencias: 80, // USD
+      consulta_privada: 60 // USD
     };
 
-    const base = baseByType[service] || 800;
+    const base = baseByType[service] || 40;
 
     // Generar precio en torno al base, variación por seed
-    const variation = (seed % 600) - 200; // -200 .. +399
-    const price = Math.max(200, Math.round(base + variation));
+    const variation = (seed % 40) - 20; // -20 .. +19
+    let price = Math.round(base + variation);
+
+    // Asegurarse que el precio esté en el rango de 15 a 100 USD
+    price = Math.max(15, Math.min(100, price));
 
     return {
       placeId: key,

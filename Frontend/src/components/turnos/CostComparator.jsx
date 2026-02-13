@@ -77,7 +77,7 @@ export default function CostComparator({ places = [], onClose }) {
   // format number as currency (best effort)
   const fmt = (n) => {
     if (n == null) return '-';
-  try { return Number(n).toLocaleString(undefined, { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }); } catch { return `$${n}`; }
+  try { return Number(n).toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }); } catch { return `$${n}`; }
   };
 
   const prettyType = (place) => {
