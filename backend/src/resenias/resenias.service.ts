@@ -5,7 +5,7 @@ import {
   BadRequestException,
   ConflictException,
 } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../../generated';
 import { CrearReseniaDto } from './dto/crear-resenia.dto';
 
 @Injectable()

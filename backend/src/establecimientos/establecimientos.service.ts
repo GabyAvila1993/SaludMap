@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../../generated';
 import { CrearEstablecimientoDto } from './dto/crear-establecimiento.dto';
 
 @Injectable()

@@ -1,7 +1,7 @@
 import React from 'react';
 import './ChatBot.css';
 
-const CHAT_SRC = 'https://chat-bot-ten-lime.vercel.app/';
+const CHAT_SRC = 'https://chat-bot-frontend-2opd.onrender.com';
 
 const ChatBot = () => {
   return (
