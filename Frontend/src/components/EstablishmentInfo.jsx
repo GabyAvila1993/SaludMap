@@ -408,21 +408,10 @@ export default function EstablishmentInfo({ place, onClose }) {
 						</div>
 
 						{error && (
-							<div style={{
-								marginTop: '1rem',
-								padding: '1rem',
-								background: 'linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%)',
-								color: '#856404',
-								borderRadius: '12px',
-								border: '1px solid #d4af37',
-								borderLeft: '4px solid #d4af37',
-								fontWeight: '600'
-							}}>
-								⚠️ {error}
-							</div>
+							<div className="establishment-error">⚠️ {error}</div>
 						)}
 
-						<div className="action-buttons" style={{ marginTop: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+						<div className="action-buttons">
 							{phones.length > 0 && (
 								<button onClick={() => handleLlamar(phones[0])} className="action-btn">
 									Llamar
@@ -432,7 +421,6 @@ export default function EstablishmentInfo({ place, onClose }) {
 								onClick={handleSolicitarTurno} 
 								className="action-btn"
 								disabled={isTurnoButtonDisabled}
-								style={isTurnoButtonDisabled ? { opacity: 0.6, cursor: 'not-allowed' } : {}}
 							>
 								{getTurnoButtonText()}
 							</button>
@@ -464,7 +452,7 @@ export default function EstablishmentInfo({ place, onClose }) {
 						)}
 
 						{establecimiento && !showCrearResenia && (
-							<div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '2px solid #e9ecef' }}>
+							<div className="establishment-resenias-section">
 								<Resenias 
 									resenias={resenias}
 									promedioEstrellas={promedioEstrellas}
@@ -475,7 +463,7 @@ export default function EstablishmentInfo({ place, onClose }) {
 						)}
 
 						{showCrearResenia && establecimiento && (
-							<div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '2px solid #e9ecef' }}>
+							<div className="establishment-resenias-section">
 								<CrearResenia
 									establecimientoId={establecimiento.id}
 									onSuccess={handleReseniaCreada}

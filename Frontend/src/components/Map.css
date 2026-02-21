@@ -4,23 +4,22 @@
   display: grid;
   grid-template-columns: 1fr 380px;
   gap: 1.5rem;
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: none; /* permitir ancho completo según requerimiento */
+  margin-left: 0;
+  margin-right: 0;
   align-items: start;
 }
 
 /* INICIO CAMBIO - Archivo: src/components/Map.css - Estilos mejorados */
 .map-section {
-  width: calc(100% - 80px); /* Restamos el espacio para el botón del chat */
+  width: 100%;
   min-height: 100vh;
-  padding: 20px;
+  padding: 12px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  margin-right: 80px; /* Espacio para el botón del chat */
 }
 
 @media (min-width: 768px) {
@@ -31,52 +30,72 @@
 }
 
 .map-root {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  /* menos padding para que el mapa tenga más espacio útil vertical */
-  padding: 1rem 1.5rem 0.75rem;
-  border: 1px solid rgba(255, 224, 166, 0.3);
-  border-radius: 12px;
-  background: rgba(2, 2, 2, 0.15);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
 .map-title {
-  color: var(--color-primary);
+  position: absolute;
+  top: 60px; /* centered above actions */
+  left: 50%;
+  transform: translateX(-50%);
+  color: #66B09D;
   text-align: center;
-  margin-bottom: 1rem;
-  /* dejar texto con capitalización natural, sin forzar mayúsculas */
   text-transform: none;
   font-size: clamp(1.1rem, 1.5vw, 1.5rem);
   font-weight: 700;
-  letter-spacing: 0.08rem;
+  letter-spacing: 0.04rem;
+  background: rgba(255,255,255,0.95);
+  padding: 6px 12px;
+  border-radius: 8px;
+  display: inline-block;
+  font-family: 'Roboto', sans-serif;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  z-index: 50;
+  pointer-events: none;
+}
+
+/* Actions container: centered, absolute, floating over map */
+.map-actions {
+  position: absolute;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 500; /* sobre el mapa */
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  pointer-events: auto;
 }
 
 .offline-badge {
-  padding: 0.6rem 1.2rem;
-  border: 2px solid var(--color-primary);
-  border-radius: 6px;
-  font-weight: 700;
-  font-size: clamp(0.9rem, 1.5vw, 1.2rem);
-  letter-spacing: 0.2rem;
-  text-transform: uppercase;
-  color: var(--color-primary);
-  background: rgba(71, 71, 46, 0.8);
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
   margin-left: 1rem;
 }
 
-.map-error {
-  background: rgba(255, 224, 166, 0.15);
-  border: 1px solid rgba(255, 224, 166, 0.3);
-  color: var(--color-primary);
-  padding: 1rem;
-  border-radius: var(--radius);
+/* Consolidated offline-badge properties (fix: orphaned rules removed) */
+.offline-badge {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  margin-left: 1rem;
+  color: #08331f;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
   margin-bottom: 1rem;
   text-align: center;
-  font-weight: 500;
+  font-weight: 600;
+  box-sizing: border-box;
 }
 
 .map-controls {
@@ -85,33 +104,37 @@
   justify-content: center;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 2rem;
-  background: var(--color-bg-dark);
-  padding: 1.5rem 2rem;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 224, 166, 0.3);
-  position: relative;
-  min-height: 80px;
-  width: 100%;
+  margin: 0;
+  padding: 14px 18px; /* aumentado para mayor legibilidad */
+  border-radius: 999px;
+  background: rgba(255,255,255,0.85);
+  position: absolute;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 500; /* sobre el mapa */
+  min-height: 56px;
+  width: 90%;
+  max-width: none; /* permitir ocupar todo el ancho pedido */
   box-sizing: border-box;
+  pointer-events: auto;
 }
 
 .map-controls button {
-  background-color: var(--color-bg-dark);
-  color: var(--color-text);
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
+  background: #9EE2CF;
+  color: #08331f;
+  border: 1px solid var(--border-ui);
+  padding: 12px 20px; /* más padding para legibilidad */
+  border-radius: 999px;
   cursor: pointer;
-  font-size: 15px;
-  font-weight: 600;
-  /* no forzar uppercase para mejor lectura */
+  font-size: 1rem; /* aumentar tamaño del texto */
+  font-weight: 800;
+  font-family: 'Roboto', sans-serif;
   text-transform: none;
   letter-spacing: 0.02rem;
   transition: var(--transition);
-  /* sombra más sutil */
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-  min-height: 44px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  min-height: 48px;
 }
 
 .btn-return-gps {
@@ -127,7 +150,7 @@
 
 .map-controls button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(255, 224, 166, 0.308);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 }
 
 .map-controls button:disabled {
@@ -164,11 +187,11 @@
 }
 
 .filter-btn.active {
-  /* incrementar contraste y brillo para mayor visibilidad */
-  background: linear-gradient(180deg, rgba(255,203,128,0.22), rgba(255,203,128,0.14));
-  color: #fff;
-  border-color: rgba(255,203,128,0.28);
-  box-shadow: 0 6px 18px rgba(255,203,128,0.12);
+  /* seleccionado: usar verde del proyecto y texto en negro */
+  background: #66B09D;
+  color: #000;
+  border-color: rgba(0,0,0,0.06);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
   transform: translateY(-2px);
 }
 
@@ -224,14 +247,21 @@
 }
 
 .map-info {
-  margin-bottom: 1rem;
-  padding: 1rem;
-  background: rgba(255, 224, 166, 0.15);
-  border: 1px solid rgba(255, 224, 166, 0.3);
-  border-radius: var(--radius);
-  font-size: 0.875rem;
-  color: var(--color-primary);
+  position: absolute;
+  top: 160px; /* increased spacing below actions */
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 12px;
+  background: #C9EFE4;
+  border: 1px solid #A2E3D0;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  color: #000000;
   text-align: center;
+  display: inline-block;
+  z-index: 50;
+  pointer-events: none;
+  font-family: 'Roboto', sans-serif;
 }
 
 .location-source {
@@ -241,40 +271,126 @@
 
 .map-wrapper {
   width: 100%;
-  max-width: 1200px;
-  /* usar vh para que el mapa crezca con la pantalla pero tenga un tope razonable */
-  height: min(75vh, 900px);
-  border-radius: 12px;
+  height: 100%; /* fill full map-root */
+  border-radius: 0;
   overflow: hidden;
-  border: 1px solid rgba(255, 224, 166, 0.3);
-  background: rgba(2, 2, 2, 0.06); /* menos contraste para evitar gran bloque oscuro */
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  border: none;
+  background: transparent;
   position: relative;
-  margin: 0 auto;
+  margin: 0;
+  padding: 0;
 }
+
+/* Marker div-icon styles (replaces inline styles previously used) - global (all viewports) */
+.marker-div-icon {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:36px;
+  height:36px;
+  border-radius:18px;
+  color:#fff;
+  font-weight:700;
+  font-size:14px;
+  line-height:36px;
+  box-shadow:0 1px 4px rgba(0,0,0,0.6);
+  border:2px solid rgba(255,255,255,0.6);
+}
+.marker-hospital { background: #e74c3c; }
+.marker-clinica { background: #3498db; }
+.marker-doctor { background: #2ecc71; }
+.marker-veterinaria { background: #9b59b6; }
+.marker-default { background: #34495e; }
+
+/* Sidebar filter button color helpers to match marker colors */
+.filter-hospital { background: #e74c3c; color: #fff; border-color: rgba(231,76,60,0.28); }
+.filter-clinica { background: #3498db; color: #fff; border-color: rgba(52,152,219,0.28); }
+.filter-doctor { background: #2ecc71; color: #fff; border-color: rgba(46,204,113,0.28); }
+.filter-veterinaria { background: #9b59b6; color: #fff; border-color: rgba(155,89,182,0.28); }
+
 
 /* Layout para mapa + sidebar de filtros */
-.map-layout {
-  display: flex;
-  gap: 20px;
-  align-items: stretch;
-  justify-content: space-between;
+.map-layout { display:block; }
+
+/* Sidebar flotante sobre el mapa (panel de selección de local) */
+.map-sidebar {
+  /* Legacy sidebar disabled: use modal filters instead */
+  display: none !important;
 }
 
-.map-sidebar {
-  width: 260px;
-  min-width: 200px;
-  max-width: 300px;
-  background: rgba(0,0,0,0.04);
-  border: 1px solid rgba(255,224,166,0.05);
-  border-radius: 10px;
-  padding: 10px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+/* Estado cerrado de la sidebar (espera que JS añada la clase `closed`) */
+.map-sidebar.closed {
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
 }
+
+/* Toggle visible (hamburguesa) */
+.sidebar-toggle {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  z-index: 900;
+  background: #A2E3D0;
+  border: none;
+  color: #08331f;
+  width:44px;
+  height:44px;
+  display:inline-flex !important;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  cursor:pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+/* Asegurar que el botón X cierre desplazando la sidebar (si JS aplica .closed) */
+.map-sidebar .sidebar-close {
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: #08331f;
+}
+
+/* Mejorar legibilidad de botones dentro de la sidebar */
+.map-sidebar .filter-btn {
+  background: #ffffffcc;
+  color: #08331f;
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 10px 12px;
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+.map-sidebar .filter-btn i { /* placeholder para iconos */
+  width:20px; height:20px; display:inline-block; flex: 0 0 20px;
+}
+
+/* Open/closed states */
+.map-sidebar.active {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.12);
+  z-index: 600; /* aseguramos que quede por encima del mapa */
+}
+
+.sidebar-actions { display:flex; justify-content:flex-end; }
+.sidebar-close { background: transparent; border: none; font-size: 1.1rem; cursor: pointer; color: #08331f; padding: 6px; }
+
+.filter-all-btn { width:100%; margin-bottom:8px; }
+
+.map-sidebar .result-item {
+  display:flex; gap:10px; align-items:flex-start; padding:10px; background:transparent; border-radius:10px; border-bottom:1px solid rgba(0,0,0,0.04);
+}
+.map-sidebar .result-item img { width:72px; height:56px; object-fit:cover; border-radius:8px; border:2px solid var(--color-border); }
+.map-sidebar .result-item .meta { flex:1; }
+.map-sidebar .result-item .meta .name { font-weight:700; color:#08331f; }
+.map-sidebar .result-item .meta .address { font-size:0.9rem; color:#41604f; }
+.map-sidebar .result-item .meta .rating { color: #e6b800; font-weight:700; margin-top:6px; }
 
 .sidebar-inner {
   display:flex;
@@ -285,7 +401,8 @@
 .filters-title {
   margin: 0 0 6px 0;
   font-size: 0.95rem;
-  color: var(--color-primary);
+  /* color: var(--color-primary); */
+  color: black;
   /* mostrar con capitalización normal */
   text-transform: none;
   font-weight: 700;
@@ -300,20 +417,17 @@
 .leaflet-map {
   height: 100%;
   width: 100%;
-  border-radius: var(--radius);
   display: block;
 }
 
+/* Ensure MapContainer fills the wrapper exactly */
+.map-wrapper .leaflet-container { height:100% !important; width:100% !important }
+
 .map-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-  padding: 1rem 0.75rem;
-  gap: 1rem;
-  max-width: 100vw;
-  margin: 0 auto;
+  display: block;
+  width:100%;
+  padding:0;
+  margin:0;
 }
 
 /* Icono personalizado del usuario */
@@ -322,21 +436,14 @@
   height: 24px;
   background: #007bff;
   border: 3px solid white;
+  margin-left: 1rem;
+  color: #08331f;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
   border-radius: 50%;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  position: relative;
-}
-
-.user-icon::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 8px;
-  height: 8px;
-  background: white;
-  border-radius: 50%;
+  box-sizing: border-box;
 }
 
 /* Estilos para popups */
@@ -398,7 +505,6 @@
     max-width: 95%;
     padding: 1rem 1.5rem;
   }
-  
   .leaflet-map {
     height: 450px;
   }
@@ -522,6 +628,171 @@
   margin-bottom: 1.5rem;
   text-align: center;
 }
+
+/* ==== OVERRIDES: Enforce strict layer order and positions (final rules) ==== */
+/* 1. Base: full-screen map */
+.map-root {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.map-wrapper {
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.leaflet-map, .map-wrapper .leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* 2. Navbar layer (kept in App.css but ensure map sits below) */
+
+/* 3. Sidebar: legacy disabled (use modal) */
+.map-sidebar {
+  display: none !important;
+  position: absolute !important;
+  top: 90px !important;
+  left: 20px !important;
+  z-index: 400 !important;
+  width: 320px !important;
+}
+
+/* 4. Controles de acción: centrados y absolutos */
+.map-controls {
+  position: absolute !important;
+  top: 90px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 500 !important;
+  display: flex !important;
+  gap: 10px !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 90% !important;
+  max-width: none !important;
+  margin: 0 auto !important;
+  padding: 8px 12px !important;
+  background: transparent !important;
+}
+
+.map-controls button {
+  background: #9EE2CF !important;
+  color: #08331f !important;
+  border: 1px solid var(--border-ui) !important;
+  border-radius: 999px !important;
+  padding: 8px 14px !important;
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+}
+
+/* 5. Información: título y precisión centrados y legibles */
+.map-title {
+  position: absolute !important;
+  top: 60px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 500 !important;
+  background: #C9EFE4 !important; /* sólido para máxima legibilidad */
+  color: #000 !important;
+  padding: 8px 12px !important;
+  border-radius: 10px !important;
+  font-family: 'Roboto', sans-serif !important;
+}
+
+/* Cartel de estado (loading/status) */
+.status-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  background: #C9EFE4;
+  padding: 18px 24px;
+  border-radius: 12px;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.18);
+  display: none; /* por defecto oculto; mostrar añadiendo .show */
+  min-width: 240px;
+  text-align: center;
+  font-weight: 700;
+  color: #08331f;
+}
+.status-overlay.show { display: block; }
+
+/* Modal de filtros centrado */
+.filter-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2000;
+  background: #C9EFE4;
+  padding: 18px 22px;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+  min-width: 280px;
+  max-width: 92vw;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.filter-modal .filters-vertical { display:flex; flex-direction:column; gap:8px; }
+.filter-modal .filter-btn { background:#ffffff; color: #66B09D; border:1px solid rgba(0,0,0,0.06); }
+.filter-modal .filter-btn.active {
+  background: #66B09D;
+  color: #000;
+  border-color: rgba(0,0,0,0.06);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+.filter-modal .filters-title { text-align:center; color:#08331f; }
+.filter-modal .btn { padding: 8px 14px; border-radius: 10px; cursor:pointer; }
+.filter-modal .btn-primary { background:#66B09D; color:#fff; border:none; font-weight:700 }
+.filter-modal .btn-secondary { background:transparent; color:#08331f; border:1px solid rgba(0,0,0,0.06) }
+
+.map-controls { z-index: 500; }
+.map-controls { z-index: 500; }
+
+.map-info {
+  position: absolute !important;
+  top: 180px !important; /* debajo de acciones - aumentado para separar precisión de botones */
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 500 !important;
+  background: #C9EFE4 !important;
+  color: #000 !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  border: 1px solid #A2E3D0 !important;
+  font-family: 'Roboto', sans-serif !important;
+}
+
+/* Safety: ensure no parent containers limit width or add padding */
+.container-12, .map-section, .app, .app-main {
+  max-width: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Ensure sidebar and controls are reachable on small screens */
+@media (max-width: 600px) {
+  .map-sidebar { left: 12px !important; top: calc(var(--navbar-height) + 8px) !important; width: 86vw !important; }
+  .map-controls { top: calc(var(--navbar-height) + 12px) !important; width: calc(100% - 24px) !important; }
+  .map-title { top: calc(var(--navbar-height) + 6px) !important; }
+  .map-info { top: calc(var(--navbar-height) + 90px) !important; }
+}
+
+/* End overrides */
 
 .resenias-title {
   color: var(--color-primary);

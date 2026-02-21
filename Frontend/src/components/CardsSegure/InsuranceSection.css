@@ -1,8 +1,8 @@
 /* Insurance Section Styles */
 .insurance-section {
     width: 100%;
-    min-height: 100vh;
-    padding: 20px;
+    min-height: calc(100vh - var(--navbar-height));
+    padding: 28px 20px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -41,42 +41,27 @@
 }
 
 .insurance-cards-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: stretch;
-    gap: 30px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
     margin-bottom: 40px;
     width: 100%;
-    
 }
 
-.insurance-card-wrapper {
-    flex: 1;
-    
-    min-width: 320px;
-    max-width: 400px;
-    display: flex;
-    justify-content: center;
-}
+.insurance-card-wrapper { display:block }
+
+.insurance-card { background: var(--bg-info); border: 2px solid var(--border-ui); color: #08331f }
 
 .insurance-card {
-    
     width: 100%;
-    border-radius: 12px;
-    padding: 25px;
-    background-color: white;
-    /* background-color: #1d057c8f; */
-    color: black;
-    /* font-weight: bold; */
+    border-radius: 14px;
+    padding: 22px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border: 2px solid transparent;
+    transition: all 0.24s ease;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 450px;
+    min-height: 480px;
 }
 
 .insurance-card:hover {
@@ -142,48 +127,24 @@
     margin: 0;
     padding-left: 0;
     list-style: none;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
 }
 
 .coverage-item {
-    margin: 8px 0;
-    padding-left: 20px;
+    margin: 10px 0;
+    padding-left: 24px;
     position: relative;
 }
 
-.coverage-item::before {
-    content: '✓';
-    position: absolute;
-    left: 0;
-    color: #17e404;
-    font-weight:bolder;
-}
+.coverage-item::before { content: '✓'; position:absolute; left:0; top:0; color:var(--text-highlight); font-weight:700 }
 
 .coverage-item.selected::before {
     color: #17e404;
 }
 
-.card-button {
-    margin-top: 20px;
-    padding: 12px 24px;
-    background-color: #47472e;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: bold;
-    box-shadow: 0 3px 6px rgba(255, 224, 166, 0.3);
-    transition: all 0.3s ease;
-    width: 100%;
-}
+.card-button { margin-top:18px; padding:12px 20px; background:var(--primary-green); color:#08331f; border:2px solid var(--border-ui); border-radius:10px; font-weight:800; width:100%; text-align:center }
 
-.card-button:hover {
-    background-color: #ffe0a6;
-    color: #47472e;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 12px rgba(255, 224, 166, 0.5);
-}
+.coverage-list { max-height: 260px; overflow:auto }
 
 .selected-plan-section {
     text-align: center;

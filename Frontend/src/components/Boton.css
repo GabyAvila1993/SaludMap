@@ -1,0 +1,13 @@
+.boton {
+  background-color: #35332e;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  margin: 15px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.boton:hover { transform: translateY(-2px); }

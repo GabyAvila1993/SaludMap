@@ -1,15 +1,44 @@
 /*--------------- Inicio App.css -------------------*/
 /* App.css - Estilos globales para SaludMap */
+@import url('https://fonts.googleapis.com/css2?family=Headland+One&family=Roboto:wght@300;400;500;700;900&display=swap');
+@import './styles/modal.css';
+
 :root {
-  --color-primary: #ffe0a6;
+  /* Valores exactos solicitados */
+  --primary-green: #9EE2CF;
+  --text-highlight: #66B09D;
+  --bg-info: #C9EFE4;
+  --border-ui: #A2E3D0;
   --color-bg-dark: #47472e;
-  --color-text: #fff;
-  --radius: 25px;
-  --radius-mobile: 15px;
-  --transition: all 0.3s ease-in-out;
+  --color-text: #08331f;
+  --radius: 12px;
+  --radius-mobile: 8px;
+  --transition: all 0.22s cubic-bezier(.2,.9,.2,1);
   --padding-desktop: 2rem;
   --padding-tablet: 1rem;
   --padding-mobile: 0.5rem;
+  --navbar-height: 70px;
+  --footer-height: 64px;
+  --grid-gap: 10px;
+}
+
+/* Theme wrappers: light and dark. By default use light-theme variables when class applied. */
+.light-theme {
+  --primary-green: #9EE2CF;
+  --text-highlight: #66B09D;
+  --bg-info: #C9EFE4;
+  --border-ui: #A2E3D0;
+  --color-bg: #ffffff;
+  --color-text: #08331f;
+}
+
+.dark-theme {
+  --primary-green: #66B09D;
+  --text-highlight: #9EE3C9;
+  --bg-info: #2b2f34;
+  --border-ui: #3e4b3f;
+  --color-bg: #0f1720;
+  --color-text: #e6f6ef;
 }
 
 * {
@@ -18,16 +47,20 @@
   box-sizing: border-box;
 }
 
-body {
+/* RESET CRÍTICO: forzar contenedores raíz sin espacios laterales */
+html, body, #root, .app {
   margin: 0;
   padding: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden; /* evitar scrolls dobles */
+}
+
+body {
+  font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
-  overflow-x: hidden;
-  width: 100%;
+  background: #ffffff;
 }
 
 .app {
@@ -39,67 +72,71 @@ body {
   max-width: 100vw;
 }
 
-.app header {
-  background: rgba(2, 2, 2, 0.15);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  border: 1px solid rgba(255, 224, 166, .3);
-  border-radius: var(--radius);
-  margin: 0.5rem;
-  padding: var(--padding-mobile);
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--navbar-height);
+  z-index: 1000; /* elevado para quedar encima de todo */
+  background-color: #C9EFE4;
+  border-bottom: 1px solid var(--border-ui);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px; /* reducir padding para evitar overflow horizontal */
+  box-sizing: border-box;
+  border-radius: 0 0 20px 20px; /* redondeo inferior exacto */
 }
+
+.site-header .header-top { width:100%; max-width:none; margin:0; display:flex; align-items:center; justify-content:space-between; gap:12px }
+
+.logo { font-family: 'Headland One', serif; font-size:1.9rem; color:var(--text-highlight); display:flex; align-items:center; gap:10px }
+.logo-img { width:36px; height:36px; object-fit:contain; display:inline-block }
+.logo-text { font-size:1.45rem; color:var(--text-highlight) }
 
 @media (min-width: 768px) {
-  .app header {
-    margin: 0.75rem;
-    padding: var(--padding-tablet);
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--navbar-height);
+    z-index: 900; /* dejar espacio para overlays (status) por encima */
+    background-color: #C9EFE4;
+    border-bottom: 1px solid var(--border-ui);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 12px; /* evitar espacios en los bordes del monitor */
+    box-sizing: border-box;
+    border-radius: 0 0 30px 30px; /* redondeo inferior más suave */
   }
-}
 
-@media (min-width: 1024px) {
-  .app header {
-    margin: 1rem;
-    padding: var(--padding-desktop);
-  }
-}
-
-.app main {
-  flex: 1;
-  padding: 0;
-  background: transparent;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  width: 100%;
-  max-width: 100vw;
 }
 
 .app footer {
-  background: rgba(2, 2, 2, 0.15);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  border: 1px solid rgba(255, 224, 166, .3);
-  border-radius: var(--radius);
-  margin: 1rem;
-  padding: var(--padding-desktop);
+  background: transparent;
+  padding: 1rem 0;
+  height: var(--footer-height);
 }
 
 /* Botones globales */
 button,
 .button--primary {
-  background-color: var(--color-bg-dark);
-  color: var(--color-text);
-  border: none;
-  padding: 12px 24px;
-  border-radius: var(--radius);
+  background-color: var(--color-primary);
+  color: #08331f;
+  border: 2px solid var(--color-border);
+  padding: 10px 20px;
+  border-radius: 10px;
   cursor: pointer;
   font-size: clamp(0.875rem, 2vw, 1rem);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1rem;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0.02rem;
   transition: var(--transition);
-  box-shadow: 0 4px 15px rgba(255, 224, 166, 0.3);
-  min-height: 48px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  min-height: 44px;
   touch-action: manipulation;
 }
 
@@ -213,6 +250,10 @@ button:disabled {
     width: 6px;
     height: 6px;
   }
+
+  .app-nav .nav-buttons { display:none; }
+  .hamburger { display:inline-flex }
+  .mobile-menu { display:flex; flex-direction:column }
 }
 
 /* Móviles (480px y menos) */
@@ -313,3 +354,104 @@ button:disabled {
     transform: none;
   }
 }
+
+/* Estilos añadidos al mover inline-styles de App.jsx */
+.loading-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+  gap: 1rem;
+}
+.loading-subtitle { font-size: 0.875rem; color: #666; }
+
+.app-header-row { display:flex; justify-content:space-between; align-items:center; padding: 0 20px; }
+.user-controls { display:flex; align-items:center; gap: 15px; }
+.user-info { display:flex; align-items:center; gap:10px; }
+.user-name { color: #47472e; font-weight: 700; }
+.btn-logout { background:#ff6b6b; color:#fff; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:700; }
+.btn-login { background:#47472e; color:#fff; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:700; }
+
+.app-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: none; /* allow full width */
+  margin: 0;
+  gap: 12px;
+}
+
+.app-nav .nav-left,
+.app-nav .nav-center,
+.app-nav .nav-right {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex: 1 1 0;
+}
+
+.app-nav .nav-left { justify-content: flex-start }
+.app-nav .nav-center { justify-content: center }
+.app-nav .nav-right { justify-content: flex-end }
+
+.app-nav .nav-buttons { display:flex; gap:20px; align-items:center; justify-content:center }
+
+/* Buttons: non-active text color requested */
+.app-nav .nav-button {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: #66B09D; /* texto no activo */
+  cursor:pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Global override: asegurar que ningún contenedor superior limite el ancho del mapa */
+.container, .container-12, .app, .app-main, .map-section, .turnos-section, .map-controls, .map-wrapper {
+  max-width: none !important;
+  width: 100vw !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.app-nav .nav-button.active {
+  background: #9EE2CF; /* color activo */
+  color: #08331f;
+  font-weight: 800;
+  border: 1px solid var(--border-ui);
+}
+
+.profile-avatar { width:42px; height:42px; border-radius:50%; background:#A2E3D0; display:inline-flex; align-items:center; justify-content:center; color:#08331f; font-weight:800 }
+.nav-person-icon { width:40px; height:40px; border-radius:50%; object-fit:cover; background:#A2E3D0; padding:4px; display:inline-block }
+.nav-username { font-weight:700; color:#66B09D; margin:0 8px }
+
+/* User menu dropdown */
+.user-menu { position: relative; }
+.user-menu .user-dropdown { display: none; position: absolute; top: 100%; right: 0; background: #ffffff; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 6px 18px rgba(0,0,0,0.08); padding: 8px; border-radius: 8px; min-width: 140px; z-index: 1100; }
+.user-menu.open .user-dropdown { display: block; }
+.user-dropdown .btn-logout, .user-dropdown .btn-login { width:100%; background: transparent; border: none; color: #08331f; padding: 8px 10px; text-align: left; cursor: pointer; font-weight:700; }
+.user-dropdown .btn-logout:hover, .user-dropdown .btn-login:hover { background: rgba(0,0,0,0.03); }
+
+/* Hamburger / mobile menu */
+.hamburger { display:none; background:transparent; border:none; font-size:1.25rem; cursor:pointer; color:#66B09D }
+.mobile-menu { display:none; position: absolute; top: calc(var(--navbar-height)); right: 0; left: 0; background: #C9EFE4; padding: 12px 20px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); z-index:1050; gap:12px; }
+.mobile-menu .nav-button { display:block; width:100%; text-align:left; padding:10px 12px; margin-bottom:8px; }
+
+/* 12-column grid utility */
+.container-12 { width:100%; max-width: none; margin:0; padding:0 16px; box-sizing:border-box; display:grid; grid-template-columns: repeat(12, 1fr); gap: var(--grid-gap); align-items:center }
+.col-1{grid-column:span 1} .col-2{grid-column:span 2} .col-3{grid-column:span 3} .col-4{grid-column:span 4} .col-5{grid-column:span 5} .col-6{grid-column:span 6}
+.col-7{grid-column:span 7} .col-8{grid-column:span 8} .col-9{grid-column:span 9} .col-10{grid-column:span 10} .col-11{grid-column:span 11} .col-12{grid-column:span 12}
+
+.app-main { min-height: calc(100vh - var(--navbar-height) - var(--footer-height)); margin-top: var(--navbar-height); width:100%; }
+
+.map-section { width:100%; }
+.map-layout { display:flex; align-items:stretch; gap:0; height:100%; width:100%; }
+.map-wrapper { flex:1 1 auto; height:100%; }
+.leaflet-map { width:100%; height:100%; }
+.app-footer { text-align:center; padding: 1rem 0; }

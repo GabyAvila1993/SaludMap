@@ -1,0 +1,100 @@
+/* Shared modal styles used across the app */
+
+/* overlay */
+.modal-overlay,
+[class*="modal-auth-overlay"],
+.cost-compare-root,
+.checkout-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.6);
+  z-index: 9999;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow: auto;
+}
+
+/* panel */
+.modal-panel,
+.modal-content,
+.login,
+.cost-compare-panel,
+.checkout-modal,
+.modal {
+  width: min(96vw, 980px);
+  max-width: 980px;
+  background: rgba(23,23,23,0.96);
+  color: #f4f4f4;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 18px 48px rgba(0,0,0,0.6);
+  border: 2px solid rgba(255,224,166,0.12);
+}
+
+/* smaller panels */
+.modal-panel.small,
+.login.small,
+.checkout-modal.small { max-width: 420px; }
+
+/* close button */
+.modal-close,
+.modal-panel .close,
+.cost-compare-panel .modal-close {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  background: rgba(255,255,255,0.04);
+  border: none;
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  color: #fff;
+}
+
+/* header / title */
+.modal-header,
+.modal-panel .h1,
+.login .h1,
+.cost-compare-panel .cost-compare-header {
+  margin-bottom: 12px;
+}
+
+.modal-title,
+.modal-panel .h1 {
+  font-size: clamp(1.05rem, 2.2vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: 0.06rem;
+}
+
+/* body and footer */
+.modal-body { margin-bottom: 12px; }
+.modal-footer { display:flex; gap:12px; justify-content:flex-end; align-items:center }
+
+/* default buttons inside modals */
+.modal-panel button,
+.cost-compare-panel button,
+.login input[type="submit"],
+.checkout-modal button {
+  background: linear-gradient(180deg, var(--primary-green), #7fd9b6);
+  color: #08331f;
+  border: 1px solid var(--border-ui);
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* balanced spacing on small screens */
+@media (max-width: 720px) {
+  .modal-panel,
+  .login,
+  .cost-compare-panel { padding: 14px; width: 94vw; }
+  .modal-footer { flex-direction: column-reverse; align-items: stretch }
+}

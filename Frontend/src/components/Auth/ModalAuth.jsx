@@ -78,8 +78,8 @@ export default function ModalAuth({ open, onClose, showRegister, setShowRegister
 	if (!open) return null;
 
 	return (
-		<div className="modal-auth-overlay">
-			<div className="login wrap">
+		<div className="modal-overlay">
+			<div className="modal-panel small">
 				<div className="h1">{showRegister ? 'Registro' : 'Login'}</div>
 				<form onSubmit={handleSubmit}>
 					{showRegister && (
@@ -126,8 +126,8 @@ export default function ModalAuth({ open, onClose, showRegister, setShowRegister
 						disabled={loading}
 					/>
 				</form>
-				{error && <div style={{ color: '#ff8080', marginTop: 10 }}>{error}</div>}
-				<div style={{ marginTop: 20, textAlign: 'center' }}>
+				{error && <div className="modal-error">{error}</div>}
+				<div className="modal-footer modal-auth-footer">
 					{showRegister ? (
 						<span>
 							¿Ya tienes cuenta?{' '}
@@ -155,12 +155,12 @@ export default function ModalAuth({ open, onClose, showRegister, setShowRegister
 					)}
 				</div>
 				<button 
-					className="btn-link cerrar" 
-					style={{ marginTop: 10 }} 
+					className="modal-close" 
 					onClick={onClose}
 					disabled={loading}
+					aria-label="Cerrar"
 				>
-					Cerrar
+					×
 				</button>
 			</div>
 		</div>

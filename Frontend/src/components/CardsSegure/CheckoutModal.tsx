@@ -10,6 +10,8 @@ interface CheckoutModalProps {
     onClose: () => void;
 }
 
+import './CheckoutModal.css';
+
 const CheckoutModal: React.FC<CheckoutModalProps> = ({ plan, isOpen, onClose }) => {
     const { t } = useTranslation();
     
@@ -85,175 +87,43 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ plan, isOpen, onClose }) 
     if (!isOpen) return null;
 
     return (
-        <div style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 1000
-        }}>
-            <div style={{
-                backgroundColor: '#fff',
-                borderRadius: '10px',
-                padding: '30px',
-                maxWidth: '500px',
-                width: '90%',
-                maxHeight: '90vh',
-                overflowY: 'auto',
-                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
-            }}>
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginBottom: '20px'
-                }}>
-                    <h2 style={{ margin: 0, color: '#47472e' }}>{t('insurance.contractInsurance')}</h2>
-                    <button
-                        onClick={onClose}
-                        style={{
-                            background: 'none',
-                            border: 'none',
-                            fontSize: '24px',
-                            cursor: 'pointer',
-                            color: '#666'
-                        }}
-                    >
-                        ×
-                    </button>
+        <div className="checkout-overlay">
+            <div className="checkout-modal">
+                <div className="checkout-header">
+                    <h2 className="checkout-title">{t('insurance.contractInsurance')}</h2>
+                    <button className="checkout-close" onClick={onClose}>×</button>
                 </div>
 
-                <div style={{
-                    backgroundColor: '#f8f9fa',
-                    padding: '15px',
-                    borderRadius: '8px',
-                    marginBottom: '20px',
-                    border: '1px solid #ffe0a6'
-                }}>
-                    <h3 style={{ margin: '0 0 10px 0', color: '#47472e' }}>{t(`insurance.plans.${plan.id}.name`)}</h3>
-                    <p style={{ margin: '0 0 10px 0', fontSize: '1.2rem', fontWeight: 'bold', color: '#47472e' }}>
-                        ${plan.price}{t('insurance.perMonth')}
-                    </p>
-                    <p style={{ margin: 0, fontSize: '0.9rem', color: '#666' }}>
-                        {t(`insurance.plans.${plan.id}.description`)}
-                    </p>
+                <div className="plan-info">
+                    <h3 className="plan-name">{t(`insurance.plans.${plan.id}.name`)}</h3>
+                    <p className="plan-price">${plan.price}{t('insurance.perMonth')}</p>
+                    <p className="plan-desc">{t(`insurance.plans.${plan.id}.description`)}</p>
                 </div>
 
-                <form onSubmit={handleSubmit}>
-                    <div style={{ marginBottom: '15px' }}>
-                        <label style={{ display: 'block', marginBottom: '5px', color: '#47472e', fontWeight: 'bold' }}>
-                            {t('insurance.fullName')} *
-                        </label>
-                        <input
-                            type="text"
-                            required
-                            value={userInfo.name}
-                            onChange={(e) => handleInputChange('name', e.target.value)}
-                            style={{
-                                width: '100%',
-                                padding: '10px',
-                                border: '1px solid #ddd',
-                                borderRadius: '5px',
-                                fontSize: '16px'
-                            }}
-                        />
+                <form className="checkout-form" onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label>{t('insurance.fullName')} *</label>
+                        <input type="text" required value={userInfo.name} onChange={(e) => handleInputChange('name', e.target.value)} />
                     </div>
 
-                    <div style={{ marginBottom: '15px' }}>
-                        <label style={{ display: 'block', marginBottom: '5px', color: '#47472e', fontWeight: 'bold' }}>
-                            {t('appointments.email')} *
-                        </label>
-                        <input
-                            type="email"
-                            required
-                            value={userInfo.email}
-                            onChange={(e) => handleInputChange('email', e.target.value)}
-                            style={{
-                                width: '100%',
-                                padding: '10px',
-                                border: '1px solid #ddd',
-                                borderRadius: '5px',
-                                fontSize: '16px'
-                            }}
-                        />
+                    <div className="form-group">
+                        <label>{t('appointments.email')} *</label>
+                        <input type="email" required value={userInfo.email} onChange={(e) => handleInputChange('email', e.target.value)} />
                     </div>
 
-                    <div style={{ marginBottom: '15px' }}>
-                        <label style={{ display: 'block', marginBottom: '5px', color: '#47472e', fontWeight: 'bold' }}>
-                            {t('insurance.phone')} *
-                        </label>
-                        <input
-                            type="tel"
-                            required
-                            value={userInfo.phone}
-                            onChange={(e) => handleInputChange('phone', e.target.value)}
-                            style={{
-                                width: '100%',
-                                padding: '10px',
-                                border: '1px solid #ddd',
-                                borderRadius: '5px',
-                                fontSize: '16px'
-                            }}
-                        />
+                    <div className="form-group">
+                        <label>{t('insurance.phone')} *</label>
+                        <input type="tel" required value={userInfo.phone} onChange={(e) => handleInputChange('phone', e.target.value)} />
                     </div>
 
-                    <div style={{ marginBottom: '20px' }}>
-                        <label style={{ display: 'block', marginBottom: '5px', color: '#47472e', fontWeight: 'bold' }}>
-                            {t('insurance.address')} *
-                        </label>
-                        <textarea
-                            required
-                            value={userInfo.address}
-                            onChange={(e) => handleInputChange('address', e.target.value)}
-                            rows={3}
-                            style={{
-                                width: '100%',
-                                padding: '10px',
-                                border: '1px solid #ddd',
-                                borderRadius: '5px',
-                                fontSize: '16px',
-                                resize: 'vertical'
-                            }}
-                        />
+                    <div className="form-group">
+                        <label>{t('insurance.address')} *</label>
+                        <textarea required value={userInfo.address} onChange={(e) => handleInputChange('address', e.target.value)} rows={3} />
                     </div>
 
-                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            style={{
-                                padding: '12px 24px',
-                                border: '1px solid #ddd',
-                                borderRadius: '5px',
-                                backgroundColor: '#fff',
-                                color: '#666',
-                                cursor: 'pointer',
-                                fontSize: '16px'
-                            }}
-                        >
-                            {t('map.cancel')}
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={isProcessing}
-                            style={{
-                                padding: '12px 24px',
-                                border: 'none',
-                                borderRadius: '5px',
-                                backgroundColor: isProcessing ? '#ccc' : '#47472e',
-                                color: '#fff',
-                                cursor: isProcessing ? 'not-allowed' : 'pointer',
-                                fontSize: '16px',
-                                boxShadow: '0 2px 4px rgba(255, 224, 166, 0.3)'
-                            }}
-                        >
-                            {isProcessing ? t('common.processing') : `${t('insurance.contractFor')} $${plan.price}${t('insurance.perMonth')}`}
-                        </button>
+                    <div className="form-actions">
+                        <button type="button" className="btn-secondary" onClick={onClose}>{t('map.cancel')}</button>
+                        <button type="submit" className="btn-primary" disabled={isProcessing}>{isProcessing ? t('common.processing') : `${t('insurance.contractFor')} $${plan.price}${t('insurance.perMonth')}`}</button>
                     </div>
                 </form>
             </div>

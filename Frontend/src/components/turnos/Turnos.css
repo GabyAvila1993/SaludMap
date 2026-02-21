@@ -163,6 +163,17 @@
     text-transform: uppercase;
 }
 
+.prof-type-small {
+    font-size: 0.7rem;
+    color: var(--color-primary);
+    font-weight: 700;
+    text-transform: uppercase;
+    background: rgba(255,224,166,0.06);
+    padding: 4px 8px;
+    border-radius: 8px;
+    display: inline-block;
+}
+
 .prof-source {
     font-size: 0.75rem;
     color: #999;
@@ -492,4 +503,88 @@ button:disabled,
 @media (max-width: 600px) {
     .prof-item, .turn-item { padding: 0.85rem; }
     .turnos-badge { font-size: 0.85rem; padding: 0.35rem 0.7rem; }
+}
+
+/* Grid de tarjetas para 'Mis Turnos' */
+.turns-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    width: 100%;
+}
+
+.turn-card {
+    background: var(--bg-info);
+    border: 2px solid var(--border-ui);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: none;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+
+.turn-card .turn-badge {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    padding: 6px 10px;
+    border-radius: 12px;
+    font-weight:700;
+    font-size:0.85rem;
+}
+.badge-pending { background: #ffd78a; color:#2c2c2c; border:1px solid #f0b24a }
+.badge-confirmed { background: #c8f7d8; color:#1b6b44; border:1px solid var(--text-highlight) }
+.badge-finished { background: #ffd6e0; color:#6b2b3b; border:1px solid #e2a3b0 }
+
+@media (max-width: 992px) {
+    .turns-cards { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+    .turns-cards { grid-template-columns: 1fr; }
+}
+
+/* Stepper para flujo de 3 pasos en reserva */
+.turno-stepper {
+    display:flex; gap:12px; align-items:center; width:100%; max-width:1200px; margin: 18px 0;
+}
+.turno-step { flex:1; padding:12px; background:rgba(0,0,0,0.03); border-radius:8px; text-align:center; border:1px solid rgba(0,0,0,0.04); }
+.turno-step.active { background: var(--color-primary); color:#08331f; border-color:var(--color-border); font-weight:700 }
+
+.turn-card .actions { display:flex; gap:8px; justify-content:flex-end; margin-top:12px }
+.turn-card .actions .btn { padding:8px 12px; border-radius:8px; border:1px solid var(--border-ui); background:transparent; cursor:pointer }
+.turn-card .actions .btn.primary { background:var(--primary-green); border-color:var(--border-ui); color:#08331f }
+
+/* ---------- NUEVAS CLASES PARA REEMPLAZAR ESTILOS INLINE ---------- */
+.auth-required-card {
+    text-align: center;
+    padding: 3rem 2rem;
+    background-color: rgba(255, 224, 166, 0.08);
+    border-radius: 12px;
+    border: 2px solid var(--color-primary);
+    max-width: 520px;
+    margin: 2rem auto;
+}
+.auth-lock-emoji { font-size: 3rem; margin-bottom: 1rem; }
+.auth-title { color: var(--color-primary); margin-bottom: 1rem; font-size: 1.25rem; }
+.auth-desc { color: var(--color-text); margin-bottom: 1.5rem; }
+.auth-btn { padding: 12px 32px; font-size: 1.05rem; background-color: var(--color-bg-dark); color: var(--color-text); border: none; border-radius: var(--radius); cursor: pointer; font-weight: 700; box-shadow: 0 4px 15px rgba(255,224,166,0.18); }
+
+.turnos-badge--dark { background: rgba(71,71,46,0.95); color: var(--color-primary); }
+.compare-btn { margin-left: 12px; }
+.user-info { margin-top: 10px; color: var(--color-primary); }
+
+.selected-est-card { padding: 2rem; text-align: center; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-radius: 12px; border: 2px solid #2196f3; }
+.selected-est-emoji { font-size: 2.5rem; margin-bottom: 1rem; }
+.selected-est-title { color: #1976d2; margin-bottom: 0.5rem; }
+.selected-est-name { color: #0d47a1; font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; }
+.selected-est-addr { color: #1565c0; font-size: 0.9rem; margin-bottom: 1.25rem; }
+.selected-est-button { padding: 12px 24px; font-size: 1rem; background-color: #2196f3; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.25s ease; box-shadow: 0 4px 12px rgba(33,150,243,0.3); }
+.selected-est-button:hover { background-color: #1976d2; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(33,150,243,0.35); }
+
+/* ensure consistent spacing on small screens for the newly added blocks */
+@media (max-width: 720px) {
+    .auth-required-card, .selected-est-card { padding: 1.25rem; margin: 1rem 0; }
+    .compare-btn { margin-left: 0; }
 }

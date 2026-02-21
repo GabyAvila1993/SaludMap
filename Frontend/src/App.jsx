@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Routes, Route } from 'react-router-dom';
 import MapComponent from './components/Map.jsx';
@@ -11,11 +11,32 @@ import { useAuth } from './components/Auth/AuthContext';
 import locationService from './services/locationService.js';
 import { cleanOldTiles } from './services/db.js';
 import Analytics from './components/Analytics/Analytics';
+import './App.css';
+import LogoImg from './assets/Logo_saludmap_sinfondo.png';
+import IconPerson from './assets/Icono_persona.png';
 
 
 function App() {
 	const { t } = useTranslation();
 	const { user, logout } = useAuth();
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const userMenuRef = useRef(null);
+
+  useEffect(() => {
+    const handleDocClick = (e) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+        setShowUserMenu(false);
+      }
+      // close mobile menu if clicking outside nav
+      if (!e.target.closest || !e.target.closest('.app-nav')) {
+        setShowMobileMenu(false);
+      }
+    };
+
+    document.addEventListener('click', handleDocClick);
+    return () => document.removeEventListener('click', handleDocClick);
+  }, []);
 	const [isLoading, setIsLoading] = useState(true);
 	const [, setCurrentLocation] = useState(null);
 	const [activeTab, setActiveTab] = useState('mapa');
@@ -61,18 +82,9 @@ function App() {
 
   if (isLoading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh',
-        flexDirection: 'column',
-        gap: '1rem'
-      }}>
+      <div className="loading-screen">
         <div>{t('common.loading')}</div>
-        <div style={{ fontSize: '0.875rem', color: '#666' }}>
-          {t('common.allowLocation')}
-        </div>
+        <div className="loading-subtitle">{t('common.allowLocation')}</div>
       </div>
     );
   }
@@ -97,154 +109,59 @@ function App() {
 	return (
     <div className="app">
       <ChatBot />
-      <header>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 20px' }}>
-						<h1>{t('common.appName')}</h1>
-						<div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-							<LanguageSelector />
-							{user ? (
-								<div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-									<span style={{ color: '#47472e', fontWeight: 'bold' }}>
-										👤 {user.nombre} {user.apellido}
-									</span>
-									<button
-										onClick={logout}
-										style={{
-											padding: '8px 16px',
-											border: 'none',
-											borderRadius: '6px',
-											backgroundColor: '#ff6b6b',
-											color: '#fff',
-											cursor: 'pointer',
-											fontSize: '0.9rem',
-											fontWeight: 'bold',
-											transition: 'all 0.3s ease'
-										}}
-									>
-										Cerrar Sesión
-									</button>
-								</div>
-							) : (
-								<button
-									onClick={() => {
-										setShowRegister(false);
-										setShowAuthModal(true);
-									}}
-									style={{
-										padding: '8px 16px',
-										border: 'none',
-										borderRadius: '6px',
-										backgroundColor: '#47472e',
-										color: '#fff',
-										cursor: 'pointer',
-										fontSize: '0.9rem',
-										fontWeight: 'bold',
-										transition: 'all 0.3s ease'
-									}}
-								>
-									Iniciar Sesión
-								</button>
-							)}
-						</div>
-					</div>
-        
-        {/* Navigation Tabs */}
-        <nav style={{
-          display: 'flex',
-          alignItems: 'center',
-          textAlign:'center',
-          justifyContent: 'center',
-          gap: '10px',
-          marginTop: '20px',
-          padding: '0 20px'
-        }}>
-          <button
-            onClick={() => setActiveTab('mapa')}
-            style={{
-              padding: '12px 24px',
-              border: 'none',
-              borderRadius: '8px',
-              backgroundColor: activeTab === 'mapa' ? '#47472e' : '#f0f0f0',
-              color: activeTab === 'mapa' ? '#fff' : '#47472e',
-              cursor: 'pointer',
-              fontSize: '1rem',
-              fontWeight: activeTab === 'mapa' ? 'bold' : 'normal',
-              boxShadow: activeTab === 'mapa' ? '0 2px 4px rgba(255, 224, 166, 0.3)' : 'none',
-              transition: 'all 0.3s ease'
-            }}
-          >
-            🗺️ {t('nav.map')}
-          </button>
-          
-          <button
-            onClick={() => setActiveTab('turnos')}
-            style={{
-              padding: '12px 24px',
-              border: 'none',
-              borderRadius: '8px',
-              backgroundColor: activeTab === 'turnos' ? '#47472e' : '#f0f0f0',
-              color: activeTab === 'turnos' ? '#fff' : '#47472e',
-              cursor: 'pointer',
-              fontSize: '1rem',
-              fontWeight: activeTab === 'turnos' ? 'bold' : 'normal',
-              boxShadow: activeTab === 'turnos' ? '0 2px 4px rgba(255, 224, 166, 0.3)' : 'none',
-              transition: 'all 0.3s ease'
-            }}
-          >
-            📅 {t('nav.appointments')}
-          </button>
-          
-          <button
-            onClick={() => setActiveTab('seguros')}
-            style={{
-              padding: '12px 24px',
-              border: 'none',
-              borderRadius: '8px',
-              backgroundColor: activeTab === 'seguros' ? '#47472e' : '#f0f0f0',
-              color: activeTab === 'seguros' ? '#fff' : '#47472e',
-              cursor: 'pointer',
-              fontSize: '1rem',
-              fontWeight: activeTab === 'seguros' ? 'bold' : 'normal',
-              boxShadow: activeTab === 'seguros' ? '0 2px 4px rgba(255, 224, 166, 0.3)' : 'none',
-              transition: 'all 0.3s ease'
-            }}
-          >
-            🛡️ {t('nav.insurance')}
-          </button>
+        <header className="site-header">
+          <nav className="app-nav">
+            <div className="nav-left">
+              <div className="logo">
+                <img src={LogoImg} alt="SaludMap" className="logo-img" />
+                <span className="logo-text">{t('common.appName')}</span>
+              </div>
+            </div>
 
-          <button
-            onClick={() => setActiveTab('analytics')}
-            style={{
-              padding: '12px 24px',
-              border: 'none',
-              borderRadius: '8px',
-              backgroundColor: activeTab === 'analytics' ? '#47472e' : '#f0f0f0',
-              color: activeTab === 'analytics' ? '#fff' : '#47472e',
-              cursor: 'pointer',
-              fontSize: '1rem',
-              fontWeight: activeTab === 'analytics' ? 'bold' : 'normal',
-              boxShadow: activeTab === 'analytics' ? '0 2px 4px rgba(255, 224, 166, 0.3)' : 'none',
-              transition: 'all 0.3s ease'
-            }}
-          >
-            📊 Estadísticas
-          </button>
-        </nav>
-      </header>
-      
-      <main style={{ minHeight: 'calc(100vh - 200px)' }}>
-        {renderActiveSection()}
-      </main>
-      <footer>
-        <p>{t('footer.copyright')}</p>
-      </footer>
+            <div className="nav-center">
+              <div className="nav-buttons">
+                <button onClick={() => { setActiveTab('mapa'); setShowMobileMenu(false); }} className={`nav-button ${activeTab === 'mapa' ? 'active' : ''}`}>Mapa</button>
+                <button onClick={() => { setActiveTab('turnos'); setShowMobileMenu(false); }} className={`nav-button ${activeTab === 'turnos' ? 'active' : ''}`}>Turnos</button>
+                <button onClick={() => { setActiveTab('seguros'); setShowMobileMenu(false); }} className={`nav-button ${activeTab === 'seguros' ? 'active' : ''}`}>Seguros</button>
+              </div>
+              <button className="hamburger" onClick={(e) => { e.stopPropagation(); setShowMobileMenu(m => !m); }} aria-label="Menú">☰</button>
 
-      <ModalAuth
-        open={showAuthModal}
-        onClose={() => setShowAuthModal(false)}
-        showRegister={showRegister}
-        setShowRegister={setShowRegister}
-      />
+              {showMobileMenu && (
+                <div className="mobile-menu" onClick={(e) => e.stopPropagation()}>
+                  <button onClick={() => { setActiveTab('mapa'); setShowMobileMenu(false); }} className={`nav-button ${activeTab === 'mapa' ? 'active' : ''}`}>Mapa</button>
+                  <button onClick={() => { setActiveTab('turnos'); setShowMobileMenu(false); }} className={`nav-button ${activeTab === 'turnos' ? 'active' : ''}`}>Turnos</button>
+                  <button onClick={() => { setActiveTab('seguros'); setShowMobileMenu(false); }} className={`nav-button ${activeTab === 'seguros' ? 'active' : ''}`}>Seguros</button>
+                </div>
+              )}
+            </div>
+
+            <div className="nav-right">
+              <div className="user-controls">
+                <LanguageSelector />
+                <span className="nav-username">{user ? `${user.nombre} ${user.apellido}` : 'nuevo usuario'}</span>
+
+                <div className={`user-menu ${showUserMenu ? 'open' : ''}`} ref={userMenuRef}>
+                  <button className="profile-avatar" onClick={(e) => { e.stopPropagation(); setShowUserMenu(s => !s); }} aria-haspopup="true" aria-expanded={showUserMenu}>
+                    <img src={IconPerson} alt="perfil" className="nav-person-icon" />
+                  </button>
+                  <div className="user-dropdown" role="menu">
+                    {user ? (
+                      <button className="btn-logout" onClick={() => { logout(); setShowUserMenu(false); }}>Cerrar Sesión</button>
+                    ) : (
+                      <button className="btn-login" onClick={() => { setShowAuthModal(true); setShowUserMenu(false); }}>Iniciar Sesión</button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </nav>
+        </header>
+
+      <main className="app-main">{renderActiveSection()}</main>
+
+      <footer className="app-footer"><p>{t('footer.copyright')}</p></footer>
+
+      <ModalAuth open={showAuthModal} onClose={() => setShowAuthModal(false)} showRegister={showRegister} setShowRegister={setShowRegister} />
     </div>
   );
 }

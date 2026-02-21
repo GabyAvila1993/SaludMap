@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Circle, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import './MapComponents.css';
 import { obtenerUbicacionUnaVez, observarUbicacion, detenerObservacion } from '../services/geolocalizacion.js';
 import { precargarArea } from '../services/offline.js';
 import L from 'leaflet';
@@ -131,7 +132,7 @@ export default function MapComponents() {
 
   return (
     <div className="map-root">
-      <h3 className="map-title">Mapa de servicios cercanos</h3>
+      
 
       {!pos ? (
         <p>Obteniendo ubicación...</p>
@@ -148,8 +149,8 @@ export default function MapComponents() {
 
           {/* Botones visibles fuera del mapa */}
           <div className="map-buttons">
-            <button onClick={handleDetener}>Detener</button>
-            <button onClick={handleDescargar}>Descargar área offline</button>
+            <button className="btn" onClick={handleDetener}>Detener</button>
+            <button className="btn" onClick={handleDescargar}>Descargar área offline</button>
           </div>
         </>
       )}

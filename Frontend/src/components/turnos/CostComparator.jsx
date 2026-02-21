@@ -128,7 +128,7 @@ export default function CostComparator({ places = [], onClose }) {
   }, [places, selectedTypes]);
 
   return (
-  <div className="cost-compare-root" style={{position:'fixed', inset:0, width:'100vw', height:'100vh', padding:0, margin:0}}>
+  <div className="cost-compare-root">
       <div className="cost-compare-panel">
         <button className="button button--icon modal-close" onClick={onClose} aria-label="Cerrar" title="Cerrar">
           <span className="close-x" aria-hidden="true">×</span>
@@ -147,8 +147,8 @@ export default function CostComparator({ places = [], onClose }) {
         <button type="button" className="btn-compare" onClick={handleCompare} disabled={loading || selectedPlaces.length===0}>{loading ? 'Comparando...' : 'Comparar'}</button>
       </div>
 
-      <div style={{marginTop:12}}>
-        <div className="cc-select-row" style={{marginBottom:8}}>
+      <div className="cc-top-section">
+        <div className="cc-select-row">
           <strong className="cc-title">Seleccionar establecimientos:</strong>
           <button type="button" onClick={selectAll} className="btn-ghost">Seleccionar todo</button>
           <button type="button" onClick={clearAll} className="btn-ghost">Limpiar</button>
@@ -188,7 +188,7 @@ export default function CostComparator({ places = [], onClose }) {
         </div>
       </div>
 
-      <div style={{marginTop:12, display:'flex', flexDirection:'column', flex:1}}>
+      <div className="cc-results-section">
         {prices.length === 0 ? (
           <div className="cost-empty">Presiona "Comparar" para generar resultados (usa datos mock por ahora).</div>
         ) : (
@@ -196,10 +196,10 @@ export default function CostComparator({ places = [], onClose }) {
             <table className="cost-table">
               <thead>
                 <tr>
-                  <th style={{width:'44%'}}>Establecimiento / Sucursal</th>
-                  <th style={{width:'16%'}}>Tipo</th>
-                  <th style={{width:'24%'}}>Servicio</th>
-                  <th style={{width:'16%'}}>Precio</th>
+                  <th className="col-est">Establecimiento / Sucursal</th>
+                  <th className="col-type">Tipo</th>
+                  <th className="col-service">Servicio</th>
+                  <th className="col-price">Precio</th>
                 </tr>
               </thead>
               <tbody>

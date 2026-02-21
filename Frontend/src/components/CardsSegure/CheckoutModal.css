@@ -1,0 +1,35 @@
+/* Styles for CheckoutModal */
+.checkout-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.checkout-modal {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 28px;
+  max-width: 560px;
+  width: 92%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: none;
+}
+.checkout-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px }
+.checkout-title { margin:0; color: #08331f; font-weight:700 }
+.checkout-close { background:transparent; border:none; font-size:22px; cursor:pointer; color:#666 }
+.plan-info { background:#f8f9fa; padding:14px; border-radius:8px; margin-bottom:18px; border:1px solid var(--border-ui) }
+.plan-name { margin:0 0 8px 0; color:#08331f; font-weight:700 }
+.plan-price { margin:0 0 8px 0; font-size:1.15rem; font-weight:800; color:#08331f }
+.plan-desc { margin:0; color:#666 }
+.checkout-form .form-group { margin-bottom:14px }
+.checkout-form label { display:block; margin-bottom:6px; color:#08331f; font-weight:700 }
+.checkout-form input, .checkout-form textarea { width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; font-size:15px }
+.checkout-form textarea { resize:vertical }
+.form-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:6px }
+.btn-secondary { padding:10px 18px; border:1px solid #ddd; border-radius:6px; background:#fff; color:#666; cursor:pointer }
+.btn-primary { padding:10px 18px; border:none; border-radius:6px; background:var(--primary-green); color:#08331f; font-weight:700; cursor:pointer }
+.btn-primary[disabled] { opacity:0.6; cursor:not-allowed }

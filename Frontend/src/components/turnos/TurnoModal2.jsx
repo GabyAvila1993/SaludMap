@@ -1,5 +1,6 @@
 // INICIO CAMBIO - Archivo: src/components/TurnoModal2.jsx - Modal actualizado
 import React from 'react';
+import './TurnoModal2.css';
 import { useTranslation } from 'react-i18next';
 
 export const TurnoModal = ({
@@ -75,42 +76,13 @@ export const TurnoModal = ({
                 <div className="modal__body">
                     {/* Indicador de establecimiento seleccionado desde el mapa */}
                     {selected.establecimientoNombre && selected.establecimientoId && (
-                        <div style={{
-                            padding: '12px 16px',
-                            background: 'linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)',
-                            border: '2px solid #4caf50',
-                            borderRadius: '8px',
-                            marginBottom: '1.5rem',
-                            boxShadow: '0 2px 4px rgba(76, 175, 80, 0.2)'
-                        }}>
-                            <div style={{ 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                gap: '8px',
-                                color: '#2e7d32',
-                                fontWeight: '600'
-                            }}>
-                                <span style={{ fontSize: '1.2rem' }}>📍</span>
+                        <div className="selected-establishment">
+                            <div className="selected-establishment-header">
+                                <span className="est-pin">📍</span>
                                 <span>Establecimiento del Mapa:</span>
                             </div>
-                            <div style={{ 
-                                marginTop: '4px', 
-                                marginLeft: '28px',
-                                color: '#1b5e20',
-                                fontWeight: '700',
-                                fontSize: '1.05rem'
-                            }}>
-                                {selected.establecimientoNombre}
-                            </div>
-                            <div style={{ 
-                                marginTop: '4px', 
-                                marginLeft: '28px',
-                                fontSize: '0.85rem',
-                                color: '#558b2f',
-                                fontStyle: 'italic'
-                            }}>
-                                Tu turno quedará vinculado a este establecimiento
-                            </div>
+                            <div className="selected-establishment-name">{selected.establecimientoNombre}</div>
+                            <div className="selected-establishment-note">Tu turno quedará vinculado a este establecimiento</div>
                         </div>
                     )}
 
@@ -158,17 +130,6 @@ export const TurnoModal = ({
                                 }}
                                 aria-label={t('appointments.openDatePicker')}
                                 title={t('appointments.openDatePicker')}
-                                style={{
-                                    position: 'absolute',
-                                    right: '8px',
-                                    top: '50%',
-                                    transform: 'translateY(-50%)',
-                                    background: 'transparent',
-                                    border: 'none',
-                                    color: 'var(--color-primary)',
-                                    cursor: 'pointer',
-                                    padding: '4px'
-                                }}
                             >
                                 <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                     <path fill="none" d="M0 0h24v24H0z" />
@@ -214,7 +175,7 @@ export const TurnoModal = ({
                 </div>
 
                 {error && (
-                    <div className="turnos-error" style={{ marginTop: '1rem' }}>
+                    <div className="turnos-error">
                         {error}
                     </div>
                 )}
@@ -223,30 +184,5 @@ export const TurnoModal = ({
     );
 };
 
-// Estilos adicionales para el modal (si necesitas añadir al CSS)
-const additionalStyles = `
-.input-with-icon {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.input-with-icon .input__field {
-    width: 100%;
-    padding-right: 40px;
-}
-
-.calendar-btn:hover {
-    color: #fff;
-    transform: translateY(-50%) scale(1.1);
-}
-`;
-
-// Inyectar estilos adicionales si no existen
-if (typeof document !== 'undefined' && !document.getElementById('turno-modal-styles')) {
-    const style = document.createElement('style');
-    style.id = 'turno-modal-styles';
-    style.textContent = additionalStyles;
-    document.head.appendChild(style);
-}
+// Nota: Los estilos del modal se encuentran en TurnoModal2.css
 // FIN CAMBIO - Archivo: src/components/TurnoModal2.jsx

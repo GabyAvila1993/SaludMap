@@ -54,6 +54,17 @@ export default function MapComponent() {
     const [selectedPlace, setSelectedPlace] = useState(null);
     const [selectedEstablecimiento, setSelectedEstablecimiento] = useState(null);
     const [loadingEstablecimiento, setLoadingEstablecimiento] = useState(false);
+    const [showSidebar, setShowSidebar] = useState(false);
+    const [showFiltersModal, setShowFiltersModal] = useState(false);
+    const [showStatus, setShowStatus] = useState(false);
+    const [statusMessage, setStatusMessage] = useState('');
+
+    // Mostrar progreso durante descargas offline
+    useEffect(() => {
+        if (showStatus && downloadProgress > 0 && downloadProgress < 100) {
+            setStatusMessage(`Descargando área... ${Math.round(downloadProgress)}%`);
+        }
+    }, [downloadProgress, showStatus]);
 
     const mapRef = useRef(null);
     const unsubscribeRef = useRef(null);
@@ -75,28 +86,23 @@ export default function MapComponent() {
 
     // Iconos por tipo
     const iconDefs = {
-        hospital: { color: '#e74c3c', label: 'H' },
-        clinic: { color: '#3498db', label: 'C' },
-        doctors: { color: '#2ecc71', label: 'D' },
-        veterinary: { color: '#9b59b6', label: 'V' },
-        default: { color: '#34495e', label: '?' },
+        hospital: { key: 'hospital', color: '#e74c3c', label: 'H' },
+        clinic: { key: 'clinica', color: '#3498db', label: 'C' },
+        doctors: { key: 'doctor', color: '#2ecc71', label: 'D' },
+        veterinary: { key: 'veterinaria', color: '#9b59b6', label: 'V' },
+        default: { key: 'default', color: '#34495e', label: '?' },
     };
 
-    const createDivIcon = (color, label) => {
-        const html = `<div style="
-      display:flex;align-items:center;justify-content:center;
-      width:36px;height:36px;border-radius:18px;background:${color};
-      color:#fff;font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,0.6);
-      border:2px solid rgba(255,255,255,0.6);
-    ">${label}</div>`;
+    const createDivIcon = (key, label) => {
+        const html = `<div class="marker-div-icon marker-${key}">${label}</div>`;
         return L.divIcon({ html, className: '', iconSize: [36, 36], iconAnchor: [18, 36], popupAnchor: [0, -36] });
     };
 
     const iconCache = {};
     const getIconForType = (type) => {
         const def = iconDefs[type] ?? iconDefs.default;
-        const key = `${def.color}-${def.label}`;
-        if (!iconCache[key]) iconCache[key] = createDivIcon(def.color, def.label);
+        const key = def.key || 'default';
+        if (!iconCache[key]) iconCache[key] = createDivIcon(key, def.label);
         return iconCache[key];
     };
 
@@ -275,6 +281,9 @@ export default function MapComponent() {
     const handleCalibrate = async () => {
         if (isCalibrating) return;
 
+        setShowStatus(true);
+        setStatusMessage('Actualizando ubicación...');
+
         setIsCalibrating(true);
         setError('Obteniendo ubicación GPS...');
 
@@ -294,12 +303,17 @@ export default function MapComponent() {
             setError('Error actualizando ubicación: ' + error.message);
         } finally {
             setIsCalibrating(false);
+            setShowStatus(false);
+            setStatusMessage('');
         }
     };
 
     // Volver a GPS cuando el usuario pasó a manual
     const handleReturnToGPS = async () => {
         if (isCalibrating) return;
+
+        setShowStatus(true);
+        setStatusMessage('Reactivando GPS...');
 
         setIsCalibrating(true);
         setError('Reactivando GPS...');
@@ -323,6 +337,8 @@ export default function MapComponent() {
             setError('No se pudo reactivar GPS: ' + (error.message || String(error)));
         } finally {
             setIsCalibrating(false);
+            setShowStatus(false);
+            setStatusMessage('');
         }
     };
 
@@ -331,11 +347,16 @@ export default function MapComponent() {
         if (!currentLocation) return;
 
         try {
+            setShowStatus(true);
+            setStatusMessage('Descargando área...');
             setError('Descargando mapa para uso offline...');
             await offlineTileService.downloadTilesForArea(currentLocation);
             setError('Área descargada para uso offline');
         } catch (error) {
             setError('Error descargando área offline: ' + error.message);
+        } finally {
+            setShowStatus(false);
+            setStatusMessage('');
         }
     };
 
@@ -458,10 +479,8 @@ export default function MapComponent() {
         <>
         <div className="map-section">
             <div className="map-root">
-            <h3 className="map-title">
-                {t('map.nearbyServicesMap')}
-                {!isOnline && <span className="offline-badge"> {t('map.offline')}</span>}
-            </h3>
+            {/* map title removed intentionally (keeps UI cleaner) */}
+            {!isOnline && <div className="offline-badge">{t('map.offline')}</div>}
 
             {error && <div className="map-error">{error}</div>}
 
@@ -483,11 +502,17 @@ export default function MapComponent() {
                 <button onClick={() => setShowSavedLocationsList(true)} className="btn-view-locations">
                     {t('map.viewLocations')}
                 </button>
+                <button onClick={() => setShowFiltersModal(true)} className="btn-show-filters">
+                    {t('map.filters.title') || 'Filtros'}
+                </button>
                 {/* filtros movidos a la barra lateral para mejor visibilidad */}
                 {downloadProgress > 0 && downloadProgress < 100 && (
                     <div className="progress">{t('map.downloading')}: {Math.round(downloadProgress)}%</div>
                 )}
             </div>
+
+            {/* Cartel de estado/Loading (se muestra añadiendo showStatus) */}
+            <div className={`status-overlay ${showStatus ? 'show' : ''}`}>{statusMessage}</div>
 
             <div className="map-info">
                 {t('map.accuracy')}: {currentLocation.accuracy ? `${Math.round(currentLocation.accuracy)}${t('map.meters')}` : '—'}
@@ -567,28 +592,42 @@ export default function MapComponent() {
                                 )}
                             </div>
 
-                            <aside className="map-sidebar">
+                            {/* Sidebar legacy removed visually; use centered modal instead */}
+                            <aside className={`map-sidebar ${showSidebar ? 'active' : ''}`} aria-hidden="true">
                                 <div className="sidebar-inner">
-                                    <h4 className="filters-title">{t('map.filters.title') || 'Filtros'}</h4>
-                                    <button className={`filter-btn ${Object.values(filters).every(Boolean) ? 'active' : ''}`} onClick={toggleAllFilters} style={{ width: '100%', marginBottom: '8px' }}>
-                                        {t('map.filters.all') || 'Todos'}
-                                    </button>
-                                    <div className="filters-vertical">
-                                        <button type="button" className={`filter-btn ${filters.hospital ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, hospital: !f.hospital }))}>
-                                            🏥 {t('map.filters.hospital')}
-                                        </button>
-                                        <button type="button" className={`filter-btn ${filters.clinic ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, clinic: !f.clinic }))}>
-                                            🏩 {t('map.filters.clinic')}
-                                        </button>
-                                        <button type="button" className={`filter-btn ${filters.doctors ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, doctors: !f.doctors }))}>
-                                            👨‍⚕️ {t('map.filters.doctors')}
-                                        </button>
-                                        <button type="button" className={`filter-btn ${filters.veterinary ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, veterinary: !f.veterinary }))}>
-                                            🐾 {t('map.filters.veterinary')}
-                                        </button>
-                                    </div>
+                                    {/* kept for backward compatibility but hidden via CSS */}
                                 </div>
                             </aside>
+                            {/* Toggle opens modal de filtros centrado */}
+                            <button className="sidebar-toggle" onClick={() => setShowFiltersModal(true)} aria-label="Abrir filtros">☰</button>
+
+                            {/* Modal de filtros centrado */}
+                            {showFiltersModal && (
+                                <div className={`filter-modal show`} role="dialog" aria-modal="true">
+                                    <h4 className="filters-title">{t('map.filters.title') || 'Filtros'}</h4>
+                                    <div className="filters-vertical">
+                                        <button type="button" className={`filter-btn filter-all-btn ${Object.values(filters).every(Boolean) ? 'active' : ''}`} onClick={() => { toggleAllFilters(); }}>
+                                            Todos
+                                        </button>
+                                        <button type="button" className={`filter-btn filter-hospital ${filters.hospital ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, hospital: !f.hospital }))}>
+                                            🏥 Hospital
+                                        </button>
+                                        <button type="button" className={`filter-btn filter-clinica ${filters.clinic ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, clinic: !f.clinic }))}>
+                                            🏩 Clínica
+                                        </button>
+                                        <button type="button" className={`filter-btn filter-doctor ${filters.doctors ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, doctors: !f.doctors }))}>
+                                            👨‍⚕️ Médico
+                                        </button>
+                                        <button type="button" className={`filter-btn filter-veterinaria ${filters.veterinary ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, veterinary: !f.veterinary }))}>
+                                            🐾 Veterinaria
+                                        </button>
+                                    </div>
+                                    <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 12 }}>
+                                        <button className="btn btn-secondary" onClick={() => setShowFiltersModal(false)}>Cerrar</button>
+                                        <button className="btn btn-primary" onClick={() => setShowFiltersModal(false)}>Aplicar</button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
             {/* Modales para ubicaciones guardadas */}

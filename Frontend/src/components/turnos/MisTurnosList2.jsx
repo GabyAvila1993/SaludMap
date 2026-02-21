@@ -18,7 +18,7 @@ export const MisTurnosList = ({ misTurnos = [], onCancelTurno, cancellingId, pre
         <li key={turno.id} className="turn-item">
             <div>
                 <strong>{turno.professionalName}</strong>
-                <div style={{ fontSize: 12, color: '#666' }}>{prettyType(turno.professionalType)}</div>
+                <div className="prof-type-small">{prettyType(turno.professionalType)}</div>
             </div>
             <div>{turno.datetime ? new Date(turno.datetime).toLocaleString() : ''}</div>
             <div className="turn-actions">

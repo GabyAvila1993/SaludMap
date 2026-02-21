@@ -242,6 +242,10 @@
   transform: translateY(-1px);
 }
 
+.modal-error { color: #ff8080; margin-top: 10px; }
+.modal-auth-footer { margin-top: 20px; text-align: center; }
+.cerrar { margin-top: 10px; }
+
 
 
 @media only screen and (max-width: 600px) {

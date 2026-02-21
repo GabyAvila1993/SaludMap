@@ -236,3 +236,9 @@ select::-ms-expand { display: none; }
 .cc-type-text { font-size:13px; }
 
 .cost-empty { padding:1.25rem; color:#bdbdbd; font-size:14px; }
+
+/* Column width helpers (replaces inline widths) */
+.cost-table .col-est { width: 44%; }
+.cost-table .col-type { width: 16%; }
+.cost-table .col-service { width: 24%; }
+.cost-table .col-price { width: 16%; text-align: right; }
