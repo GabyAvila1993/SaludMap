@@ -22,6 +22,17 @@
 .input-with-icon { position: relative; display: flex; align-items: center; }
 .input-with-icon .input__field { width: 100%; padding-right: 40px; }
 
+/* Ocultar el ícono nativo del datetime-local en todos los navegadores
+   para que no queden dos íconos de calendario juntos */
+.input-with-icon .input__field::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+  opacity: 0;
+}
+.input-with-icon .input__field::-webkit-inner-spin-button {
+  display: none;
+}
+
 .calendar-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--color-primary); cursor: pointer; padding: 4px; }
 .calendar-btn:hover { transform: translateY(-50%) scale(1.05); }
 
