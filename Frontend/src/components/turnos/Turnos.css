@@ -186,6 +186,11 @@
   font-size: 0.82rem !important;
 }
 
+/* Forzar color del texto del botón "Comparar costos" en el header específico */
+.turnos-header .compare-btn {
+  color: #000000 !important;
+}
+
 .compare-btn:hover:not(:disabled) {
   filter: brightness(0.95);
   transform: translateY(-2px);
@@ -234,6 +239,7 @@
 .turnos-left h4 {
   font-family: 'Roboto', var(--t-font-body);
   font-size: 0.95rem;
+  
   font-weight: 700;
   color: var(--t-text-accent);
   margin: 0 0 0.9rem;
