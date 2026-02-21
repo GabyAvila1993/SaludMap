@@ -46,13 +46,13 @@
   top: 60px; /* centered above actions */
   left: 50%;
   transform: translateX(-50%);
-  color: #66B09D;
+  color: var(--text-highlight);
   text-align: center;
   text-transform: none;
   font-size: clamp(1.1rem, 1.5vw, 1.5rem);
   font-weight: 700;
   letter-spacing: 0.04rem;
-  background: rgba(255,255,255,0.95);
+  background: var(--bg-navbar-modal);
   padding: 6px 12px;
   border-radius: 8px;
   display: inline-block;
@@ -89,7 +89,7 @@
   width: 100%;
   overflow: hidden;
   margin-left: 1rem;
-  color: #08331f;
+  color: var(--text-dark);
   padding: 0.85rem 1rem;
   border-radius: 8px;
   margin-bottom: 1rem;
@@ -121,8 +121,8 @@
 }
 
 .map-controls button {
-  background: #9EE2CF;
-  color: #08331f;
+  background: var(--bg-navbar-modal);
+  color: var(--text-dark);
   border: 1px solid var(--border-ui);
   padding: 12px 20px; /* más padding para legibilidad */
   border-radius: 999px;
@@ -138,8 +138,8 @@
 }
 
 .btn-return-gps {
-  background: #10b981;
-  color: white;
+  background: var(--btn-gps);
+  color: var(--white);
   border: none;
   padding: 12px 24px;
   border-radius: var(--radius);
@@ -188,8 +188,8 @@
 
 .filter-btn.active {
   /* seleccionado: usar verde del proyecto y texto en negro */
-  background: #66B09D;
-  color: #000;
+  background: var(--text-highlight);
+  color: var(--text-main);
   border-color: rgba(0,0,0,0.06);
   box-shadow: 0 6px 18px rgba(0,0,0,0.08);
   transform: translateY(-2px);
@@ -199,8 +199,8 @@
   padding: 1.5rem 2rem;
   border: 1px solid rgba(255, 224, 166, 0.3);
   border-radius: var(--radius);
-  background: #4141428c;
-  color: #fff;
+  background: var(--info-bg-dark);
+  color: var(--text-main);
   margin-bottom: 2rem;
   text-align: center;
   width: 100%;
@@ -212,10 +212,10 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.3rem;
-  background: linear-gradient(135deg, #ffffff, #ffe0a6);
+  background: linear-gradient(135deg, var(--bg-main), rgba(255,224,166,0.6));
   background-clip: text;
   -webkit-background-clip: text;
-  color: #fff;
+  color: var(--white);
   margin: 0;
   margin-bottom: 0.5rem;
 }
@@ -225,20 +225,20 @@
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.2rem;
-  background: linear-gradient(135deg, #ffffff, #ffe0a6);
+  background: linear-gradient(135deg, var(--bg-main), rgba(255,224,166,0.6));
   background-clip: text;
   -webkit-background-clip: text;
-  color: #fff;
+  color: var(--white);
   margin: 0.25rem 0;
 }
 
 .map-info {
   margin-bottom: 1rem;
   padding: 0.5rem;
-  background: #f8f9fa;
+  background: var(--bg-main);
   border-radius: 6px;
   font-size: 0.875rem;
-  color: #495057;
+  color: var(--placeholder-bg);
 }
 
 .location-source {
@@ -252,11 +252,11 @@
   left: 50%;
   transform: translateX(-50%);
   padding: 8px 12px;
-  background: #C9EFE4;
-  border: 1px solid #A2E3D0;
+  background: var(--bg-navbar-modal);
+  border: 1px solid var(--border-ui);
   border-radius: 10px;
   font-size: 0.9rem;
-  color: #000000;
+  color: var(--text-main);
   text-align: center;
   display: inline-block;
   z-index: 50;
@@ -289,24 +289,24 @@
   width:36px;
   height:36px;
   border-radius:18px;
-  color:#fff;
+  color: var(--white);
   font-weight:700;
   font-size:14px;
   line-height:36px;
   box-shadow:0 1px 4px rgba(0,0,0,0.6);
   border:2px solid rgba(255,255,255,0.6);
 }
-.marker-hospital { background: #e74c3c; }
-.marker-clinica { background: #3498db; }
-.marker-doctor { background: #2ecc71; }
-.marker-veterinaria { background: #9b59b6; }
-.marker-default { background: #34495e; }
+.marker-hospital { background: var(--marker-hospital); }
+.marker-clinica { background: var(--marker-clinica); }
+.marker-doctor { background: var(--marker-doctor); }
+.marker-veterinaria { background: var(--marker-veterinaria); }
+.marker-default { background: var(--marker-default); }
 
 /* Sidebar filter button color helpers to match marker colors */
-.filter-hospital { background: #e74c3c; color: #fff; border-color: rgba(231,76,60,0.28); }
-.filter-clinica { background: #3498db; color: #fff; border-color: rgba(52,152,219,0.28); }
-.filter-doctor { background: #2ecc71; color: #fff; border-color: rgba(46,204,113,0.28); }
-.filter-veterinaria { background: #9b59b6; color: #fff; border-color: rgba(155,89,182,0.28); }
+.filter-hospital { background: var(--marker-hospital); color: var(--white); border-color: rgba(231,76,60,0.28); }
+.filter-clinica { background: var(--marker-clinica); color: var(--white); border-color: rgba(52,152,219,0.28); }
+.filter-doctor { background: var(--marker-doctor); color: var(--white); border-color: rgba(46,204,113,0.28); }
+.filter-veterinaria { background: var(--marker-veterinaria); color: var(--white); border-color: rgba(155,89,182,0.28); }
 
 
 /* Layout para mapa + sidebar de filtros */
@@ -331,9 +331,9 @@
   left: 12px;
   top: 12px;
   z-index: 900;
-  background: #A2E3D0;
+  background: var(--border-ui);
   border: none;
-  color: #08331f;
+  color: var(--text-dark);
   width:44px;
   height:44px;
   display:inline-flex !important;
@@ -350,13 +350,13 @@
   border: none;
   font-size: 1.1rem;
   cursor: pointer;
-  color: #08331f;
+  color: var(--text-dark);
 }
 
 /* Mejorar legibilidad de botones dentro de la sidebar */
 .map-sidebar .filter-btn {
-  background: #ffffffcc;
-  color: #08331f;
+  background: rgba(255,255,255,0.9);
+  color: var(--text-main);
   border: 1px solid rgba(0,0,0,0.06);
   padding: 10px 12px;
   display:flex;
@@ -379,7 +379,7 @@
 }
 
 .sidebar-actions { display:flex; justify-content:flex-end; }
-.sidebar-close { background: transparent; border: none; font-size: 1.1rem; cursor: pointer; color: #08331f; padding: 6px; }
+.sidebar-close { background: transparent; border: none; font-size: 1.1rem; cursor: pointer; color: var(--text-dark); padding: 6px; }
 
 .filter-all-btn { width:100%; margin-bottom:8px; }
 
@@ -388,9 +388,9 @@
 }
 .map-sidebar .result-item img { width:72px; height:56px; object-fit:cover; border-radius:8px; border:2px solid var(--color-border); }
 .map-sidebar .result-item .meta { flex:1; }
-.map-sidebar .result-item .meta .name { font-weight:700; color:#08331f; }
-.map-sidebar .result-item .meta .address { font-size:0.9rem; color:#41604f; }
-.map-sidebar .result-item .meta .rating { color: #e6b800; font-weight:700; margin-top:6px; }
+.map-sidebar .result-item .meta .name { font-weight:700; color:var(--text-main); }
+.map-sidebar .result-item .meta .address { font-size:0.9rem; color:var(--placeholder-bg); }
+.map-sidebar .result-item .meta .rating { color: var(--rating-color); font-weight:700; margin-top:6px; }
 
 .sidebar-inner {
   display:flex;
@@ -420,6 +420,24 @@
   display: block;
 }
 
+/* Tema explícito: asegurar estilo claro por defecto y paleta en modo oscuro */
+body:not(.dark-theme) .map-controls button,
+body:not(.dark-theme) .map-buttons button,
+body:not(.dark-theme) .map-btn {
+  background: var(--bg-navbar-modal);
+  color: var(--text-dark);
+  border: 1px solid var(--border-ui);
+}
+
+body.dark-theme .map-controls button,
+body.dark-theme .map-buttons button,
+body.dark-theme .map-btn {
+  background: var(--bg-navbar-modal);
+  /* en modo oscuro usar texto verde resaltable para destacar sobre el fondo oscuro */
+  color: var(--text-highlight);
+  border: 1px solid var(--border-ui);
+}
+
 /* Ensure MapContainer fills the wrapper exactly */
 .map-wrapper .leaflet-container { height:100% !important; width:100% !important }
 
@@ -434,10 +452,10 @@
 .user-icon {
   width: 24px;
   height: 24px;
-  background: #007bff;
-  border: 3px solid white;
+  background: var(--user-icon-bg);
+  border: 3px solid var(--white);
   margin-left: 1rem;
-  color: #08331f;
+  color: var(--text-dark);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -455,25 +473,25 @@
 
 .popup-content strong {
   display: block;
-  color: #2c3e50;
+  color: var(--popup-strong);
   margin-bottom: 0.5rem;
   font-size: 1rem;
 }
 
 .popup-detail {
-  color: #7f8c8d;
+  color: var(--popup-detail);
   margin-bottom: 0.25rem;
 }
 
 .popup-type {
-  color: #3498db;
+  color: var(--popup-type);
   font-weight: 500;
   margin-bottom: 0.25rem;
   text-transform: capitalize;
 }
 
 .popup-cached {
-  color: #27ae60;
+  color: var(--popup-cached);
   font-size: 0.8rem;
   font-style: italic;
 }
@@ -485,8 +503,8 @@
 }
 
 .popup-btn {
-  background: #e74c3c;
-  color: white;
+  background: var(--marker-hospital);
+  color: var(--white);
   border: none;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
@@ -496,7 +514,7 @@
 }
 
 .popup-btn:hover {
-  background: #c0392b;
+  background: var(--marker-hospital-dark);
 }
 
 /* Media Queries Responsive */
@@ -592,22 +610,22 @@
 /* Mejoras para modo oscuro del sistema */
 @media (prefers-color-scheme: dark) {
   .map-root {
-    color: #ecf0f1;
+    color: var(--muted-light);
   }
   
   .map-title {
-    color: #ecf0f1;
+    color: var(--muted-light);
   }
   
   .map-info {
-    background: #34495e;
-    color: #ecf0f1;
+    background: var(--bg-navbar-modal);
+    color: var(--muted-light);
   }
   
   .map-error {
-    background: #8b4513;
-    border-color: #a0522d;
-    color: #ffeaa7;
+    background: var(--error-bg);
+    border-color: var(--error-border);
+    color: var(--error-text);
   }
 }
 /* Sección de Reseñas - Fuera del mapa */
@@ -687,8 +705,8 @@
 }
 
 .map-controls button {
-  background: #9EE2CF !important;
-  color: #08331f !important;
+  background: var(--btn-primary-bg) !important;
+  color: var(--text-main) !important;
   border: 1px solid var(--border-ui) !important;
   border-radius: 999px !important;
   padding: 8px 14px !important;
@@ -704,8 +722,8 @@
   left: 50% !important;
   transform: translateX(-50%) !important;
   z-index: 500 !important;
-  background: #C9EFE4 !important; /* sólido para máxima legibilidad */
-  color: #000 !important;
+  background: var(--bg-navbar-modal) !important; /* sólido para máxima legibilidad */
+  color: var(--text-main) !important;
   padding: 8px 12px !important;
   border-radius: 10px !important;
   font-family: 'Roboto', sans-serif !important;
@@ -718,7 +736,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1000;
-  background: #C9EFE4;
+  background: var(--bg-navbar-modal);
   padding: 18px 24px;
   border-radius: 12px;
   box-shadow: 0 12px 36px rgba(0,0,0,0.18);
@@ -726,7 +744,7 @@
   min-width: 240px;
   text-align: center;
   font-weight: 700;
-  color: #08331f;
+  color: var(--text-main);
 }
 .status-overlay.show { display: block; }
 
@@ -737,7 +755,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2000;
-  background: #C9EFE4;
+  background: var(--bg-navbar-modal);
   padding: 18px 22px;
   border-radius: 20px;
   box-shadow: 0 20px 50px rgba(0,0,0,0.25);
@@ -748,17 +766,17 @@
   gap: 12px;
 }
 .filter-modal .filters-vertical { display:flex; flex-direction:column; gap:8px; }
-.filter-modal .filter-btn { background:#ffffff; color: #66B09D; border:1px solid rgba(0,0,0,0.06); }
+.filter-modal .filter-btn { background: var(--bg-main); color: var(--text-highlight); border:1px solid var(--border-ui); }
 .filter-modal .filter-btn.active {
-  background: #66B09D;
-  color: #000;
-  border-color: rgba(0,0,0,0.06);
+  background: var(--text-highlight);
+  color: var(--text-main);
+  border-color: var(--border-ui);
   box-shadow: 0 8px 24px rgba(0,0,0,0.1);
 }
-.filter-modal .filters-title { text-align:center; color:#08331f; }
+.filter-modal .filters-title { text-align:center; color:var(--text-main); }
 .filter-modal .btn { padding: 8px 14px; border-radius: 10px; cursor:pointer; }
-.filter-modal .btn-primary { background:#66B09D; color:#fff; border:none; font-weight:700 }
-.filter-modal .btn-secondary { background:transparent; color:#08331f; border:1px solid rgba(0,0,0,0.06) }
+.filter-modal .btn-primary { background: var(--text-highlight); color: var(--bg-main); border:none; font-weight:700 }
+.filter-modal .btn-secondary { background:transparent; color:var(--text-main); border:1px solid rgba(0,0,0,0.06) }
 
 .map-controls { z-index: 500; }
 .map-controls { z-index: 500; }
@@ -769,13 +787,25 @@
   left: 50% !important;
   transform: translateX(-50%) !important;
   z-index: 500 !important;
-  background: #C9EFE4 !important;
-  color: #000 !important;
+  background: var(--bg-navbar-modal) !important;
+  color: var(--text-main) !important;
   padding: 8px 12px !important;
   border-radius: 8px !important;
-  border: 1px solid #A2E3D0 !important;
+  border: 1px solid var(--border-ui) !important;
   font-family: 'Roboto', sans-serif !important;
 }
+
+/* En modo oscuro, asegurar que el modal de filtros use la paleta y texto/iconos verdes */
+body.dark-theme .filter-modal {
+  background: var(--bg-navbar-modal);
+  color: var(--text-highlight);
+}
+body.dark-theme .filter-modal .filter-btn {
+  color: var(--text-highlight);
+  background: transparent;
+  border: 1px solid var(--border-ui);
+}
+body.dark-theme .filter-modal .btn-primary { background: var(--text-highlight); color: var(--bg-main); }
 
 /* Safety: ensure no parent containers limit width or add padding */
 .container-12, .map-section, .app, .app-main {

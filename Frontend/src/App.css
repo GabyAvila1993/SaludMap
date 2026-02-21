@@ -4,41 +4,55 @@
 @import './styles/modal.css';
 
 :root {
-  /* Valores exactos solicitados */
-  --primary-green: #9EE2CF;
+  /* Variables tema claro (valores exactos solicitados) */
+  --bg-navbar-modal: #C9EFE4;
+  --btn-primary-bg: #9EE2CF;
   --text-highlight: #66B09D;
-  --bg-info: #C9EFE4;
   --border-ui: #A2E3D0;
-  --color-bg-dark: #47472e;
-  --color-text: #08331f;
+  --placeholder-bg: #cecece;
+  --text-main: #000000;
+  --text-dark: #08331f;
+  --btn-gps: #10b981;
+  --marker-hospital: #e74c3c;
+  --marker-clinica: #3498db;
+  --marker-doctor: #2ecc71;
+  --marker-veterinaria: #9b59b6;
+  --marker-default: #34495e;
+  --gradient-accent-start: #ffffff;
+  --gradient-accent-end: #ffe0a6;
+  --white: #ffffff;
+  --info-bg-dark: #4141428c;
+  --rating-color: #e6b800;
+  --user-icon-bg: #007bff;
+  --popup-strong: #2c3e50;
+  --popup-detail: #7f8c8d;
+  --popup-type: var(--marker-clinica);
+  --popup-cached: var(--marker-doctor);
+  --marker-hospital-dark: #c0392b;
+  --muted-light: #ecf0f1;
+  --error-bg: #8b4513;
+  --error-border: #a0522d;
+  --error-text: #ffeaa7;
+  /* utilitarios adicionales */
+  --bg-main: #ffffff;
+  --transition: all 0.22s cubic-bezier(.2,.9,.2,1);
   --radius: 12px;
   --radius-mobile: 8px;
-  --transition: all 0.22s cubic-bezier(.2,.9,.2,1);
-  --padding-desktop: 2rem;
-  --padding-tablet: 1rem;
-  --padding-mobile: 0.5rem;
   --navbar-height: 70px;
   --footer-height: 64px;
   --grid-gap: 10px;
 }
 
-/* Theme wrappers: light and dark. By default use light-theme variables when class applied. */
-.light-theme {
-  --primary-green: #9EE2CF;
-  --text-highlight: #66B09D;
-  --bg-info: #C9EFE4;
-  --border-ui: #A2E3D0;
-  --color-bg: #ffffff;
-  --color-text: #08331f;
-}
-
+/* Modo oscuro: sobrescribe variables necesarias */
 .dark-theme {
-  --primary-green: #66B09D;
-  --text-highlight: #9EE3C9;
-  --bg-info: #2b2f34;
-  --border-ui: #3e4b3f;
-  --color-bg: #0f1720;
-  --color-text: #e6f6ef;
+  --bg-navbar-modal: #2D3A37;
+  --btn-primary-bg: #060808;
+  --text-highlight: #66B09D;
+  --border-ui: #66B09D;
+  --placeholder-bg: #66B09D;
+  --text-main: #FFFFFF;
+  --info-bg-dark: #A9B0AE;
+  --bg-main: #0f1716;
 }
 
 * {
@@ -60,7 +74,8 @@ body {
   font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #ffffff;
+  background: var(--bg-main);
+  color: var(--text-main);
 }
 
 .app {
@@ -79,7 +94,7 @@ body {
   width: 100%;
   height: var(--navbar-height);
   z-index: 1000; /* elevado para quedar encima de todo */
-  background-color: #C9EFE4;
+  background-color: var(--bg-navbar-modal);
   border-bottom: 1px solid var(--border-ui);
   display: flex;
   justify-content: space-between;
@@ -103,7 +118,7 @@ body {
     width: 100%;
     height: var(--navbar-height);
     z-index: 900; /* dejar espacio para overlays (status) por encima */
-    background-color: #C9EFE4;
+    background-color: var(--bg-navbar-modal);
     border-bottom: 1px solid var(--border-ui);
     display: flex;
     justify-content: space-between;
@@ -404,7 +419,7 @@ button:disabled {
   border-radius: 999px;
   border: none;
   background: transparent;
-  color: #66B09D; /* texto no activo */
+  color: var(--text-highlight); /* texto no activo */
   cursor:pointer;
   font-size: 1rem;
   font-weight: 600;
@@ -421,26 +436,26 @@ button:disabled {
 }
 
 .app-nav .nav-button.active {
-  background: #9EE2CF; /* color activo */
-  color: #08331f;
+  background: var(--btn-primary-bg); /* color activo */
+  color: var(--text-main);
   font-weight: 800;
   border: 1px solid var(--border-ui);
 }
 
-.profile-avatar { width:42px; height:42px; border-radius:50%; background:#A2E3D0; display:inline-flex; align-items:center; justify-content:center; color:#08331f; font-weight:800 }
-.nav-person-icon { width:40px; height:40px; border-radius:50%; object-fit:cover; background:#A2E3D0; padding:4px; display:inline-block }
-.nav-username { font-weight:700; color:#66B09D; margin:0 8px }
+.profile-avatar { width:42px; height:42px; border-radius:50%; background:var(--border-ui); display:inline-flex; align-items:center; justify-content:center; color:var(--text-main); font-weight:800 }
+.nav-person-icon { width:40px; height:40px; border-radius:50%; object-fit:cover; background:var(--border-ui); padding:4px; display:inline-block }
+.nav-username { font-weight:700; color:var(--text-highlight); margin:0 8px }
 
 /* User menu dropdown */
 .user-menu { position: relative; }
-.user-menu .user-dropdown { display: none; position: absolute; top: 100%; right: 0; background: #ffffff; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 6px 18px rgba(0,0,0,0.08); padding: 8px; border-radius: 8px; min-width: 140px; z-index: 1100; }
+.user-menu .user-dropdown { display: none; position: absolute; top: 100%; right: 0; background: var(--bg-main); border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 6px 18px rgba(0,0,0,0.08); padding: 8px; border-radius: 8px; min-width: 140px; z-index: 1100; }
 .user-menu.open .user-dropdown { display: block; }
 .user-dropdown .btn-logout, .user-dropdown .btn-login { width:100%; background: transparent; border: none; color: #08331f; padding: 8px 10px; text-align: left; cursor: pointer; font-weight:700; }
 .user-dropdown .btn-logout:hover, .user-dropdown .btn-login:hover { background: rgba(0,0,0,0.03); }
 
 /* Hamburger / mobile menu */
-.hamburger { display:none; background:transparent; border:none; font-size:1.25rem; cursor:pointer; color:#66B09D }
-.mobile-menu { display:none; position: absolute; top: calc(var(--navbar-height)); right: 0; left: 0; background: #C9EFE4; padding: 12px 20px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); z-index:1050; gap:12px; }
+.hamburger { display:none; background:transparent; border:none; font-size:1.25rem; cursor:pointer; color:var(--text-highlight) }
+.mobile-menu { display:none; position: absolute; top: calc(var(--navbar-height)); right: 0; left: 0; background: var(--bg-navbar-modal); padding: 12px 20px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); z-index:1050; gap:12px; }
 .mobile-menu .nav-button { display:block; width:100%; text-align:left; padding:10px 12px; margin-bottom:8px; }
 
 /* 12-column grid utility */

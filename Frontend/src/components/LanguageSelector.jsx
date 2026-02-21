@@ -27,11 +27,10 @@ const LanguageSelector = () => {
   };
 
   useEffect(() => {
-    // apply theme class to documentElement
-    const root = document.documentElement;
-    root.classList.remove('light-theme', 'dark-theme');
-    if (theme === 'oscuro') root.classList.add('dark-theme');
-    else root.classList.add('light-theme');
+    // apply theme class to document body (add or remove only .dark-theme as requested)
+    const body = document.body;
+    if (theme === 'oscuro') body.classList.add('dark-theme');
+    else body.classList.remove('dark-theme');
   }, [theme]);
 
   const selectTheme = (t) => {

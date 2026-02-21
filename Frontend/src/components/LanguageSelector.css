@@ -12,7 +12,7 @@
   padding: 8px 16px;
   border-radius: 999px;
   background: transparent;
-  color: #66B09D;
+  color: var(--text-highlight);
   border: none;
   cursor: pointer;
   font-size: 1rem;
@@ -55,7 +55,7 @@
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  background: var(--bg-info, #ffffff);
+  background: var(--bg-navbar-modal, #ffffff);
   border: 1px solid var(--border-ui, rgba(0,0,0,0.06));
   border-radius: 8px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.08);
@@ -71,7 +71,7 @@
   width: 100%;
   padding: 8px 10px;
   background: transparent;
-  color: #08331f;
+  color: var(--text-main, #08331f);
   border: none;
   cursor: pointer;
   font-size: 0.95rem;
@@ -81,7 +81,7 @@
 
 .language-option:hover { background: rgba(0,0,0,0.03); }
 
-.language-option.active { background: var(--primary-green); color: #08331f; font-weight:800 }
+.language-option.active { background: var(--btn-primary-bg); color: var(--text-main); font-weight:800 }
 
 .language-option .lang-name { flex: 1 }
 
@@ -111,7 +111,7 @@
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
-  background: var(--bg-info, #C9EFE4);
+  background: var(--bg-navbar-modal, #C9EFE4);
   border: 1px solid var(--border-ui, #A2E3D0);
   border-radius: 10px;
   box-shadow: 0 8px 28px rgba(0,0,0,0.12);
@@ -122,6 +122,6 @@
   flex-direction: column;
   gap: 6px;
 }
-.theme-option { background: transparent; border: none; padding: 8px 10px; text-align: left; cursor: pointer; color: var(--color-text, #08331f); font-weight: 700; border-radius: 6px }
+.theme-option { background: transparent; border: none; padding: 8px 10px; text-align: left; cursor: pointer; color: var(--text-main, #08331f); font-weight: 700; border-radius: 6px }
 .theme-option:hover { background: rgba(0,0,0,0.03) }
-.theme-option.active { background: var(--bg-info, #66B09D); color: #000 }
+.theme-option.active { background: var(--btn-primary-bg, #66B09D); color: var(--text-main, #000) }
