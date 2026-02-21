@@ -38,7 +38,7 @@
   --transition: all 0.22s cubic-bezier(.2,.9,.2,1);
   --radius: 12px;
   --radius-mobile: 8px;
-  --navbar-height: 70px;
+  --navbar-height: 88px;
   --footer-height: 64px;
   --grid-gap: 10px;
 }
@@ -67,7 +67,9 @@ html, body, #root, .app {
   padding: 0;
   width: 100vw;
   height: 100vh;
-  overflow: hidden; /* evitar scrolls dobles */
+  /* allow vertical scrolling (only hide horizontal overflow) so sections like Turnos can scroll internally
+     this preserves the original intent to avoid horizontal scrollbars while fixing clipping issues */
+  overflow-x: hidden;
 }
 
 body {

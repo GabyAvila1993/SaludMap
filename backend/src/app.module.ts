@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { JwtModule } from '@nestjs/jwt';
@@ -28,6 +29,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
       inject: [ConfigService],
     }),
     PlacesModule,
+    ScheduleModule.forRoot(),
     TurnosModule,
     UsuariosModule,
     EstablecimientosModule,
