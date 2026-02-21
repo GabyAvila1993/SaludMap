@@ -37,7 +37,7 @@ class OfflineTileService {
         const totalTiles = tiles.length;
         let downloadedCount = 0;
 
-        console.log(`Descargando ${totalTiles} tiles para área offline...`);
+        // console.log(`Descargando ${totalTiles} tiles para área offline...`);
 
         try {
             for (const tile of tiles) {
@@ -59,7 +59,7 @@ class OfflineTileService {
                 }
             }
 
-            console.log(`Descarga completada: ${downloadedCount}/${totalTiles} tiles`);
+            // console.log(`Descarga completada: ${downloadedCount}/${totalTiles} tiles`);
         } finally {
             this.isDownloading = false;
             this.downloadProgress = 100;

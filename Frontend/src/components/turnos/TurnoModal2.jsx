@@ -54,7 +54,7 @@ export const TurnoModal = ({
             professionalType: selectedType
         };
 
-        console.log('[TurnoModal] Enviando datos:', datos);
+        // console.log('[TurnoModal] Enviando datos:', datos);
         onConfirm(datos);
     };
 

@@ -118,8 +118,8 @@ const turnosService = new TurnosService();
 
 // ✅ FUNCIÓN AGREGADA: saveAppointment (era la que faltaba)
 export const saveAppointment = async (payload) => {
-  try {
-    console.log('[TurnosService] Guardando turno con payload:', payload);
+    try {
+        // console.log('[TurnosService] Guardando turno con payload:', payload);
 
     // Obtener el token JWT del localStorage
     const token = localStorage.getItem('token');
@@ -149,7 +149,7 @@ export const saveAppointment = async (payload) => {
     }
 
     const data = await response.json();
-    console.log('[TurnosService] Turno guardado exitosamente:', data);
+    // console.log('[TurnosService] Turno guardado exitosamente:', data);
     return data;
 
   } catch (error) {
@@ -166,32 +166,32 @@ export const guardarTurno = async (payload) => {
 
 export const fetchMisTurnos = async (correo) => {
     if (!correo) {
-        console.log('[DEBUG] No hay correo, retornando array vacío');
+        // console.log('[DEBUG] No hay correo, retornando array vacío');
         return [];
     }
 
-    console.log('[DEBUG] Fetching turnos para:', correo);
+    // console.log('[DEBUG] Fetching turnos para:', correo);
     // Solicitar también los turnos cancelados para poder mostrarlos en la UI agrupados
     const res = await axios.get(`/api/turnos?user=${encodeURIComponent(correo)}&includeCancelled=true`);
     const data = res.data;
-    console.log('[DEBUG] Respuesta completa del servidor:', data);
+    // console.log('[DEBUG] Respuesta completa del servidor:', data);
 
     const arr = Array.isArray(data) ? data : (Array.isArray(data?.turnos) ? data.turnos : []);
-    console.log('[DEBUG] Turnos procesados:', arr);
+    // console.log('[DEBUG] Turnos procesados:', arr);
     return arr;
 };
 
 export const cancelAppointment = async (id) => {
-    console.log('[Turnos] cancelarTurno called, id=', id);
+    // console.log('[Turnos] cancelarTurno called, id=', id);
     if (!id) {
         throw new Error('No se pudo cancelar: id de turno inexistente');
     }
 
     const url = `/api/turnos/${encodeURIComponent(id)}`;
-    console.log('[Turnos] PUT', url);
+    // console.log('[Turnos] PUT', url);
     // El backend espera la acción 'cancelar' (cadena en español)
     const res = await axios.put(url, { action: 'cancelar' });
-    console.log('[Turnos] respuesta cancel completa:', res);
+    // console.log('[Turnos] respuesta cancel completa:', res);
     return res;
 };
 

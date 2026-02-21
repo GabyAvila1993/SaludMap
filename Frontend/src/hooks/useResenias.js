@@ -27,11 +27,11 @@ export function useResenias(establecimientoId) {
     setError(null);
 
     try {
-      console.log('[useResenias] Cargando reseñas para establecimiento:', establecimientoId);
+      // console.log('[useResenias] Cargando reseñas para establecimiento:', establecimientoId);
       
       const data = await reseniasService.obtenerResenias(establecimientoId);
       
-      console.log('[useResenias] Reseñas obtenidas:', data);
+      // console.log('[useResenias] Reseñas obtenidas:', data);
       
       setResenias(data || []);
       setTotalResenias(data?.length || 0);
@@ -62,13 +62,13 @@ export function useResenias(establecimientoId) {
 
   // Refrescar reseñas manualmente
   const refrescar = useCallback(() => {
-    console.log('[useResenias] Refrescando reseñas...');
+    // console.log('[useResenias] Refrescando reseñas...');
     cargarResenias();
   }, [cargarResenias]);
 
   // Agregar nueva reseña al estado local (para actualización automática)
   const agregarReseniaLocal = useCallback((nuevaResenia) => {
-    console.log('[useResenias] Agregando reseña local:', nuevaResenia);
+    // console.log('[useResenias] Agregando reseña local:', nuevaResenia);
     setResenias(prevResenias => [nuevaResenia, ...prevResenias]);
     setTotalResenias(prevTotal => prevTotal + 1);
 
@@ -114,11 +114,11 @@ export function useValidarResenia(turnoId) {
       setError(null);
 
       try {
-        console.log('[useValidarResenia] Validando turno:', turnoId);
+        // console.log('[useValidarResenia] Validando turno:', turnoId);
         
         const resultado = await reseniasService.validarPuedeReseniar(turnoId);
         
-        console.log('[useValidarResenia] Resultado:', resultado);
+        // console.log('[useValidarResenia] Resultado:', resultado);
         
         setPuedeReseniar(resultado.valido || false);
         setMensaje(resultado.mensaje || '');
@@ -154,7 +154,7 @@ export function useTurnosParaReseniar(establecimientoId = null) {
 
   const cargarTurnos = useCallback(async () => {
     if (!user) {
-      console.log('[useTurnosParaReseniar] No hay usuario autenticado');
+      // console.log('[useTurnosParaReseniar] No hay usuario autenticado');
       setTurnos([]);
       return;
     }
@@ -163,11 +163,11 @@ export function useTurnosParaReseniar(establecimientoId = null) {
     setError(null);
 
     try {
-      console.log('[useTurnosParaReseniar] Cargando turnos para establecimiento:', establecimientoId);
+      // console.log('[useTurnosParaReseniar] Cargando turnos para establecimiento:', establecimientoId);
       
       const data = await reseniasService.getTurnosParaReseniar(establecimientoId);
       
-      console.log('[useTurnosParaReseniar] Turnos obtenidos:', data);
+      // console.log('[useTurnosParaReseniar] Turnos obtenidos:', data);
       
       setTurnos(data || []);
     } catch (err) {

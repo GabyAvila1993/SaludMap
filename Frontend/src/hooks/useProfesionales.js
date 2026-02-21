@@ -15,11 +15,11 @@ export const useProfesionales = (pos) => {
 
         fetchTimeoutRef.current = setTimeout(async () => {
             try {
-                console.log('[Turnos] pos changed ->', pos, 'prevPos ->', prevPosRef.current);
+                // console.log('[Turnos] pos changed ->', pos, 'prevPos ->', prevPosRef.current);
                 const minDist = 20;
                 const dist = distanceMeters(prevPosRef.current, pos);
                 if (prevPosRef.current && dist < minDist) {
-                    console.log(`[Turnos] movimiento ${Math.round(dist)}m < ${minDist}m — salto fetch`);
+                    // console.log(`[Turnos] movimiento ${Math.round(dist)}m < ${minDist}m — salto fetch`);
                     return;
                 }
 

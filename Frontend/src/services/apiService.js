@@ -22,7 +22,7 @@ class ApiService {
     };
 
     try {
-      console.log(`[API] ${config.method || 'GET'} ${url}`);
+      // console.log(`[API] ${config.method || 'GET'} ${url}`);
       
       const response = await fetch(url, config);
       
@@ -31,7 +31,7 @@ class ApiService {
       }
       
       const data = await response.json();
-      console.log(`[API] Response:`, data);
+      // console.log(`[API] Response:`, data);
       
       return data;
     } catch (error) {

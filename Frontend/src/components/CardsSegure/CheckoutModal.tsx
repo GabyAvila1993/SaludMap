@@ -49,12 +49,12 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ plan, isOpen, onClose }) 
             }
 
             // Enviar correo de confirmación completo
-            console.log('[DEBUG] Enviando correo de confirmación...');
+            // console.log('[DEBUG] Enviando correo de confirmación...');
             const emailResult = await sendInsuranceConfirmationEmail(plan, userInfo);
 
             if (emailResult.success) {
                 setEmailSent(true);
-                console.log('[DEBUG] Correo enviado exitosamente:', emailResult);
+                // console.log('[DEBUG] Correo enviado exitosamente:', emailResult);
 
                 alert(`¡Seguro contratado exitosamente! 
                 

@@ -30,11 +30,11 @@ export default function EstablishmentInfo({ place, onClose }) {
 	useEffect(() => {
 		const initEstablecimiento = async () => {
 			if (!place) {
-				console.log('[EstablishmentInfo] No hay place, cancelando inicialización');
+				// console.log('[EstablishmentInfo] No hay place, cancelando inicialización');
 				return;
 			}
-			
-			console.log('[EstablishmentInfo] Inicializando establecimiento con place:', place);
+            
+			// console.log('[EstablishmentInfo] Inicializando establecimiento con place:', place);
 			setLoadingEstablecimiento(true);
 			setError('');
 			
@@ -45,7 +45,7 @@ export default function EstablishmentInfo({ place, onClose }) {
 					throw new Error('El establecimiento no tiene un ID válido');
 				}
 				
-				console.log('[EstablishmentInfo] Establecimiento inicializado correctamente:', est);
+				// console.log('[EstablishmentInfo] Establecimiento inicializado correctamente:', est);
 				setEstablecimiento(est);
 			} catch (error) {
 				console.error('[EstablishmentInfo] Error inicializando establecimiento:', error);
@@ -188,19 +188,19 @@ export default function EstablishmentInfo({ place, onClose }) {
 			return;
 		}
 
-		console.log('[EstablishmentInfo] Iniciando solicitud de turno...');
-		console.log('[EstablishmentInfo] Establecimiento actual:', establecimiento);
-		console.log('[EstablishmentInfo] Cargando:', loadingEstablecimiento);
+			// console.log('[EstablishmentInfo] Iniciando solicitud de turno...');
+		// console.log('[EstablishmentInfo] Establecimiento actual:', establecimiento);
+		// console.log('[EstablishmentInfo] Cargando:', loadingEstablecimiento);
 
 		// Prevenir clicks múltiples
 		if (processingTurno) {
-			console.log('[EstablishmentInfo] Ya se está procesando una solicitud');
+			// console.log('[EstablishmentInfo] Ya se está procesando una solicitud');
 			return;
 		}
 
 		// Esperar si aún está cargando
 		if (loadingEstablecimiento) {
-			console.log('[EstablishmentInfo] Esperando a que termine de cargar...');
+			// console.log('[EstablishmentInfo] Esperando a que termine de cargar...');
 			setError('Cargando información del establecimiento...');
 			return;
 		}
@@ -213,7 +213,7 @@ export default function EstablishmentInfo({ place, onClose }) {
 			let est = establecimiento;
 			
 			if (!est || !est.id) {
-				console.log('[EstablishmentInfo] Establecimiento no disponible, creando...');
+				// console.log('[EstablishmentInfo] Establecimiento no disponible, creando...');
 				setError('Preparando información del establecimiento...');
 				
 				est = await establecimientosService.findOrCreate(place);
@@ -223,7 +223,7 @@ export default function EstablishmentInfo({ place, onClose }) {
 				}
 				
 				setEstablecimiento(est);
-				console.log('[EstablishmentInfo] Establecimiento creado exitosamente:', est);
+				// console.log('[EstablishmentInfo] Establecimiento creado exitosamente:', est);
 			}
 
 			// Validación final
@@ -231,10 +231,10 @@ export default function EstablishmentInfo({ place, onClose }) {
 				throw new Error('El establecimiento no tiene un ID válido');
 			}
 
-			console.log('[EstablishmentInfo] Establecimiento válido, procediendo...');
-			console.log('[EstablishmentInfo] - ID:', est.id);
-			console.log('[EstablishmentInfo] - Nombre:', est.nombre);
-			console.log('[EstablishmentInfo] - Coordenadas:', est.lat, est.lng);
+			// console.log('[EstablishmentInfo] Establecimiento válido, procediendo...');
+			// console.log('[EstablishmentInfo] - ID:', est.id);
+			// console.log('[EstablishmentInfo] - Nombre:', est.nombre);
+			// console.log('[EstablishmentInfo] - Coordenadas:', est.lat, est.lng);
 
 			// Limpiar error
 			setError('');
@@ -243,7 +243,7 @@ export default function EstablishmentInfo({ place, onClose }) {
 			try {
 				sessionStorage.setItem('selectedEstablecimiento', JSON.stringify(est));
 				sessionStorage.setItem('selectedPlace', JSON.stringify(place));
-				console.log('[EstablishmentInfo] Datos guardados en sessionStorage');
+				// console.log('[EstablishmentInfo] Datos guardados en sessionStorage');
 			} catch (storageError) {
 				console.warn('[EstablishmentInfo] Error guardando en sessionStorage:', storageError);
 				// No es crítico, continuar
@@ -256,7 +256,7 @@ export default function EstablishmentInfo({ place, onClose }) {
 				place: place
 			};
 			
-			console.log('[EstablishmentInfo] Disparando evento con datos:', eventDetail);
+			// console.log('[EstablishmentInfo] Disparando evento con datos:', eventDetail);
 			
 			// Disparar evento personalizado
 			const event = new CustomEvent('saludmap:change-tab', { 
@@ -265,7 +265,7 @@ export default function EstablishmentInfo({ place, onClose }) {
 			});
 			
 			window.dispatchEvent(event);
-			console.log('[EstablishmentInfo] Evento disparado exitosamente');
+			// console.log('[EstablishmentInfo] Evento disparado exitosamente');
 			
 			// Cerrar modal después de un pequeño delay para asegurar que el evento se procese
 			setTimeout(() => {
@@ -299,13 +299,13 @@ export default function EstablishmentInfo({ place, onClose }) {
 		// Actualizar automáticamente el estado local de reseñas
 		refrescar();
 		// Informar al resto de la app que las reseñas/turnos pueden haber cambiado
-		try {
-			const ev = new CustomEvent('saludmap:refresh-turnos');
-			window.dispatchEvent(ev);
-			console.log('[EstablishmentInfo] Disparado evento saludmap:refresh-turnos');
-		} catch {
+			try {
+				const ev = new CustomEvent('saludmap:refresh-turnos');
+				window.dispatchEvent(ev);
+				// console.log('[EstablishmentInfo] Disparado evento saludmap:refresh-turnos');
+			} catch {
 			// no crítico
-			console.warn('[EstablishmentInfo] No se pudo disparar evento refresh-turnos');
+				console.warn('[EstablishmentInfo] No se pudo disparar evento refresh-turnos');
 		}
 	};
 

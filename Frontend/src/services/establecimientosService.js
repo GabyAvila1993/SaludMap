@@ -13,8 +13,8 @@ class EstablecimientosService {
     const tags = place.tags || place.properties || {};
     
     // Obtener coordenadas con múltiples fallbacks
-    const lat = place.lat || place.center?.lat || place.geometry?.coordinates?.[1];
-    const lng = place.lng || place.center?.lon || place.lon || place.geometry?.coordinates?.[0];
+      const lat = place.lat || place.center?.lat || place.geometry?.coordinates?.[1];
+      const lng = place.lng || place.center?.lon || place.lon || place.geometry?.coordinates?.[0];
 
     if (!lat || !lng) {
       console.error('[EstablecimientosService] No se pudieron obtener coordenadas válidas');
@@ -22,14 +22,14 @@ class EstablecimientosService {
     }
 
     // Obtener nombre con fallbacks
-    const nombre = tags.name || 
+      const nombre = tags.name || 
                    tags.amenity || 
                    place.name ||
                    place.properties?.name ||
                    'Establecimiento de salud';
 
     // Obtener tipo con fallbacks
-    const tipo = tags.amenity || 
+      const tipo = tags.amenity || 
                  tags.healthcare || 
                  tags.shop || 
                  place.type ||
@@ -61,7 +61,7 @@ class EstablecimientosService {
       metadata: place, // Guardar todos los datos originales
     };
 
-    console.log('[EstablecimientosService] Datos extraídos:', extractedData);
+      // console.log('[EstablecimientosService] Datos extraídos:', extractedData);
     return extractedData;
   }
 
@@ -138,7 +138,7 @@ class EstablecimientosService {
       const response = await api.get(`/establecimientos/coords/${latNum}/${lngNum}`);
       
       if (response.data && response.data.found !== false) {
-        console.log('[EstablecimientosService] Establecimiento encontrado:', response.data);
+          // console.log('[EstablecimientosService] Establecimiento encontrado:', response.data);
         
         // Validar que tenga ID
         if (!response.data.id) {
@@ -149,14 +149,14 @@ class EstablecimientosService {
         return response.data;
       }
       
-      console.log('[EstablecimientosService] No se encontró establecimiento en esas coordenadas');
+        // console.log('[EstablecimientosService] No se encontró establecimiento en esas coordenadas');
       return null;
     } catch (error) {
       console.error('[EstablecimientosService] Error buscando establecimiento:', error);
       
       // Si es error 404, es que no existe (normal)
       if (error.response?.status === 404) {
-        console.log('[EstablecimientosService] 404 - Establecimiento no existe (normal)');
+          // console.log('[EstablecimientosService] 404 - Establecimiento no existe (normal)');
         return null;
       }
       
@@ -183,7 +183,7 @@ class EstablecimientosService {
         throw new Error(`Coordenadas no numéricas: ${data.lat}, ${data.lng}`);
       }
 
-      console.log('[EstablecimientosService] Datos extraídos válidos:', {
+        // console.log('[EstablecimientosService] Datos extraídos válidos:', {
         nombre: data.nombre,
         tipo: data.tipo,
         lat: data.lat,
@@ -191,18 +191,18 @@ class EstablecimientosService {
       });
 
       // Intentar buscar establecimiento existente
-      console.log('[EstablecimientosService] Buscando establecimiento existente...');
+        // console.log('[EstablecimientosService] Buscando establecimiento existente...');
       let establecimiento = await this.findByCoordinates(data.lat, data.lng);
       
       // Si no existe, crear uno nuevo
       if (!establecimiento) {
-        console.log('[EstablecimientosService] No existe, creando nuevo establecimiento...');
+          // console.log('[EstablecimientosService] No existe, creando nuevo establecimiento...');
         
         try {
           const response = await api.post('/establecimientos/find-or-create', data);
           establecimiento = response.data;
           
-          console.log('[EstablecimientosService] Establecimiento creado exitosamente:', establecimiento);
+            // console.log('[EstablecimientosService] Establecimiento creado exitosamente:', establecimiento);
         } catch (createError) {
           console.error('[EstablecimientosService] Error creando establecimiento:', createError);
           console.error('[EstablecimientosService] Datos enviados:', data);
@@ -214,7 +214,7 @@ class EstablecimientosService {
           );
         }
       } else {
-        console.log('[EstablecimientosService] Establecimiento ya existe:', establecimiento);
+          // console.log('[EstablecimientosService] Establecimiento ya existe:', establecimiento);
       }
 
       // Validación final crítica
@@ -239,7 +239,7 @@ class EstablecimientosService {
         establecimiento.lng = data.lng;
       }
 
-      console.log('[EstablecimientosService] Retornando establecimiento válido:', {
+        // console.log('[EstablecimientosService] Retornando establecimiento válido:', {
         id: establecimiento.id,
         nombre: establecimiento.nombre,
         tipo: establecimiento.tipo,
@@ -272,7 +272,7 @@ class EstablecimientosService {
         throw new Error('No se recibieron datos del establecimiento');
       }
 
-      console.log('[EstablecimientosService] Establecimiento encontrado por ID:', response.data);
+        // console.log('[EstablecimientosService] Establecimiento encontrado por ID:', response.data);
       return response.data;
     } catch (error) {
       console.error('[EstablecimientosService] Error obteniendo establecimiento por ID:', error);
@@ -293,7 +293,7 @@ class EstablecimientosService {
       }
 
       const response = await api.get(`/establecimientos/${id}/resenias`);
-      console.log('[EstablecimientosService] Reseñas obtenidas:', response.data);
+        // console.log('[EstablecimientosService] Reseñas obtenidas:', response.data);
       
       return response.data;
     } catch (error) {
@@ -311,7 +311,7 @@ class EstablecimientosService {
       
       const response = await api.get(`/establecimientos?skip=${skip}&take=${take}`);
       
-      console.log('[EstablecimientosService] Establecimientos obtenidos:', response.data?.length || 0);
+        // console.log('[EstablecimientosService] Establecimientos obtenidos:', response.data?.length || 0);
       return response.data || [];
     } catch (error) {
       console.error('[EstablecimientosService] Error listando establecimientos:', error);
@@ -332,7 +332,7 @@ class EstablecimientosService {
 
       const response = await api.put(`/establecimientos/${id}`, data);
       
-      console.log('[EstablecimientosService] Establecimiento actualizado:', response.data);
+        // console.log('[EstablecimientosService] Establecimiento actualizado:', response.data);
       return response.data;
     } catch (error) {
       console.error('[EstablecimientosService] Error actualizando establecimiento:', error);
@@ -353,7 +353,7 @@ class EstablecimientosService {
 
       const response = await api.delete(`/establecimientos/${id}`);
       
-      console.log('[EstablecimientosService] Establecimiento eliminado');
+        // console.log('[EstablecimientosService] Establecimiento eliminado');
       return response.data;
     } catch (error) {
       console.error('[EstablecimientosService] Error eliminando establecimiento:', error);

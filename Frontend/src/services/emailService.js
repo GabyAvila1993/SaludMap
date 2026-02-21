@@ -1,9 +1,9 @@
 import emailjs from '@emailjs/browser';
 
 export const initializeEmailJS = () => {
-    console.log('[DEBUG] Inicializando EmailJS...');
+    // console.log('[DEBUG] Inicializando EmailJS...');
     emailjs.init('jBIfJ7kR2vFO0xd0e'); // tu public key
-    console.log('[DEBUG] EmailJS inicializado con public key');
+    // console.log('[DEBUG] EmailJS inicializado con public key');
 };
 
 export const sendAppointmentEmail = async (selected, datetime, notes, correo, selectedType, prettyTypeFunc) => {
@@ -16,7 +16,7 @@ export const sendAppointmentEmail = async (selected, datetime, notes, correo, se
         professionalType: selectedType,
     };
 
-    console.log('[DEBUG] Payload para backend:', payload);
+    // console.log('[DEBUG] Payload para backend:', payload);
 
     // Preparar datos para EmailJS
     const datosCorreo = {
@@ -48,9 +48,9 @@ export const sendAppointmentEmail = async (selected, datetime, notes, correo, se
         'jBIfJ7kR2vFO0xd0e'
     );
 
-    console.log('[DEBUG] ✅ Respuesta EmailJS:', emailResponse);
-    console.log('[DEBUG] Status:', emailResponse.status);
-    console.log('[DEBUG] Text:', emailResponse.text);
+    // console.log('[DEBUG] ✅ Respuesta EmailJS:', emailResponse);
+    // console.log('[DEBUG] Status:', emailResponse.status);
+    // console.log('[DEBUG] Text:', emailResponse.text);
 
     return { emailResponse, payload };
 };

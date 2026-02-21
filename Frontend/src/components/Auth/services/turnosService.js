@@ -88,7 +88,7 @@ class TurnosService {
     async initialize() {
         // Suscribirse a cambios de ubicación
         const unsubscribe = locationService.subscribe((location) => {
-            console.log('[TurnosService] Nueva ubicación:', location);
+            // console.log('[TurnosService] Nueva ubicación:', location);
             this.fetchProfesionales(location);
         });
 

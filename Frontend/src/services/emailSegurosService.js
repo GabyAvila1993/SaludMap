@@ -3,9 +3,9 @@ import { PDFGenerator } from '../components/CardsSegure/PDFGenerator';
 
 // Inicializar EmailJS (usa la misma configuración que el servicio existente)
 export const initializeEmailJS = () => {
-    console.log('[DEBUG] Inicializando EmailJS para seguros...');
+    // console.log('[DEBUG] Inicializando EmailJS para seguros...');
     emailjs.init('jBIfJ7kR2vFO0xd0e'); // tu public key existente
-    console.log('[DEBUG] EmailJS inicializado para seguros');
+    // console.log('[DEBUG] EmailJS inicializado para seguros');
 };
 
 // Generar PDF como base64 para adjuntar al correo
@@ -164,7 +164,7 @@ const _createInsuranceEmailTemplate = (plan, userInfo, orderId) => {
 // Función principal para enviar correo de confirmación de seguro
 export const sendInsuranceConfirmationEmail = async (plan, userInfo) => {
     try {
-        console.log('[DEBUG] Iniciando envío de correo de seguro...');
+        // console.log('[DEBUG] Iniciando envío de correo de seguro...');
         
         // Generar ID único para la póliza
         const orderId = `POL-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
@@ -184,7 +184,7 @@ export const sendInsuranceConfirmationEmail = async (plan, userInfo) => {
             coverage_list: Array.isArray(plan.coverage) ? plan.coverage.join(', ') : 'Cobertura completa'
         };
         
-        console.log('[DEBUG] Datos preparados para EmailJS:', emailData);
+        // console.log('[DEBUG] Datos preparados para EmailJS:', emailData);
         
         // Enviar correo usando EmailJS
         const emailResponse = await emailjs.send(
@@ -194,7 +194,7 @@ export const sendInsuranceConfirmationEmail = async (plan, userInfo) => {
             'jBIfJ7kR2vFO0xd0e' 
         );
         
-        console.log('[DEBUG] ✅ Correo de seguro enviado:', emailResponse);
+        // console.log('[DEBUG] ✅ Correo de seguro enviado:', emailResponse);
         
         return {
             success: true,

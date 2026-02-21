@@ -3,13 +3,13 @@ const CACHE_NAME = "saludmap-cache-v1";
 
 // Install básico
 self.addEventListener("install", () => {
-  console.log("[SW] Instalando...");
+  // console.log("[SW] Instalando...");
   self.skipWaiting();
 });
 
 // Activar
 self.addEventListener("activate", () => {
-  console.log("[SW] Activado");
+  // console.log("[SW] Activado");
   self.clients.claim();
 });
 

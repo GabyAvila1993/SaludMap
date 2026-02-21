@@ -8,13 +8,13 @@ const TEMPLATE_ID = 'template_if7eh5b';
 // Inicializar EmailJS
 export const initializeEmailJS = () => {
     emailjs.init(PUBLIC_KEY);
-    console.log('[DEBUG] EmailJS inicializado con clave:', PUBLIC_KEY);
+    // console.log('[DEBUG] EmailJS inicializado con clave:', PUBLIC_KEY);
 };
 
 // Función de prueba simplificada
 export const sendTestEmail = async (userInfo, plan) => {
     try {
-        console.log('[DEBUG] Enviando email de prueba...');
+        // console.log('[DEBUG] Enviando email de prueba...');
         
         // Datos mínimos para probar (incluyendo campo TO para EmailJS)
         const testData = {
@@ -27,7 +27,7 @@ export const sendTestEmail = async (userInfo, plan) => {
             plan_price: plan.price
         };
         
-        console.log('[DEBUG] Datos de prueba:', testData);
+        // console.log('[DEBUG] Datos de prueba:', testData);
         
         const response = await emailjs.send(
             SERVICE_ID,
@@ -36,7 +36,7 @@ export const sendTestEmail = async (userInfo, plan) => {
             PUBLIC_KEY
         );
         
-        console.log('[DEBUG] ✅ Email de prueba enviado:', response);
+        // console.log('[DEBUG] ✅ Email de prueba enviado:', response);
         return { success: true, response };
         
     } catch (error) {

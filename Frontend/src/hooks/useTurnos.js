@@ -18,9 +18,9 @@ export const useTurnos = () => { // CAMBIO: Sin parámetro correo para evitar de
         }
 
         try {
-            console.log('[DEBUG] Cargando turnos para correo:', correo);
+            // console.log('[DEBUG] Cargando turnos para correo:', correo);
             const arr = await fetchMisTurnos(correo);
-            console.log('[DEBUG] Turnos recibidos:', arr);
+            // console.log('[DEBUG] Turnos recibidos:', arr);
             const sortDesc = (a = []) => [...a].sort((x, y) => {
                 const tx = Date.parse(x.datetime || x.fecha || '') || 0;
                 const ty = Date.parse(y.datetime || y.fecha || '') || 0;
@@ -36,10 +36,10 @@ export const useTurnos = () => { // CAMBIO: Sin parámetro correo para evitar de
     const cancelarTurno = async (id, correo) => { // CAMBIO: Ahora recibe correo como parámetro
         try {
             setCancellingId(id);
-            console.log('[DEBUG] Cancelando turno ID:', id);
+            // console.log('[DEBUG] Cancelando turno ID:', id);
 
             const res = await cancelAppointment(id);
-            console.log('[DEBUG] Respuesta cancelación:', res);
+            // console.log('[DEBUG] Respuesta cancelación:', res);
 
             // CORRECCIÓN: Filtrar correctamente por ID para evitar cancelar todos los turnos
             if (res?.data?.id || res?.status === 200) {
@@ -47,10 +47,10 @@ export const useTurnos = () => { // CAMBIO: Sin parámetro correo para evitar de
                     const filteredTurnos = prev.filter((t) => {
                         const turnoId = t.id || t._id || t.professionalId;
                         const cancelledId = res.data?.id || id;
-                        console.log('[DEBUG] Comparando turnoId:', turnoId, 'vs cancelledId:', cancelledId);
+                        // console.log('[DEBUG] Comparando turnoId:', turnoId, 'vs cancelledId:', cancelledId);
                         return turnoId !== cancelledId;
                     });
-                    console.log('[DEBUG] Turnos después de filtrar:', filteredTurnos);
+                    // console.log('[DEBUG] Turnos después de filtrar:', filteredTurnos);
                     return filteredTurnos;
                 });
             }
@@ -77,7 +77,7 @@ export const useTurnos = () => { // CAMBIO: Sin parámetro correo para evitar de
                     professionalType: selectedType,
                 };
                 await saveAppointment(payload);
-                console.log('[DEBUG] Turno guardado en backend');
+                // console.log('[DEBUG] Turno guardado en backend');
             } catch (backendError) {
                 console.error('[DEBUG] ❌ Error en backend:', backendError);
             }

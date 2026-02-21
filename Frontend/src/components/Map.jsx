@@ -210,7 +210,7 @@ export default function MapComponent() {
                     }
                     setOfflineMode(false);
             } catch {
-                    console.log('Error en búsqueda online, usando cache offline');
+                    // console.log('Error en búsqueda online, usando cache offline');
                     // Si falla online, usar cache offline
                     const offlinePlaces = await getNearbyPlaces(location);
                     places = offlinePlaces;
