@@ -807,6 +807,18 @@ body.dark-theme .filter-modal .filter-btn {
 }
 body.dark-theme .filter-modal .btn-primary { background: var(--text-highlight); color: var(--bg-main); }
 
+/* Asegurar buen contraste para filtros en la barra y modal cuando están activos en modo oscuro */
+body.dark-theme .filter-btn.active,
+body.dark-theme .filter-modal .filter-btn.active {
+  background: var(--text-highlight) !important;
+  color: var(--text-main) !important;
+  border-color: rgba(0,0,0,0.12) !important;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.35) !important;
+}
+
+/* Si el botón tiene una clase por tipo (hospital/clinica/doctor/veterinaria), preferir su versión 'dark' si existe */
+body.dark-theme .filter-hospital.active { background: var(--marker-hospital-dark, var(--marker-hospital)) !important; color: var(--white) !important; }
+
 /* Safety: ensure no parent containers limit width or add padding */
 .container-12, .map-section, .app, .app-main {
   max-width: none !important;
