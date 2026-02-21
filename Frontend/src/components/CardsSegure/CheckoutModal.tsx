@@ -72,7 +72,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ plan, isOpen, onClose }) 
             console.error('Error processing checkout:', error);
 
             // Determinar el tipo de error para mostrar mensaje apropiado
-            const errorMessage = error.message || 'Error desconocido';
+            const errorMessage = (error instanceof Error ? error.message : String(error)) || 'Error desconocido';
 
             if (errorMessage.includes('correo') || errorMessage.includes('email')) {
                 alert(`Seguro contratado, pero hubo un problema enviando el correo: ${errorMessage}. Tu seguro está activo y se descargó tu tarjeta.`);

@@ -1,35 +1,296 @@
-/* Styles for CheckoutModal */
+/* ============================================================
+   CheckoutModal.css — SaludMap
+   Mismo sistema de variables que CostComparator.css.
+   .dark-theme se aplica en document.body.
+   !important donde App.css global pisa estilos de botón.
+   ============================================================ */
+
+/* ── Variables locales ── */
+:root {
+  --chk-bg-panel:      #ffffff;
+  --chk-bg-section:    #edf7f3;
+  --chk-border:        #A2E3D0;
+  --chk-border-strong: #66B09D;
+  --chk-text-main:     #000000;
+  --chk-text-accent:   #66B09D;
+  --chk-text-muted:    #6b8f87;
+  --chk-btn-bg:        #9EE2CF;
+  --chk-btn-text:      #08331f;
+  --chk-shadow-lg:     0 18px 48px rgba(0, 0, 0, 0.18);
+  --chk-radius:        12px;
+  --chk-radius-sm:     8px;
+  --chk-transition:    all 0.22s cubic-bezier(0.2, 0.9, 0.2, 1);
+  --chk-font:          'Roboto', 'DM Sans', sans-serif;
+}
+
+.dark-theme {
+  --chk-bg-panel:      #1e2e2b;
+  --chk-bg-section:    #1a2926;
+  --chk-text-main:     #dbeee6;
+  --chk-text-muted:    #8aada5;
+  --chk-shadow-lg:     0 18px 48px rgba(0, 0, 0, 0.6);
+}
+
+/* ══════════════════════════════════════════
+   OVERLAY
+══════════════════════════════════════════ */
 .checkout-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(0,0,0,0.5);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 1000;
-}
-.checkout-modal {
-  background-color: #fff;
-  border-radius: 10px;
-  padding: 28px;
-  max-width: 560px;
-  width: 92%;
-  max-height: 90vh;
+  justify-content: center;
+  z-index: 9999;
+  padding: 24px 18px;
+  box-sizing: border-box;
   overflow-y: auto;
-  box-shadow: none;
 }
-.checkout-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px }
-.checkout-title { margin:0; color: #08331f; font-weight:700 }
-.checkout-close { background:transparent; border:none; font-size:22px; cursor:pointer; color:#666 }
-.plan-info { background:#f8f9fa; padding:14px; border-radius:8px; margin-bottom:18px; border:1px solid var(--border-ui) }
-.plan-name { margin:0 0 8px 0; color:#08331f; font-weight:700 }
-.plan-price { margin:0 0 8px 0; font-size:1.15rem; font-weight:800; color:#08331f }
-.plan-desc { margin:0; color:#666 }
-.checkout-form .form-group { margin-bottom:14px }
-.checkout-form label { display:block; margin-bottom:6px; color:#08331f; font-weight:700 }
-.checkout-form input, .checkout-form textarea { width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; font-size:15px }
-.checkout-form textarea { resize:vertical }
-.form-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:6px }
-.btn-secondary { padding:10px 18px; border:1px solid #ddd; border-radius:6px; background:#fff; color:#666; cursor:pointer }
-.btn-primary { padding:10px 18px; border:none; border-radius:6px; background:var(--primary-green); color:#08331f; font-weight:700; cursor:pointer }
-.btn-primary[disabled] { opacity:0.6; cursor:not-allowed }
+
+/* ══════════════════════════════════════════
+   PANEL
+══════════════════════════════════════════ */
+.checkout-modal {
+  position: relative;
+  margin: auto;
+  width: min(94vw, 520px);
+  background: var(--chk-bg-panel);
+  border: 1.5px solid var(--chk-border);
+  border-radius: var(--chk-radius);
+  padding: 0;
+  box-shadow: var(--chk-shadow-lg);
+  display: flex;
+  flex-direction: column;
+  color: var(--chk-text-main);
+  font-family: var(--chk-font);
+  animation: chkFadeIn 0.25s cubic-bezier(0.2, 0.9, 0.2, 1);
+  overflow: hidden;
+  max-height: 92vh;
+  overflow-y: auto;
+}
+
+.checkout-modal::-webkit-scrollbar       { width: 5px; }
+.checkout-modal::-webkit-scrollbar-thumb{ background: var(--chk-border); border-radius: 6px; }
+.checkout-modal::-webkit-scrollbar-thumb:hover { background: var(--chk-border-strong); }
+
+@keyframes chkFadeIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ══════════════════════════════════════════
+   HEADER
+══════════════════════════════════════════ */
+.checkout-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px 14px;
+  border-bottom: 2px solid var(--chk-border);
+  flex-shrink: 0;
+}
+
+.checkout-title {
+  margin: 0;
+  font-family: var(--chk-font);
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  font-weight: 700;
+  color: var(--chk-text-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Botón cerrar */
+.checkout-modal .checkout-close {
+  background: var(--chk-bg-section) !important;
+  border: 1.5px solid var(--chk-border) !important;
+  color: var(--chk-text-accent) !important;
+  width: 30px !important;
+  height: 30px !important;
+  min-height: unset !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  font-size: 1.2rem !important;
+  line-height: 1 !important;
+  transition: var(--chk-transition) !important;
+}
+
+.checkout-modal .checkout-close:hover {
+  background: var(--chk-btn-bg) !important;
+  transform: scale(1.08) !important;
+}
+
+/* ══════════════════════════════════════════
+   INFO DEL PLAN
+══════════════════════════════════════════ */
+.plan-info {
+  margin: 16px 20px;
+  padding: 14px 16px;
+  background: var(--chk-bg-section);
+  border: 1.5px solid var(--chk-border);
+  border-left: 4px solid var(--chk-border-strong);
+  border-radius: var(--chk-radius-sm);
+}
+
+.plan-name {
+  margin: 0 0 6px;
+  font-family: var(--chk-font);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--chk-text-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.plan-price {
+  margin: 0 0 6px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--chk-border-strong);
+}
+
+.plan-desc {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--chk-text-muted);
+  line-height: 1.4;
+}
+
+/* ══════════════════════════════════════════
+   FORMULARIO
+══════════════════════════════════════════ */
+.checkout-form {
+  padding: 0 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.checkout-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.checkout-form label {
+  display: block;
+  font-size: 0.71rem;
+  font-weight: 700;
+  color: var(--chk-text-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 0.35rem;
+}
+
+.checkout-form input,
+.checkout-form textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: var(--chk-radius-sm);
+  border: 1.5px solid var(--chk-border);
+  background: var(--chk-bg-section);
+  color: var(--chk-text-main);
+  font-family: var(--chk-font);
+  font-size: 0.88rem;
+  transition: var(--chk-transition);
+  box-sizing: border-box;
+}
+
+.checkout-form input:focus,
+.checkout-form textarea:focus {
+  outline: none;
+  border-color: var(--chk-border-strong);
+  box-shadow: 0 0 0 3px rgba(102, 176, 157, 0.15);
+}
+
+.checkout-form input::placeholder,
+.checkout-form textarea::placeholder {
+  color: var(--chk-text-muted);
+  font-style: italic;
+}
+
+.checkout-form textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: var(--chk-font);
+}
+
+/* ══════════════════════════════════════════
+   ACCIONES — botones
+   !important para ganar al reset global de App.css
+══════════════════════════════════════════ */
+.form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 6px;
+  padding-top: 14px;
+  border-top: 1.5px solid var(--chk-border);
+}
+
+.checkout-modal .btn-primary {
+  background: var(--chk-border-strong) !important;
+  color: #ffffff !important;
+  border: 1.5px solid var(--chk-border-strong) !important;
+  padding: 9px 20px !important;
+  border-radius: var(--chk-radius-sm) !important;
+  font-family: var(--chk-font) !important;
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  min-height: unset !important;
+  box-shadow: 0 4px 12px rgba(102, 176, 157, 0.22) !important;
+  transition: var(--chk-transition) !important;
+}
+
+.checkout-modal .btn-primary:hover:not(:disabled) {
+  filter: brightness(1.08) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(102, 176, 157, 0.32) !important;
+}
+
+.checkout-modal .btn-primary:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+.checkout-modal .btn-secondary {
+  background: var(--chk-btn-bg) !important;
+  border: 1.5px solid var(--chk-border-strong) !important;
+  color: var(--chk-btn-text) !important;
+  padding: 9px 20px !important;
+  border-radius: var(--chk-radius-sm) !important;
+  font-family: var(--chk-font) !important;
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  min-height: unset !important;
+  box-shadow: none !important;
+  transition: var(--chk-transition) !important;
+}
+
+.checkout-modal .btn-secondary:hover {
+  filter: brightness(0.94) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .checkout-modal .btn-primary,
+  .checkout-modal .btn-secondary {
+    width: 100% !important;
+    text-align: center !important;
+  }
+}
