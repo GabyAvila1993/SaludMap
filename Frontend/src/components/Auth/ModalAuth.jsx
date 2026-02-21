@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ModalAuth.css';
 import { useAuth } from './AuthContext';
-
 /**
  * Modal de autenticación que permite login y registro
  * @param {Object} props - Props del componente
@@ -21,7 +20,6 @@ export default function ModalAuth({ open, onClose, showRegister, setShowRegister
 	});
 	const [error, setError] = useState('');
 	const [loading, setLoading] = useState(false);
-
 	/**
 	 * Maneja los cambios en los campos del formulario
 	 * @param {Event} e - Evento del input
@@ -29,7 +27,6 @@ export default function ModalAuth({ open, onClose, showRegister, setShowRegister
 	const handleChange = (e) => {
 		setForm({ ...form, [e.target.name]: e.target.value });
 	};
-
 	/**
 	 * Maneja el envío del formulario (login o registro)
 	 * @param {Event} e - Evento del formulario
@@ -38,7 +35,6 @@ export default function ModalAuth({ open, onClose, showRegister, setShowRegister
 		e.preventDefault();
 		setError('');
 		setLoading(true);
-
 		try {
 			if (showRegister) {
 				// Validación para registro
@@ -65,7 +61,6 @@ export default function ModalAuth({ open, onClose, showRegister, setShowRegister
 			setLoading(false);
 		}
 	};
-
 	// Limpiar formulario y errores cuando se cierra el modal
 	useEffect(() => {
 		if (!open) {
@@ -74,12 +69,10 @@ export default function ModalAuth({ open, onClose, showRegister, setShowRegister
 			setLoading(false);
 		}
 	}, [open]);
-
 	if (!open) return null;
-
 	return (
 		<div className="modal-overlay">
-			<div className="modal-panel small">
+			<div className={`modal-panel small${showRegister ? ' register' : ''}`}>
 				<div className="h1">{showRegister ? 'Registro' : 'Login'}</div>
 				<form onSubmit={handleSubmit}>
 					{showRegister && (
@@ -120,7 +113,7 @@ export default function ModalAuth({ open, onClose, showRegister, setShowRegister
 						disabled={loading}
 					/>
 					<input 
-						value={loading ? 'Procesando...' : (showRegister ? 'Registrarse' : 'Login')} 
+						value={loading ? 'Procesando...' : (showRegister ? 'Registrarse' : 'Ingresar')} 
 						className="btn" 
 						type="submit"
 						disabled={loading}
@@ -130,7 +123,7 @@ export default function ModalAuth({ open, onClose, showRegister, setShowRegister
 				<div className="modal-footer modal-auth-footer">
 					{showRegister ? (
 						<span>
-							¿Ya tienes cuenta?{' '}
+							¿Ya tenés cuenta?{' '}
 							<button 
 								type="button" 
 								className="btn-link" 
@@ -142,7 +135,7 @@ export default function ModalAuth({ open, onClose, showRegister, setShowRegister
 						</span>
 					) : (
 						<span>
-							¿No tienes cuenta?{' '}
+							¿No tenés cuenta?{' '}
 							<button 
 								type="button" 
 								className="btn-link" 
