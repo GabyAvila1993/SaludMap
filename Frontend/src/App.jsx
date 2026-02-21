@@ -138,20 +138,26 @@ function App() {
             <div className="nav-right">
               <div className="user-controls">
                 <LanguageSelector />
-                <span className="nav-username">{user ? `${user.nombre} ${user.apellido}` : 'nuevo usuario'}</span>
 
-                <div className={`user-menu ${showUserMenu ? 'open' : ''}`} ref={userMenuRef}>
-                  <button className="profile-avatar" onClick={(e) => { e.stopPropagation(); setShowUserMenu(s => !s); }} aria-haspopup="true" aria-expanded={showUserMenu}>
-                    <img src={IconPerson} alt="perfil" className="nav-person-icon" />
-                  </button>
-                  <div className="user-dropdown" role="menu">
-                    {user ? (
-                      <button className="btn-logout" onClick={() => { logout(); setShowUserMenu(false); }}>Cerrar Sesión</button>
-                    ) : (
-                      <button className="btn-login" onClick={() => { setShowAuthModal(true); setShowUserMenu(false); }}>Iniciar Sesión</button>
-                    )}
+                {user ? (
+                  <div className="nav-user-inline">
+                    <button className="profile-avatar" onClick={(e) => { e.stopPropagation(); setShowUserMenu(s => !s); }} aria-haspopup="true" aria-expanded={showUserMenu}>
+                      <img src={user.avatar || IconPerson} alt="perfil" className="nav-person-icon" />
+                    </button>
+                    <span className="nav-username">{`${user.nombre} ${user.apellido}`}</span>
+
+                    <div className={`user-menu ${showUserMenu ? 'open' : ''}`} ref={userMenuRef}>
+                      <div className="user-dropdown" role="menu">
+                        <button className="nav-button user-dropdown-logout" onClick={() => { logout(); setShowUserMenu(false); }}>Cerrar Sesión</button>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="nav-auth-actions">
+                    <button className={`nav-button active`} onClick={() => { setShowAuthModal(true); setShowRegister(false); }}>Login</button>
+                    <button className={`nav-button active`} onClick={() => { setShowAuthModal(true); setShowRegister(true); }}>Registro</button>
+                  </div>
+                )}
               </div>
             </div>
           </nav>

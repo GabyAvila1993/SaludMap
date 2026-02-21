@@ -14,6 +14,7 @@ export default function EstablishmentInfo({ place, onClose }) {
 	const [showAuthModal, setShowAuthModal] = useState(false);
 	const [showRegister, setShowRegister] = useState(false);
 	const [showCrearResenia, setShowCrearResenia] = useState(false);
+	const [showReseniasModal, setShowReseniasModal] = useState(false);
 	const [establecimiento, setEstablecimiento] = useState(null);
 	const [loadingEstablecimiento, setLoadingEstablecimiento] = useState(true);
 	const [error, setError] = useState('');
@@ -106,6 +107,9 @@ export default function EstablishmentInfo({ place, onClose }) {
 	};
 
 	const tags = place.tags ?? place.properties ?? {};
+
+	// posible imagen del establecimiento (tags comunes)
+	const imageUrl = tags.image ?? tags.logo ?? tags.photo ?? place.properties?.image ?? null;
 
 	const phones = collectValues(tags, ['phone', 'telephone', 'contact:phone', 'contact_phone', 'tel', 'contact']);
 	const emails = collectValues(tags, ['email', 'contact:email', 'contact_email']);
@@ -326,21 +330,32 @@ export default function EstablishmentInfo({ place, onClose }) {
 	const isTurnoButtonDisabled = loadingEstablecimiento || processingTurno;
 
 	return (
-		<div className="establishment-info">
+		<div className="establishment-overlay" onClick={() => onClose()} role="presentation">
+			<div className="establishment-info" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
 			<div className="establishment-card">
-				<div className="card-header">
-					<div className="card-title">{nombre}</div>
-					<div className="card-type">{friendlyType || (place.type ?? '')}</div>
-					<button className="card-close" onClick={onClose} aria-label="Cerrar">×</button>
+				{/* Header */}
+				<div className="card-header modal-section header-section">
+					<div className="card-header-top">
+						<button className="card-close" onClick={onClose} aria-label="Cerrar">×</button>
+					</div>
+					<div className="card-header-main">
+						<div>
+							<div className="card-title header-title">{nombre}</div>
+							<div className="card-type">{friendlyType || (place.type ?? '')}</div>
+						</div>
+						{imageUrl ? (
+							<img className="establishment-photo" src={imageUrl} alt={nombre} />
+						) : null}
+					</div>
 				</div>
 
-				<div className="card-body">
+				{/* Información principal (grid 2 columnas) */}
+				<div className="info-grid modal-section">
 					<div className="card-left">
 						<div className="avatar">{initial}</div>
 						<div className="avatar-label">Establecimiento</div>
 					</div>
-
-					<div className="card-right">
+					<div className="info-content">
 						<div className="info-row">
 							<div className="info-label">DIRECCIÓN</div>
 							<div className="info-value">{direccion || '—'}</div>
@@ -397,85 +412,101 @@ export default function EstablishmentInfo({ place, onClose }) {
 							</div>
 						)}
 
-						<div className="info-row">
+						<div className="info-row coordinates-row">
 							<div className="info-label">COORDENADAS</div>
-							<div className="info-value">
-								{coords[0]?.toFixed(6) ?? '—'}, {coords[1]?.toFixed(6) ?? '—'}
-								<div className="extra-actions">
-									<button onClick={() => copyToClipboard(`${coords[0]},${coords[1]}`)}>Copiar</button>
-								</div>
+							<div className="info-value coords-with-copy">
+								<span>{coords[0]?.toFixed(6) ?? '—'}, {coords[1]?.toFixed(6) ?? '—'}</span>
+								<button className="copy-btn" onClick={() => copyToClipboard(`${coords[0]},${coords[1]}`)}>Copiar</button>
 							</div>
 						</div>
 
 						{error && (
 							<div className="establishment-error">⚠️ {error}</div>
 						)}
+					</div>
+				</div>
 
-						<div className="action-buttons">
-							{phones.length > 0 && (
-								<button onClick={() => handleLlamar(phones[0])} className="action-btn">
-									Llamar
-								</button>
-							)}
-							<button 
-								onClick={handleSolicitarTurno} 
-								className="action-btn"
-								disabled={isTurnoButtonDisabled}
-							>
-								{getTurnoButtonText()}
-							</button>
-							{establecimiento && (
-								<button onClick={handleDejarResenia} className="action-btn">
-									Dejar Reseña
-								</button>
-							)}
-							{establecimiento && (
-								<button onClick={scrollToReseniasSection} className="action-btn">
-									Ver Reseñas
-								</button>
-							)}
-							{establecimiento && (
-								<button 
-									onClick={() => setShowStats(!showStats)}
-									className="action-btn"
-								>
-									📊 Estadísticas
-								</button>
-							)}
-						</div>
-
-						{showStats && establecimiento && (
-							<Analytics 
-								establecimientoId={establecimiento.id} 
-								place={place} // Pasar el objeto place completo
-							/>
+				{/* Botones de acción en grid 2x2 */}
+				<div className="action-buttons modal-section">
+					{phones.length > 0 && (
+						<button onClick={() => handleLlamar(phones[0])} className="action-btn">
+							Llamar
+						</button>
 						)}
+					<button 
+						onClick={handleSolicitarTurno} 
+						className="action-btn primary"
+						disabled={isTurnoButtonDisabled}
+					>
+						{getTurnoButtonText()}
+					</button>
+					{establecimiento && (
+						<button onClick={handleDejarResenia} className="action-btn">
+							Dejar Reseña
+						</button>
+					)}
+					{establecimiento && (
+						<button onClick={() => setShowReseniasModal(true)} className="action-btn">
+							Ver Reseñas
+						</button>
+					)}
+					{establecimiento && (
+						<button 
+							onClick={() => setShowStats(!showStats)}
+							className="action-btn"
+						>
+							📊 Estadísticas
+						</button>
+					)}
+				</div>
 
-						{establecimiento && !showCrearResenia && (
-							<div className="establishment-resenias-section">
-								<Resenias 
+				{/* Reseñas */}
+				<div className="resenias-wrapper modal-section">
+					<div className="resenia-promedio">
+						<div className="promedio-left">
+							<div className="promedio-number">{typeof promedioEstrellas === 'number' ? promedioEstrellas.toFixed(1) : (promedioEstrellas || 0)}</div>
+							<div className="promedio-label">{`${typeof promedioEstrellas === 'number' ? promedioEstrellas.toFixed(1) : (promedioEstrellas || 0)} - ${totalResenias || 0} ${totalResenias === 1 ? 'reseña' : 'reseñas'}`}</div>
+						</div>
+					</div>
+					{showStats && establecimiento && (
+						<Analytics establecimientoId={establecimiento.id} place={place} />
+					)}
+					{establecimiento && !showCrearResenia && (
+						<div className="establishment-resenias-section">
+							{/* Resumen reducido: ya se muestra en .resenia-promedio arriba */}
+						</div>
+					)}
+
+					{/* Modal independiente para reseñas (se muestra siempre encima del mapa, debajo del Navbar) */}
+					{showReseniasModal && (
+						<div className="resenias-overlay" onClick={() => setShowReseniasModal(false)}>
+							<div className="resenias-modal" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
+								<button className="resenias-close" onClick={() => setShowReseniasModal(false)} aria-label="Cerrar">×</button>
+								<h3 style={{marginTop:0, color: 'var(--text-color)'}}>Reseñas ({totalResenias || 0})</h3>
+								<Resenias
 									resenias={resenias}
 									promedioEstrellas={promedioEstrellas}
 									totalResenias={totalResenias}
 									loading={loadingResenias}
 								/>
 							</div>
-						)}
+						</div>
+					)}
 
-						{showCrearResenia && establecimiento && (
-							<div className="establishment-resenias-section">
-								<CrearResenia
-									establecimientoId={establecimiento.id}
-									onSuccess={handleReseniaCreada}
-									onCancel={() => setShowCrearResenia(false)}
-								/>
-							</div>
-						)}
-					</div>
+					{showCrearResenia && establecimiento && (
+						<div className="establishment-resenias-section">
+							<CrearResenia
+								establecimientoId={establecimiento.id}
+								onSuccess={handleReseniaCreada}
+								onCancel={() => setShowCrearResenia(false)}
+							/>
+						</div>
+					)}
 				</div>
 			</div>
+				</div>
 
-			<ModalAuth
+				<ModalAuth
 				open={showAuthModal}
 				onClose={() => setShowAuthModal(false)}
 				showRegister={showRegister}

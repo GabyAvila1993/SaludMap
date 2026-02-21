@@ -93,7 +93,7 @@ body {
   left: 0;
   width: 100%;
   height: var(--navbar-height);
-  z-index: 1000; /* elevado para quedar encima de todo */
+  z-index: 3000; /* elevar por encima de modales para que Navbar quede siempre visible */
   background-color: var(--bg-navbar-modal);
   border-bottom: 1px solid var(--border-ui);
   display: flex;
@@ -101,7 +101,7 @@ body {
   align-items: center;
   padding: 0 20px; /* reducir padding para evitar overflow horizontal */
   box-sizing: border-box;
-  border-radius: 0 0 20px 20px; /* redondeo inferior exacto */
+  border-radius: 30px; /* cápsula simétrica: redondeo completo */
 }
 
 .site-header .header-top { width:100%; max-width:none; margin:0; display:flex; align-items:center; justify-content:space-between; gap:12px }
@@ -110,6 +110,14 @@ body {
 .logo-img { width:36px; height:36px; object-fit:contain; display:inline-block }
 .logo-text { font-size:1.45rem; color:var(--text-highlight) }
 
+/* Navbar user area */
+.nav-user-inline { display:flex; align-items:center; gap:10px; margin-left:12px }
+.nav-avatar-image { width:34px; height:34px; border-radius:50%; object-fit:cover; border:2px solid rgba(0,0,0,0.06) }
+.nav-username { font-family: 'Roboto', sans-serif; font-weight:700; color:var(--text-highlight); margin-left:6px }
+.nav-auth-actions { display:flex; gap:8px; align-items:center }
+.nav-auth-btn { background: var(--btn-primary-bg, #9EE2CF); color: var(--text-highlight, #66B09D); font-family: 'Roboto', sans-serif; border: none; padding: 8px 12px; border-radius: 12px; cursor: pointer; font-weight:700 }
+.nav-auth-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08) }
+
 @media (min-width: 768px) {
   .site-header {
     position: fixed;
@@ -117,7 +125,7 @@ body {
     left: 0;
     width: 100%;
     height: var(--navbar-height);
-    z-index: 900; /* dejar espacio para overlays (status) por encima */
+    z-index: 3000; /* asegurar Navbar por encima de overlays */
     background-color: var(--bg-navbar-modal);
     border-bottom: 1px solid var(--border-ui);
     display: flex;
@@ -125,7 +133,7 @@ body {
     align-items: center;
     padding: 0 12px; /* evitar espacios en los bordes del monitor */
     box-sizing: border-box;
-    border-radius: 0 0 30px 30px; /* redondeo inferior más suave */
+    border-radius: 30px; /* cápsula simétrica: redondeo completo */
   }
 
 }
@@ -448,10 +456,11 @@ button:disabled {
 
 /* User menu dropdown */
 .user-menu { position: relative; }
-.user-menu .user-dropdown { display: none; position: absolute; top: 100%; right: 0; background: var(--bg-main); border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 6px 18px rgba(0,0,0,0.08); padding: 8px; border-radius: 8px; min-width: 140px; z-index: 1100; }
+.user-menu .user-dropdown { display: none; position: absolute; top: calc(100% + 8px); right: 0; background: var(--bg-navbar-modal); border: 1px solid var(--border-ui); box-shadow: 0 6px 18px rgba(0,0,0,0.08); padding: 8px; border-radius: 12px; min-width: 160px; z-index: 3100; }
 .user-menu.open .user-dropdown { display: block; }
-.user-dropdown .btn-logout, .user-dropdown .btn-login { width:100%; background: transparent; border: none; color: #08331f; padding: 8px 10px; text-align: left; cursor: pointer; font-weight:700; }
-.user-dropdown .btn-logout:hover, .user-dropdown .btn-login:hover { background: rgba(0,0,0,0.03); }
+.user-dropdown .nav-button { display:block; width:100%; text-align:left; padding: 8px 10px; border-radius: 12px; font-weight:700; }
+.user-dropdown .nav-button:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
+.user-dropdown .user-dropdown-logout { background: var(--btn-primary-bg); color: var(--text-main); border: 1px solid var(--border-ui); }
 
 /* Hamburger / mobile menu */
 .hamburger { display:none; background:transparent; border:none; font-size:1.25rem; cursor:pointer; color:var(--text-highlight) }
