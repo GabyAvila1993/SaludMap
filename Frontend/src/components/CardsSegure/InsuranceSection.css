@@ -1,40 +1,41 @@
 /* ============================================================
    InsuranceSection.css — SaludMap
-   Mismo sistema de variables que CostComparator.css.
-   .dark-theme se aplica en document.body.
-   !important donde App.css global pisa estilos de botón.
+   Todos los colores usan variables definidas en index.css.
+   No hay colores hardcodeados ni !important.
+
+   Breakpoints:
+   ≥ 1280px  → Desktop grande
+   default   → Notebook / Desktop normal (base)
+   ≤ 1024px  → Tablet (2 columnas)
+   ≤ 768px   → Tablet chica / landscape
+   ≤ 480px   → Celular (1 columna)
    ============================================================ */
 
-/* ── Variables locales ── */
+/* ── Variables locales — todas apuntan al index.css ── */
 :root {
-  --ins-bg-panel:      var(--modal-bg, #ffffff);
-  --ins-bg-section:    var(--chat-fill, #edf7f3);
-  --ins-bg-card:       var(--card-bg, #edf7f3);
-  --ins-bg-card-hover: var(--card-bg-hover, rgba(162, 227, 208, 0.25));
-  --ins-border:        var(--modal-border, #A2E3D0);
-  --ins-border-strong: var(--btn-fill, #66B09D);
-  --ins-text-main:     var(--modal-text, #000000);
-  --ins-text-accent:   var(--modal-title-color, #66B09D);
-  --ins-text-muted:    var(--modal-text-muted, #6b8f87);
-  --ins-btn-bg:        var(--btn-fill, #9EE2CF);
-  --ins-btn-text:      var(--btn-text-color, #08331f);
-  --ins-shadow:        0 2px 12px rgba(102, 176, 157, 0.12);
-  --ins-shadow-lg:     0 8px 28px rgba(102, 176, 157, 0.18);
+  --ins-bg-panel:      var(--modal-bg);
+  --ins-bg-section:    var(--placeholder-fill);
+  --ins-bg-card:       var(--modal-bg);
+  --ins-bg-card-hover: var(--border-ui-translucent);
+  --ins-border:        var(--chat-border);
+  --ins-border-strong: var(--color-titulo);
+  --ins-text-main:     var(--text-main);
+  --ins-text-accent:   var(--color-titulo);
+  --ins-text-muted:    var(--text-muted);
+  --ins-btn-bg:        var(--color-boton-relleno);
+  --ins-btn-text:      var(--color-boton-texto);
+  --ins-shadow:        var(--shadow-sm-8);
+  --ins-shadow-lg:     var(--shadow-md);
   --ins-radius:        12px;
   --ins-radius-sm:     8px;
-  --ins-transition:    all 0.22s cubic-bezier(0.2, 0.9, 0.2, 1);
-  --ins-font:          'Roboto', 'DM Sans', sans-serif;
+  --ins-transition:    var(--transition);
+  --ins-font:          'DM Sans', 'Roboto', sans-serif;
 }
 
+/* En dark-theme las variables del index ya se actualizan automáticamente.
+   Solo ajustes puntuales que no se pueden inferir. */
 .dark-theme {
-  --ins-bg-panel:      var(--modal-bg, #1e2e2b);
-  --ins-bg-section:    var(--chat-fill, #1a2926);
-  --ins-bg-card:       var(--card-bg, #1a2926);
-  --ins-bg-card-hover: var(--card-bg-hover, rgba(102, 176, 157, 0.1));
-  --ins-text-main:     var(--modal-text, #dbeee6);
-  --ins-text-muted:    var(--modal-text-muted, #8aada5);
-  --ins-shadow:        0 2px 12px rgba(0, 0, 0, 0.4);
-  --ins-shadow-lg:     0 8px 28px rgba(0, 0, 0, 0.5);
+  --ins-bg-card-hover: rgba(102,176,157,0.1);
 }
 
 /* ══════════════════════════════════════════
@@ -50,6 +51,7 @@
   align-items: center;
   justify-content: flex-start;
   font-family: var(--ins-font);
+  color: var(--ins-text-main);
 }
 
 .insurance-container {
@@ -73,7 +75,7 @@
   font-family: var(--ins-font);
   font-size: clamp(1.6rem, 3vw, 2.4rem);
   font-weight: 700;
-  color: var(--ins-text-main);
+  color: var(--ins-text-accent);
   margin: 0 0 12px;
   letter-spacing: 0.01em;
 }
@@ -90,12 +92,11 @@
 
 /* ══════════════════════════════════════════
    GRID DE TARJETAS — subgrid para alineación real
-   5 filas compartidas: título / precio / descripción / cobertura / botón
+   5 filas: título / precio / descripción / cobertura(1fr) / botón
 ══════════════════════════════════════════ */
 .insurance-cards-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  /* 5 filas: las 4 primeras auto, la de cobertura crece con 1fr */
   grid-template-rows: auto auto auto 1fr auto;
   column-gap: 20px;
   row-gap: 0;
@@ -103,13 +104,10 @@
   width: 100%;
 }
 
-/* El wrapper ocupa las 5 filas y las traspasa a sus hijos con subgrid */
 .insurance-card-wrapper {
   grid-row: span 5;
   display: grid;
   grid-template-rows: subgrid;
-  /* borde y fondo de la card van aquí porque insurance-card
-     ahora es un grid interno y no tiene caja propia de fondo */
   background: var(--ins-bg-card);
   border: 1.5px solid var(--ins-border);
   border-radius: var(--ins-radius);
@@ -128,11 +126,11 @@
 
 .insurance-card-wrapper:has(.insurance-card.selected) {
   border: 2px solid var(--ins-border-strong);
-  box-shadow: 0 8px 28px rgba(102, 176, 157, 0.28);
+  box-shadow: var(--shadow-md);
 }
 
 /* ══════════════════════════════════════════
-   TARJETA DE SEGURO — grid interno que hereda las filas del padre
+   TARJETA DE SEGURO
 ══════════════════════════════════════════ */
 .insurance-card {
   display: grid;
@@ -148,14 +146,13 @@
   box-sizing: border-box;
 }
 
-/* Cada hijo de insurance-card ocupa su fila en el subgrid */
-.insurance-card .card-title      { padding: 22px 22px 10px; }
-.insurance-card .card-price      { padding: 0 22px 6px; }
-.insurance-card .card-description{ padding: 0 22px 10px; }
-.insurance-card .card-coverage   { padding: 0 22px; }
-.insurance-card .card-button     { margin: 14px 22px 22px; }
+/* Padding por sección de cada fila */
+.insurance-card .card-title       { padding: 22px 22px 10px; }
+.insurance-card .card-price       { padding: 0 22px 6px; }
+.insurance-card .card-description { padding: 0 22px 10px; }
+.insurance-card .card-coverage    { padding: 0 22px; }
+.insurance-card .card-button      { margin: 14px 22px 22px; }
 
-/* Hover y selected siguen funcionando en el wrapper */
 .insurance-card:hover,
 .insurance-card.selected { background: transparent; border: none; box-shadow: none; }
 
@@ -201,7 +198,7 @@
   justify-content: center;
 }
 
-/* ── Cobertura ── ocupa la fila 1fr y llena el espacio disponible */
+/* ── Cobertura ── */
 .card-coverage {
   margin: 0;
   display: flex;
@@ -219,9 +216,7 @@
   letter-spacing: 0.05em;
 }
 
-.coverage-title.selected {
-  color: var(--ins-border-strong);
-}
+.coverage-title.selected { color: var(--ins-border-strong); }
 
 .coverage-list {
   margin: 0;
@@ -232,8 +227,8 @@
   overflow-y: auto;
 }
 
-.coverage-list::-webkit-scrollbar      { width: 4px; }
-.coverage-list::-webkit-scrollbar-thumb{ background: var(--ins-border); border-radius: 4px; }
+.coverage-list::-webkit-scrollbar       { width: 4px; }
+.coverage-list::-webkit-scrollbar-thumb { background: var(--ins-border); border-radius: 4px; }
 
 .coverage-item {
   margin: 8px 0;
@@ -252,40 +247,38 @@
   font-weight: 700;
 }
 
-.coverage-item.selected::before {
-  color: var(--ins-border-strong);
-}
+.coverage-item.selected::before { color: var(--ins-border-strong); }
 
-/* Botón dentro de la card — estilo btn-ghost del comparador */
+/* ── Botón dentro de la card ── */
 .card-button {
-  margin-top: 18px;
-  padding: 10px 20px !important;
-  background: var(--ins-btn-bg) !important;
-  color: var(--ins-btn-text) !important;
-  border: 1.5px solid var(--ins-border-strong) !important;
-  border-radius: var(--ins-radius-sm) !important;
-  font-family: var(--ins-font) !important;
-  font-size: 0.85rem !important;
-  font-weight: 700 !important;
-  width: calc(100% - 44px) !important;
-  text-align: center !important;
-  cursor: pointer !important;
-  min-height: unset !important;
-  box-shadow: none !important;
-  transition: var(--ins-transition) !important;
+  padding: 10px 20px;
+  background: var(--ins-btn-bg);
+  color: var(--ins-btn-text);
+  border: 1.5px solid var(--ins-border-strong);
+  border-radius: var(--ins-radius-sm);
+  font-family: var(--ins-font);
+  font-size: 0.85rem;
+  font-weight: 700;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  min-height: unset;
+  box-shadow: none;
+  transition: var(--ins-transition);
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  box-sizing: border-box;
 }
 
 .card-button:hover {
-  filter: brightness(0.94) !important;
-  transform: translateY(-1px) !important;
-  box-shadow: var(--ins-shadow) !important;
+  filter: brightness(0.94);
+  transform: translateY(-1px);
+  box-shadow: var(--ins-shadow);
 }
 
 .insurance-card.selected .card-button {
-  background: var(--ins-border-strong) !important;
-  color: var(--btn-text-color, #ffffff) !important;
+  background: var(--ins-border-strong);
+  color: var(--white);
 }
 
 /* ══════════════════════════════════════════
@@ -297,13 +290,12 @@
   background: var(--ins-bg-section);
   border: 1.5px solid var(--ins-border);
   border-radius: var(--ins-radius);
-  margin-top: 28px;
+  margin: 28px auto 0;
   width: 100%;
   max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
   box-shadow: var(--ins-shadow);
   animation: insFadeIn 0.22s cubic-bezier(0.2, 0.9, 0.2, 1);
+  box-sizing: border-box;
 }
 
 @keyframes insFadeIn {
@@ -328,51 +320,175 @@
   line-height: 1.5;
 }
 
-/* Botón contratar — estilo btn-compare del comparador */
+/* Botón contratar */
 .contract-button {
-  padding: 11px 32px !important;
-  background: var(--ins-border-strong) !important;
-  color: var(--btn-text-color, #ffffff) !important;
-  border: 1.5px solid var(--ins-border-strong) !important;
-  border-radius: var(--ins-radius-sm) !important;
-  font-family: var(--ins-font) !important;
-  font-size: 0.95rem !important;
-  font-weight: 700 !important;
-  cursor: pointer !important;
-  min-height: unset !important;
-  box-shadow: 0 4px 12px rgba(102, 176, 157, 0.22) !important;
-  transition: var(--ins-transition) !important;
+  padding: 11px 32px;
+  background: var(--ins-border-strong);
+  color: var(--white);
+  border: 1.5px solid var(--ins-border-strong);
+  border-radius: var(--ins-radius-sm);
+  font-family: var(--ins-font);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: unset;
+  box-shadow: var(--shadow-sm-8);
+  transition: var(--ins-transition);
   letter-spacing: 0.03em;
 }
 
 .contract-button:hover {
-  filter: brightness(1.08) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 6px 18px rgba(102, 176, 157, 0.32) !important;
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm-12);
 }
 
-/* ══════════════════════════════════════════
+/* ════════════════════════════════════════════════
    RESPONSIVE
-══════════════════════════════════════════ */
-@media (max-width: 992px) {
-  /* En 2 columnas: 2 wrappers por fila, subgrid sigue funcionando */
+   ════════════════════════════════════════════════ */
+
+/* ── Desktop grande (≥ 1280px) ── */
+@media (min-width: 1280px) {
+  .insurance-section {
+    padding: 48px 28px;
+  }
+
+  .insurance-container {
+    padding: 0 28px;
+  }
+
+  .insurance-header {
+    margin-bottom: 48px;
+  }
+
+  .insurance-cards-grid {
+    column-gap: 28px;
+  }
+
+  .card-title    { font-size: 1.55rem; }
+  .card-price    { font-size: 1.45rem; }
+
+  .coverage-list { max-height: 320px; }
+
+  .selected-plan-section {
+    max-width: 700px;
+    padding: 32px;
+  }
+
+  .contract-button {
+    font-size: 1rem;
+    padding: 13px 40px;
+  }
+}
+
+/* ── Tablet (≤ 1024px) — 2 columnas ── */
+@media (max-width: 1024px) {
   .insurance-cards-grid {
     grid-template-columns: repeat(2, 1fr);
+    column-gap: 16px;
+  }
+
+  .insurance-section {
+    padding: 28px 16px;
+  }
+
+  .card-title { font-size: 1.25rem; }
+  .card-price { font-size: 1.15rem; }
+}
+
+/* ── Tablet chica / landscape (≤ 768px) ── */
+@media (max-width: 768px) {
+  .insurance-section {
+    padding: 24px 12px;
+  }
+
+  .insurance-container {
+    padding: 0 8px;
+  }
+
+  .insurance-header {
+    margin-bottom: 24px;
+  }
+
+  .insurance-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 12px;
+  }
+
+  .insurance-card .card-title       { padding: 16px 16px 8px; }
+  .insurance-card .card-price       { padding: 0 16px 4px; }
+  .insurance-card .card-description { padding: 0 16px 8px; }
+  .insurance-card .card-coverage    { padding: 0 16px; }
+  .insurance-card .card-button      { margin: 12px 16px 16px; }
+
+  .card-title { font-size: 1.1rem; }
+  .card-price { font-size: 1rem; }
+
+  .selected-plan-section {
+    padding: 18px 16px;
+  }
+
+  .contract-button {
+    width: 100%;
+    padding: 12px 20px;
   }
 }
 
-@media (max-width: 640px) {
-  .insurance-section  { padding: 20px 12px; }
-  .insurance-container{ padding: 0 8px; }
-
-  /* En 1 columna: cada card ocupa todo el ancho,
-     el subgrid sigue alineando pero solo hay 1 columna */
-  .insurance-cards-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
+/* ── Celular (≤ 480px) — 1 columna ── */
+@media (max-width: 480px) {
+  .insurance-section {
+    padding: 20px 8px;
   }
 
-  .selected-plan-section { padding: 18px; }
+  .insurance-container {
+    padding: 0 4px;
+  }
 
-  .contract-button { width: 100% !important; }
+  .insurance-cards-grid {
+    grid-template-columns: 1fr;
+    /* En 1 columna el subgrid sigue funcionando pero la card ocupa todo el ancho */
+    gap: 16px;
+    /* Resetear subgrid en columna única para evitar espacios vacíos */
+    grid-template-rows: none;
+  }
+
+  /* En columna única, el wrapper no necesita subgrid */
+  .insurance-card-wrapper {
+    grid-row: auto;
+    grid-template-rows: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .insurance-card {
+    grid-template-rows: none;
+    display: flex;
+    flex-direction: column;
+    grid-row: auto;
+  }
+
+  .insurance-card .card-coverage {
+    flex: 1;
+  }
+
+  .insurance-card .card-title       { padding: 16px 16px 8px; }
+  .insurance-card .card-price       { padding: 0 16px 4px; }
+  .insurance-card .card-description { padding: 0 16px 8px; }
+  .insurance-card .card-coverage    { padding: 0 16px; }
+  .insurance-card .card-button      { margin: 12px 16px 16px; }
+
+  .card-title { font-size: 1.05rem; }
+  .card-price { font-size: 1rem; }
+  .card-description { font-size: 0.84rem; }
+  .coverage-item { font-size: 0.82rem; }
+
+  .insurance-header { margin-bottom: 20px; }
+
+  .selected-plan-section {
+    padding: 16px 14px;
+    margin-top: 20px;
+  }
+
+  .selected-plan-title { font-size: 0.95rem; }
+  .selected-plan-description { font-size: 0.85rem; }
 }

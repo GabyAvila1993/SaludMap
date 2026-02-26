@@ -1,6 +1,17 @@
-/* Shared modal styles used across the app */
+/* ── modal.css ──────────────────────────────────────────────────────────── */
+/*
+  Estilos compartidos de modales para toda la app.
+  Todos los colores usan variables definidas en index.css.
+  No hay colores hardcodeados ni !important.
+  Breakpoints:
+  ≥ 1280px  → Desktop grande
+  default   → Notebook / Desktop normal (base)
+  ≤ 1024px  → Tablet
+  ≤ 768px   → Tablet chica / landscape móvil
+  ≤ 480px   → Celular
+*/
 
-/* overlay */
+/* ── Overlay ── */
 .modal-overlay,
 [class*="modal-auth-overlay"],
 .cost-compare-root,
@@ -10,14 +21,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0,0,0,0.6);
+  background: var(--overlay-50);
   z-index: 9999;
   padding: 20px;
   box-sizing: border-box;
   overflow: auto;
 }
 
-/* panel */
+/* ── Panel principal ── */
 .modal-panel,
 .modal-content,
 .login,
@@ -28,37 +39,46 @@
   max-width: 980px;
   background: var(--modal-bg);
   color: var(--modal-text);
-  border-radius: 12px;
+  border-radius: var(--radius);
   padding: 20px;
-  box-shadow: 0 18px 48px rgba(0,0,0,0.6);
-  border: 2px solid rgba(255,224,166,0.12);
+  box-shadow: var(--shadow-xxl-45);
+  border: 2px solid var(--border-ui-translucent);
 }
 
-/* smaller panels */
+/* ── Paneles pequeños ── */
 .modal-panel.small,
 .login.small,
-.checkout-modal.small { max-width: 420px; }
+.checkout-modal.small {
+  max-width: 420px;
+}
 
-/* close button */
+/* ── Botón cerrar ── */
 .modal-close,
 .modal-panel .close,
 .cost-compare-panel .modal-close {
   position: absolute;
   right: 14px;
   top: 14px;
-  background: rgba(255,255,255,0.04);
+  background: var(--white-04);
   border: none;
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  color: var(--btn-text-color, #fff);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-boton-texto);
+  transition: var(--transition);
 }
 
-/* header / title */
+.modal-close:hover,
+.modal-panel .close:hover {
+  background: var(--white-08);
+  border-color: transparent;
+}
+
+/* ── Header / título ── */
 .modal-header,
 .modal-panel .h1,
 .login .h1,
@@ -71,30 +91,137 @@
   font-size: clamp(1.05rem, 2.2vw, 1.5rem);
   font-weight: 700;
   letter-spacing: 0.06rem;
+  color: var(--color-titulo);
 }
 
-/* body and footer */
-.modal-body { margin-bottom: 12px; }
-.modal-footer { display:flex; gap:12px; justify-content:flex-end; align-items:center }
+/* ── Body y footer ── */
+.modal-body {
+  margin-bottom: 12px;
+}
 
-/* default buttons inside modals */
+.modal-footer {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* ── Botones dentro de modales ── */
 .modal-panel button,
 .cost-compare-panel button,
 .login input[type="submit"],
 .checkout-modal button {
   background: linear-gradient(180deg, var(--primary-green), var(--btn-primary-bg));
-  color: var(--btn-text-color);
+  color: var(--color-boton-texto);
   border: 1px solid var(--border-ui);
   padding: 10px 16px;
   border-radius: 10px;
   font-weight: 700;
   cursor: pointer;
+  transition: var(--transition);
 }
 
-/* balanced spacing on small screens */
-@media (max-width: 720px) {
+.modal-panel button:hover,
+.cost-compare-panel button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm-12);
+  border-color: transparent;
+}
+
+/* ════════════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════════════ */
+
+/* ── Desktop grande (≥ 1280px) ── */
+@media (min-width: 1280px) {
+  .modal-panel,
+  .modal-content,
+  .login,
+  .cost-compare-panel,
+  .checkout-modal {
+    padding: 28px;
+  }
+
+  .modal-title,
+  .modal-panel .h1 {
+    font-size: 1.6rem;
+  }
+}
+
+/* ── Tablet (≤ 1024px) ── */
+@media (max-width: 1024px) {
+  .modal-panel,
+  .modal-content,
+  .login,
+  .cost-compare-panel,
+  .checkout-modal {
+    width: min(96vw, 800px);
+    padding: 18px;
+  }
+}
+
+/* ── Tablet chica / landscape móvil (≤ 768px) ── */
+@media (max-width: 768px) {
+  .modal-overlay,
+  [class*="modal-auth-overlay"],
+  .cost-compare-root,
+  .checkout-overlay {
+    padding: 14px;
+  }
+
   .modal-panel,
   .login,
-  .cost-compare-panel { padding: 14px; width: 94vw; }
-  .modal-footer { flex-direction: column-reverse; align-items: stretch }
+  .cost-compare-panel {
+    padding: 14px;
+    width: 96vw;
+  }
+
+  .modal-footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .modal-footer button {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* ── Celular (≤ 480px) ── */
+@media (max-width: 480px) {
+  .modal-overlay,
+  [class*="modal-auth-overlay"],
+  .cost-compare-root,
+  .checkout-overlay {
+    padding: 10px;
+  }
+
+  .modal-panel,
+  .login,
+  .cost-compare-panel,
+  .checkout-modal {
+    padding: 12px;
+    width: 98vw;
+    border-radius: 10px;
+  }
+
+  .modal-title,
+  .modal-panel .h1 {
+    font-size: 1rem;
+  }
+
+  .modal-close,
+  .modal-panel .close {
+    width: 30px;
+    height: 30px;
+    right: 10px;
+    top: 10px;
+    font-size: 0.95rem;
+  }
+
+  .modal-panel.small,
+  .login.small,
+  .checkout-modal.small {
+    max-width: 100%;
+  }
 }

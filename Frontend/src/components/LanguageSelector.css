@@ -1,12 +1,16 @@
-/* ================================================================
-   LanguageSelector.css — SaludMap
-   Selector de idioma y tema. Responsive sin inline styles,
-   sin Tailwind, sin Bootstrap.
-   ================================================================ */
+/* ── LanguageSelector.css ───────────────────────────────────────────────── */
+/*
+  Todos los colores usan variables definidas en index.css.
+  No hay colores hardcodeados ni !important.
+  Breakpoints:
+  ≥ 1280px  → Desktop grande
+  default   → Notebook / Desktop normal (base)
+  ≤ 1024px  → Tablet
+  ≤ 768px   → Tablet chica / landscape móvil
+  ≤ 480px   → Celular
+*/
 
-/* ================================================================
-   CONTENEDOR PRINCIPAL
-   ================================================================ */
+/* ── Contenedor principal ── */
 .language-selector {
   position: relative;
   display: inline-flex;
@@ -14,18 +18,14 @@
   gap: 8px;
 }
 
-/* ================================================================
-   TEMA WRAPPER
-   ================================================================ */
+/* ── Tema wrapper ── */
 .theme-wrapper {
   position: relative;
   display: inline-flex;
   align-items: center;
 }
 
-/* ================================================================
-   BOTÓN BASE (idioma y tema comparten esta base)
-   ================================================================ */
+/* ── Botón base (idioma y tema) ── */
 .language-button {
   display: inline-flex;
   align-items: center;
@@ -34,12 +34,11 @@
   border-radius: 999px;
   border: none;
   background: transparent;
-  color: var(--text-highlight);
+  color: var(--color-titulo);
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 600;
-  font-family: 'Roboto', sans-serif;
-  transition: var(--transition, all 0.22s ease);
+  transition: var(--transition);
   white-space: nowrap;
   min-height: 38px;
 }
@@ -47,11 +46,10 @@
 .language-button:hover {
   opacity: 0.9;
   transform: translateY(-1px);
+  border-color: transparent;
 }
 
-/* ================================================================
-   BOTÓN DE TEMA
-   ================================================================ */
+/* ── Botón de tema ── */
 .theme-button {
   padding: 7px 10px;
   border-radius: 10px;
@@ -63,12 +61,13 @@
   justify-content: center;
   min-height: 38px;
   min-width: 38px;
-  transition: var(--transition, all 0.22s ease);
+  transition: var(--transition);
 }
 
 .theme-button:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--overlay-dark-05);
   transform: translateY(-1px);
+  border-color: transparent;
 }
 
 .theme-icon {
@@ -78,17 +77,15 @@
   display: block;
 }
 
-/* ================================================================
-   DROPDOWN DE TEMA
-   ================================================================ */
+/* ── Dropdown de tema ── */
 .theme-dropdown {
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
-  background: var(--bg-navbar-modal, #C9EFE4);
-  border: 1px solid var(--border-ui, #A2E3D0);
+  background: var(--bg-navbar-modal);
+  border: 1px solid var(--border-ui);
   border-radius: 12px;
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.13);
+  box-shadow: var(--shadow-md);
   z-index: 1300;
   min-width: 160px;
   padding: 8px;
@@ -103,29 +100,28 @@
   padding: 9px 12px;
   text-align: left;
   cursor: pointer;
-  color: var(--text-main, #08331f);
+  color: var(--text-main);
   font-weight: 600;
   font-size: 0.88rem;
   border-radius: 8px;
-  transition: var(--transition, all 0.22s ease);
+  transition: var(--transition);
   width: 100%;
   min-height: 38px;
 }
 
 .theme-option:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--overlay-dark-05);
   transform: none;
   box-shadow: none;
+  border-color: transparent;
 }
 
 .theme-option.active {
-  background: var(--btn-primary-bg, #9EE2CF);
-  color: var(--text-main, #000);
+  background: var(--btn-primary-bg);
+  color: var(--color-boton-texto);
 }
 
-/* ================================================================
-   BANDERA / CÓDIGO DE IDIOMA
-   ================================================================ */
+/* ── Bandera / código de idioma ── */
 .lang-flag-img {
   width: 20px;
   height: 20px;
@@ -147,17 +143,15 @@
   opacity: 0.7;
 }
 
-/* ================================================================
-   DROPDOWN DE IDIOMAS
-   ================================================================ */
+/* ── Dropdown de idiomas ── */
 .language-dropdown {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  background: var(--bg-navbar-modal, #C9EFE4);
-  border: 1px solid var(--border-ui, #A2E3D0);
+  background: var(--bg-navbar-modal);
+  border: 1px solid var(--border-ui);
   border-radius: 12px;
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.13);
+  box-shadow: var(--shadow-md);
   z-index: 1300;
   min-width: 190px;
   padding: 8px;
@@ -173,26 +167,27 @@
   width: 100%;
   padding: 9px 12px;
   background: transparent;
-  color: var(--text-main, #08331f);
+  color: var(--text-main);
   border: none;
   cursor: pointer;
   font-size: 0.88rem;
   font-weight: 500;
   text-align: left;
   border-radius: 8px;
-  transition: var(--transition, all 0.22s ease);
+  transition: var(--transition);
   min-height: 40px;
 }
 
 .language-option:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--overlay-dark-05);
   transform: none;
   box-shadow: none;
+  border-color: transparent;
 }
 
 .language-option.active {
-  background: var(--btn-primary-bg, #9EE2CF);
-  color: var(--text-main, #000);
+  background: var(--btn-primary-bg);
+  color: var(--color-boton-texto);
   font-weight: 700;
 }
 
@@ -201,21 +196,57 @@
   font-size: 0.88rem;
 }
 
-/* ================================================================
+/* ════════════════════════════════════════════════
    RESPONSIVE
-   ================================================================ */
+   ════════════════════════════════════════════════ */
 
-/* ── TABLET PORTRAIT (≤ 768px) ── */
+/* ── Desktop grande (≥ 1280px) ── */
+@media (min-width: 1280px) {
+  .language-button {
+    padding: 8px 16px;
+    font-size: 0.95rem;
+    min-height: 40px;
+  }
+
+  .theme-button {
+    min-height: 40px;
+    min-width: 40px;
+  }
+
+  .theme-icon,
+  .lang-flag-img {
+    width: 22px;
+    height: 22px;
+  }
+
+  .language-dropdown {
+    min-width: 210px;
+  }
+
+  .theme-dropdown {
+    min-width: 175px;
+  }
+}
+
+/* ── Tablet (≤ 1024px) ── */
+@media (max-width: 1024px) {
+  .language-selector {
+    gap: 6px;
+  }
+
+  .language-button {
+    padding: 6px 12px;
+    font-size: 0.88rem;
+  }
+}
+
+/* ── Tablet chica / landscape móvil (≤ 768px) ── */
 @media (max-width: 768px) {
   .language-selector {
     gap: 4px;
   }
 
-  /* Ocultar el código de idioma en texto, mostrar solo bandera */
-  .lang-code {
-    display: none;
-  }
-
+  .lang-code,
   .arrow {
     display: none;
   }
@@ -235,7 +266,6 @@
     border-radius: 50%;
   }
 
-  /* Dropdowns se abren hacia la derecha del viewport para no salirse */
   .language-dropdown {
     right: 0;
     left: auto;
@@ -249,13 +279,9 @@
   }
 }
 
-/* ── MÓVIL (≤ 480px) ── */
+/* ── Celular (≤ 480px) ── */
 @media (max-width: 480px) {
-  .lang-flag-img {
-    width: 18px;
-    height: 18px;
-  }
-
+  .lang-flag-img,
   .theme-icon {
     width: 18px;
     height: 18px;
@@ -275,28 +301,21 @@
 
   .language-dropdown,
   .theme-dropdown {
-    /* En mobile, posicionar con margen del borde */
     position: fixed;
-    top: auto;
-    bottom: auto;
     right: 8px;
     left: auto;
     min-width: 160px;
     max-width: calc(100vw - 16px);
   }
 
-  .language-option {
-    padding: 10px 12px;
-    font-size: 0.85rem;
-  }
-
+  .language-option,
   .theme-option {
     padding: 10px 12px;
     font-size: 0.85rem;
   }
 }
 
-/* ── TOUCH DEVICES ── */
+/* ── Dispositivos touch ── */
 @media (hover: none) and (pointer: coarse) {
   .language-button,
   .theme-button {
@@ -309,7 +328,6 @@
     min-height: 44px;
   }
 
-  /* Sin hover effects en touch */
   .language-button:hover,
   .theme-button:hover {
     transform: none;

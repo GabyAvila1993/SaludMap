@@ -1,15 +1,34 @@
+/* ── Background.css ─────────────────────────────────────────────────────── */
+/*
+  Componente de fondo decorativo.
+  Usa variables de index.css. Sin colores hardcodeados ni !important.
+*/
+
 .background-gradient {
   position: absolute;
   inset: 0;
   z-index: 0;
-  --bg-stop-1: var(--bg-stop-1, #2a5d77);
-  --bg-stop-2: var(--bg-stop-2, #184058);
-  --bg-stop-3: var(--bg-stop-3, #0f2a43);
-  --bg-stop-4: var(--bg-stop-4, #0a1b30);
-  --bg-stop-5: var(--bg-stop-5, #071226);
-  --bg-stop-6: var(--bg-stop-6, #040d1c);
-  --bg-stop-7: var(--bg-stop-7, #020814);
-  --bg-stop-8: var(--bg-stop-8, #01040d);
-  --bg-stop-9: var(--bg-stop-9, #000309);
-  background: radial-gradient(70% 55% at 50% 50%, var(--bg-stop-1) 0%, var(--bg-stop-2) 18%, var(--bg-stop-3) 34%, var(--bg-stop-4) 50%, var(--bg-stop-5) 66%, var(--bg-stop-6) 80%, var(--bg-stop-7) 92%, var(--bg-stop-8) 97%, var(--bg-stop-9) 100%), radial-gradient(160% 130% at 10% 10%, rgba(0,0,0,0) 38%, var(--bg-stop-9) 76%, #000208 100%), radial-gradient(160% 130% at 90% 90%, rgba(0,0,0,0) 38%, var(--bg-stop-9) 76%, #000208 100%);
+  background:
+    radial-gradient(
+      70% 55% at 50% 50%,
+      var(--bg-main) 0%,
+      var(--chat-fill) 18%,
+      var(--modal-bg) 34%,
+      var(--overlay-dark-15) 50%,
+      var(--overlay-dark-08) 66%,
+      var(--overlay-dark-05) 80%,
+      transparent 100%
+    ),
+    radial-gradient(
+      160% 130% at 10% 10%,
+      transparent 38%,
+      var(--overlay-dark-15) 76%,
+      var(--overlay-dark-08) 100%
+    ),
+    radial-gradient(
+      160% 130% at 90% 90%,
+      transparent 38%,
+      var(--overlay-dark-15) 76%,
+      var(--overlay-dark-08) 100%
+    );
 }

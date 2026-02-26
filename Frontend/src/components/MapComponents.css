@@ -1,272 +1,283 @@
+/* ============================================================
+   MapComponents.css — SaludMap
+   Todos los colores usan variables definidas en index.css.
+   No hay colores hardcodeados ni !important.
+
+   Breakpoints:
+   ≥ 1280px  → Desktop grande
+   default   → Notebook / Desktop normal (base)
+   ≤ 1024px  → Tablet
+   ≤ 480px   → Celular
+   ============================================================ */
+
+/* ════════════════════════════════════════════════
+   RAÍZ
+   ════════════════════════════════════════════════ */
 .map-root {
-    color: var(--text-main);
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color: var(--text-main);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 }
 
-/* Título opcional */
+/* ════════════════════════════════════════════════
+   TÍTULO Y MENSAJES
+   ════════════════════════════════════════════════ */
 .map-title {
-    margin: 0 0 8px 0;
-    font-size: 1.2rem;
+  margin: 0 0 8px;
+  font-size: 1.2rem;
+  color: var(--text-main);
+  font-weight: 700;
 }
 
-/* Mensaje de error */
 .map-error {
-    color: var(--error-color, orange);
-    margin-bottom: 8px;
+  color: var(--error-color);
+  margin-bottom: 8px;
+  font-size: 0.9rem;
 }
 
-/* Filas de info */
-.map-info-row {
-    margin-bottom: 8px;
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-/* Precisión */
-.map-precision {
-    margin-left: 8px;
-        color: var(--text-dark);
-        background: var(--bg-navbar-modal);
-        padding: 6px 8px;
-        border-radius: 8px;
-    display: flex;
-    gap: 12px;
-    align-items: center;
-}
-
-body.dark-theme .map-precision {
-    color: var(--text-highlight);
-}
-
-/* Estado */
 .map-state {
-    color: var(--text-muted, #666);
+  color: var(--text-muted);
 }
 
-/* Contenedor principal */
+/* ════════════════════════════════════════════════
+   INFO FILAS
+   ════════════════════════════════════════════════ */
+.map-info-row {
+  margin-bottom: 8px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.map-precision {
+  margin-left: 8px;
+  color: var(--text-dark);
+  background: var(--bg-navbar-modal);
+  padding: 6px 8px;
+  border-radius: 8px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+body.dark-theme .map-precision { color: var(--text-highlight); }
+
+/* ════════════════════════════════════════════════
+   WRAPPER DEL MAPA
+   ════════════════════════════════════════════════ */
 .map-wrapper {
-    width: 0%;
-    max-width: 1200px;
-    margin: 8px auto;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-    position: relative;
-    height: min(70vh, 900px);
+  width: 100%;
+  max-width: 1200px;
+  margin: 8px auto;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm-12);
+  position: relative;
+  height: min(70vh, 900px);
 }
 
-@media (min-width: 768px) {
-    .map-wrapper {
-        width: 90%;
-        margin: 10px auto;
-        border-radius: 10px;
-        height: min(73vh, 900px);
-    }
-}
-
-@media (min-width: 1024px) {
-    .map-wrapper {
-        width: 100%;
-        margin: 12px auto;
-        height: min(76vh, 900px);
-    }
-}
-
-/* Aplicable a MapContainer con className="leaflet-map" */
 .leaflet-map {
-    height: 100%;
-    width: 100%;
+  height: 100%;
+  width: 100%;
+  display: block;
 }
 
-/* Estilo del botón "Detener" */
-.map-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 1000;
-    padding: 6px 10px;
-    background: var(--btn-primary-bg);
-    color: var(--bg-main);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 13px;
-}
-
-/* Icono del usuario */
+/* ════════════════════════════════════════════════
+   ÍCONO USUARIO
+   ════════════════════════════════════════════════ */
 .user-icon {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--marker-primary, #007bff);
-    border: 3px solid var(--user-icon-border, #ffffff);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--marker-primary);
+  border: 3px solid var(--white);
+  box-shadow: var(--shadow-strong);
 }
 
-/* Popup */
+/* ════════════════════════════════════════════════
+   POPUP
+   ════════════════════════════════════════════════ */
 .popup-content {
-    max-width: 260px;
-    color: var(--text-main);
+  max-width: 260px;
+  color: var(--text-main);
 }
 
 .popup-detail {
-    font-size: 12px;
-    margin-top: 4px;
+  font-size: 12px;
+  margin-top: 4px;
+  color: var(--text-muted);
 }
 
 .popup-detail-type {
-    margin-top: 6px;
-    font-size: 12px;
-    color: var(--placeholder-bg);
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
 }
 
-.popup-actions {
-    margin-top: 6px;
-}
+.popup-actions { margin-top: 6px; }
 
 .popup-btn {
-    padding: 6px 8px;
-    background: var(--text-main);
-    color: var(--bg-main);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 13px;
+  padding: 6px 8px;
+  background: var(--text-main);
+  color: var(--modal-bg);
+  border: 1px solid var(--border-opaque-08);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: var(--transition);
 }
 
-/* Layout principal */
+.popup-btn:hover { filter: brightness(0.9); }
+
+/* ════════════════════════════════════════════════
+   BOTÓN FLOTANTE (map-btn)
+   ════════════════════════════════════════════════ */
+.map-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+  padding: 6px 10px;
+  background: var(--btn-primary-bg);
+  color: var(--text-main);
+  border: 1px solid var(--border-opaque-08);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: var(--transition);
+}
+
+.map-btn:hover { filter: brightness(0.95); }
+
+/* ════════════════════════════════════════════════
+   LAYOUT PRINCIPAL
+   ════════════════════════════════════════════════ */
+.map-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
 .map-layout {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    width: 92%;
-    margin: 0 auto;
-    /* permitir que el layout crezca según el contenido y la altura del mapa */
-    min-height: 70vh;
+  display: flex;
+  justify-content: space-between;
+  width: 90%;
+  margin: 0 auto;
+  gap: 20px;
+  min-height: 70vh;
 }
 
-/* Mapa ocupa el 70% */
-.map-container {
-    flex: 0 0 70%;
-    height: 100%;
-}
-
-/* Sidebar ocupa el 20% */
+/* ════════════════════════════════════════════════
+   SIDEBAR
+   ════════════════════════════════════════════════ */
 .sidebar {
-    flex: 0 0 20%;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 10px;
-    background: var(--bg-main);
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    height: fit-content;
+  flex: 0 0 20%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 10px;
+  background: var(--bg-main);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm-8);
+  height: fit-content;
 }
 
-/* Ajustamos MapContainer */
-.leaflet-map {
-    height: 100%;
-    width: 100%;
-}
-
-/* Layout principal: 90% centrado */
-.map-layout {
-    display: flex;
-    justify-content: space-between;
-    width: 90%;
-    margin: 0 auto;
-    /* deja 5% margen a izquierda y derecha */
-    height: 100vh;
-    gap: 20px;
-    /* espacio entre mapa y botones */
-}
-
-/* Mapa ocupa el 70% */
-.map-container {
-    flex: 0 0 70%;
-    height: 100%;
-}
-
-/* Sidebar ocupa el 20% */
-.sidebar {
-    flex: 0 0 20%;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 10px;
-    background: var(--bg-main, #f9f9f9);
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    height: fit-content;
-}
-
-/* Ajustamos MapContainer */
-.leaflet-map {
-    height: 100%;
-    width: 100%;
-}
-
-.map-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    /* Centra todo en el medio */
-    width: 100%;
-}
-
+/* ════════════════════════════════════════════════
+   BOTONES FLOTANTES (map-buttons)
+   ════════════════════════════════════════════════ */
 .map-buttons {
-  position: absolute; /* flota sobre el mapa */
+  position: absolute;
   top: 10px;
   right: 10px;
   display: flex;
-  flex-direction: column; /* vertical */
+  flex-direction: column;
   gap: 10px;
-  z-index: 10000; /* sobre el mapa */
+  z-index: 10000;
 }
 
 .map-buttons button {
   padding: 8px 12px;
   border: none;
   border-radius: 6px;
-    background-color: var(--btn-primary-bg);
-    color: var(--text-main);
-  font-weight: bold;
+  background: var(--btn-primary-bg);
+  color: var(--text-main);
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: var(--transition);
 }
 
-.map-buttons button:hover {
-    filter: brightness(0.95);
+.map-buttons button:hover { filter: brightness(0.95); }
+
+/* ════════════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════════════ */
+
+/* ── Desktop grande (≥ 1280px) ── */
+@media (min-width: 1280px) {
+  .map-wrapper {
+    height: min(80vh, 1000px);
+    border-radius: 12px;
+  }
 }
 
-/* Garantizar comportamiento por tema (claro por defecto, y usar variables en oscuro) */
-body:not(.dark-theme) .map-buttons button,
-body:not(.dark-theme) .map-btn,
-body:not(.dark-theme) .popup-btn {
-    background: var(--btn-primary-bg);
-    color: var(--text-main);
-}
-
-body.dark-theme .map-buttons button,
-body.dark-theme .map-btn,
-body.dark-theme .popup-btn {
-    background: var(--btn-primary-bg);
-    color: var(--text-main);
-}
-
-/* Responsive: apilar layout y ajustar alturas en pantallas pequeñas */
+/* ── Tablet (≤ 1024px) ── */
 @media (max-width: 1024px) {
-    .map-layout { flex-direction: column; height: auto; gap: 12px; padding: 0 12px; }
-    .map-wrapper { height: 60vh; max-height: 78vh; }
-    .sidebar { width: 100%; flex: 0 0 auto; order: 2; }
-    .map-container { flex: 1 1 auto; order: 1; width: 100%; }
-    .map-buttons { right: 12px; top: calc(var(--navbar-height) + 12px); }
+  .map-layout {
+    flex-direction: column;
+    height: auto;
+    gap: 12px;
+    padding: 0 12px;
+    width: 100%;
+  }
+
+  .map-wrapper {
+    width: 90%;
+    margin: 10px auto;
+    border-radius: 10px;
+    height: min(73vh, 900px);
+  }
+
+  .sidebar {
+    width: 100%;
+    flex: 0 0 auto;
+    order: 2;
+  }
+
+  .map-container {
+    flex: 1 1 auto;
+    order: 1;
+    width: 100%;
+  }
+
+  .map-buttons {
+    right: 12px;
+    top: calc(var(--navbar-height) + 12px);
+  }
 }
 
+/* ── Tablet chica / landscape (≤ 768px) ── */
+@media (max-width: 768px) {
+  .map-wrapper {
+    width: 100%;
+    margin: 8px auto;
+    border-radius: 8px;
+    height: min(65vh, 800px);
+  }
+}
+
+/* ── Celular (≤ 480px) ── */
 @media (max-width: 480px) {
-    .map-wrapper { height: 48vh; }
-    .map-buttons { right: 8px; top: calc(var(--navbar-height) + 8px); }
-    .map-title { font-size: 1rem; }
+  .map-wrapper {
+    height: 48vh;
+    border-radius: 0;
+    margin: 0;
+  }
+
+  .map-buttons {
+    right: 8px;
+    top: calc(var(--navbar-height) + 8px);
+  }
+
+  .map-title  { font-size: 1rem; }
+  .map-layout { padding: 0; }
 }

@@ -1,79 +1,165 @@
 /*--------------- Inicio index.css -------------------*/
 /*
-  THEME PALETTE (comentadas y mapeo)
+  THEME PALETTE — Variables globales del proyecto
+  ─────────────────────────────────────────────────
+  MODO CLARO
+  --color-titulo              #4daa90   Títulos / texto resaltado verde
+  --color-boton-relleno       #66b09d   Fondo de botones primarios
+  --color-boton-texto         #000000   Texto dentro de botones y placeholders
+  --color-chat-relleno        #cecece   Fondo de chat e información
+  --color-placeholder         #b6e7d9   Fondo de inputs / placeholder
+  --color-chat-borde          #C9EFE4   Bordes en chat
+  --resenia-item-bg           #a9edd8   Fondo de tarjeta de reseña
+  --resenia-item-texto        #000000   Texto en tarjeta de reseña
+  --resenia-comentario-bg     #ffffff   Fondo del bloque de comentario
+  --resenia-comentario-texto  #000000   Texto del bloque de comentario
 
-  Formato: --variable-name: <color>;  // <aplica a ...>
-
-  MODO CLARO (valores por defecto)
-  --bg-main: #f4faf8;               // Fondo de cards/sidebars
-  --modal-bg: #ffffff;              // Fondo de modales/panels
-  --modal-text: #000000;            // Texto principal en modales
-  --modal-title-color: #66B09D;     // Títulos/accent en modales
-  --btn-primary-bg: #9EE2CF;        // Fondo botones primarios
-  --btn-text-color: #08331f;        // Texto botones primarios
-  --text-main: #000000;             // Texto principal app
-  --text-muted: #666666;            // Texto secundario / placeholders
-  --placeholder-fill: #ffffff;      // Fondos de inputs/placeholder
-  --chat-fill: #edf7f3;             // Fondos secciones tipo chat/panel
-  --chat-border: #A2E3D0;           // Bordes suaves / separators
-  --border-ui: #A2E3D0;             // Bordes generales
-  --error-color: #c0392b;           // Errores / peligros
-  --marker-hospital: #e74c3c;       // Color marcador hospital
-  --marker-clinic: #3498db;         // Color marcador clínica
-  --marker-doctors: #2ecc71;        // Color marcador médicos
-  --marker-vet: #9b59b6;            // Color marcador veterinaria
-  --marker-default: #34495e;        // Color marcador por defecto
-  --marker-primary: #007bff;        // Iconos/acciones primarias (fallback)
-  --path-highlight: #007bff;        // Rutas/paths destacadas en mapas
-  --navbar-height: 88px;            // Altura aproximada del navbar
-
-  MODO OSCURO (sugeridos)
-  --bg-main (dark): #0f1716
-  --modal-bg (dark): #0B1F22
-  --modal-text (dark): #e6fff9
-  --btn-primary-bg (dark): #66B09D
-  --text-main (dark): #dbeee6
-
-  NOTA: abajo se definen los valores reales en :root y en .dark-theme.
+  MODO OSCURO
+  --color-titulo              #66b09d   Títulos / texto verde oscuro
+  --color-boton-relleno       #9EE2CF   Fondo de botones primarios
+  --color-boton-texto         #ffffff   Texto dentro de botones y placeholders
+  --color-chat-relleno        #A9B0AE   Fondo de chat e información
+  --color-placeholder         #2d3a37   Fondo de inputs / placeholder
+  --color-chat-borde          #66b09d   Bordes en chat
+  --resenia-item-bg           #1a2e2a   Fondo de tarjeta de reseña
+  --resenia-item-texto        #e6fff9   Texto en tarjeta de reseña
+  --resenia-comentario-bg     #0f2a2a   Fondo del bloque de comentario
+  --resenia-comentario-texto  #dbeee6   Texto del bloque de comentario
 */
 
+/* ── MODO CLARO (por defecto) ───────────────────── */
 :root {
-  /* Shadows */
-  --shadow-sm-8: 0 4px 8px rgba(0,0,0,0.08); /* sombra pequeña - elevación leve (botones pequeños, badges) */
-  --shadow-sm-12: 0 6px 12px rgba(0,0,0,0.12); /* sombra para botones y tarjetas pequeñas */
-  --shadow-sm-18: 0 4px 16px rgba(0,0,0,0.18); /* sombra suave (panels sobre mapa) */
-  --shadow-md-18: 0 12px 36px rgba(0,0,0,0.18); /* sombra modal / overlay mediana */
-  --shadow-xl-35: 0 8px 22px rgba(0,0,0,0.35); /* sombra pronunciada (popovers) */
-  --shadow-xxl-20: 0 16px 48px rgba(0,0,0,0.2); /* sombra grande (modales principales) */
+  /* === PALETA PRINCIPAL === */
+  --color-titulo:          #4daa90;
+  --color-boton-relleno:   #66b09d;
+  --color-boton-texto:     #000000;
+  --color-chat-relleno:    #cecece;
+  --color-placeholder:     #b6e7d9;
+  --color-chat-borde:      #C9EFE4;
 
-  /* Border opacities */
-  --border-opaque-12: rgba(0,0,0,0.12); /* bordes UI generales (cards, inputs) */
-  --border-opaque-08: rgba(0,0,0,0.08); /* bordes sutiles (listas) */
-  --border-opaque-06: rgba(0,0,0,0.06); /* separators y hover states */
-  --border-opaque-04: rgba(0,0,0,0.04); /* divisores muy suaves */
+  /* === RESEÑAS === */
+  --resenia-item-bg:           #a9edd8;
+  --resenia-item-texto:        #000000;
+  --resenia-comentario-bg:     #ffffff;
+  --resenia-comentario-texto:  #000000;
 
-  /* Overlay opacities */
-  --overlay-45: rgba(0,0,0,0.45); /* backdrop modal oscuro */
-  --overlay-50: rgba(0,0,0,0.5); /* backdrop reseñas/overlays más opacos */
-  --overlay-12: rgba(0,0,0,0.12); /* degradados de avatar / fondos sutiles */
-  --overlay-04: rgba(0,0,0,0.04); /* stops de gradiente muy claros */
+  /* === FONDO Y TEXTOS GENERALES === */
+  --bg-main:               #f4faf8;
+  --modal-bg:              #ffffff;
+  --modal-text:            #000000;
+  --text-main:             #000000;
+  --text-muted:            #666666;
 
-  /* Additional shadows */
-  --shadow-xxl-45: 0 20px 60px rgba(0,0,0,0.45); /* sombra intensa para modales grandes */
-  --shadow-card: 0 6px 18px rgba(0,0,0,0.08); /* sombra de tarjetas internas y list items */
-  --shadow-md-16: 0 6px 18px rgba(0,0,0,0.16); /* sombra media (avatares, thumbnails) */
+  /* === ALIASES SEMÁNTICOS (usan paleta principal) === */
+  --modal-title-color:     var(--color-titulo);
+  --btn-primary-bg:        var(--color-boton-relleno);
+  --btn-text-color:        var(--color-boton-texto);
+  --chat-fill:             var(--color-chat-relleno);
+  --placeholder-fill:      var(--color-placeholder);
+  --chat-border:           var(--color-chat-borde);
+  --border-ui:             var(--color-chat-borde);
+  --primary-green:         var(--color-titulo);
 
-  /* Card colors */
-  --card-bg: #ffffff; /* fondo por defecto de cards y reseñas (modo claro) */
-  --card-bg-dark: #A9B0AE; /* fondo de card en modo oscuro (fallback) */
+  /* === COLORES DE ESTADO / UTILIDAD === */
+  --error-color:           #c0392b;
+  --white:                 #ffffff;
+  --text-dark:             #333333;
+  --card-bg:               #ffffff;
+  --card-bg-dark:          #A9B0AE;
+  --muted:                 #888888;
+  --muted-bg:              #f8f9fa;
+  --highlight-bg:          #fffbf0;
+  --email-bg:              #f5f5f5;
+  --accent-dark:           #47472e;
+  --accent-contrast:       #ffe0a6;
+  --muted-text:            rgba(0,0,0,0.6);
 
-  /* Warnings / alerts */
-  --warning-bg: rgba(255,230,180,0.12); /* fondo de cajas de error/alerta */
-  --warning-text: #7a4f00; /* color de texto de advertencia */
+  /* === BOTONES SECUNDARIOS / GPS === */
+  --btn-fill:              var(--color-boton-relleno);
+  --light-btn-secondary:   #6c757d;
+  --btn-gps:               #007bff;
+  --path-highlight:        #007bff;
+  --marker-primary:        #007bff;
 
-  /* Muted text */
-  --muted-text: rgba(0,0,0,0.6); /* texto secundario / labels */
-  /* Tipografía y ajustes base */
+  /* === MARCADORES DE MAPA === */
+  --marker-hospital:       #e74c3c;
+  --marker-clinic:         #3498db;
+  --marker-clinica:        #3498db;
+  --marker-doctors:        #2ecc71;
+  --marker-doctor:         #2ecc71;
+  --marker-vet:            #9b59b6;
+  --marker-veterinaria:    #9b59b6;
+  --marker-default:        #34495e;
+
+  /* === FONDOS ESPECIALES === */
+  --bg-navbar-modal:       #cffdee;
+  --text-highlight:        var(--color-titulo);
+  --light-modal-bg:        linear-gradient(180deg, #e6fff9, #dff7ee);
+  --light-text:            #08331f;
+  --warning-bg:            rgba(255,230,180,0.12);
+  --warning-text:          #7a4f00;
+  --info-bg-dark:          rgba(0,0,0,0.18);
+
+  /* === SOMBRAS === */
+  --shadow-xs:             0 1px 3px rgba(0,0,0,0.06);
+  --shadow-sm:             0 6px 18px rgba(0,0,0,0.08);
+  --shadow-sm-8:           0 4px 8px rgba(0,0,0,0.08);
+  --shadow-sm-12:          0 6px 12px rgba(0,0,0,0.12);
+  --shadow-sm-18:          0 4px 16px rgba(0,0,0,0.18);
+  --shadow-md:             0 12px 36px rgba(0,0,0,0.12);
+  --shadow-md-16:          0 6px 18px rgba(0,0,0,0.16);
+  --shadow-md-18:          0 12px 36px rgba(0,0,0,0.18);
+  --shadow-lg:             0 8px 24px rgba(0,0,0,0.1);
+  --shadow-xl:             0 20px 50px rgba(0,0,0,0.25);
+  --shadow-xl-35:          0 8px 22px rgba(0,0,0,0.35);
+  --shadow-xxl-20:         0 16px 48px rgba(0,0,0,0.2);
+  --shadow-xxl-45:         0 20px 60px rgba(0,0,0,0.45);
+  --shadow-card:           0 6px 18px rgba(0,0,0,0.08);
+  --shadow-accent:         0 2px 8px rgba(250,163,3,0.2);
+  --shadow-strong:         0 1px 4px rgba(0,0,0,0.6);
+
+  /* === BORDES Y OVERLAYS === */
+  --border-opaque-04:      rgba(0,0,0,0.04);
+  --border-opaque-06:      rgba(0,0,0,0.06);
+  --border-opaque-08:      rgba(0,0,0,0.08);
+  --border-opaque-12:      rgba(0,0,0,0.12);
+  --border-subtle:         rgba(0,0,0,0.04);
+  --border-ui-translucent: rgba(162,227,208,0.12);
+  --overlay-04:            rgba(0,0,0,0.04);
+  --overlay-12:            rgba(0,0,0,0.12);
+  --overlay-45:            rgba(0,0,0,0.45);
+  --overlay-50:            rgba(0,0,0,0.5);
+  --overlay-dark-05:       rgba(0,0,0,0.05);
+  --overlay-dark-08:       rgba(0,0,0,0.08);
+  --overlay-dark-15:       rgba(2,2,2,0.15);
+
+  /* === PANEL / FONDO TRANSLÚCIDO === */
+  --panel-bg-85:           rgba(255,255,255,0.85);
+  --panel-bg-90:           rgba(255,255,255,0.9);
+  --panel-border-60:       rgba(255,255,255,0.6);
+
+  /* === BLANCOS Y NEGROS CON OPACIDAD === */
+  --white-02:              rgba(255,255,255,0.02);
+  --white-04:              rgba(255,255,255,0.04);
+  --white-06:              rgba(255,255,255,0.06);
+  --white-08:              rgba(255,255,255,0.08);
+  --black-06:              rgba(0,0,0,0.06);
+  --black-12:              rgba(0,0,0,0.12);
+
+  /* === ACENTOS CON OPACIDAD === */
+  --accent-contrast-30:    rgba(255,224,166,0.3);
+  --accent-contrast-60:    rgba(255,224,166,0.6);
+  --marker-hospital-28:    rgba(231,76,60,0.28);
+  --marker-clinic-28:      rgba(52,152,219,0.28);
+  --marker-doctors-28:     rgba(46,204,113,0.28);
+  --marker-vet-28:         rgba(155,89,182,0.28);
+
+  /* === LAYOUT === */
+  --navbar-height:         88px;
+  --radius:                8px;
+  --transition:            all 0.3s ease;
+
+  /* === TIPOGRAFÍA === */
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -82,153 +168,57 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  /* Paleta — Modo claro (por defecto) */
-  --bg-main: #f4faf8;
-  --modal-bg: #ffffff;
-  --modal-text: #000000;
-  --modal-title-color: #66B09D;
-  --btn-primary-bg: #9EE2CF;
-  --btn-text-color: #08331f;
-  --text-main: #000000;
-  --text-muted: #666666;
-  --placeholder-fill: #ffffff;
-  --chat-fill: #edf7f3;
-  --chat-border: #A2E3D0;
-  --border-ui: #A2E3D0;
-  --error-color: #c0392b;
-  --marker-hospital: #e74c3c;
-  --marker-clinic: #3498db;
-  --marker-doctors: #2ecc71;
-  --marker-vet: #9b59b6;
-  --marker-default: #34495e;
-  --marker-primary: #007bff;
-  --path-highlight: #007bff;
-  --navbar-height: 88px;
-  --primary-green: #66B09D;
-  --border-ui-translucent: rgba(162,227,208,0.12);
-  /* Tokens adicionales referenciados por componentes */
-  --text-highlight: #2b8b8c;       /* acento/highlight (ej. títulos Map) */
-  --bg-navbar-modal: #ffffff;      /* fondo de navbar o paneles tipo modal */
-  --btn-gps: #007bff;             /* botón GPS / acciones rápidas */
-  --info-bg-dark: rgba(0,0,0,0.18);/* fondo info en tema oscuro */
-  --btn-fill: var(--btn-primary-bg); /* alias histórico para botones */
-  --light-modal-bg: linear-gradient(180deg, #e6fff9, #dff7ee); /* usado por algunos modales claros */
-  --light-text: #08331f;
-  --light-btn-secondary: #6c757d;
-  /* Additional tokens used across components */
-  --white: #ffffff;
-  --text-dark: #333333;
-  --card-bg: #ffffff;
-  --email-bg: #f5f5f5;
-  --accent-dark: #47472e;
-  --accent-contrast: #ffe0a6;
-  --muted: #888888;
-  --muted-bg: #f8f9fa;
-  --highlight-bg: #fffbf0;
-
-  /* utilitarios */
-  --radius: 8px;
-  --transition: all 0.3s ease;
 }
 
-/* Valores para modo oscuro */
+/* ── MODO OSCURO ────────────────────────────────── */
 .dark-theme {
-  --bg-main: #0f1716;
-  --modal-bg: #0B1F22;
-  --modal-text: #e6fff9;
-  --modal-title-color: #66B09D;
-  --btn-primary-bg: #66B09D;
-  --btn-text-color: #dbeee6;
-  --text-main: #dbeee6;
-  --text-muted: #8aada5;
-  --placeholder-fill: #0a1b1b;
-  --chat-fill: #0f2a2a;
-  --chat-border: #163433;
-  --border-ui: #163433;
-  --error-color: #ff8a80;
-  --marker-primary: #66B09D;
-  /* Dark tokens corresponding to additional tokens */
-  --text-highlight: #7fd6c2;
-  --bg-navbar-modal: #142a28;
-  --btn-gps: #66B09D;
-  --info-bg-dark: rgba(255,255,255,0.04);
-  --btn-fill: var(--btn-primary-bg);
-  --light-modal-bg: linear-gradient(180deg, #0f2a2a, #0b1f22);
-  --light-text: #e6fff9;
-  --light-btn-secondary: #495057;
-}
-/* Accent opacities */
-:root {
-  --accent-contrast-30: rgba(255,224,166,0.3);
-  --accent-contrast-60: rgba(255,224,166,0.6);
-}
-/* Shadows and panel alphas */
-:root {
-  --shadow-xs: 0 1px 3px rgba(0,0,0,0.06);
-  --shadow-sm: 0 6px 18px rgba(0,0,0,0.08);
-  --shadow-md: 0 12px 36px rgba(0,0,0,0.12);
-  --shadow-accent: 0 2px 8px rgba(250,163,3,0.2);
-  --panel-bg-85: rgba(255,255,255,0.85);
-  --panel-bg-90: rgba(255,255,255,0.9);
-  --panel-border-60: rgba(255,255,255,0.6);
+  /* === PALETA PRINCIPAL OSCURA === */
+  --color-titulo:          #66b09d;
+  --color-boton-relleno:   #1d5042;
+  --color-boton-texto:     #ffffff;
+  --color-chat-relleno:    #A9B0AE;
+  --color-placeholder:     #2d3a37;
+  --color-chat-borde:      #66b09d;
+
+  /* === RESEÑAS === */
+  --resenia-item-bg:           #1a2e2a;
+  --resenia-item-texto:        #e6fff9;
+  --resenia-comentario-bg:     #0f2a2a;
+  --resenia-comentario-texto:  #dbeee6;
+
+  /* === FONDO Y TEXTOS === */
+  --bg-main:               #0f1716;
+  --modal-bg:              #0B1F22;
+  --modal-text:            #e6fff9;
+  --text-main:             #dbeee6;
+  --text-muted:            #8aada5;
+
+  /* === ALIASES SEMÁNTICOS (se actualizan automáticamente via var()) === */
+  --card-bg:               #1a2a28;
+  --bg-navbar-modal:       #142a28;
+  --text-highlight:        var(--color-titulo);
+  --light-modal-bg:        linear-gradient(180deg, #0f2a2a, #0b1f22);
+  --light-text:            #e6fff9;
+  --light-btn-secondary:   #495057;
+  --btn-gps:               var(--color-titulo);
+  --marker-primary:        var(--color-titulo);
+  --error-color:           #ff8a80;
+  --info-bg-dark:          rgba(255,255,255,0.04);
+  --warning-bg:            rgba(255,230,180,0.06);
+
+  /* === BADGES (Turnos dark) === */
+  --badge-pending-bg-dark:     rgba(240,196,74,0.15);
+  --badge-pending-color-dark:  #f0c44a;
+  --badge-cancelled-bg-dark:   rgba(192,57,43,0.15);
+  --badge-cancelled-color-dark:#ff8a80;
 }
 
-/* Marker opacity fallbacks and aliases */
-:root {
-  --marker-hospital-28: rgba(231,76,60,0.28);
-  --marker-clinic-28: rgba(52,152,219,0.28);
-  --marker-doctors-28: rgba(46,204,113,0.28);
-  --marker-vet-28: rgba(155,89,182,0.28);
-  --marker-hospital: #e74c3c;
-  --marker-clinica: var(--marker-clinic, #3498db);
-  --marker-doctor: var(--marker-doctors, #2ecc71);
-  --marker-veterinaria: var(--marker-vet, #9b59b6);
-}
-/* Additional shadows & subtle borders */
-:root {
-  --shadow-lg: 0 8px 24px rgba(0,0,0,0.1);
-  --shadow-md-18: 0 12px 36px rgba(0,0,0,0.18);
-  --shadow-xl: 0 20px 50px rgba(0,0,0,0.25);
-  --shadow-strong: 0 1px 4px rgba(0,0,0,0.6);
-  --border-subtle: rgba(0,0,0,0.04);
-  --border-opaque-06: rgba(0,0,0,0.06);
-  --overlay-dark-15: rgba(2,2,2,0.15);
-}
-:root {
-  --white-02: rgba(255,255,255,0.02);
-  --white-04: rgba(255,255,255,0.04);
-  --white-06: rgba(255,255,255,0.06);
-  --black-06: rgba(0,0,0,0.06);
-  --black-12: rgba(0,0,0,0.12);
-}
-/* Extended shadows and borders */
-:root {
-  --border-opaque-12: rgba(0,0,0,0.12);
-  --shadow-xxl-20: 0 16px 48px rgba(0,0,0,0.2);
-  --shadow-xl-35: 0 8px 22px rgba(0,0,0,0.35);
-  --shadow-sm-18: 0 4px 16px rgba(0,0,0,0.18);
-}
-/* More overlay opacities */
-:root {
-  --overlay-dark-08: rgba(0,0,0,0.08);
-  --overlay-dark-05: rgba(0,0,0,0.05);
-  --white-08: rgba(255,255,255,0.08);
-}
-/* Badge colors for Turnos dark theme */
-.dark-theme {
-  --badge-pending-bg-dark: rgba(240,196,74,0.15);
-  --badge-pending-color-dark: #f0c44a;
-  --badge-cancelled-bg-dark: rgba(192,57,43,0.15);
-  --badge-cancelled-color-dark: #ff8a80;
-}
-
+/* ── ESTILOS BASE ───────────────────────────────── */
 a {
   font-weight: 500;
   color: #646cff;
   text-decoration: inherit;
 }
-
 a:hover {
   color: #535bf2;
 }
@@ -248,27 +238,18 @@ body {
   height: 100vh;
   overflow-x: hidden;
   min-width: 320px;
-
-  /* Fondo con gradiente armónico */
-  background: 
-    radial-gradient(100% 100% at 50% 50%, 
+  background:
+    radial-gradient(100% 100% at 50% 50%,
       #b5e2e1 0%,
       #66aaaa 35%,
       #2b8b8c 65%,
       #1f6668 85%,
       #dfecec 100%
     );
-
   background-attachment: fixed;
   background-size: cover;
   background-repeat: no-repeat;
   position: relative;
-}
-
-.body h1 {
-  justify-content: center;
-  align-items: center;
-  text-align: center;
 }
 
 h1 {
@@ -292,27 +273,23 @@ button {
   min-width: 44px;
   min-height: 44px;
 }
-
 button:hover {
   border-color: #646cff;
 }
-
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-/* Media Queries para index.css */
+/* ── MEDIA QUERIES ──────────────────────────────── */
 @media (max-width: 768px) {
   body {
     padding: 0.5rem;
   }
-
   h1 {
     font-size: clamp(1.5rem, 4vw, 2rem);
     padding: 0 0.5rem;
   }
-
   button {
     padding: 0.5em 1em;
     width: 100%;
@@ -324,16 +301,13 @@ button:focus-visible {
   :root {
     font-size: 14px;
   }
-
   body {
     padding: 0.25rem;
   }
-
   h1 {
     font-size: clamp(1.2rem, 3.5vw, 1.8rem);
     padding: 0 0.25rem;
   }
-
   button {
     padding: 0.7em 1em;
     font-size: 0.9rem;
@@ -344,23 +318,19 @@ button:focus-visible {
   :root {
     color: #213547;
   }
-  
   a:hover {
     color: #747bff;
   }
-  
   button {
     color: #f9f9f9;
   }
 }
 
-/* Orientación landscape en móviles */
 @media (max-width: 768px) and (orientation: landscape) {
   body {
     min-height: 100vh;
     padding: 0.5rem;
   }
-
   h1 {
     font-size: clamp(1.2rem, 3vw, 1.8rem);
   }

@@ -1,45 +1,44 @@
 /* ============================================================
    CostComparator.css — SaludMap
-   Usa variables de App.css para soportar modo claro/oscuro.
-   La clase .dark-theme se aplica en document.body.
-   Todos los estilos de botones usan !important para ganar
-   al reset global de App.css (button { background-color: var(--color-primary) ... })
+   Todos los colores usan variables definidas en index.css.
+   No hay colores hardcodeados ni !important.
+
+   Breakpoints:
+   ≥ 1280px  → Desktop grande
+   default   → Notebook / Desktop normal (base)
+   ≤ 1024px  → Tablet
+   ≤ 768px   → Tablet chica / landscape móvil
+   ≤ 480px   → Celular
    ============================================================ */
 
-/* ── Variables locales (valores directos para evitar cascada rota) ── */
+/* ── Variables locales — todas apuntan al index.css ── */
 :root {
-  --cc-bg-panel:      #ffffff;
-  --cc-bg-section:    #edf7f3;
-  --cc-bg-row-odd:    rgba(162, 227, 208, 0.08);
-  --cc-bg-row-hover:  rgba(162, 227, 208, 0.15);
-  --cc-border:        #A2E3D0;
-  --cc-border-strong: #66B09D;
-  --cc-text-main:     #000000;
-  --cc-text-accent:   #66B09D;
-  --cc-text-muted:    #6b8f87;
-  --cc-btn-bg:        #9EE2CF;
-  --cc-btn-text:      #08331f;
-  --cc-shadow:        0 2px 12px rgba(102, 176, 157, 0.12);
-  --cc-shadow-lg:     0 18px 48px rgba(0, 0, 0, 0.18);
-  --cc-radius:        12px;
-  --cc-radius-sm:     8px;
-  --cc-transition:    all 0.22s cubic-bezier(0.2, 0.9, 0.2, 1);
-  --cc-font:          'Roboto', 'DM Sans', sans-serif;
+  --cc-bg-panel:       var(--modal-bg);
+  --cc-bg-section:     var(--placeholder-fill);
+  --cc-bg-row-odd:     var(--border-ui-translucent);
+  --cc-bg-row-hover:   var(--overlay-dark-05);
+  --cc-border:         var(--chat-border);
+  --cc-border-strong:  var(--color-titulo);
+  --cc-text-main:      var(--text-main);
+  --cc-text-accent:    var(--color-titulo);
+  --cc-text-muted:     var(--text-muted);
+  --cc-btn-bg:         var(--color-boton-relleno);
+  --cc-btn-text:       var(--color-boton-texto);
+  --cc-shadow:         var(--shadow-sm-8);
+  --cc-shadow-lg:      var(--shadow-xxl-20);
+  --cc-radius:         12px;
+  --cc-radius-sm:      8px;
+  --cc-transition:     var(--transition);
+  --cc-font:           'DM Sans', 'Roboto', sans-serif;
 }
 
 .dark-theme {
-  --cc-bg-panel:      #1e2e2b;
-  --cc-bg-section:    #1a2926;
-  --cc-bg-row-odd:    rgba(102, 176, 157, 0.05);
-  --cc-bg-row-hover:  rgba(102, 176, 157, 0.09);
-  --cc-text-main:     #dbeee6;
-  --cc-text-muted:    #8aada5;
-  --cc-shadow:        0 2px 12px rgba(0, 0, 0, 0.4);
-  --cc-shadow-lg:     0 18px 48px rgba(0, 0, 0, 0.6);
+  --cc-bg-row-odd:   rgba(102,176,157,0.05);
+  --cc-bg-row-hover: rgba(102,176,157,0.09);
 }
 
 /* ══════════════════════════════════════════
-   OVERLAY — solo posicionamiento, sin fondo
+   OVERLAY
 ══════════════════════════════════════════ */
 .cost-compare-root {
   position: fixed;
@@ -51,6 +50,9 @@
   padding: 24px 18px;
   box-sizing: border-box;
   overflow-y: auto;
+  background: var(--overlay-50);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 /* ══════════════════════════════════════════
@@ -58,7 +60,6 @@
 ══════════════════════════════════════════ */
 .cost-compare-panel {
   position: relative;
-  /* margin: auto + flex center = centrado real incluso con overflow-y */
   margin: auto;
   width: min(94vw, 960px);
   background: var(--cc-bg-panel);
@@ -83,31 +84,30 @@
    BOTÓN CERRAR
 ══════════════════════════════════════════ */
 .cost-compare-panel .modal-close {
-  position: absolute !important;
-  top: 14px !important;
-  right: 14px !important;
-  background: var(--cc-bg-section) !important;
-  border: 1.5px solid var(--cc-border) !important;
-  color: var(--cc-text-accent) !important;
-  width: 30px !important;
-  height: 30px !important;
-  min-height: unset !important;
-  border-radius: 50% !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  cursor: pointer !important;
-  z-index: 10 !important;
-  padding: 0 !important;
-  box-shadow: none !important;
-  font-size: 0.95rem !important;
-  transition: var(--cc-transition) !important;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: var(--cc-bg-section);
+  border: 1.5px solid var(--cc-border);
+  color: var(--cc-text-accent);
+  width: 30px;
+  height: 30px;
+  min-height: unset;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  padding: 0;
+  box-shadow: none;
+  font-size: 0.95rem;
+  transition: var(--cc-transition);
 }
 
 .cost-compare-panel .modal-close:hover {
-  background: var(--cc-btn-bg) !important;
-  transform: scale(1.08) !important;
-  box-shadow: none !important;
+  background: var(--cc-btn-bg);
+  transform: scale(1.08);
 }
 
 .cost-compare-panel .close-x {
@@ -141,9 +141,6 @@
 
 /* ══════════════════════════════════════════
    CONTROLES — select + botón Comparar
-   !important indispensable: App.css tiene un
-   `button { background-color: var(--color-primary) ... }`
-   que pisa cualquier regla sin !important
 ══════════════════════════════════════════ */
 .cost-compare-controls {
   display: flex;
@@ -154,28 +151,27 @@
 }
 
 .cost-compare-panel .cc-select {
-  padding: 9px 12px !important;
-  border-radius: var(--cc-radius-sm) !important;
-  border: 1.5px solid var(--cc-border) !important;
-  background: var(--cc-bg-section) !important;
-  color: var(--cc-text-main) !important;
-  font-family: var(--cc-font) !important;
-  font-size: 0.88rem !important;
-  font-weight: 500 !important;
+  padding: 9px 12px;
+  border-radius: var(--cc-radius-sm);
+  border: 1.5px solid var(--cc-border);
+  background: var(--cc-bg-section);
+  color: var(--cc-text-main);
+  font-family: var(--cc-font);
+  font-size: 0.88rem;
+  font-weight: 500;
   min-width: 200px;
   -webkit-appearance: none;
   appearance: none;
   cursor: pointer;
-  min-height: unset !important;
-  box-shadow: none !important;
-  transform: none !important;
+  min-height: unset;
+  box-shadow: none;
   transition: var(--cc-transition);
 }
 
 .cost-compare-panel .cc-select:focus {
-  outline: none !important;
-  border-color: var(--cc-border-strong) !important;
-  box-shadow: 0 0 0 3px rgba(102, 176, 157, 0.15) !important;
+  outline: none;
+  border-color: var(--cc-border-strong);
+  box-shadow: 0 0 0 3px rgba(77,170,144,0.15);
 }
 
 .cost-compare-panel .cc-select option {
@@ -184,32 +180,32 @@
 }
 
 .cost-compare-panel .btn-compare {
-  background: var(--cc-border-strong) !important;
-  color: #ffffff !important;
-  border: 1.5px solid var(--cc-border-strong) !important;
-  padding: 9px 18px !important;
-  border-radius: var(--cc-radius-sm) !important;
-  font-family: var(--cc-font) !important;
-  font-size: 0.88rem !important;
-  font-weight: 700 !important;
-  cursor: pointer !important;
-  min-height: unset !important;
-  box-shadow: 0 4px 12px rgba(102, 176, 157, 0.22) !important;
-  transition: var(--cc-transition) !important;
+  background: var(--cc-border-strong);
+  color: var(--white);
+  border: 1.5px solid var(--cc-border-strong);
+  padding: 9px 18px;
+  border-radius: var(--cc-radius-sm);
+  font-family: var(--cc-font);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: unset;
+  box-shadow: var(--cc-shadow);
+  transition: var(--cc-transition);
 }
 
 .cost-compare-panel .btn-compare:hover:not(:disabled) {
-  filter: brightness(1.08) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 6px 18px rgba(102, 176, 157, 0.32) !important;
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .cost-compare-panel .btn-compare:disabled {
-  opacity: 0.5 !important;
-  cursor: not-allowed !important;
-  transform: none !important;
-  box-shadow: none !important;
-  filter: none !important;
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  filter: none;
 }
 
 /* ══════════════════════════════════════════
@@ -232,37 +228,36 @@
 .cc-title {
   font-size: 0.82rem;
   font-weight: 700;
-  color: #ffff;
+  color: var(--cc-text-accent);
   margin-right: 4px;
 }
 
 .cc-selected-count {
   font-size: 0.78rem;
-  color: v#ffff;
+  color: var(--cc-text-muted);
   margin-left: 6px;
 }
 
-/* btn-ghost: también necesita !important para ganar al reset global */
+/* btn-ghost dentro del comparador */
 .cost-compare-panel .btn-ghost {
-  background: var(--cc-btn-bg) !important;
-  border: 1.5px solid var(--cc-border-strong) !important;
-  color: var(--cc-btn-text) !important;
-  padding: 6px 14px !important;
-  border-radius: var(--cc-radius-sm) !important;
-  font-family: var(--cc-font) !important;
-  font-size: 0.78rem !important;
-  font-weight: 700 !important;
-  cursor: pointer !important;
-  min-height: unset !important;
-  box-shadow: none !important;
-  transform: none !important;
-  transition: var(--cc-transition) !important;
+  background: var(--cc-btn-bg);
+  border: 1.5px solid var(--cc-border-strong);
+  color: var(--cc-btn-text);
+  padding: 6px 14px;
+  border-radius: var(--cc-radius-sm);
+  font-family: var(--cc-font);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: unset;
+  box-shadow: none;
+  transition: var(--cc-transition);
 }
 
 .cost-compare-panel .btn-ghost:hover:not(:disabled) {
-  filter: brightness(0.94) !important;
-  transform: translateY(-1px) !important;
-  box-shadow: var(--cc-shadow) !important;
+  filter: brightness(0.94);
+  transform: translateY(-1px);
+  box-shadow: var(--cc-shadow);
 }
 
 /* ══════════════════════════════════════════
@@ -280,10 +275,10 @@
   gap: 4px;
 }
 
-.cc-places-list::-webkit-scrollbar            { width: 5px; }
-.cc-places-list::-webkit-scrollbar-track      { background: transparent; }
-.cc-places-list::-webkit-scrollbar-thumb      { background: var(--cc-border); border-radius: 6px; }
-.cc-places-list::-webkit-scrollbar-thumb:hover{ background: var(--cc-border-strong); }
+.cc-places-list::-webkit-scrollbar             { width: 5px; }
+.cc-places-list::-webkit-scrollbar-track       { background: transparent; }
+.cc-places-list::-webkit-scrollbar-thumb       { background: var(--cc-border); border-radius: 6px; }
+.cc-places-list::-webkit-scrollbar-thumb:hover { background: var(--cc-border-strong); }
 
 .cc-place-item {
   display: flex;
@@ -297,7 +292,7 @@
 }
 
 .cc-place-item:hover {
-  background: rgba(162, 227, 208, 0.18);
+  background: var(--cc-bg-row-hover);
   border-color: var(--cc-border);
 }
 
@@ -361,7 +356,7 @@
 
 .cc-specialty-label:hover {
   border-color: var(--cc-border-strong);
-  background: rgba(162, 227, 208, 0.15);
+  background: var(--cc-bg-row-hover);
 }
 
 .cc-specialty-label input[type="checkbox"] {
@@ -402,9 +397,6 @@
 
 /* ══════════════════════════════════════════
    TABLA DE COSTOS
-   La línea separadora va en tr con box-shadow,
-   NO en td con border-bottom, para que la línea
-   abarque toda la fila y no deje huecos entre celdas
 ══════════════════════════════════════════ */
 .cost-table-wrapper {
   width: 100%;
@@ -417,9 +409,9 @@
   background: var(--cc-bg-section);
 }
 
-.cost-table-wrapper::-webkit-scrollbar            { width: 5px; height: 5px; }
-.cost-table-wrapper::-webkit-scrollbar-thumb      { background: var(--cc-border); border-radius: 6px; }
-.cost-table-wrapper::-webkit-scrollbar-thumb:hover{ background: var(--cc-border-strong); }
+.cost-table-wrapper::-webkit-scrollbar             { width: 5px; height: 5px; }
+.cost-table-wrapper::-webkit-scrollbar-thumb       { background: var(--cc-border); border-radius: 6px; }
+.cost-table-wrapper::-webkit-scrollbar-thumb:hover { background: var(--cc-border-strong); }
 
 .cost-table {
   width: 100%;
@@ -442,7 +434,7 @@
   text-align: left;
   font-size: 0.75rem;
   font-weight: 700;
-  color: var(--cc-btn-text) !important;
+  color: var(--cc-btn-text);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   white-space: nowrap;
@@ -452,26 +444,17 @@
   border-bottom: 2px solid var(--cc-border-strong);
 }
 
-/* Filas: el separador es box-shadow horizontal en el TR,
-   así la línea siempre abarca el 100% del ancho sin huecos */
+/* Filas separadas con box-shadow para que abarquen todo el ancho */
 .cost-table tbody tr {
   transition: background 0.12s ease;
   box-shadow: inset 0 -1px 0 var(--cc-border);
 }
 
-.cost-table tbody tr:last-child {
-  box-shadow: none;
-}
+.cost-table tbody tr:last-child { box-shadow: none; }
+.cost-table tbody tr:nth-child(odd) { background: var(--cc-bg-row-odd); }
+.cost-table tbody tr:hover { background: var(--cc-bg-row-hover); }
 
-.cost-table tbody tr:nth-child(odd) {
-  background: var(--cc-bg-row-odd);
-}
-
-.cost-table tbody tr:hover {
-  background: var(--cc-bg-row-hover);
-}
-
-/* Celdas: sin ningún borde propio */
+/* Celdas */
 .cost-table td {
   padding: 10px 14px;
   vertical-align: middle;
@@ -480,29 +463,23 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   border: none;
-  /* modo claro: texto negro */
-  color: #000000 !important;
+  color: var(--cc-text-main);
 }
 
-/* modo oscuro: texto blanco */
-.dark-theme .cost-table td {
-  color: #ffffff !important;
-}
-
-/* Anchos fijos por columna */
+/* Anchos por columna */
 .cost-table .col-est     { width: 42%; }
 .cost-table .col-type    { width: 15%; }
 .cost-table .col-service { width: 27%; }
 .cost-table .col-price   { width: 16%; text-align: right; }
 
-/* Primera celda: permite wrap para nombre + subtítulo */
+/* Primera celda: wrap para nombre + subtítulo */
 .cost-table td:first-child { white-space: normal; }
 
-/* Contenido de celdas — texto negro en claro, blanco en oscuro */
+/* Contenido de celdas */
 .cc-result-name {
   font-weight: 700;
   font-size: 0.88rem;
-  color: #000000 !important;
+  color: var(--cc-text-main);
   line-height: 1.3;
   display: block;
   overflow: hidden;
@@ -510,13 +487,9 @@
   white-space: nowrap;
 }
 
-.dark-theme .cc-result-name {
-  color: #ffffff !important;
-}
-
 .cc-result-sub {
   font-size: 0.73rem;
-  color: rgba(0, 0, 0, 0.55) !important;
+  color: var(--cc-text-muted);
   margin-top: 3px;
   display: block;
   overflow: hidden;
@@ -524,43 +497,29 @@
   white-space: nowrap;
 }
 
-.dark-theme .cc-result-sub {
-  color: rgba(255, 255, 255, 0.6) !important;
-}
-
-.cc-result-type { display: flex; align-items: center; }
+.cc-result-type    { display: flex; align-items: center; }
 
 .cc-result-service {
   font-size: 0.84rem;
   font-weight: 500;
-  color: #000000 !important;
+  color: var(--cc-text-main);
 }
 
-.dark-theme .cc-result-service {
-  color: #ffffff !important;
-}
-
-/* Precio resaltado: verde en ambos modos */
+/* Precio resaltado */
 .cost-highlight {
   font-weight: 800;
-  color: var(--cc-border-strong) !important;
+  color: var(--cc-border-strong);
 }
 
 /* Fila más barata */
 .cheapest {
-  background: rgba(102, 176, 157, 0.12) !important;
-  box-shadow: inset 3px 0 0 var(--cc-border-strong), inset 0 -1px 0 var(--cc-border) !important;
+  background: var(--cc-bg-row-odd);
+  box-shadow: inset 3px 0 0 var(--cc-border-strong), inset 0 -1px 0 var(--cc-border);
 }
 
 .cheapest:last-child {
-  box-shadow: inset 3px 0 0 var(--cc-border-strong) !important;
+  box-shadow: inset 3px 0 0 var(--cc-border-strong);
 }
-
-.cheapest .cc-result-name { color: #000000 !important; }
-.cheapest .cc-result-sub  { color: rgba(0, 0, 0, 0.55) !important; }
-
-.dark-theme .cheapest .cc-result-name { color: #ffffff !important; }
-.dark-theme .cheapest .cc-result-sub  { color: rgba(255, 255, 255, 0.6) !important; }
 
 .cheapest-indicator {
   color: #e6b800;
@@ -570,7 +529,7 @@
 
 .cheapest-label {
   font-size: 0.68rem;
-  color: var(--cc-border-strong) !important;
+  color: var(--cc-border-strong);
   font-weight: 700;
   margin-top: 3px;
   text-transform: uppercase;
@@ -592,36 +551,84 @@
   white-space: nowrap;
 }
 
+/* Modo claro */
 .cost-compare-panel .badge--hospital    { background: linear-gradient(135deg, #ffd3b3, #ffb085); color: #5a2800; }
 .cost-compare-panel .badge--clinica     { background: linear-gradient(135deg, #cfe9ff, #89c4ff); color: #003d6e; }
 .cost-compare-panel .badge--veterinaria { background: linear-gradient(135deg, #e9e9e9, #cfcfcf); color: #2d2d2d; }
-.cost-compare-panel .badge--doctor      { background: linear-gradient(135deg, #d7ffd9, #a7f3b0); color: #08331f; }
+.cost-compare-panel .badge--doctor      { background: linear-gradient(135deg, #d7ffd9, #a7f3b0); color: var(--light-text); }
 
-.dark-theme .cost-compare-panel .badge--hospital    { background: rgba(255, 176, 133, 0.22); color: #ffd3b3; }
-.dark-theme .cost-compare-panel .badge--clinica     { background: rgba(137, 196, 255, 0.22); color: #cfe9ff; }
-.dark-theme .cost-compare-panel .badge--veterinaria { background: rgba(207, 207, 207, 0.18); color: #d8d8d8; }
-.dark-theme .cost-compare-panel .badge--doctor      { background: rgba(167, 243, 176, 0.18); color: #d7ffd9; }
+/* Modo oscuro */
+.dark-theme .cost-compare-panel .badge--hospital    { background: rgba(255,176,133,0.22); color: #ffd3b3; }
+.dark-theme .cost-compare-panel .badge--clinica     { background: rgba(137,196,255,0.22); color: #cfe9ff; }
+.dark-theme .cost-compare-panel .badge--veterinaria { background: rgba(207,207,207,0.18); color: #d8d8d8; }
+.dark-theme .cost-compare-panel .badge--doctor      { background: rgba(167,243,176,0.18); color: #d7ffd9; }
 
-/* ══════════════════════════════════════════
+/* ════════════════════════════════════════════════
    RESPONSIVE
-══════════════════════════════════════════ */
-@media (max-width: 720px) {
-  .cost-compare-panel { padding: 16px 14px; }
+   ════════════════════════════════════════════════ */
 
-  .cost-compare-controls { flex-direction: column; align-items: stretch; }
+/* ── Desktop grande (≥ 1280px) ── */
+@media (min-width: 1280px) {
+  .cost-compare-panel {
+    padding: 28px 32px;
+    width: min(92vw, 1100px);
+  }
+
+  .cost-compare-header h3 { font-size: 1.3rem; }
+
+  .cc-places-list     { max-height: 44vh; }
+  .cost-table-wrapper { max-height: 55vh; }
+
+  .cost-table th,
+  .cost-table td { padding: 12px 16px; font-size: 0.9rem; }
+
+  .cost-compare-panel .cc-select { min-width: 260px; font-size: 0.92rem; }
+  .cost-compare-panel .btn-compare { font-size: 0.92rem; padding: 10px 22px; }
+}
+
+/* ── Tablet (≤ 1024px) ── */
+@media (max-width: 1024px) {
+  .cost-compare-panel {
+    width: min(96vw, 820px);
+    padding: 18px 18px;
+  }
+
+  .cost-table .col-service { width: 22%; }
+  .cost-table .col-est     { width: 44%; }
+}
+
+/* ── Tablet chica / landscape (≤ 768px) ── */
+@media (max-width: 768px) {
+  .cost-compare-root {
+    padding: 16px 12px;
+    align-items: flex-start;
+  }
+
+  .cost-compare-panel {
+    width: 100%;
+    padding: 16px 14px;
+    border-radius: 10px;
+  }
+
+  .cost-compare-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
   .cost-compare-panel .cc-select {
-    min-width: unset !important;
-    width: 100% !important;
+    min-width: unset;
+    width: 100%;
   }
+
   .cost-compare-panel .btn-compare {
-    width: 100% !important;
-    text-align: center !important;
+    width: 100%;
+    text-align: center;
   }
 
   .cc-select-row     { gap: 8px; }
   .cc-specialty-list { gap: 8px; }
 
+  /* Ocultar columna de servicio en pantallas chicas */
   .cost-table .col-service { display: none; }
   .cost-table .col-est     { width: 50%; }
   .cost-table .col-type    { width: 20%; }
@@ -629,9 +636,68 @@
 
   .cc-places-list     { max-height: 28vh; }
   .cost-table-wrapper { max-height: 32vh; }
+
+  .cost-compare-panel .badge { font-size: 0.68rem; padding: 3px 7px; }
 }
 
-@media (min-width: 1400px) {
-  .cost-table-wrapper { max-height: 55vh; }
-  .cc-places-list     { max-height: 44vh; }
+/* ── Celular (≤ 480px) ── */
+@media (max-width: 480px) {
+  .cost-compare-root {
+    padding: 10px 8px;
+  }
+
+  .cost-compare-panel {
+    padding: 14px 12px;
+    border-radius: 8px;
+  }
+
+  .cost-compare-header {
+    padding-right: 36px;
+    margin-bottom: 0.65rem;
+  }
+
+  .cost-compare-header h3 { font-size: 0.95rem; }
+
+  .cc-title       { font-size: 0.76rem; }
+  .cc-place-name  { font-size: 0.82rem; }
+  .cc-place-addr  { font-size: 0.7rem; }
+
+  .cost-compare-panel .cc-select {
+    font-size: 0.84rem;
+    padding: 8px 10px;
+  }
+
+  .cost-compare-panel .btn-compare {
+    font-size: 0.84rem;
+    padding: 8px 14px;
+  }
+
+  .cost-compare-panel .btn-ghost {
+    font-size: 0.74rem;
+    padding: 5px 10px;
+  }
+
+  .cc-specialty-label { padding: 5px 8px; }
+  .cc-specialty-text  { font-size: 0.75rem; }
+
+  .cc-places-list     { max-height: 24vh; padding: 8px; }
+  .cost-table-wrapper { max-height: 28vh; }
+
+  /* En celular ocultar también tipo, dejar solo nombre y precio */
+  .cost-table .col-type    { display: none; }
+  .cost-table .col-est     { width: 65%; }
+  .cost-table .col-price   { width: 35%; }
+
+  .cost-table th,
+  .cost-table td { padding: 8px 10px; font-size: 0.8rem; }
+
+  .cc-result-name { font-size: 0.82rem; }
+  .cc-result-sub  { font-size: 0.68rem; }
+
+  .cost-compare-panel .modal-close {
+    top: 10px;
+    right: 10px;
+    width: 26px;
+    height: 26px;
+  }
 }

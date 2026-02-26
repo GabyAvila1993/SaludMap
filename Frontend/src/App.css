@@ -1,74 +1,17 @@
-/* ================================================================
-   App.css — SaludMap
-   Navbar completamente responsive sin inline styles, sin Tailwind,
-   sin Bootstrap. CSS puro con variables y media queries limpias.
-   ================================================================ */
+/* ── App.css ────────────────────────────────────────────────────────────── */
+/*
+  Navbar y estructura principal de la app.
+  Todos los colores usan variables definidas en index.css.
+  No hay colores hardcodeados ni !important.
+  Breakpoints:
+  ≥ 1280px  → Desktop grande
+  default   → Notebook / Desktop normal (base)
+  ≤ 1024px  → Tablet
+  ≤ 768px   → Tablet chica / landscape móvil
+  ≤ 480px   → Celular
+*/
 
-@import url('https://fonts.googleapis.com/css2?family=Headland+One&family=Roboto:wght@300;400;500;700;900&display=swap');
-@import './styles/modal.css';
-
-/* ================================================================
-   VARIABLES GLOBALES — Tema Claro
-   ================================================================ */
-:root {
-  --bg-navbar-modal:      #C9EFE4;
-  --btn-primary-bg:       #9EE2CF;
-  --text-highlight:       #66B09D;
-  --border-ui:            #A2E3D0;
-  --placeholder-bg:       #cecece;
-  --text-main:            #000000;
-  --text-dark:            #08331f;
-  --btn-gps:              #10b981;
-  --marker-hospital:      #e74c3c;
-  --marker-clinica:       #3498db;
-  --marker-doctor:        #2ecc71;
-  --marker-veterinaria:   #9b59b6;
-  --marker-default:       #34495e;
-  --gradient-accent-start:#ffffff;
-  --gradient-accent-end:  #ffe0a6;
-  --white:                #ffffff;
-  --info-bg-dark:         #4141428c;
-  --rating-color:         #e6b800;
-  --user-icon-bg:         #007bff;
-  --popup-strong:         #2c3e50;
-  --popup-detail:         #7f8c8d;
-  --popup-type:           var(--marker-clinica);
-  --popup-cached:         var(--marker-doctor);
-  --marker-hospital-dark: #c0392b;
-  --muted-light:          #ecf0f1;
-  --error-bg:             #8b4513;
-  --error-border:         #a0522d;
-  --error-text:           #ffeaa7;
-  --bg-main:              #ffffff;
-  --transition:           all 0.22s cubic-bezier(.2,.9,.2,1);
-  --radius:               12px;
-  --radius-mobile:        8px;
-  --navbar-height:        72px;
-  --footer-height:        64px;
-  --grid-gap:             10px;
-  --color-primary:        #ffe0a6;
-  --color-bg-dark:        #47472e;
-  --color-text:           #f0f0f0;
-  --color-text-dark:      #171717;
-}
-
-/* ================================================================
-   TEMA OSCURO
-   ================================================================ */
-.dark-theme {
-  --bg-navbar-modal: #2D3A37;
-  --btn-primary-bg:  #060808;
-  --text-highlight:  #66B09D;
-  --border-ui:       #66B09D;
-  --placeholder-bg:  #66B09D;
-  --text-main:       #FFFFFF;
-  --info-bg-dark:    rgb(41, 44, 43);
-  --bg-main:         #0f1716;
-}
-
-/* ================================================================
-   RESET GLOBAL
-   ================================================================ */
+/* ── Reset global ── */
 *,
 *::before,
 *::after {
@@ -94,9 +37,7 @@ body {
   min-width: 320px;
 }
 
-/* ================================================================
-   ESTRUCTURA DE LA APP
-   ================================================================ */
+/* ── Estructura de la app ── */
 .app {
   display: flex;
   flex-direction: column;
@@ -107,14 +48,11 @@ body {
 .app-main {
   width: 100%;
   flex: 1;
-  /* El padding-top igual al navbar-height evita que el contenido
-     quede tapado por el header fijo */
   padding-top: var(--navbar-height);
+  min-height: calc(100vh - var(--navbar-height) - var(--footer-height));
 }
 
-/* ================================================================
-   HEADER / SITE-HEADER
-   ================================================================ */
+/* ── Header / site-header ── */
 .site-header {
   position: fixed;
   top: 0;
@@ -127,20 +65,17 @@ body {
   display: flex;
   align-items: center;
   padding: 0 24px;
-  /* Cápsula redondeada en desktop */
   border-radius: 0 0 24px 24px;
 }
 
-/* ================================================================
-   NAVBAR — LAYOUT PRINCIPAL (3 columnas: left | center | right)
-   ================================================================ */
+/* ── Navbar: 3 columnas ── */
 .app-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
   gap: 6px;
-  position: relative; /* necesario para el dropdown absolute del mobile-menu */
+  position: relative;
 }
 
 .nav-left {
@@ -155,7 +90,7 @@ body {
   align-items: center;
   justify-content: center;
   flex: 1 1 auto;
-  position: relative; /* para que el mobile-menu se posicione correctamente */
+  position: relative;
 }
 
 .nav-right {
@@ -166,9 +101,7 @@ body {
   flex: 0 0 auto;
 }
 
-/* ================================================================
-   LOGO
-   ================================================================ */
+/* ── Logo ── */
 .logo {
   display: flex;
   align-items: center;
@@ -187,20 +120,17 @@ body {
 .logo-text {
   font-family: 'Headland One', serif;
   font-size: 1.4rem;
-  color: var(--text-highlight);
+  color: var(--color-titulo);
   white-space: nowrap;
 }
 
-/* ================================================================
-   BOTONES DE NAVEGACIÓN (desktop: centrados en nav-center)
-   ================================================================ */
+/* ── Botones de navegación (desktop) ── */
 .nav-buttons {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-/* Botón base del navbar */
 .nav-button {
   display: inline-flex;
   align-items: center;
@@ -210,7 +140,7 @@ body {
   border-radius: 999px;
   border: none;
   background: transparent;
-  color: var(--text-highlight);
+  color: var(--color-titulo);
   cursor: pointer;
   font-size: 0.95rem;
   font-weight: 600;
@@ -222,12 +152,13 @@ body {
 
 .nav-button:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm-8);
+  border-color: transparent;
 }
 
 .nav-button.active {
   background: var(--btn-primary-bg);
-  color: var(--text-main);
+  color: var(--color-boton-texto);
   font-weight: 800;
   border: 1px solid var(--border-ui);
 }
@@ -238,9 +169,7 @@ body {
   transform: none;
 }
 
-/* ================================================================
-   HAMBURGER (oculto en desktop, visible en móvil/tablet)
-   ================================================================ */
+/* ── Hamburger ── */
 .hamburger {
   display: none;
   align-items: center;
@@ -251,7 +180,7 @@ body {
   padding: 7px 10px;
   font-size: 1.3rem;
   cursor: pointer;
-  color: var(--text-highlight);
+  color: var(--color-titulo);
   min-height: 40px;
   min-width: 40px;
   transition: var(--transition);
@@ -259,18 +188,10 @@ body {
 
 .hamburger:hover {
   background: var(--btn-primary-bg);
-  transform: none;
-  box-shadow: none;
+  border-color: transparent;
 }
 
-/* ================================================================
-   MOBILE MENU (dropdown que aparece al hacer clic en hamburger)
-
-   IMPORTANTE: React renderiza este elemento condicionalmente.
-   Cuando showMobileMenu === true el nodo existe en el DOM,
-   cuando es false NO existe. Por eso NO usamos display:none aquí —
-   simplemente declaramos cómo debe verse cuando está presente.
-   ================================================================ */
+/* ── Mobile menu ── */
 .mobile-menu {
   display: flex;
   flex-direction: column;
@@ -284,37 +205,25 @@ body {
   border: 1px solid var(--border-ui);
   border-radius: 16px;
   padding: 10px;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.14);
+  box-shadow: var(--shadow-md);
   z-index: 4000;
-  /* Animación sutil de entrada */
-  animation: menuFadeIn 0.18s cubic-bezier(.2,.9,.2,1);
+  animation: menuFadeIn 0.18s ease;
 }
 
 @keyframes menuFadeIn {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
+  from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
-/* Título "SaludMap" dentro del mobile-menu */
 .mobile-menu-title {
   font-family: 'Headland One', serif;
   font-size: 1.3rem;
-  color: var(--text-highlight);
+  color: var(--color-titulo);
   text-align: center;
   padding: 8px 16px 10px;
   border-bottom: 1px solid var(--border-ui);
   margin-bottom: 4px;
   letter-spacing: 0.02em;
-}
-
-.dark-theme .mobile-menu-title {
-  color: var(--text-highlight);
 }
 
 .mobile-menu .nav-button {
@@ -323,50 +232,46 @@ body {
   border-radius: 10px;
   padding: 12px 16px;
   justify-content: flex-start;
-  /* Forzar color visible: texto oscuro sobre fondo claro del menú */
-  color: var(--text-dark, #08331f);
+  color: var(--text-main);
   background: transparent;
   font-size: 1rem;
   font-weight: 600;
 }
 
 .mobile-menu .nav-button:hover {
-  background: rgba(0, 0, 0, 0.07);
+  background: var(--overlay-dark-08);
   transform: none;
   box-shadow: none;
-  color: var(--text-dark, #08331f);
+  color: var(--text-main);
+  border-color: transparent;
 }
 
 .mobile-menu .nav-button.active {
   background: var(--btn-primary-bg);
-  color: var(--text-main, #000);
+  color: var(--color-boton-texto);
   border: 1px solid var(--border-ui);
 }
 
-/* Tema oscuro: ajustar colores del mobile-menu */
 .dark-theme .mobile-menu {
   background: var(--bg-navbar-modal);
   border-color: var(--border-ui);
 }
 
 .dark-theme .mobile-menu .nav-button {
-  color: var(--text-highlight, #66B09D);
+  color: var(--color-titulo);
 }
 
 .dark-theme .mobile-menu .nav-button.active {
-  color: var(--text-main, #fff);
+  color: var(--color-boton-texto);
 }
 
-/* ================================================================
-   ZONA DERECHA — Controles de usuario
-   ================================================================ */
+/* ── Controles de usuario ── */
 .user-controls {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-/* Usuario logueado */
 .nav-user-inline {
   display: flex;
   align-items: center;
@@ -392,7 +297,8 @@ body {
 
 .profile-avatar:hover {
   transform: scale(1.06);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm-8);
+  border-color: transparent;
 }
 
 .nav-person-icon {
@@ -406,21 +312,18 @@ body {
 .nav-username {
   font-family: 'Roboto', sans-serif;
   font-weight: 700;
-  color: var(--text-highlight);
+  color: var(--color-titulo);
   white-space: nowrap;
   font-size: 0.9rem;
 }
 
-/* Acciones de auth (sin usuario) */
 .nav-auth-actions {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-/* ================================================================
-   DROPDOWN DE USUARIO
-   ================================================================ */
+/* ── Dropdown de usuario ── */
 .user-menu {
   position: relative;
 }
@@ -433,7 +336,7 @@ body {
   background: var(--bg-navbar-modal);
   border: 1px solid var(--border-ui);
   border-radius: 14px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-md);
   padding: 8px;
   min-width: 170px;
   z-index: 3200;
@@ -454,17 +357,15 @@ body {
 
 .user-dropdown-logout {
   background: var(--btn-primary-bg);
-  color: var(--text-main);
+  color: var(--color-boton-texto);
   border: 1px solid var(--border-ui);
 }
 
-/* ================================================================
-   BOTONES GLOBALES
-   ================================================================ */
+/* ── Botones globales ── */
 button,
 .button--primary {
-  background-color: var(--color-primary);
-  color: var(--text-dark);
+  background-color: var(--btn-primary-bg);
+  color: var(--color-boton-texto);
   border: 2px solid var(--border-ui);
   padding: 10px 20px;
   border-radius: 10px;
@@ -474,7 +375,7 @@ button,
   text-transform: none;
   letter-spacing: 0.02rem;
   transition: var(--transition);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm-8);
   min-height: 44px;
   touch-action: manipulation;
   font-family: inherit;
@@ -482,7 +383,8 @@ button,
 
 button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm-12);
+  border-color: transparent;
 }
 
 button:active:not(:disabled) {
@@ -495,9 +397,7 @@ button:disabled {
   transform: none;
 }
 
-/* ================================================================
-   LOADING SCREEN
-   ================================================================ */
+/* ── Loading screen ── */
 .loading-screen {
   display: flex;
   justify-content: center;
@@ -505,16 +405,15 @@ button:disabled {
   height: 100vh;
   flex-direction: column;
   gap: 1rem;
+  color: var(--text-main);
 }
 
 .loading-subtitle {
   font-size: 0.875rem;
-  color: #666;
+  color: var(--text-muted);
 }
 
-/* ================================================================
-   FOOTER
-   ================================================================ */
+/* ── Footer ── */
 .app-footer {
   text-align: center;
   padding: 1rem 0;
@@ -523,23 +422,16 @@ button:disabled {
   align-items: center;
   justify-content: center;
   background: transparent;
+  color: var(--text-muted);
 }
 
-/* ================================================================
-   MAP / MAIN SECTION OVERRIDES
-   (no tocar: necesarios para que el mapa funcione a full screen)
-   ================================================================ */
+/* ── Mapa y secciones ── */
 .app-main,
 .map-section,
 .turnos-section,
 .map-controls,
 .map-wrapper {
   max-width: none;
-}
-
-.app-main {
-  min-height: calc(100vh - var(--navbar-height) - var(--footer-height));
-  width: 100%;
 }
 
 .map-section {
@@ -563,9 +455,7 @@ button:disabled {
   height: 100%;
 }
 
-/* ================================================================
-   12-COLUMN GRID UTILITY
-   ================================================================ */
+/* ── Grid de 12 columnas ── */
 .container-12 {
   width: 100%;
   margin: 0;
@@ -590,9 +480,7 @@ button:disabled {
 .col-11 { grid-column: span 11; }
 .col-12 { grid-column: span 12; }
 
-/* ================================================================
-   USER UTILITIES (heredadas de versión anterior)
-   ================================================================ */
+/* ── Utilidades de usuario ── */
 .user-info {
   display: flex;
   align-items: center;
@@ -600,55 +488,61 @@ button:disabled {
 }
 
 .user-name {
-  color: var(--text-dark);
+  color: var(--text-main);
   font-weight: 700;
 }
 
-/* ================================================================
-   SCROLLBAR PERSONALIZADO
-   ================================================================ */
+/* ── Scrollbar personalizado ── */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--white-08);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(102, 176, 157, 0.35);
+  background: var(--border-opaque-12);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(102, 176, 157, 0.6);
+  background: var(--border-opaque-08);
 }
 
-/* ================================================================
-   RESPONSIVE — NAVBAR
-   ================================================================
+/* ════════════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════════════ */
 
-   Breakpoints:
-   - > 1024px  → Desktop grande: todo visible, logo con texto
-   - 769–1024px → Notebook/tablet landscape: todo visible, logo ajustado
-   - 481–768px  → Tablet portrait: hamburger, nav-buttons ocultos,
-                   username oculto, solo avatar
-   - ≤ 480px    → Móvil: hamburger, username oculto, logo sin texto
-   ================================================================ */
+/* ── Desktop grande (≥ 1280px) ── */
+@media (min-width: 1280px) {
+  .site-header {
+    padding: 0 32px;
+  }
 
-/* ── DESKTOP (> 768px): hamburger oculto, mobile-menu nunca visible ── */
+  .logo-text {
+    font-size: 1.5rem;
+  }
+
+  .nav-button {
+    padding: 9px 20px;
+    font-size: 1rem;
+  }
+}
+
+/* ── Desktop: hamburger oculto ── */
 @media (min-width: 769px) {
   .hamburger {
     display: none;
   }
-  /* En desktop el mobile-menu nunca debe mostrarse aunque React lo renderice */
+
   .mobile-menu {
     display: none;
   }
 }
 
-/* ── NOTEBOOK / TABLET LANDSCAPE (≤ 1024px) ── */
+/* ── Tablet (≤ 1024px) ── */
 @media (max-width: 1024px) {
   .site-header {
     padding: 0 16px;
@@ -664,7 +558,7 @@ button:disabled {
   }
 }
 
-/* ── TABLET PORTRAIT (≤ 768px) ── */
+/* ── Tablet chica / landscape móvil (≤ 768px) ── */
 @media (max-width: 768px) {
   :root {
     --navbar-height: 64px;
@@ -675,52 +569,38 @@ button:disabled {
     border-radius: 0 0 18px 18px;
   }
 
-  /* Ocultar botones de navegación del centro */
   .nav-buttons {
     display: none;
   }
 
-  /* Mostrar hamburger */
   .hamburger {
     display: inline-flex;
   }
 
-  /* Mostrar mobile-menu cuando React lo renderiza */
   .mobile-menu {
     display: flex;
   }
 
-  /* Ocultar el texto "SaludMap" del navbar:
-     solo queda el logo imagen. El nombre aparecerá
-     dentro del mobile-menu como título. */
   .logo-text {
     display: none;
   }
 
-  /* Ocultar nombre de usuario, mostrar solo avatar */
   .nav-username {
     display: none;
   }
 
-    /* Logo imagen: leve ajuste de tamaño */
-    .logo-img {
-      width: 32px;
-      height: 32px;
-    }
-  
-    .logo-text {
-      font-size: 1.1rem;
-    }
-  
-    /* Botones de auth: reducir padding */
-    .nav-auth-actions .nav-button {
-      padding: 6px 12px;
-      font-size: 0.85rem;
-    }
+  .logo-img {
+    width: 32px;
+    height: 32px;
   }
 
+  .nav-auth-actions .nav-button {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+}
 
-/* ── MÓVIL (≤ 480px) ── */
+/* ── Celular (≤ 480px) ── */
 @media (max-width: 480px) {
   :root {
     --navbar-height: 58px;
@@ -731,7 +611,6 @@ button:disabled {
     border-radius: 0 0 14px 14px;
   }
 
-  /* Ocultar texto del logo en pantallas muy pequeñas */
   .logo-text {
     display: none;
   }
@@ -741,7 +620,6 @@ button:disabled {
     height: 32px;
   }
 
-  /* Reducir gap general */
   .app-nav {
     gap: 8px;
   }
@@ -750,21 +628,16 @@ button:disabled {
     gap: 6px;
   }
 
-  /* Mobile menu ocupa más ancho */
   .mobile-menu {
     min-width: calc(100vw - 20px);
-    left: 50%;
-    transform: translateX(-50%);
     border-radius: 14px;
   }
 
-  /* Botones auth: solo texto corto */
   .nav-auth-actions .nav-button {
     padding: 5px 10px;
     font-size: 0.8rem;
   }
 
-  /* Avatar ligeramente más pequeño */
   .profile-avatar {
     width: 34px;
     height: 34px;
@@ -776,7 +649,7 @@ button:disabled {
   }
 }
 
-/* ── MÓVILES MUY PEQUEÑOS (≤ 360px) ── */
+/* ── Móviles muy pequeños (≤ 360px) ── */
 @media (max-width: 360px) {
   .site-header {
     padding: 0 8px;
@@ -792,7 +665,7 @@ button:disabled {
   }
 }
 
-/* ── LANDSCAPE EN MÓVILES (altura baja) ── */
+/* ── Landscape en móviles ── */
 @media (max-width: 812px) and (orientation: landscape) {
   :root {
     --navbar-height: 54px;
@@ -803,9 +676,7 @@ button:disabled {
   }
 }
 
-/* ================================================================
-   TOUCH DEVICES — áreas mínimas de toque
-   ================================================================ */
+/* ── Touch devices ── */
 @media (hover: none) and (pointer: coarse) {
   .nav-button,
   .hamburger,
@@ -814,22 +685,19 @@ button:disabled {
     min-width: 44px;
   }
 
-  /* Quitar hover effects que no aplican en touch */
   .nav-button:hover:not(:disabled) {
     transform: none;
     box-shadow: none;
   }
 }
 
-/* ================================================================
-   ACCESIBILIDAD — reducir movimiento
-   ================================================================ */
+/* ── Reducir movimiento ── */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
   }
 }

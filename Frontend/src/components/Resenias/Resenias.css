@@ -1,102 +1,93 @@
-.resenias-root {
-  /* variables locales mapeadas a variables globales de tema */
-}
+/* ── Resenias.css ───────────────────────────────────────────────────────── */
+/*
+  Todos los colores usan variables definidas en index.css.
+  No hay colores hardcodeados ni !important.
 
-:root {
-  --res-bg-panel: var(--modal-bg, #ffffff);
-  --res-bg-section: var(--modal-bg, #f8f9fa);
-  --res-border: var(--modal-border, #e9ecef);
-  --res-accent: var(--modal-title-color, #2b8b8c);
-  --res-text-main: var(--modal-text, #212529);
-  --res-text-muted: var(--modal-text-muted, #6c757d);
-  --res-gradient-start: var(--gradient-start, #ffe0a6);
-  --res-gradient-end: var(--gradient-end, #ffd700);
-  --res-avatar-start: var(--res-accent, #2b8b8c);
-  --res-avatar-end: var(--res-avatar-end, #1f6668);
-  --res-card-bg: var(--modal-bg, #ffffff);
-  --res-card-border: var(--res-border, #e9ecef);
-  --res-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
+  Breakpoints:
+  ≥ 1280px  → Desktop grande
+  default   → Notebook / Desktop normal (base)
+  ≤ 1024px  → Tablet
+  ≤ 768px   → Tablet chica / landscape móvil
+  ≤ 480px   → Celular
+*/
 
-.dark-theme {
-  --res-bg-panel: var(--modal-bg, #1e2a27);
-  --res-bg-section: var(--chat-fill, #1a2926);
-  --res-border: rgba(255,255,255,0.04);
-  --res-accent: var(--modal-title-color, #9EE2CF);
-  --res-text-main: var(--modal-text, #e6f3ef);
-  --res-text-muted: var(--modal-text-muted, #b3cec8);
-}
-
+/* ── Contenedor principal ── */
 .resenias-container {
   width: 100%;
-  padding: 1.5rem 0;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
 }
 
+/* ── Estado de carga ── */
 .loading-resenias {
   text-align: center;
   padding: 2rem;
-  color: var(--res-text-muted);
+  color: var(--text-muted);
   font-style: italic;
+  font-size: 1rem;
 }
 
+/* ── Sin reseñas ── */
 .no-resenias {
   text-align: center;
   padding: 3rem 2rem;
-  background: var(--res-bg-section);
+  background: var(--chat-fill);
   border-radius: 12px;
-  border: 2px dashed var(--res-border);
+  border: 2px dashed var(--chat-border);
 }
 
 .no-resenias p {
   margin: 0.5rem 0;
   font-size: 1.1rem;
-  color: var(--res-text-main);
+  color: var(--text-main);
 }
 
 .no-resenias-subtitle {
-  font-size: 0.95rem !important;
-  color: var(--res-text-muted) !important;
+  font-size: 0.95rem;
+  color: var(--text-muted);
 }
 
-/* Header de reseñas */
+/* ── Header de reseñas ── */
 .resenias-header {
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 2px solid var(--res-border);
+  border-bottom: 2px solid var(--chat-border);
 }
 
 .resenias-header h3 {
   margin: 0 0 1rem 0;
   font-size: 1.5rem;
-    color: var(--res-text-main);
+  color: var(--color-titulo);
   font-weight: bold;
 }
 
-/* Promedio de estrellas */
+/* ── Promedio de estrellas ── */
 .promedio-container {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1rem;
-  background: linear-gradient(135deg, var(--res-gradient-start) 0%, var(--res-gradient-end) 100%);
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, #ffe0a6 0%, #ffd700 100%);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
+  box-shadow: var(--shadow-sm-8);
 }
 
 .promedio-numero {
   font-size: 2.5rem;
   font-weight: bold;
-  color: var(--res-accent);
+  color: var(--color-titulo);
   line-height: 1;
 }
 
 .promedio-texto {
   font-size: 0.9rem;
-  color: var(--res-text-main);
+  color: var(--text-main);
   margin-left: auto;
+  white-space: nowrap;
 }
 
-/* Estrellas */
+/* ── Estrellas ── */
 .estrellas {
   display: flex;
   gap: 0.2rem;
@@ -107,41 +98,34 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-.star.small {
-  font-size: 1rem;
-}
-
-.star.medium {
-  font-size: 1.5rem;
-}
-
-.star.large {
-  font-size: 2rem;
-}
+.star.small  { font-size: 1rem; }
+.star.medium { font-size: 1.5rem; }
+.star.large  { font-size: 2rem; }
 
 .star.empty {
-  color: #dee2e6;
+  color: var(--color-chat-relleno);
 }
 
-/* Lista de reseñas */
+/* ── Lista de reseñas ── */
 .resenias-lista {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-/* Item de reseña */
+/* ── Item de reseña ── */
 .resenia-item {
-  background: var(--res-card-bg);
-  border: 1px solid var(--res-card-border);
+  background: var(--resenia-item-bg);
+  border: 1px solid var(--chat-border);
   border-radius: 12px;
   padding: 1.25rem;
-  transition: all 0.3s ease;
-  box-shadow: var(--res-box-shadow);
+  transition: var(--transition);
+  box-shadow: var(--shadow-card);
+  color: var(--resenia-item-texto);
 }
 
 .resenia-item:hover {
-  box-shadow: 0 4px 12px rgba(43, 139, 140, 0.15);
+  box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
 
@@ -150,70 +134,148 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
+  gap: 0.75rem;
 }
 
 .resenia-usuario {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  min-width: 0;
 }
 
 .usuario-avatar {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--res-avatar-start) 0%, var(--res-avatar-end) 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--color-titulo) 0%, var(--color-boton-relleno) 100%);
+  color: var(--color-boton-texto);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
   font-size: 1.1rem;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(43, 139, 140, 0.3);
+  box-shadow: var(--shadow-sm-8);
 }
 
 .usuario-info {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  min-width: 0;
 }
 
 .usuario-nombre {
   font-weight: 600;
-  color: var(--res-text-main);
+  color: var(--resenia-item-texto);
   font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .resenia-fecha {
   font-size: 0.85rem;
-  color: var(--res-text-muted);
+  color: var(--resenia-item-texto);
+  opacity: 0.7;
+  white-space: nowrap;
 }
 
 .resenia-comentario {
-  color: var(--res-text-main);
+  color: var(--resenia-comentario-texto);
   line-height: 1.6;
   font-size: 0.95rem;
-  padding: 0.75rem;
-  background: var(--res-bg-section);
+  padding: 0.75rem 1rem;
+  background: var(--resenia-comentario-bg);
   border-radius: 8px;
-  border-left: 3px solid var(--res-accent);
+  border-left: 3px solid var(--color-titulo);
+  word-break: break-word;
 }
 
-/* Responsive */
+/* ════════════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════════════ */
+
+/* ── Desktop grande (≥ 1280px) ── */
+@media (min-width: 1280px) {
+  .resenias-container {
+    max-width: 960px;
+    padding: 2.5rem 2rem;
+  }
+
+  .resenias-header h3 {
+    font-size: 1.75rem;
+  }
+
+  .promedio-numero {
+    font-size: 3rem;
+  }
+
+  .promedio-container {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .resenia-item {
+    padding: 1.5rem;
+  }
+
+  .usuario-avatar {
+    width: 52px;
+    height: 52px;
+    font-size: 1.2rem;
+  }
+
+  .resenia-comentario {
+    font-size: 1rem;
+    padding: 1rem 1.25rem;
+  }
+}
+
+/* ── Tablet (≤ 1024px) ── */
+@media (max-width: 1024px) {
+  .resenias-container {
+    max-width: 100%;
+    padding: 1.75rem 1.25rem;
+  }
+
+  .resenias-header h3 {
+    font-size: 1.4rem;
+  }
+
+  .promedio-numero {
+    font-size: 2.25rem;
+  }
+
+  .resenia-item {
+    padding: 1.1rem;
+  }
+}
+
+/* ── Tablet chica / landscape móvil (≤ 768px) ── */
 @media (max-width: 768px) {
   .resenias-container {
-    padding: 1rem 0;
+    padding: 1.25rem 1rem;
+  }
+
+  .resenias-header h3 {
+    font-size: 1.25rem;
   }
 
   .promedio-container {
     flex-direction: column;
     text-align: center;
     gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .promedio-numero {
+    font-size: 2rem;
   }
 
   .promedio-texto {
     margin-left: 0;
+    white-space: normal;
   }
 
   .resenia-item {
@@ -223,7 +285,6 @@
   .resenia-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.75rem;
   }
 
   .usuario-avatar {
@@ -232,7 +293,86 @@
     font-size: 1rem;
   }
 
-  .resenias-header h3 {
-    font-size: 1.25rem;
+  .usuario-nombre {
+    font-size: 0.95rem;
   }
+
+  .resenia-comentario {
+    font-size: 0.9rem;
+    padding: 0.65rem 0.85rem;
+  }
+
+  .star.small  { font-size: 0.9rem; }
+  .star.medium { font-size: 1.3rem; }
+}
+
+/* ── Celular (≤ 480px) ── */
+@media (max-width: 480px) {
+  .resenias-container {
+    padding: 1rem 0.75rem;
+  }
+
+  .resenias-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .promedio-container {
+    gap: 0.5rem;
+    padding: 0.85rem;
+  }
+
+  .promedio-numero {
+    font-size: 1.75rem;
+  }
+
+  .promedio-texto {
+    font-size: 0.82rem;
+  }
+
+  .resenias-lista {
+    gap: 0.75rem;
+  }
+
+  .resenia-item {
+    padding: 0.85rem;
+    border-radius: 10px;
+  }
+
+  .resenia-header {
+    gap: 0.5rem;
+  }
+
+  .resenia-usuario {
+    gap: 0.5rem;
+  }
+
+  .usuario-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
+  }
+
+  .usuario-nombre {
+    font-size: 0.88rem;
+  }
+
+  .resenia-fecha {
+    font-size: 0.78rem;
+  }
+
+  .resenia-comentario {
+    font-size: 0.85rem;
+    padding: 0.6rem 0.75rem;
+  }
+
+  .no-resenias {
+    padding: 2rem 1rem;
+  }
+
+  .no-resenias p {
+    font-size: 0.95rem;
+  }
+
+  .star.small  { font-size: 0.85rem; }
+  .star.medium { font-size: 1.1rem; }
 }

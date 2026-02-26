@@ -1,35 +1,36 @@
 /* ============================================================
    CheckoutModal.css — SaludMap
-   Mismo sistema de variables que CostComparator.css.
-   .dark-theme se aplica en document.body.
-   !important donde App.css global pisa estilos de botón.
+   Todos los colores usan variables definidas en index.css.
+   No hay colores hardcodeados ni !important.
+
+   Breakpoints:
+   ≥ 1280px  → Desktop grande
+   default   → Notebook / Desktop normal (base)
+   ≤ 1024px  → Tablet
+   ≤ 768px   → Tablet chica / landscape
+   ≤ 480px   → Celular
    ============================================================ */
 
-/* ── Variables locales ── */
+/* ── Variables locales — todas apuntan al index.css ── */
 :root {
-  --chk-bg-panel:      var(--modal-bg, #ffffff);
-  --chk-bg-section:    var(--chat-fill, #edf7f3);
-  --chk-border:        var(--modal-border, #A2E3D0);
-  --chk-border-strong: var(--btn-fill, #66B09D);
-  --chk-text-main:     var(--modal-text, #000000);
-  --chk-text-accent:   var(--modal-title-color, #66B09D);
-  --chk-text-muted:    var(--modal-text-muted, #6b8f87);
-  --chk-btn-bg:        var(--btn-fill, #9EE2CF);
-  --chk-btn-text:      var(--btn-text-color, #08331f);
-  --chk-shadow-lg:     0 18px 48px rgba(0, 0, 0, 0.18);
+  --chk-bg-panel:      var(--modal-bg);
+  --chk-bg-section:    var(--placeholder-fill);
+  --chk-border:        var(--chat-border);
+  --chk-border-strong: var(--color-titulo);
+  --chk-text-main:     var(--text-main);
+  --chk-text-accent:   var(--color-titulo);
+  --chk-text-muted:    var(--text-muted);
+  --chk-btn-bg:        var(--color-boton-relleno);
+  --chk-btn-text:      var(--color-boton-texto);
+  --chk-shadow-lg:     var(--shadow-xxl-20);
   --chk-radius:        12px;
   --chk-radius-sm:     8px;
-  --chk-transition:    all 0.22s cubic-bezier(0.2, 0.9, 0.2, 1);
-  --chk-font:          'Roboto', 'DM Sans', sans-serif;
+  --chk-transition:    var(--transition);
+  --chk-font:          'DM Sans', 'Roboto', sans-serif;
 }
 
-.dark-theme {
-  --chk-bg-panel:      var(--modal-bg, #1e2e2b);
-  --chk-bg-section:    var(--chat-fill, #1a2926);
-  --chk-text-main:     var(--modal-text, #dbeee6);
-  --chk-text-muted:    var(--modal-text-muted, #8aada5);
-  --chk-shadow-lg:     0 18px 48px rgba(0, 0, 0, 0.6);
-}
+/* Las variables del index ya se sobreescriben en .dark-theme
+   por lo que no se necesitan overrides adicionales aquí. */
 
 /* ══════════════════════════════════════════
    OVERLAY
@@ -44,6 +45,9 @@
   padding: 24px 18px;
   box-sizing: border-box;
   overflow-y: auto;
+  background: var(--overlay-50);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 /* ══════════════════════════════════════════
@@ -68,8 +72,8 @@
   overflow-y: auto;
 }
 
-.checkout-modal::-webkit-scrollbar       { width: 5px; }
-.checkout-modal::-webkit-scrollbar-thumb{ background: var(--chk-border); border-radius: 6px; }
+.checkout-modal::-webkit-scrollbar             { width: 5px; }
+.checkout-modal::-webkit-scrollbar-thumb       { background: var(--chk-border); border-radius: 6px; }
 .checkout-modal::-webkit-scrollbar-thumb:hover { background: var(--chk-border-strong); }
 
 @keyframes chkFadeIn {
@@ -101,27 +105,28 @@
 
 /* Botón cerrar */
 .checkout-modal .checkout-close {
-  background: var(--chk-bg-section) !important;
-  border: 1.5px solid var(--chk-border) !important;
-  color: var(--chk-text-accent) !important;
-  width: 30px !important;
-  height: 30px !important;
-  min-height: unset !important;
-  border-radius: 50% !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  cursor: pointer !important;
-  padding: 0 !important;
-  box-shadow: none !important;
-  font-size: 1.2rem !important;
-  line-height: 1 !important;
-  transition: var(--chk-transition) !important;
+  background: var(--chk-bg-section);
+  border: 1.5px solid var(--chk-border);
+  color: var(--chk-text-accent);
+  width: 30px;
+  height: 30px;
+  min-height: unset;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: none;
+  font-size: 1.2rem;
+  line-height: 1;
+  transition: var(--chk-transition);
 }
 
 .checkout-modal .checkout-close:hover {
-  background: var(--chk-btn-bg) !important;
-  transform: scale(1.08) !important;
+  background: var(--chk-btn-bg);
+  transform: scale(1.08);
+  border-color: transparent;
 }
 
 /* ══════════════════════════════════════════
@@ -202,7 +207,7 @@
 .checkout-form textarea:focus {
   outline: none;
   border-color: var(--chk-border-strong);
-  box-shadow: 0 0 0 3px rgba(102, 176, 157, 0.15);
+  box-shadow: 0 0 0 3px rgba(77,170,144,0.15);
 }
 
 .checkout-form input::placeholder,
@@ -219,7 +224,6 @@
 
 /* ══════════════════════════════════════════
    ACCIONES — botones
-   !important para ganar al reset global de App.css
 ══════════════════════════════════════════ */
 .form-actions {
   display: flex;
@@ -231,58 +235,115 @@
 }
 
 .checkout-modal .btn-primary {
-  background: var(--chk-border-strong) !important;
-  color: var(--btn-text-color, #ffffff) !important;
-  border: 1.5px solid var(--chk-border-strong) !important;
-  padding: 9px 20px !important;
-  border-radius: var(--chk-radius-sm) !important;
-  font-family: var(--chk-font) !important;
-  font-size: 0.88rem !important;
-  font-weight: 700 !important;
-  cursor: pointer !important;
-  min-height: unset !important;
-  box-shadow: 0 4px 12px rgba(102, 176, 157, 0.22) !important;
-  transition: var(--chk-transition) !important;
+  background: var(--chk-border-strong);
+  color: var(--white);
+  border: 1.5px solid var(--chk-border-strong);
+  padding: 9px 20px;
+  border-radius: var(--chk-radius-sm);
+  font-family: var(--chk-font);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: unset;
+  box-shadow: var(--shadow-sm-8);
+  transition: var(--chk-transition);
 }
 
 .checkout-modal .btn-primary:hover:not(:disabled) {
-  filter: brightness(1.08) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 6px 18px rgba(102, 176, 157, 0.32) !important;
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm-12);
+  border-color: transparent;
 }
 
 .checkout-modal .btn-primary:disabled {
-  opacity: 0.5 !important;
-  cursor: not-allowed !important;
-  transform: none !important;
-  box-shadow: none !important;
-  filter: none !important;
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  filter: none;
 }
 
 .checkout-modal .btn-secondary {
-  background: var(--chk-btn-bg) !important;
-  border: 1.5px solid var(--chk-border-strong) !important;
-  color: var(--chk-btn-text) !important;
-  padding: 9px 20px !important;
-  border-radius: var(--chk-radius-sm) !important;
-  font-family: var(--chk-font) !important;
-  font-size: 0.88rem !important;
-  font-weight: 700 !important;
-  cursor: pointer !important;
-  min-height: unset !important;
-  box-shadow: none !important;
-  transition: var(--chk-transition) !important;
+  background: var(--chk-btn-bg);
+  border: 1.5px solid var(--chk-border-strong);
+  color: var(--chk-btn-text);
+  padding: 9px 20px;
+  border-radius: var(--chk-radius-sm);
+  font-family: var(--chk-font);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: unset;
+  box-shadow: none;
+  transition: var(--chk-transition);
 }
 
 .checkout-modal .btn-secondary:hover {
-  filter: brightness(0.94) !important;
-  transform: translateY(-1px) !important;
+  filter: brightness(0.94);
+  transform: translateY(-1px);
+  border-color: transparent;
 }
 
-/* ══════════════════════════════════════════
+/* ════════════════════════════════════════════════
    RESPONSIVE
-══════════════════════════════════════════ */
-@media (max-width: 600px) {
+   ════════════════════════════════════════════════ */
+
+/* ── Desktop grande (≥ 1280px) ── */
+@media (min-width: 1280px) {
+  .checkout-modal {
+    width: min(90vw, 600px);
+  }
+
+  .checkout-title { font-size: 1.25rem; }
+
+  .checkout-form input,
+  .checkout-form textarea {
+    font-size: 0.95rem;
+    padding: 11px 14px;
+  }
+
+  .checkout-modal .btn-primary,
+  .checkout-modal .btn-secondary {
+    font-size: 0.95rem;
+    padding: 11px 24px;
+  }
+
+  .plan-price { font-size: 1.3rem; }
+}
+
+/* ── Tablet (≤ 1024px) ── */
+@media (max-width: 1024px) {
+  .checkout-modal {
+    width: min(96vw, 500px);
+  }
+}
+
+/* ── Tablet chica / landscape (≤ 768px) ── */
+@media (max-width: 768px) {
+  .checkout-overlay {
+    padding: 16px 12px;
+    align-items: flex-start;
+  }
+
+  .checkout-modal {
+    width: 100%;
+    max-width: 100%;
+    max-height: 96vh;
+  }
+
+  .checkout-header {
+    padding: 14px 16px 12px;
+  }
+
+  .checkout-form {
+    padding: 0 16px 16px;
+  }
+
+  .plan-info {
+    margin: 14px 16px;
+  }
+
   .form-actions {
     flex-direction: column;
     align-items: stretch;
@@ -290,7 +351,56 @@
 
   .checkout-modal .btn-primary,
   .checkout-modal .btn-secondary {
-    width: 100% !important;
-    text-align: center !important;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* ── Celular (≤ 480px) ── */
+@media (max-width: 480px) {
+  .checkout-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .checkout-modal {
+    border-radius: 16px 16px 0 0;
+    width: 100%;
+    max-height: 95vh;
+  }
+
+  .checkout-title { font-size: 0.95rem; }
+
+  .checkout-header {
+    padding: 12px 14px 10px;
+  }
+
+  .plan-info {
+    margin: 12px 14px;
+    padding: 12px 14px;
+  }
+
+  .plan-name  { font-size: 0.9rem; }
+  .plan-price { font-size: 1.05rem; }
+  .plan-desc  { font-size: 0.78rem; }
+
+  .checkout-form {
+    padding: 0 14px 16px;
+  }
+
+  .checkout-form label {
+    font-size: 0.68rem;
+  }
+
+  .checkout-form input,
+  .checkout-form textarea {
+    font-size: 0.85rem;
+    padding: 8px 10px;
+  }
+
+  .checkout-modal .btn-primary,
+  .checkout-modal .btn-secondary {
+    font-size: 0.85rem;
+    padding: 10px 16px;
   }
 }

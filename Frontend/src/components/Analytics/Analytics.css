@@ -1,47 +1,39 @@
+/* ── Analytics.css ──────────────────────────────────────────────────────── */
+/*
+  Todos los colores usan variables definidas en index.css.
+  No hay colores hardcodeados ni !important.
+  Breakpoints:
+  ≥ 1280px  → Desktop grande
+  default   → Notebook / Desktop normal (base)
+  ≤ 1024px  → Tablet
+  ≤ 768px   → Tablet chica / landscape móvil
+  ≤ 480px   → Celular
+*/
+
+/* ── Contenedor principal ── */
 .analytics-container {
   padding: 2.5rem;
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
-  background-color: var(--modal-bg, #fff);
+  background: var(--modal-bg);
   border-radius: 10px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-sm);
 }
 
-.charts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-  gap: 2rem;
-  margin-top: 1.5rem;
-}
-
-.chart-container {
-  background: var(--modal-bg, #ffffff);
-  padding: 1.75rem;
-  border-radius: 10px;
-  box-shadow: 0 6px 14px rgba(71, 71, 46, 0.12);
-  border: 1px solid var(--modal-border, #ffe0a6);
-  transition: transform 0.2s ease;
-  min-height: 320px;
-}
-
-.chart-container:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(71, 71, 46, 0.2);
-}
-
-.chart-container h3 {
-  margin-bottom: 1rem;
-  text-align: center;
-  color: var(--modal-text, #000);
-  font-size: 1.2rem;
-  font-weight: 600;
-  border-bottom: 2px solid var(--modal-border, #ffe0a6);
-  padding-bottom: 0.5rem;
+/* ── Header ── */
+.analytics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .analytics-container h2 {
-  color: var(--modal-title-color, #000);
+  color: var(--color-titulo);
   text-align: center;
   margin-bottom: 2rem;
   font-size: 1.8rem;
@@ -58,90 +50,102 @@
   transform: translateX(-50%);
   width: 100px;
   height: 3px;
-  background-color: var(--text-highlight, #47472e);
+  background: var(--color-titulo);
 }
 
 .analytics-container p {
-  color: var(--modal-text, #000);
+  color: var(--modal-text);
   font-size: 1rem;
   margin: 0.5rem 0;
 }
 
-.analytics-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    padding: 0 1rem;
-}
-
+/* ── Botón exportar ── */
 .export-button {
-    background-color: #47472e;
-    color: white;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 1rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.export-button {
-  background-color: var(--btn-fill, #47472e);
-  color: var(--btn-text-color, white);
+  background: var(--btn-primary-bg);
+  color: var(--color-boton-texto);
   padding: 12px 24px;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius);
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 1rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-.export-button:hover {
-  background-color: var(--btn-fill-hover, #5a5a3d);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-  .analytics-container h2 {
-    font-size: 1.5rem;
-  }
+  font-weight: 600;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm-8);
+  white-space: nowrap;
 }
 
-/* Modal overlay styles for Analytics when opened desde EstablishmentInfo */
+.export-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm-12);
+  border-color: transparent;
+}
+
+/* ── Grid de gráficos ── */
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+/* ── Contenedor de cada gráfico ── */
+.chart-container {
+  background: var(--modal-bg);
+  padding: 1.75rem;
+  border-radius: 10px;
+  box-shadow: var(--shadow-sm-12);
+  border: 1px solid var(--chat-border);
+  transition: var(--transition);
+  min-height: 320px;
+}
+
+.chart-container:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-boton-relleno);
+}
+
+.chart-container h3 {
+  margin-bottom: 1rem;
+  text-align: center;
+  color: var(--modal-text);
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-bottom: 2px solid var(--chat-border);
+  padding-bottom: 0.5rem;
+}
+
+/* ── Overlay de analytics (portal desde EstablishmentInfo) ── */
 .analytics-overlay {
   position: fixed;
   inset: 0;
-  background: var(--overlay-bg, rgba(0,0,0,0.5));
-  z-index: 2100;
+  background: var(--overlay-50);
+  z-index: 2200;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: calc(var(--navbar-height, 56px) + 20px);
+  padding-top: calc(var(--navbar-height) + 20px);
   padding-left: 18px;
   padding-right: 18px;
 }
+
 .analytics-modal {
   width: 96%;
   max-width: 1100px;
-  max-height: calc(100vh - var(--navbar-height, 56px) - 60px);
-  background: var(--modal-bg, #fff);
-  border: 1px solid var(--modal-border, #ffe0a6);
+  max-height: calc(100vh - var(--navbar-height) - 60px);
+  background: var(--modal-bg);
+  border: 1px solid var(--chat-border);
   border-radius: 14px;
   padding: 20px;
   overflow: auto;
-  box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  box-shadow: var(--shadow-xxl-45);
   position: relative;
   margin: 0 auto;
 }
+
 .analytics-modal .analytics-close {
   position: absolute;
   right: 12px;
@@ -150,8 +154,152 @@
   border: none;
   font-size: 1.3rem;
   cursor: pointer;
+  color: var(--modal-text);
+  transition: var(--transition);
+  border-radius: 50%;
+  padding: 4px 8px;
 }
 
+.analytics-modal .analytics-close:hover {
+  background: var(--border-opaque-06);
+  border-color: transparent;
+}
+
+/* ════════════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════════════ */
+
+/* ── Desktop grande (≥ 1280px) ── */
+@media (min-width: 1280px) {
+  .analytics-container {
+    padding: 3rem;
+  }
+
+  .analytics-container h2 {
+    font-size: 2rem;
+  }
+
+  .chart-container {
+    padding: 2rem;
+    min-height: 360px;
+  }
+
+  .chart-container h3 {
+    font-size: 1.3rem;
+  }
+
+  .export-button {
+    padding: 13px 28px;
+    font-size: 1.05rem;
+  }
+}
+
+/* ── Tablet (≤ 1024px) ── */
+@media (max-width: 1024px) {
+  .analytics-container {
+    padding: 2rem;
+  }
+
+  .analytics-container h2 {
+    font-size: 1.6rem;
+  }
+
+  .charts-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .chart-container {
+    padding: 1.5rem;
+    min-height: 280px;
+  }
+}
+
+/* ── Tablet chica / landscape móvil (≤ 768px) ── */
+@media (max-width: 768px) {
+  .analytics-container {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .analytics-header {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+    gap: 0.75rem;
+  }
+
+  .analytics-container h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1.25rem;
+    text-align: left;
+  }
+
+  .export-button {
+    width: 100%;
+    justify-content: center;
+    padding: 11px 20px;
+  }
+
+  .charts-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .chart-container {
+    padding: 1.25rem;
+    min-height: 260px;
+  }
+
+  .analytics-modal {
+    width: 98%;
+    border-radius: 10px;
+    padding: 14px;
+  }
+}
+
+/* ── Celular (≤ 480px) ── */
 @media (max-width: 480px) {
-  .analytics-modal { width: 98%; max-width: 98%; border-radius: 10px; padding: 14px }
+  .analytics-container {
+    padding: 1rem;
+    border-radius: 8px;
+  }
+
+  .analytics-container h2 {
+    font-size: 1.2rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .analytics-container h2::after {
+    width: 60px;
+    height: 2px;
+  }
+
+  .chart-container {
+    padding: 1rem;
+    min-height: 220px;
+    border-radius: 8px;
+  }
+
+  .chart-container h3 {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.4rem;
+  }
+
+  .export-button {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+
+  .analytics-modal {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 8px;
+    padding: 12px;
+  }
+
+  .charts-grid {
+    gap: 1rem;
+    margin-top: 1rem;
+  }
 }

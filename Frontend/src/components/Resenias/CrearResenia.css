@@ -1,69 +1,61 @@
-:root {
-  --cr-bg-panel: var(--modal-bg, #ffffff);
-  --cr-bg-section: var(--modal-bg-section, #f8f9fa);
-  --cr-accent: var(--modal-title-color, #2b8b8c);
-  --cr-text-main: var(--modal-text, #495057);
-  --cr-muted: var(--modal-text-muted, #6c757d);
-  --cr-border: var(--modal-border, #dee2e6);
-  --cr-warning-bg: var(--warning-bg, #fff3cd);
-  --cr-warning-border: var(--warning-border, #ffc107);
-  --cr-success-start: var(--success-start, #28a745);
-  --cr-success-end: var(--success-end, #20c997);
-  --star-empty: var(--star-empty, #dee2e6);
-  --star-filled: var(--star-filled, #ffd700);
-  --cr-error-bg: var(--error-bg, #f8d7da);
-  --cr-error-border: var(--error-border, #f5c6cb);
-  --cr-error-color: var(--error-color, #721c24);
-}
+/* ── CrearResenia.css ───────────────────────────────────────────────────── */
+/*
+  Todos los colores usan variables definidas en index.css.
+  No hay colores hardcodeados ni !important.
 
+  Breakpoints:
+  ≥ 1280px  → Desktop grande
+  default   → Notebook / Desktop normal (base)
+  ≤ 1024px  → Tablet
+  ≤ 768px   → Tablet chica / landscape móvil
+  ≤ 480px   → Celular
+*/
+
+/* ── Contenedor principal ── */
 .crear-resenia-container {
   width: 100%;
-  padding: 1.5rem;
-  background: var(--cr-bg-panel);
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 1.75rem 2rem;
+  background: var(--modal-bg);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-.crear-resenia-container {
-  width: 100%;
-  padding: 1.5rem;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .crear-resenia-container h3 {
   margin: 0 0 1.5rem 0;
   font-size: 1.5rem;
-  color: var(--cr-accent);
+  color: var(--color-titulo);
   font-weight: bold;
 }
 
-/* Mensajes de estado */
+/* ── Estados de carga / sin turnos ── */
 .loading {
   text-align: center;
   padding: 2rem;
-  color: var(--cr-muted);
+  color: var(--text-muted);
   font-style: italic;
 }
 
 .no-turnos {
   text-align: center;
   padding: 2rem;
-  background: var(--cr-warning-bg);
-  border: 2px solid var(--cr-warning-border);
+  background: var(--warning-bg);
+  border: 2px solid var(--chat-border);
   border-radius: 12px;
 }
 
 .no-turnos p {
   margin: 0.5rem 0;
-  color: var(--cr-warning-border);
+  color: var(--text-main);
 }
 
 .no-turnos-subtitle {
   font-size: 0.9rem;
-  color: #856404;
+  color: var(--text-muted);
 }
 
+/* ── Mensaje de éxito ── */
 .success-message {
   text-align: center;
   padding: 3rem 2rem;
@@ -73,28 +65,28 @@
   width: 80px;
   height: 80px;
   margin: 0 auto 1.5rem;
-  background: linear-gradient(135deg, var(--cr-success-start) 0%, var(--cr-success-end) 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--color-titulo) 0%, var(--color-boton-relleno) 100%);
+  color: var(--color-boton-texto);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 3rem;
   font-weight: bold;
-  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+  box-shadow: var(--shadow-sm-12);
 }
 
 .success-message h3 {
-  color: var(--cr-success-start);
+  color: var(--color-titulo);
   margin-bottom: 0.5rem;
 }
 
 .success-message p {
-  color: var(--cr-muted);
+  color: var(--text-muted);
   font-size: 1rem;
 }
 
-/* Formulario */
+/* ── Formulario ── */
 .form-resenia {
   display: flex;
   flex-direction: column;
@@ -109,34 +101,37 @@
 
 .form-group label {
   font-weight: 600;
-  color: #495057;
-  font-size: 0.95rem;
+  color: var(--text-main);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-/* Info del turno */
+/* ── Info del turno único ── */
 .turno-info {
   padding: 1rem;
-  background: var(--cr-bg-section);
-  border-left: 4px solid var(--cr-accent);
+  background: var(--placeholder-fill);
+  border-left: 4px solid var(--color-titulo);
   border-radius: 8px;
   font-size: 0.95rem;
-  color: #495057;
+  color: var(--text-main);
 }
 
 .profesional-info {
   margin-top: 0.5rem;
   font-size: 0.9rem;
-  color: #6c757d;
+  color: var(--text-muted);
 }
 
-/* Selector de estrellas */
+/* ── Selector de estrellas ── */
 .selector-estrellas {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   padding: 1rem;
-  background: var(--cr-bg-section);
+  background: var(--placeholder-fill);
   border-radius: 8px;
+  flex-wrap: wrap;
 }
 
 .star-button {
@@ -145,17 +140,21 @@
   font-size: 2.5rem;
   cursor: pointer;
   padding: 0;
-  transition: all 0.2s ease;
-  color: var(--star-empty);
+  transition: var(--transition);
+  color: var(--chat-fill);
+  min-width: unset;
+  min-height: unset;
+  line-height: 1;
 }
 
 .star-button.filled {
-  color: var(--star-filled);
+  color: #ffd700;
   text-shadow: 0 2px 4px rgba(255, 215, 0, 0.4);
 }
 
 .star-button:hover {
   transform: scale(1.15);
+  border-color: transparent;
 }
 
 .star-button:active {
@@ -165,71 +164,76 @@
 .puntuacion-texto {
   margin-left: auto;
   font-size: 0.9rem;
-  color: var(--cr-muted);
+  color: var(--text-muted);
   font-weight: 500;
 }
 
-/* Select */
+/* ── Select de turno ── */
 .form-select {
   padding: 0.75rem 1rem;
   font-size: 1rem;
-  border: 2px solid var(--cr-border);
+  border: 2px solid var(--chat-border);
   border-radius: 8px;
-  background: var(--cr-bg-panel);
-  color: #495057;
-  transition: all 0.3s ease;
+  background: var(--placeholder-fill);
+  color: var(--text-main);
+  transition: var(--transition);
   cursor: pointer;
+  width: 100%;
 }
 
 .form-select:focus {
   outline: none;
-  border-color: var(--cr-accent);
-  box-shadow: 0 0 0 3px rgba(43, 139, 140, 0.1);
+  border-color: var(--color-titulo);
+  box-shadow: 0 0 0 3px rgba(77, 170, 144, 0.15);
 }
 
 .form-select:hover {
-  border-color: var(--cr-accent);
+  border-color: var(--color-titulo);
 }
 
-/* Textarea */
+/* ── Textarea ── */
 .form-textarea {
   padding: 0.75rem 1rem;
   font-size: 1rem;
   font-family: inherit;
-  border: 2px solid var(--cr-border);
+  border: 2px solid var(--chat-border);
   border-radius: 8px;
   resize: vertical;
   min-height: 120px;
-  transition: all 0.3s ease;
+  background: var(--modal-bg);
+  color: var(--text-main);
+  transition: var(--transition);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .form-textarea:focus {
   outline: none;
-  border-color: var(--cr-accent);
-  box-shadow: 0 0 0 3px rgba(43, 139, 140, 0.1);
+  border-color: var(--color-titulo);
+  box-shadow: 0 0 0 3px rgba(77, 170, 144, 0.15);
 }
 
 .form-textarea::placeholder {
-  color: var(--placeholder-muted, #adb5bd);
+  color: var(--text-muted);
 }
 
 .caracteres-contador {
   text-align: right;
   font-size: 0.85rem;
-  color: var(--cr-muted);
+  color: var(--text-muted);
 }
 
-/* Mensajes de error */
+/* ── Mensaje de error ── */
 .error-message {
   padding: 1rem;
-  background: var(--cr-error-bg);
-  border: 1px solid var(--cr-error-border);
+  background: var(--warning-bg);
+  border: 1px solid var(--error-color);
   border-radius: 8px;
-  color: var(--cr-error-color);
+  color: var(--error-color);
   font-size: 0.95rem;
 }
 
-/* Botones */
+/* ── Botones de acción ── */
 .form-actions {
   display: flex;
   gap: 1rem;
@@ -245,18 +249,19 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: var(--transition);
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--cr-accent) 0%, var(--btn-fill, #1f6668) 100%);
-  color: var(--btn-text-color, white);
-  box-shadow: 0 2px 8px rgba(43, 139, 140, 0.3);
+  background: var(--color-boton-relleno);
+  color: var(--color-boton-texto);
+  box-shadow: var(--shadow-sm-8);
 }
 
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(43, 139, 140, 0.4);
+  box-shadow: var(--shadow-sm-12);
+  border-color: transparent;
 }
 
 .btn-primary:active:not(:disabled) {
@@ -269,14 +274,15 @@
 }
 
 .btn-secondary {
-  background: var(--light-btn-secondary, #6c757d);
-  color: white;
-  box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+  background: var(--light-btn-secondary);
+  color: var(--white);
+  box-shadow: var(--shadow-sm-8);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: #5a6268;
+  opacity: 0.85;
   transform: translateY(-2px);
+  border-color: transparent;
 }
 
 .btn-secondary:active:not(:disabled) {
@@ -288,19 +294,79 @@
   cursor: not-allowed;
 }
 
-/* Responsive */
+/* ════════════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════════════ */
+
+/* ── Desktop grande (≥ 1280px) ── */
+@media (min-width: 1280px) {
+  .crear-resenia-container {
+    max-width: 760px;
+    padding: 2.5rem 2.5rem;
+  }
+
+  .crear-resenia-container h3 {
+    font-size: 1.75rem;
+  }
+
+  .star-button {
+    font-size: 2.75rem;
+  }
+
+  .form-textarea {
+    min-height: 150px;
+    font-size: 1.05rem;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 1rem 2rem;
+    font-size: 1.05rem;
+  }
+
+  .success-icon {
+    width: 96px;
+    height: 96px;
+    font-size: 3.5rem;
+  }
+}
+
+/* ── Tablet (≤ 1024px) ── */
+@media (max-width: 1024px) {
+  .crear-resenia-container {
+    max-width: 100%;
+    padding: 1.5rem 1.5rem;
+  }
+
+  .crear-resenia-container h3 {
+    font-size: 1.4rem;
+  }
+
+  .star-button {
+    font-size: 2.25rem;
+  }
+}
+
+/* ── Tablet chica / landscape móvil (≤ 768px) ── */
 @media (max-width: 768px) {
   .crear-resenia-container {
-    padding: 1rem;
+    padding: 1.25rem 1.25rem;
+    border-radius: 10px;
   }
 
   .crear-resenia-container h3 {
     font-size: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .form-resenia {
+    gap: 1.25rem;
   }
 
   .selector-estrellas {
     flex-direction: column;
     align-items: flex-start;
+    gap: 0.75rem;
   }
 
   .star-button {
@@ -309,15 +375,104 @@
 
   .puntuacion-texto {
     margin-left: 0;
-    margin-top: 0.5rem;
   }
 
   .form-actions {
     flex-direction: column;
+    gap: 0.75rem;
   }
 
   .btn-primary,
   .btn-secondary {
     width: 100%;
+    padding: 0.875rem 1rem;
+  }
+
+  .success-icon {
+    width: 72px;
+    height: 72px;
+    font-size: 2.5rem;
+  }
+
+  .success-message {
+    padding: 2rem 1rem;
+  }
+}
+
+/* ── Celular (≤ 480px) ── */
+@media (max-width: 480px) {
+  .crear-resenia-container {
+    padding: 1rem 1rem;
+    border-radius: 8px;
+  }
+
+  .crear-resenia-container h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-resenia {
+    gap: 1rem;
+  }
+
+  .form-group label {
+    font-size: 0.78rem;
+  }
+
+  .selector-estrellas {
+    padding: 0.75rem;
+  }
+
+  .star-button {
+    font-size: 1.75rem;
+  }
+
+  .form-select,
+  .form-textarea {
+    font-size: 0.95rem;
+    padding: 0.65rem 0.85rem;
+  }
+
+  .form-textarea {
+    min-height: 100px;
+  }
+
+  .caracteres-contador {
+    font-size: 0.78rem;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 0.8rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .success-icon {
+    width: 64px;
+    height: 64px;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .success-message h3 {
+    font-size: 1.1rem;
+  }
+
+  .success-message p {
+    font-size: 0.9rem;
+  }
+
+  .no-turnos {
+    padding: 1.5rem 1rem;
+  }
+
+  .error-message {
+    font-size: 0.88rem;
+    padding: 0.75rem;
+  }
+
+  .turno-info {
+    font-size: 0.88rem;
+    padding: 0.75rem;
   }
 }

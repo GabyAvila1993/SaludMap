@@ -1,13 +1,83 @@
+/* ── Boton.css ──────────────────────────────────────────────────────────── */
+/*
+  Todos los colores usan variables definidas en index.css.
+  Sin colores hardcodeados ni !important.
+  Breakpoints:
+  ≥ 1280px  → Desktop grande
+  default   → Notebook / Desktop normal (base)
+  ≤ 1024px  → Tablet
+  ≤ 768px   → Tablet chica / landscape móvil
+  ≤ 480px   → Celular
+*/
+
 .boton {
-  background-color: var(--btn-primary-bg, #35332e);
-  color: var(--btn-text-color, #ffffff);
+  background-color: var(--btn-primary-bg);
+  color: var(--color-boton-texto);
   border: none;
   padding: 12px 24px;
   margin: 15px;
   border-radius: 12px;
   cursor: pointer;
-  font-size: 16px;
-  transition: transform 0.2s ease-in-out;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: var(--transition);
+  min-height: 44px;
 }
 
-.boton:hover { transform: translateY(-2px); }
+.boton:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm-12);
+  border-color: transparent;
+}
+
+.boton:active {
+  transform: translateY(0);
+}
+
+.boton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ════════════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════════════ */
+
+/* ── Desktop grande (≥ 1280px) ── */
+@media (min-width: 1280px) {
+  .boton {
+    padding: 14px 28px;
+    font-size: 1.05rem;
+    border-radius: 14px;
+  }
+}
+
+/* ── Tablet (≤ 1024px) ── */
+@media (max-width: 1024px) {
+  .boton {
+    padding: 11px 22px;
+    font-size: 0.97rem;
+  }
+}
+
+/* ── Tablet chica / landscape móvil (≤ 768px) ── */
+@media (max-width: 768px) {
+  .boton {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    margin: 10px;
+    width: calc(100% - 20px);
+  }
+}
+
+/* ── Celular (≤ 480px) ── */
+@media (max-width: 480px) {
+  .boton {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    margin: 8px;
+    width: calc(100% - 16px);
+    border-radius: 10px;
+  }
+}

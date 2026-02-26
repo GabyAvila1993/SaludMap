@@ -1,43 +1,20 @@
-/* ============================================================
-   SaveLocationModal.css — SaludMap
-   Mismo sistema de variables que CostComparator.css.
-   .dark-theme se aplica en document.body.
-   !important donde App.css global pisa los estilos de botón.
-   ============================================================ */
+/* ── SaveLocationModal.css ──────────────────────────────────────────────── */
+/*
+  Todos los colores usan variables definidas en index.css.
+  No hay colores hardcodeados ni !important.
+  Breakpoints:
+  ≥ 1280px  → Desktop grande
+  default   → Notebook / Desktop normal (base)
+  ≤ 1024px  → Tablet
+  ≤ 768px   → Tablet chica / landscape móvil
+  ≤ 480px   → Celular
+*/
 
-/* ── Variables locales ── */
-:root {
-  --slm-bg-panel:      var(--modal-bg, #ffffff);
-  --slm-bg-section:    var(--chat-fill, #edf7f3);
-  --slm-border:        var(--chat-border, #A2E3D0);
-  --slm-border-strong: var(--btn-fill, #66B09D);
-  --slm-text-main:     var(--modal-text, #000000);
-  --slm-text-accent:   var(--modal-title-color, #66B09D);
-  --slm-text-muted:    var(--modal-text-muted, #6b8f87);
-  --slm-btn-bg:        var(--btn-fill, #9EE2CF);
-  --slm-btn-text:      var(--btn-text-color, #08331f);
-  --slm-error:         var(--error-color, #c0392b);
-  --slm-shadow-lg:     0 18px 48px rgba(0, 0, 0, 0.18);
-  --slm-radius:        12px;
-  --slm-radius-sm:     8px;
-  --slm-transition:    all 0.22s cubic-bezier(0.2, 0.9, 0.2, 1);
-  --slm-font:          'Roboto', 'DM Sans', sans-serif;
-}
-
-.dark-theme {
-  --slm-bg-panel:      var(--modal-bg, #0B1F22);
-  --slm-bg-section:    var(--chat-fill, #0f2a2a);
-  --slm-text-main:     var(--modal-text, #e6fff9);
-  --slm-text-muted:    var(--modal-text-muted, #8aada5);
-  --slm-shadow-lg:     0 18px 48px rgba(0, 0, 0, 0.6);
-}
-
-/* ══════════════════════════════════════════
-   OVERLAY
-══════════════════════════════════════════ */
+/* ── Overlay ── */
 .modal-overlay {
   position: fixed;
   inset: 0;
+  background: var(--overlay-50);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -45,27 +22,22 @@
   padding: 24px 18px;
   box-sizing: border-box;
   overflow-y: auto;
-  /* sin fondo propio — lo hereda del contexto */
 }
 
-/* ══════════════════════════════════════════
-   PANEL
-══════════════════════════════════════════ */
+/* ── Panel ── */
 .modal-content {
   position: relative;
   margin: auto;
   width: min(94vw, 480px);
-  background: var(--slm-bg-panel);
-  border: 1.5px solid var(--slm-border);
-  border-radius: var(--slm-radius);
-  padding: 0;
-  box-shadow: var(--slm-shadow-lg);
+  background: var(--modal-bg);
+  border: 1.5px solid var(--chat-border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-xxl-20);
   display: flex;
   flex-direction: column;
-  color: var(--slm-text-main);
-  font-family: var(--slm-font);
-  animation: slmFadeIn 0.25s cubic-bezier(0.2, 0.9, 0.2, 1);
+  color: var(--modal-text);
   overflow: hidden;
+  animation: slmFadeIn 0.25s ease;
 }
 
 @keyframes slmFadeIn {
@@ -73,56 +45,49 @@
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* ══════════════════════════════════════════
-   HEADER
-══════════════════════════════════════════ */
+/* ── Header ── */
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px 14px;
-  border-bottom: 2px solid var(--slm-border);
+  border-bottom: 2px solid var(--chat-border);
 }
 
 .modal-header h3 {
   margin: 0;
-  font-family: var(--slm-font);
   font-size: clamp(1rem, 2vw, 1.15rem);
   font-weight: 700;
-  color: var(--slm-text-accent);
+  color: var(--color-titulo);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
-/* Botón cerrar — mismo patrón que CostComparator */
 .modal-content .modal-close {
-  background: var(--slm-bg-section) !important;
-  border: 1.5px solid var(--slm-border) !important;
-  color: var(--slm-text-accent) !important;
-  width: 30px !important;
-  height: 30px !important;
-  min-height: unset !important;
-  border-radius: 50% !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  cursor: pointer !important;
-  padding: 0 !important;
-  box-shadow: none !important;
-  font-size: 1.1rem !important;
-  line-height: 1 !important;
-  transition: var(--slm-transition) !important;
+  background: var(--placeholder-fill);
+  border: 1.5px solid var(--chat-border);
+  color: var(--color-titulo);
+  width: 30px;
+  height: 30px;
+  min-height: unset;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: var(--transition);
 }
 
 .modal-content .modal-close:hover {
-  background: var(--slm-btn-bg) !important;
-  transform: scale(1.08) !important;
-  box-shadow: none !important;
+  background: var(--btn-primary-bg);
+  transform: scale(1.08);
+  border-color: transparent;
 }
 
-/* ══════════════════════════════════════════
-   FORMULARIO
-══════════════════════════════════════════ */
+/* ── Formulario ── */
 .modal-form {
   padding: 18px 20px;
   display: flex;
@@ -138,7 +103,7 @@
   display: block;
   font-size: 0.71rem;
   font-weight: 700;
-  color: var(--slm-text-accent);
+  color: var(--color-titulo);
   text-transform: uppercase;
   letter-spacing: 0.07em;
   margin-bottom: 0.35rem;
@@ -148,168 +113,252 @@
 .form-group textarea {
   width: 100%;
   padding: 9px 12px;
-  border-radius: var(--slm-radius-sm);
-  border: 3px solid var(--slm-border);
-  background: var(--placeholder-fill, #ffffff);
-  color: var(--slm-text-main);
-  font-family: var(--slm-font);
+  border-radius: 8px;
+  border: 2px solid var(--chat-border);
+  background: var(--placeholder-fill);
+  color: var(--modal-text);
   font-size: 0.88rem;
-  transition: var(--slm-transition);
+  transition: var(--transition);
   box-sizing: border-box;
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: var(--slm-border-strong);
-  box-shadow: 0 0 0 3px rgba(102, 176, 157, 0.15);
+  border-color: var(--color-titulo);
+  box-shadow: var(--shadow-xs);
 }
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: var(--slm-text-muted);
+  color: var(--text-muted);
   font-style: italic;
 }
 
 .form-group textarea {
   resize: vertical;
   min-height: 80px;
-  font-family: var(--slm-font);
 }
 
-/* ══════════════════════════════════════════
-   INFO DE COORDENADAS
-══════════════════════════════════════════ */
+.form-group input:disabled,
+.form-group textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Info de coordenadas ── */
 .location-info {
-  background: var(--slm-bg-section);
-  border: 1.5px solid var(--slm-border);
-  border-left: 4px solid var(--slm-border-strong);
-  border-radius: var(--slm-radius-sm);
+  background: var(--placeholder-fill);
+  border: 1.5px solid var(--chat-border);
+  border-left: 4px solid var(--color-boton-relleno);
+  border-radius: 8px;
   padding: 10px 14px;
   margin-bottom: 1rem;
   font-size: 0.82rem;
-  color: var(--slm-text-main);
+  color: var(--modal-text);
 }
 
 .location-info strong {
-  color: var(--slm-text-accent);
+  color: var(--color-titulo);
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .coordinates {
-  font-family: 'Roboto Mono', monospace, var(--slm-font);
   font-size: 0.82rem;
-  color: var(--slm-text-main);
+  color: var(--modal-text);
   margin-top: 4px;
 }
 
 .accuracy {
   font-size: 0.75rem;
-  color: var(--slm-text-muted);
+  color: var(--text-muted);
   margin-top: 3px;
 }
 
-/* ══════════════════════════════════════════
-   ERROR
-══════════════════════════════════════════ */
+/* ── Error ── */
 .error-message {
-  background: rgba(192, 57, 43, 0.08);
-  border: 1.5px solid rgba(192, 57, 43, 0.35);
-  color: var(--slm-error);
+  background: var(--warning-bg);
+  border: 1.5px solid var(--error-color);
+  color: var(--error-color);
   padding: 8px 12px;
-  border-radius: var(--slm-radius-sm);
+  border-radius: 8px;
   margin-bottom: 0.75rem;
   font-size: 0.82rem;
 }
 
-.dark-theme .error-message {
-  background: rgba(192, 57, 43, 0.15);
-  color: var(--slm-error);
-  border-color: rgba(192, 57, 43, 0.4);
-}
-
-/* ══════════════════════════════════════════
-   ACCIONES — botones
-   !important para ganar al reset global de App.css
-══════════════════════════════════════════ */
+/* ── Acciones ── */
 .modal-actions {
   display: flex;
   gap: 10px;
   justify-content: flex-end;
   margin-top: 0.5rem;
   padding-top: 14px;
-  border-top: 1.5px solid var(--slm-border);
+  border-top: 1.5px solid var(--chat-border);
 }
 
 .modal-content .btn-primary {
-  background: var(--slm-border-strong) !important;
-  color: var(--slm-btn-text) !important;
-  border: 1.5px solid var(--slm-border-strong) !important;
-  padding: 9px 20px !important;
-  border-radius: var(--slm-radius-sm) !important;
-  font-family: var(--slm-font) !important;
-  font-size: 0.88rem !important;
-  font-weight: 700 !important;
-  cursor: pointer !important;
-  min-height: unset !important;
-  box-shadow: 0 4px 12px rgba(102, 176, 157, 0.22) !important;
-  transition: var(--slm-transition) !important;
+  background: var(--btn-primary-bg);
+  color: var(--color-boton-texto);
+  border: 1.5px solid var(--color-boton-relleno);
+  padding: 9px 20px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: unset;
+  box-shadow: var(--shadow-sm-8);
+  transition: var(--transition);
 }
 
 .modal-content .btn-primary:hover:not(:disabled) {
-  filter: brightness(1.08) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 6px 18px rgba(102, 176, 157, 0.32) !important;
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm-12);
+  border-color: transparent;
 }
 
 .modal-content .btn-primary:disabled {
-  opacity: 0.5 !important;
-  cursor: not-allowed !important;
-  transform: none !important;
-  box-shadow: none !important;
-  filter: none !important;
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  filter: none;
 }
 
 .modal-content .btn-secondary {
-  background: var(--slm-btn-bg) !important;
-  border: 1.5px solid var(--slm-border-strong) !important;
-  color: var(--slm-btn-text) !important;
-  padding: 9px 20px !important;
-  border-radius: var(--slm-radius-sm) !important;
-  font-family: var(--slm-font) !important;
-  font-size: 0.88rem !important;
-  font-weight: 700 !important;
-  cursor: pointer !important;
-  min-height: unset !important;
-  box-shadow: none !important;
-  transition: var(--slm-transition) !important;
+  background: var(--chat-fill);
+  border: 1.5px solid var(--chat-border);
+  color: var(--modal-text);
+  padding: 9px 20px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: unset;
+  transition: var(--transition);
 }
 
 .modal-content .btn-secondary:hover:not(:disabled) {
-  filter: brightness(0.94) !important;
-  transform: translateY(-1px) !important;
+  filter: brightness(0.94);
+  transform: translateY(-1px);
+  border-color: transparent;
 }
 
 .modal-content .btn-secondary:disabled {
-  opacity: 0.5 !important;
-  cursor: not-allowed !important;
-  transform: none !important;
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }
 
-/* ══════════════════════════════════════════
+/* ════════════════════════════════════════════════
    RESPONSIVE
-══════════════════════════════════════════ */
-@media (max-width: 600px) {
-  .modal-actions {
-    flex-direction: column;
-    align-items: stretch;
+   ════════════════════════════════════════════════ */
+
+/* ── Desktop grande (≥ 1280px) ── */
+@media (min-width: 1280px) {
+  .modal-content {
+    width: min(94vw, 560px);
+  }
+
+  .modal-form {
+    padding: 22px 26px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 0.92rem;
+    padding: 10px 14px;
   }
 
   .modal-content .btn-primary,
   .modal-content .btn-secondary {
-    width: 100% !important;
-    text-align: center !important;
+    padding: 10px 24px;
+    font-size: 0.92rem;
+  }
+}
+
+/* ── Tablet (≤ 1024px) ── */
+@media (max-width: 1024px) {
+  .modal-content {
+    width: min(96vw, 460px);
+  }
+}
+
+/* ── Tablet chica / landscape móvil (≤ 768px) ── */
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 16px 12px;
+  }
+
+  .modal-content {
+    width: 98vw;
+  }
+
+  .modal-header {
+    padding: 14px 16px 12px;
+  }
+
+  .modal-form {
+    padding: 14px 16px;
+  }
+
+  .modal-actions {
+    padding-top: 12px;
+  }
+}
+
+/* ── Celular (≤ 480px) ── */
+@media (max-width: 480px) {
+  .modal-overlay {
+    padding: 10px 8px;
+  }
+
+  .modal-content {
+    border-radius: 10px;
+  }
+
+  .modal-header h3 {
+    font-size: 0.95rem;
+  }
+
+  .modal-content .modal-close {
+    width: 28px;
+    height: 28px;
+    font-size: 1rem;
+  }
+
+  .modal-form {
+    padding: 12px 14px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 0.85rem;
+    padding: 8px 10px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .modal-content .btn-primary,
+  .modal-content .btn-secondary {
+    width: 100%;
+    text-align: center;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+
+  .location-info {
+    font-size: 0.78rem;
+    padding: 8px 12px;
+  }
+
+  .coordinates {
+    font-size: 0.78rem;
   }
 }
