@@ -880,4 +880,27 @@ body.dark-theme .filter-hospital.active { background: var(--marker-hospital-dark
   }
 }
 
+/* === DARK MODE: Mapa estilo oscuro mejorado === */
+
+/* body.dark-theme .leaflet-tile-pane {
+  filter: brightness(0.3) contrast(1.1) saturate(1.1) grayscale(0.3);
+}
+
+body.dark-theme .leaflet-marker-pane,
+body.dark-theme .leaflet-shadow-pane,
+body.dark-theme .leaflet-overlay-pane {
+  filter: none;
+} */
+
+/* === DARK MODE: Mapa estilo oscuro (tipo Google Maps dark) === */
+body.dark-theme .leaflet-tile-pane {
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%) saturate(0.4);
+}
+
+body.dark-theme .leaflet-marker-pane,
+body.dark-theme .leaflet-shadow-pane,
+body.dark-theme .leaflet-overlay-pane {
+  filter: invert(100%) hue-rotate(180deg);
+}
+
 /* FIN CAMBIO - Archivo: src/components/Map.css */
