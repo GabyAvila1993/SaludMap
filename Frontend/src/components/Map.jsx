@@ -1,9 +1,8 @@
 // INICIO CAMBIO - Archivo: src/components/Map.jsx - Integración con servicios
-
 import React, { useState, useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { MapContainer, Marker, Popup, Circle, useMap } from 'react-leaflet';
-
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css'; 
 import axios from 'axios';
@@ -37,6 +36,7 @@ export default function MapComponent() {
     const [isCalibrating, setIsCalibrating] = useState(false);
     const [_offlineMode, setOfflineMode] = useState(false);
     const [isOnline, setIsOnline] = useState(navigator.onLine);
+
     // Filtros para tipos de establecimientos
     const [filters, setFilters] = useState({
         hospital: true,
@@ -44,10 +44,12 @@ export default function MapComponent() {
         doctors: true,
         veterinary: true
     });
+
     const toggleAllFilters = () => {
         const allActive = Object.values(filters).every(Boolean);
         setFilters({ hospital: !allActive, clinic: !allActive, doctors: !allActive, veterinary: !allActive });
     };
+
     const [downloadProgress, setDownloadProgress] = useState(0);
     const [showSaveLocationModal, setShowSaveLocationModal] = useState(false);
     const [showSavedLocationsList, setShowSavedLocationsList] = useState(false);
@@ -59,12 +61,31 @@ export default function MapComponent() {
     const [showStatus, setShowStatus] = useState(false);
     const [statusMessage, setStatusMessage] = useState('');
 
+    // ── NUEVO: estado del menú hamburguesa móvil ──
+    const [showMobileMenu, setShowMobileMenu] = useState(false);
+
     // Mostrar progreso durante descargas offline
     useEffect(() => {
         if (showStatus && downloadProgress > 0 && downloadProgress < 100) {
             setStatusMessage(`Descargando área... ${Math.round(downloadProgress)}%`);
         }
     }, [downloadProgress, showStatus]);
+
+    // Cerrar menú móvil al hacer click fuera
+    useEffect(() => {
+        if (!showMobileMenu) return;
+        const handleOutside = (e) => {
+            if (!e.target.closest('.mobile-map-menu') && !e.target.closest('.mobile-map-toggle')) {
+                setShowMobileMenu(false);
+            }
+        };
+        document.addEventListener('mousedown', handleOutside);
+        document.addEventListener('touchstart', handleOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleOutside);
+            document.removeEventListener('touchstart', handleOutside);
+        };
+    }, [showMobileMenu]);
 
     const mapRef = useRef(null);
     const unsubscribeRef = useRef(null);
@@ -86,11 +107,11 @@ export default function MapComponent() {
 
     // Iconos por tipo
     const iconDefs = {
-        hospital: { key: 'hospital', color: '#e74c3c', label: 'H' },
-        clinic: { key: 'clinica', color: '#3498db', label: 'C' },
-        doctors: { key: 'doctor', color: '#2ecc71', label: 'D' },
-        veterinary: { key: 'veterinaria', color: '#9b59b6', label: 'V' },
-        default: { key: 'default', color: '#34495e', label: '?' },
+        hospital: { key: 'hospital', color: 'var(--marker-hospital, #e74c3c)', label: 'H' },
+        clinic: { key: 'clinica', color: 'var(--marker-clinic, #3498db)', label: 'C' },
+        doctors: { key: 'doctor', color: 'var(--marker-doctors, #2ecc71)', label: 'D' },
+        veterinary: { key: 'veterinaria', color: 'var(--marker-vet, #9b59b6)', label: 'V' },
+        default: { key: 'default', color: 'var(--marker-default, #34495e)', label: '?' },
     };
 
     const createDivIcon = (key, label) => {
@@ -108,27 +129,17 @@ export default function MapComponent() {
 
     // Configurar servicios al montar componente
     useEffect(() => {
-        // Suscribirse a cambios de ubicación
         const unsubscribe = locationService.subscribe(handleLocationChange);
         unsubscribeRef.current = unsubscribe;
-
-        // Configurar callback de progreso de descarga offline
         offlineTileService.setProgressCallback(setDownloadProgress);
-
-        // Cargar última ubicación conocida
         locationService.loadLastKnownLocation();
-
-        // Iniciar seguimiento de ubicación
         locationService.startWatching();
 
-        // Detectar cambios de conectividad
         const handleOnline = () => setIsOnline(true);
         const handleOffline = () => setIsOnline(false);
         
-        // Escuchar evento para centrar mapa
         const handleCenterMap = (event) => {
             if (mapRef.current) {
-                // No forzamos recentrado si el usuario está interactuando
                 if (userInteracting.current) return;
                 try {
                     mapRef.current.setView([event.detail.lat, event.detail.lng], 15, {
@@ -146,9 +157,7 @@ export default function MapComponent() {
         window.addEventListener('centerMapOnLocation', handleCenterMap);
 
         return () => {
-            if (unsubscribeRef.current) {
-                unsubscribeRef.current();
-            }
+            if (unsubscribeRef.current) unsubscribeRef.current();
             locationService.stopWatching();
             window.removeEventListener('online', handleOnline);
             window.removeEventListener('offline', handleOffline);
@@ -156,24 +165,16 @@ export default function MapComponent() {
         };
     }, []);
 
-    // Manejar cambios de ubicación
     const handleLocationChange = async (location) => {
         setCurrentLocation(location);
         setError('');
-
-        // Centrar mapa en nueva ubicación con animación
         if (mapRef.current) {
             try {
-                // No re-centremos si el usuario está interactuando con el mapa
                 if (userInteracting.current) return;
-
-                // Si la distancia al centro actual es muy pequeña, evitamos hacer setView para no provocar zoom/ajustes innecesarios
                 const center = mapRef.current.getCenter();
                 const dist = center ? center.distanceTo(L.latLng(location.lat, location.lng)) : Infinity;
-                const DISTANCE_THRESHOLD = 25; // metros
+                const DISTANCE_THRESHOLD = 25;
                 if (dist < DISTANCE_THRESHOLD) return;
-
-                // Usar un zoom razonable (15) para evitar zoom extremo
                 mapRef.current.setView([location.lat, location.lng], 15, {
                     animate: true,
                     duration: 0.5
@@ -182,52 +183,35 @@ export default function MapComponent() {
                 // noop
             }
         }
-
-        // Buscar lugares cercanos
         await fetchNearbyPlaces(location);
     };
 
-    // Buscar lugares (online/offline)
     const fetchNearbyPlaces = async (location) => {
         try {
             let places = [];
-
-            // Si estamos online, intentar buscar online primero
             if (isOnline) {
                 try {
-                    // Enviar sólo los tipos seleccionados por el usuario
                     const selectedTypes = Object.keys(filters).filter(k => filters[k]);
                     const types = selectedTypes.join(',') || 'hospital,clinic,doctors,veterinary';
                     const response = await axios.get(
                         `/api/places?lat=${location.lat}&lng=${location.lng}&types=${types}`
                     );
-
                     places = normalizeApiResponse(response.data);
-
-                    // Guardar en IndexedDB para uso offline
-                    if (places.length > 0) {
-                        await savePlaces(places);
-                    }
+                    if (places.length > 0) await savePlaces(places);
                     setOfflineMode(false);
-            } catch {
-                    // console.log('Error en búsqueda online, usando cache offline');
-                    // Si falla online, usar cache offline
+                } catch {
                     const offlinePlaces = await getNearbyPlaces(location);
                     places = offlinePlaces;
                     setOfflineMode(true);
                 }
             } else {
-                // Si estamos offline, usar solo cache
                 const offlinePlaces = await getNearbyPlaces(location);
                 places = offlinePlaces;
                 setOfflineMode(true);
             }
-
             setLugares(places);
         } catch (error) {
             console.error('Error obteniendo lugares:', error);
-
-            // Intentar cargar desde cache offline
             const cachedPlaces = await getNearbyPlaces(location);
             if (cachedPlaces.length > 0) {
                 setLugares(cachedPlaces);
@@ -239,14 +223,11 @@ export default function MapComponent() {
         }
     };
 
-    // Obtener array de lugares filtrados a partir del filtro de UI
     const visibleLugares = lugares.filter(l => {
         const tipo = l.type || l.tipo || 'default';
-        // Mostrar sólo si el tipo está seleccionado (si no está en filtros, ocultar)
         return !!filters[tipo];
     });
 
-    // Normalizar respuesta de API
     const normalizeApiResponse = (data) => {
         let results = [];
         if (Array.isArray(data)) results = data;
@@ -254,7 +235,6 @@ export default function MapComponent() {
         else if (Array.isArray(data.elements)) results = data.elements;
         else if (Array.isArray(data.features)) results = data.features;
         else results = data.elements ?? data.lugares ?? [];
-
         return results.map(place => ({
             ...place,
             lat: place.lat ?? place.center?.lat ?? place.geometry?.coordinates?.[1],
@@ -263,38 +243,30 @@ export default function MapComponent() {
         }));
     };
 
-    // Determinar tipo de lugar
     const getTypeFromPlace = (place) => {
         const tags = place.tags ?? place.properties ?? {};
         const amenity = (tags.amenity || tags.healthcare || '').toString().toLowerCase();
         const name = (tags.name || '').toString().toLowerCase();
-
         if (amenity.includes('hospital') || name.includes('hospital')) return 'hospital';
         if (amenity.includes('clinic') || name.includes('clínica') || name.includes('clinic')) return 'clinic';
         if (amenity.includes('veterinary') || name.includes('veterin')) return 'veterinary';
         if (amenity.includes('doctor') || name.includes('doctor') || name.includes('médic')) return 'doctors';
-
         return 'default';
     };
 
-    // Actualizar ubicación
     const handleCalibrate = async () => {
         if (isCalibrating) return;
-
+        setShowMobileMenu(false);
         setShowStatus(true);
         setStatusMessage('Actualizando ubicación...');
-
         setIsCalibrating(true);
         setError('Obteniendo ubicación GPS...');
-
         try {
             const location = await locationService.calibratePosition();
-            // Forzar que el mapa se centre en la nueva ubicación
             if (mapRef.current && location) {
                 if (!userInteracting.current) {
                     mapRef.current.setView([location.lat, location.lng], 15, {
-                        animate: true,
-                        duration: 0.5
+                        animate: true, duration: 0.5
                     });
                 }
             }
@@ -308,30 +280,23 @@ export default function MapComponent() {
         }
     };
 
-    // Volver a GPS cuando el usuario pasó a manual
     const handleReturnToGPS = async () => {
         if (isCalibrating) return;
-
+        setShowMobileMenu(false);
         setShowStatus(true);
         setStatusMessage('Reactivando GPS...');
-
         setIsCalibrating(true);
         setError('Reactivando GPS...');
-
         try {
             const location = await locationService.calibratePosition();
-            // Asegurar que el watch vuelva a estar activo para actualizaciones automáticas
             try { locationService.startWatching(); } catch { /* noop */ }
-
             if (mapRef.current && location) {
                 if (!userInteracting.current) {
                     mapRef.current.setView([location.lat, location.lng], 15, {
-                        animate: true,
-                        duration: 0.5
+                        animate: true, duration: 0.5
                     });
                 }
             }
-
             setError('GPS reactivado');
         } catch (error) {
             setError('No se pudo reactivar GPS: ' + (error.message || String(error)));
@@ -342,10 +307,9 @@ export default function MapComponent() {
         }
     };
 
-    // Descargar área offline
     const handleDownloadOffline = async () => {
         if (!currentLocation) return;
-
+        setShowMobileMenu(false);
         try {
             setShowStatus(true);
             setStatusMessage('Descargando área...');
@@ -360,17 +324,14 @@ export default function MapComponent() {
         }
     };
 
-    // Manejar arrastre del marcador
     const handleMarkerDrag = async (event) => {
         const { lat, lng } = event.target.getLatLng();
         await locationService.setManualLocation(lat, lng);
     };
 
-    // Manejar selección de lugar y cargar establecimiento
     const handlePlaceSelect = async (lugar) => {
         setSelectedPlace(lugar);
         setLoadingEstablecimiento(true);
-        
         try {
             const est = await establecimientosService.findOrCreate(lugar);
             setSelectedEstablecimiento(est);
@@ -382,22 +343,15 @@ export default function MapComponent() {
         }
     };
 
-    // Manejar cierre de lugar seleccionado
     const handlePlaceClose = () => {
         setSelectedPlace(null);
         setSelectedEstablecimiento(null);
     };
 
-    // Component to handle map reference
     const MapController = () => {
         const map = useMap();
-
         useEffect(() => {
             mapRef.current = map;
-
-            // Force Leaflet to recalculate size and positions after mount.
-            // This avoids errors like "Cannot read properties of undefined (reading '_leaflet_pos')"
-            // which can happen when the map container changes size or becomes visible after render.
             try {
                 setTimeout(() => {
                     if (map && typeof map.invalidateSize === 'function') {
@@ -407,32 +361,26 @@ export default function MapComponent() {
             } catch {
                 // noop
             }
-
-            // Track user interactions to avoid fighting the user's pan/zoom actions.
             const onUserInteractionStart = () => {
                 userInteracting.current = true;
                 lastUserInteractionAt.current = Date.now();
             };
             const onUserInteractionEnd = () => {
-                // keep interaction flag for a short grace period
                 lastUserInteractionAt.current = Date.now();
                 setTimeout(() => {
-                    // only clear if no further interaction
                     if (Date.now() - lastUserInteractionAt.current > 1200) {
                         userInteracting.current = false;
                     }
                 }, 1200);
             };
-
-                    try {
-                        map.on('movestart', onUserInteractionStart);
-                        map.on('zoomstart', onUserInteractionStart);
-                        map.on('moveend', onUserInteractionEnd);
-                        map.on('zoomend', onUserInteractionEnd);
-                    } catch {
-                        // noop
-                    }
-
+            try {
+                map.on('movestart', onUserInteractionStart);
+                map.on('zoomstart', onUserInteractionStart);
+                map.on('moveend', onUserInteractionEnd);
+                map.on('zoomend', onUserInteractionEnd);
+            } catch {
+                // noop
+            }
             return () => {
                 try {
                     map.off('movestart', onUserInteractionStart);
@@ -444,11 +392,9 @@ export default function MapComponent() {
                 }
             };
         }, [map]);
-
         return null;
     };
 
-    // Manejar guardar ubicación con nombre
     const handleSaveLocation = async (locationData) => {
         try {
             await saveNamedLocation(
@@ -479,169 +425,242 @@ export default function MapComponent() {
         <>
         <div className="map-section">
             <div className="map-root">
-            {/* map title removed intentionally (keeps UI cleaner) */}
-            {!isOnline && <div className="offline-badge">{t('map.offline')}</div>}
+                {!isOnline && <div className="offline-badge">{t('map.offline')}</div>}
+                {error && <div className="map-error">{error}</div>}
 
-            {error && <div className="map-error">{error}</div>}
-
-            <div className="map-controls">
-                <button onClick={handleCalibrate} disabled={isCalibrating}>
-                    {isCalibrating ? t('map.updating') : t('map.updateLocation')}
-                </button>
-                {currentLocation?.source === 'manual' && (
-                    <button onClick={handleReturnToGPS} disabled={isCalibrating} className="btn-return-gps">
-                        Volver a GPS
+                {/* ── DESKTOP: pill de controles (visible solo en > 1024px) ── */}
+                <div className="map-controls">
+                    <button onClick={handleCalibrate} disabled={isCalibrating}>
+                        {isCalibrating ? t('map.updating') : t('map.updateLocation')}
                     </button>
-                )}
-                <button onClick={handleDownloadOffline}>
-                    {t('map.downloadOfflineArea')}
+                    {currentLocation?.source === 'manual' && (
+                        <button onClick={handleReturnToGPS} disabled={isCalibrating} className="btn-return-gps">
+                            Volver a GPS
+                        </button>
+                    )}
+                    <button onClick={handleDownloadOffline}>
+                        {t('map.downloadOfflineArea')}
+                    </button>
+                    <button onClick={() => setShowSaveLocationModal(true)} className="btn-save-location">
+                        {t('map.saveLocation')}
+                    </button>
+                    <button onClick={() => setShowSavedLocationsList(true)} className="btn-view-locations">
+                        {t('map.viewLocations')}
+                    </button>
+                    <button onClick={() => setShowFiltersModal(true)} className="btn-show-filters">
+                        {t('map.filters.title') || 'Filtros'}
+                    </button>
+                    {downloadProgress > 0 && downloadProgress < 100 && (
+                        <div className="progress">{t('map.downloading')}: {Math.round(downloadProgress)}%</div>
+                    )}
+                </div>
+
+                {/* ── MÓVIL: botón hamburguesa (visible solo en ≤ 1024px) ── */}
+                <button
+                    className="mobile-map-toggle"
+                    onClick={() => setShowMobileMenu(prev => !prev)}
+                    aria-label="Menú del mapa"
+                    aria-expanded={showMobileMenu}
+                >
+                    <span className={`mobile-map-toggle-icon ${showMobileMenu ? 'open' : ''}`}>
+                        {showMobileMenu ? '✕' : '☰'}
+                    </span>
                 </button>
-                <button onClick={() => setShowSaveLocationModal(true)} className="btn-save-location">
-                    {t('map.saveLocation')}
-                </button>
-                <button onClick={() => setShowSavedLocationsList(true)} className="btn-view-locations">
-                    {t('map.viewLocations')}
-                </button>
-                <button onClick={() => setShowFiltersModal(true)} className="btn-show-filters">
-                    {t('map.filters.title') || 'Filtros'}
-                </button>
-                {/* filtros movidos a la barra lateral para mejor visibilidad */}
-                {downloadProgress > 0 && downloadProgress < 100 && (
-                    <div className="progress">{t('map.downloading')}: {Math.round(downloadProgress)}%</div>
-                )}
-            </div>
 
-            {/* Cartel de estado/Loading (se muestra añadiendo showStatus) */}
-            <div className={`status-overlay ${showStatus ? 'show' : ''}`}>{statusMessage}</div>
+                {/* ── MÓVIL: panel drawer ── */}
+                {showMobileMenu && (
+                    <div className="mobile-map-menu" role="menu">
+                        <div className="mobile-map-menu-header">
+                            <span className="mobile-map-menu-title">Opciones del mapa</span>
+                        </div>
+                        <div className="mobile-map-menu-body">
+                            <button
+                                className="mobile-map-menu-btn"
+                                onClick={handleCalibrate}
+                                disabled={isCalibrating}
+                            >
+                                <span className="mobile-map-menu-btn-icon">📍</span>
+                                {isCalibrating ? t('map.updating') : t('map.updateLocation')}
+                            </button>
+                            {currentLocation?.source === 'manual' && (
+                                <button
+                                    className="mobile-map-menu-btn mobile-map-menu-btn--gps"
+                                    onClick={handleReturnToGPS}
+                                    disabled={isCalibrating}
+                                >
+                                    <span className="mobile-map-menu-btn-icon">🛰️</span>
+                                    Volver a GPS
+                                </button>
+                            )}
+                            <button
+                                className="mobile-map-menu-btn"
+                                onClick={handleDownloadOffline}
+                            >
+                                <span className="mobile-map-menu-btn-icon">⬇️</span>
+                                {t('map.downloadOfflineArea')}
+                            </button>
+                            <button
+                                className="mobile-map-menu-btn"
+                                onClick={() => { setShowSaveLocationModal(true); setShowMobileMenu(false); }}
+                            >
+                                <span className="mobile-map-menu-btn-icon">💾</span>
+                                {t('map.saveLocation')}
+                            </button>
+                            <button
+                                className="mobile-map-menu-btn"
+                                onClick={() => { setShowSavedLocationsList(true); setShowMobileMenu(false); }}
+                            >
+                                <span className="mobile-map-menu-btn-icon">📋</span>
+                                {t('map.viewLocations')}
+                            </button>
+                            <button
+                                className="mobile-map-menu-btn mobile-map-menu-btn--filters"
+                                onClick={() => { setShowFiltersModal(true); setShowMobileMenu(false); }}
+                            >
+                                <span className="mobile-map-menu-btn-icon">🔍</span>
+                                {t('map.filters.title') || 'Filtros'}
+                            </button>
 
-            <div className="map-info">
-                {t('map.accuracy')}: {currentLocation.accuracy ? `${Math.round(currentLocation.accuracy)}${t('map.meters')}` : '—'}
-                <span className="location-source">
-                    ({currentLocation.source === 'manual' ? t('map.locationSource.manual') :
-                        currentLocation.source === 'calibrated' ? t('map.locationSource.calibrated') : t('map.locationSource.gps')})
-                </span>
-            </div>
-
-                        <div className="map-layout">
-                            <div className="map-wrapper">
-              <MapContainer
-                center={[currentLocation.lat, currentLocation.lng]}
-                zoom={15}
-                className="leaflet-map"
-                whenCreated={(mapInstance) => { mapRef.current = mapInstance }}
-                onClick={handlePlaceClose}
-              >
-                <MapController />
-                <OfflineTileLayer 
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                />
-
-                {currentLocation.accuracy && (
-                    <Circle
-                        center={[currentLocation.lat, currentLocation.lng]}
-                        radius={currentLocation.accuracy}
-                        pathOptions={{ color: '#007bff', fillOpacity: 0.08 }}
-
-                    />
-                )}
-
-                <Marker
-                    position={[currentLocation.lat, currentLocation.lng]}
-                    icon={userIcon}
-                    draggable={true}
-                    eventHandlers={{ dragend: handleMarkerDrag }}
-                />
-
-                    {visibleLugares.map((lugar, index) => {
-                        // Resolve coordinates from multiple possible property names
-                        const lat = lugar.lat ?? lugar.center?.lat ?? lugar.geometry?.coordinates?.[1] ?? lugar.latitude ?? lugar.y ?? lugar.center?.latitude;
-                        const lng = lugar.lng ?? lugar.lon ?? lugar.center?.lon ?? lugar.geometry?.coordinates?.[0] ?? lugar.longitude ?? lugar.x ?? lugar.center?.longitude;
-
-                        // If we can't resolve both lat and lng, skip rendering the marker
-                        if (lat == null || lng == null) return null;
-
-                        const coords = [lat, lng];
-
-                        const nombre = lugar.tags?.name ?? lugar.properties?.name ??
-                                lugar.tags?.amenity ?? 'Servicio de salud';
-                        const direccion = lugar.tags?.addr_full ?? lugar.tags?.address ??
-                            lugar.properties?.address ?? '';
-                    const tipo = lugar.type || 'default';
-
-                    return (
-                        <Marker
-                            key={index}
-                            position={coords}
-                            icon={getIconForType(tipo)}
-                                title={nombre}
-                                alt={direccion}
-                            eventHandlers={{
-                                click: () => {
-                                    handlePlaceSelect(lugar);
-                                }
-                            }}
-                        />
-                    );
-                })}
-              </MapContainer>
-
-                            {/* tu panel grande (EstablishmentInfo) continúa funcionando */}
-                                {selectedPlace && (
-                                        <EstablishmentInfo place={selectedPlace} onClose={handlePlaceClose} />
-                                )}
-                            </div>
-
-                            {/* Sidebar legacy removed visually; use centered modal instead */}
-                            <aside className={`map-sidebar ${showSidebar ? 'active' : ''}`} aria-hidden="true">
-                                <div className="sidebar-inner">
-                                    {/* kept for backward compatibility but hidden via CSS */}
-                                </div>
-                            </aside>
-                            {/* Toggle opens modal de filtros centrado */}
-                            <button className="sidebar-toggle" onClick={() => setShowFiltersModal(true)} aria-label="Abrir filtros">☰</button>
-
-                            {/* Modal de filtros centrado */}
-                            {showFiltersModal && (
-                                <div className={`filter-modal show`} role="dialog" aria-modal="true">
-                                    <h4 className="filters-title">{t('map.filters.title') || 'Filtros'}</h4>
-                                    <div className="filters-vertical">
-                                        <button type="button" className={`filter-btn filter-all-btn ${Object.values(filters).every(Boolean) ? 'active' : ''}`} onClick={() => { toggleAllFilters(); }}>
-                                            Todos
-                                        </button>
-                                        <button type="button" className={`filter-btn filter-hospital ${filters.hospital ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, hospital: !f.hospital }))}>
-                                            🏥 Hospital
-                                        </button>
-                                        <button type="button" className={`filter-btn filter-clinica ${filters.clinic ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, clinic: !f.clinic }))}>
-                                            🏩 Clínica
-                                        </button>
-                                        <button type="button" className={`filter-btn filter-doctor ${filters.doctors ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, doctors: !f.doctors }))}>
-                                            👨‍⚕️ Médico
-                                        </button>
-                                        <button type="button" className={`filter-btn filter-veterinaria ${filters.veterinary ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, veterinary: !f.veterinary }))}>
-                                            🐾 Veterinaria
-                                        </button>
+                            {/* Progreso de descarga dentro del menú */}
+                            {downloadProgress > 0 && downloadProgress < 100 && (
+                                <div className="mobile-map-menu-progress">
+                                    <div className="mobile-map-menu-progress-bar">
+                                        <div
+                                            className="mobile-map-menu-progress-fill"
+                                            style={{ width: `${downloadProgress}%` }}
+                                        />
                                     </div>
-                                    <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 12 }}>
-                                        <button className="btn btn-secondary" onClick={() => setShowFiltersModal(false)}>Cerrar</button>
-                                        <button className="btn btn-primary" onClick={() => setShowFiltersModal(false)}>Aplicar</button>
-                                    </div>
+                                    <span>{t('map.downloading')}: {Math.round(downloadProgress)}%</span>
                                 </div>
                             )}
                         </div>
 
-            {/* Modales para ubicaciones guardadas */}
-            <SaveLocationModal
-                isOpen={showSaveLocationModal}
-                onClose={() => setShowSaveLocationModal(false)}
-                onSave={handleSaveLocation}
-                currentLocation={currentLocation}
-            />
+                        {/* Precisión al pie del drawer */}
+                        <div className="mobile-map-menu-footer">
+                            <div className="mobile-map-menu-accuracy">
+                                <span className="mobile-map-menu-accuracy-label">Precisión</span>
+                                <span className="mobile-map-menu-accuracy-value">
+                                    {currentLocation.accuracy
+                                        ? `~${Math.round(currentLocation.accuracy)}${t('map.meters')}`
+                                        : '—'}
+                                </span>
+                                <span className="mobile-map-menu-accuracy-source">
+                                    {currentLocation.source === 'manual'
+                                        ? t('map.locationSource.manual')
+                                        : currentLocation.source === 'calibrated'
+                                        ? t('map.locationSource.calibrated')
+                                        : t('map.locationSource.gps')}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
-            <SavedLocationsList
-                isOpen={showSavedLocationsList}
-                onClose={() => setShowSavedLocationsList(false)}
-            />
+                {/* Cartel de estado */}
+                <div className={`status-overlay ${showStatus ? 'show' : ''}`}>{statusMessage}</div>
+
+                {/* Precisión en desktop (visible solo en > 1024px) */}
+                <div className="map-info">
+                    {t('map.accuracy')}: {currentLocation.accuracy ? `${Math.round(currentLocation.accuracy)}${t('map.meters')}` : '—'}
+                    <span className="location-source">
+                        ({currentLocation.source === 'manual' ? t('map.locationSource.manual') :
+                            currentLocation.source === 'calibrated' ? t('map.locationSource.calibrated') : t('map.locationSource.gps')})
+                    </span>
+                </div>
+
+                <div className="map-layout">
+                    <div className="map-wrapper">
+                        <MapContainer
+                            center={[currentLocation.lat, currentLocation.lng]}
+                            zoom={15}
+                            className="leaflet-map"
+                            whenCreated={(mapInstance) => { mapRef.current = mapInstance }}
+                            onClick={handlePlaceClose}
+                        >
+                            <MapController />
+                            <OfflineTileLayer 
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            />
+                            {currentLocation.accuracy && (
+                                <Circle
+                                    center={[currentLocation.lat, currentLocation.lng]}
+                                    radius={currentLocation.accuracy}
+                                    pathOptions={{ color: 'var(--path-highlight, #007bff)', fillOpacity: 0.08 }}
+                                />
+                            )}
+                            <Marker
+                                position={[currentLocation.lat, currentLocation.lng]}
+                                icon={userIcon}
+                                draggable={true}
+                                eventHandlers={{ dragend: handleMarkerDrag }}
+                            />
+                            {visibleLugares.map((lugar, index) => {
+                                const lat = lugar.lat ?? lugar.center?.lat ?? lugar.geometry?.coordinates?.[1] ?? lugar.latitude ?? lugar.y ?? lugar.center?.latitude;
+                                const lng = lugar.lng ?? lugar.lon ?? lugar.center?.lon ?? lugar.geometry?.coordinates?.[0] ?? lugar.longitude ?? lugar.x ?? lugar.center?.longitude;
+                                if (lat == null || lng == null) return null;
+                                const coords = [lat, lng];
+                                const nombre = lugar.tags?.name ?? lugar.properties?.name ??
+                                        lugar.tags?.amenity ?? 'Servicio de salud';
+                                const direccion = lugar.tags?.addr_full ?? lugar.tags?.address ??
+                                    lugar.properties?.address ?? '';
+                                const tipo = lugar.type || 'default';
+                                return (
+                                    <Marker
+                                        key={index}
+                                        position={coords}
+                                        icon={getIconForType(tipo)}
+                                        title={nombre}
+                                        alt={direccion}
+                                        eventHandlers={{
+                                            click: () => { handlePlaceSelect(lugar); }
+                                        }}
+                                    />
+                                );
+                            })}
+                        </MapContainer>
+                        {selectedPlace && (
+                            <EstablishmentInfo place={selectedPlace} onClose={handlePlaceClose} />
+                        )}
+                    </div>
+                    {/* Modal de filtros */}
+                        {showFiltersModal && (typeof document !== 'undefined' ? ReactDOM.createPortal(
+                            <div className="filter-modal show" role="dialog" aria-modal="true">
+                                <h4 className="filters-title">{t('map.filters.title') || 'Filtros'}</h4>
+                                <div className="filters-vertical">
+                                    <button type="button" className={`filter-btn filter-all-btn ${Object.values(filters).every(Boolean) ? 'active' : ''}`} onClick={toggleAllFilters}>
+                                        Todos
+                                    </button>
+                                    <button type="button" className={`filter-btn filter-hospital ${filters.hospital ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, hospital: !f.hospital }))}>
+                                        🏥 Hospital
+                                    </button>
+                                    <button type="button" className={`filter-btn filter-clinica ${filters.clinic ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, clinic: !f.clinic }))}>
+                                        🏩 Clínica
+                                    </button>
+                                    <button type="button" className={`filter-btn filter-doctor ${filters.doctors ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, doctors: !f.doctors }))}>
+                                        👨‍⚕️ Médico
+                                    </button>
+                                    <button type="button" className={`filter-btn filter-veterinaria ${filters.veterinary ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, veterinary: !f.veterinary }))}>
+                                        🐾 Veterinaria
+                                    </button>
+                                </div>
+                                <div className="filter-modal-actions">
+                                    <button className="btn btn-secondary" onClick={() => setShowFiltersModal(false)}>Cerrar</button>
+                                    <button className="btn btn-primary" onClick={() => setShowFiltersModal(false)}>Aplicar</button>
+                                </div>
+                            </div>, document.body) : null)}
+                </div>
+
+                <SaveLocationModal
+                    isOpen={showSaveLocationModal}
+                    onClose={() => setShowSaveLocationModal(false)}
+                    onSave={handleSaveLocation}
+                    currentLocation={currentLocation}
+                />
+                <SavedLocationsList
+                    isOpen={showSavedLocationsList}
+                    onClose={() => setShowSavedLocationsList(false)}
+                />
             </div>
         </div>
 
@@ -653,7 +672,6 @@ export default function MapComponent() {
                         Reseñas de {selectedPlace.tags?.name ?? selectedPlace.properties?.name ?? 'este lugar'}
                     </h3>
                 </div>
-                
                 {loadingEstablecimiento ? (
                     <div className="resenias-loading">Cargando reseñas...</div>
                 ) : (

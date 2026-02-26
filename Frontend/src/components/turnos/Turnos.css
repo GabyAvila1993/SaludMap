@@ -7,14 +7,16 @@
 
 /* ── Variables locales mapeadas a App.css ── */
 :root {
-  --t-bg-page:       #f4faf8;
-  --t-bg-card:       #ffffff;
-  --t-bg-section:    #edf7f3;
+  /* Mapear variables locales a las variables globales para permitir
+     cambiar paletas desde un único lugar (App.css / modal overrides) */
+  --t-bg-page:       var(--bg-main, #f4faf8);
+  --t-bg-card:       var(--bg-navbar-modal, #08331f);
+  --t-bg-section:    var(--bg-navbar-modal, #08331f);
   --t-border:        var(--border-ui, #A2E3D0);
   --t-border-strong: var(--text-highlight, #66B09D);
   --t-text-main:     var(--text-main, #000000);
   --t-text-accent:   var(--text-highlight, #66B09D);
-  --t-text-muted:    #6b8f87;
+  --t-text-muted:    var(--text-muted, #6b8f87);
   --t-btn-bg:        var(--btn-primary-bg, #9EE2CF);
   --t-btn-text:      var(--text-dark, #08331f);
   --t-shadow:        0 2px 12px rgba(102,176,157,0.10);
@@ -23,18 +25,26 @@
   --t-transition:    all 0.22s cubic-bezier(.2,.9,.2,1);
   --t-font-body:     'DM Sans', 'Roboto', sans-serif;
   --t-font-display:  'Playfair Display', serif;
+
+  /* Estados / badges / errores (mapeables desde App.css si se desea) */
+  --t-badge-pending-bg:   var(--badge-pending-bg, #fff3cd);
+  --t-badge-pending-color:var(--badge-pending-color, #7d5a00);
+  --t-error:              var(--marker-hospital-dark, #c0392b);
+  --t-error-light:        var(--error-accent, #ff8a80);
+  --t-divider-opaque:     rgba(102,176,157,0.3);
+  --t-button-surface:     rgba(255,255,255,0.45);
 }
 
 /* Modo oscuro */
 .dark-theme {
-  --t-bg-page:    #0f1716;
-  --t-bg-card:    #1e2e2b;
-  --t-bg-section: #1a2926;
-  --t-text-muted: #8aada5;
+  --t-bg-page:    var(--bg-main);
+  --t-bg-card:    var(--card-bg);
+  --t-bg-section: var(--chat-fill);
+  --t-text-muted: var(--text-muted);
   --t-shadow:     0 2px 12px rgba(0,0,0,0.35);
   --t-shadow-md:  0 6px 24px rgba(0,0,0,0.45);
-  --t-text-main:  #dbeee6;
-  --t-btn-text:   #dbeee6;
+  --t-text-main:  var(--text-main);
+  --t-btn-text:   var(--btn-text-color);
 }
 
 /* ══════════════════════════════════════════
@@ -115,7 +125,7 @@
 
 .turnos-badge--dark {
   background: var(--t-border-strong);
-  color: #fff;
+  color: var(--white, #fff);
 }
 
 .dark-theme .turnos-badge--dark {
@@ -152,7 +162,7 @@
 .turnos-section .button--primary,
 .turnos-section .btn-primary {
   background: var(--t-border-strong);
-  color: #fff;
+  color: var(--white, #fff);
   border: 1.5px solid var(--t-border-strong);
   box-shadow: 0 3px 10px rgba(102,176,157,0.22);
 }
@@ -166,8 +176,8 @@
 
 .turnos-section .btn-ghost {
   background: transparent;
-  color: #c0392b;
-  border: 1.5px solid #e2a8a0;
+  color: var(--t-error);
+  border: 1.5px solid var(--t-error-border, #e2a8a0);
   font-size: 0.76rem;
   padding: 0.35rem 0.7rem;
   min-height: auto;
@@ -175,7 +185,7 @@
 
 .turnos-section .btn-ghost:hover:not(:disabled) {
   background: rgba(192,57,43,0.07);
-  border-color: #c0392b;
+  border-color: var(--t-error, #c0392b);
   transform: translateY(-1px);
 }
 
@@ -188,7 +198,7 @@
 
 /* Forzar color del texto del botón "Comparar costos" en el header específico */
 .turnos-header .compare-btn {
-  color: #000000 !important;
+  color: var(--t-text-main) !important;
 }
 
 .compare-btn:hover:not(:disabled) {
@@ -467,8 +477,8 @@
   box-shadow: var(--t-shadow-md);
 }
 
-.turn-card-figma.status-pending  { border-color: #f0c44a; }
-.turn-card-figma.status-cancelled{ border-color: rgba(192,57,43,0.4); opacity: 0.85; }
+.turn-card-figma.status-pending  { border-color: #ecb10f; }
+.turn-card-figma.status-cancelled{ border-color: red; opacity: 0.85; }
 
 /* Badge de estado */
 .turn-card-status {
@@ -481,13 +491,13 @@
   font-weight: 700;
 }
 
-.badge-pending   { background: #fff3cd; color: #7d5a00; }
+.badge-pending   { background: var(--t-badge-pending-bg); color: var(--t-badge-pending-color); }
 .badge-completed { background: rgba(102,176,157,0.25); color: var(--t-btn-text); }
-.badge-cancelled { background: rgba(192,57,43,0.12); color: #c0392b; }
+.badge-cancelled { background: rgba(192,57,43,0.12); color: var(--t-error); }
 
-.dark-theme .badge-pending   { background: rgba(240,196,74,0.15); color: #f0c44a; }
+.dark-theme .badge-pending   { background: var(--badge-pending-bg-dark, rgba(240,196,74,0.15)); color: var(--badge-pending-color-dark, #f0c44a); }
 .dark-theme .badge-completed { background: rgba(102,176,157,0.15); color: var(--t-text-accent); }
-.dark-theme .badge-cancelled { background: rgba(192,57,43,0.15); color: #ff8a80; }
+.dark-theme .badge-cancelled { background: var(--badge-cancelled-bg-dark, rgba(192,57,43,0.15)); color: var(--badge-cancelled-color-dark, #ff8a80); }
 
 .turn-card-title {
   font-weight: 700;
@@ -511,7 +521,7 @@
 
 .turn-card-divider {
   border: none;
-  border-top: 1px solid rgba(102,176,157,0.3);
+  border-top: 1px solid var(--t-divider-opaque);
   margin: 0.18rem 0;
 }
 
@@ -532,9 +542,9 @@
   min-height: unset !important;
   border-radius: 7px !important;
   font-weight: 700 !important;
-  background: rgba(255,255,255,0.45) !important;
+  background: var(--t-button-surface) !important;
   color: var(--t-btn-text) !important;
-  border: 1px solid rgba(102,176,157,0.35) !important;
+  border: 1px solid var(--t-border-weak, rgba(102,176,157,0.35)) !important;
   box-shadow: none !important;
 }
 
@@ -546,7 +556,7 @@
 
 .btn-cancel-card {
   background: rgba(192,57,43,0.12) !important;
-  color: #c0392b !important;
+  color: var(--t-error) !important;
   border-color: rgba(192,57,43,0.3) !important;
 }
 
@@ -659,8 +669,8 @@
 ══════════════════════════════════════════ */
 .turnos-error {
   background: rgba(192,57,43,0.08);
-  border: 1.5px solid #e2a8a0;
-  color: #c0392b;
+  border: 1.5px solid var(--t-error-border, #e2a8a0);
+  color: var(--t-error);
   padding: 0.5rem 0.75rem;
   border-radius: 8px;
   margin: 0.4rem 0;

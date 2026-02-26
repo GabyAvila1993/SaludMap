@@ -183,12 +183,7 @@ class EstablecimientosService {
         throw new Error(`Coordenadas no numéricas: ${data.lat}, ${data.lng}`);
       }
 
-        // console.log('[EstablecimientosService] Datos extraídos válidos:', {
-        nombre: data.nombre,
-        tipo: data.tipo,
-        lat: data.lat,
-        lng: data.lng
-      });
+        // console.log('[EstablecimientosService] Datos extraídos válidos:', { nombre: data.nombre, tipo: data.tipo, lat: data.lat, lng: data.lng });
 
       // Intentar buscar establecimiento existente
         // console.log('[EstablecimientosService] Buscando establecimiento existente...');
@@ -239,13 +234,7 @@ class EstablecimientosService {
         establecimiento.lng = data.lng;
       }
 
-        // console.log('[EstablecimientosService] Retornando establecimiento válido:', {
-        id: establecimiento.id,
-        nombre: establecimiento.nombre,
-        tipo: establecimiento.tipo,
-        lat: establecimiento.lat,
-        lng: establecimiento.lng
-      });
+        // console.log('[EstablecimientosService] Retornando establecimiento válido:', { id: establecimiento.id, nombre: establecimiento.nombre, tipo: establecimiento.tipo, lat: establecimiento.lat, lng: establecimiento.lng });
 
       return establecimiento;
     } catch (error) {

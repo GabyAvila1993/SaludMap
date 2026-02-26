@@ -1,127 +1,318 @@
+/* ================================================================
+   LanguageSelector.css — SaludMap
+   Selector de idioma y tema. Responsive sin inline styles,
+   sin Tailwind, sin Bootstrap.
+   ================================================================ */
+
+/* ================================================================
+   CONTENEDOR PRINCIPAL
+   ================================================================ */
 .language-selector {
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 15px; /* ensure horizontal gap as requested */
+  gap: 8px;
 }
 
+/* ================================================================
+   TEMA WRAPPER
+   ================================================================ */
+.theme-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ================================================================
+   BOTÓN BASE (idioma y tema comparten esta base)
+   ================================================================ */
 .language-button {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
+  gap: 7px;
+  padding: 7px 14px;
   border-radius: 999px;
+  border: none;
   background: transparent;
   color: var(--text-highlight);
-  border: none;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   font-family: 'Roboto', sans-serif;
+  transition: var(--transition, all 0.22s ease);
+  white-space: nowrap;
+  min-height: 38px;
 }
 
-@media (min-width: 768px) {
-  .language-button {
-    gap: 6px;
-    padding: 7px 14px;
-    font-size: 0.87rem;
-    border-width: 1.5px;
-    border-radius: 7px;
-  }
+.language-button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
 }
 
-@media (min-width: 1024px) {
-  .language-button {
-    gap: 8px;
-    padding: 8px 16px;
-    font-size: 0.9rem;
-    border-width: 2px;
-    border-radius: 8px;
-  }
-}
-
-.language-button:hover { opacity: 0.95; transform: translateY(-1px); }
-
-.lang-flag-img { width:20px; height:20px; object-fit:contain; display:inline-block }
-.language-button .lang-code { font-weight:700 }
-
-.language-button .arrow {
-  font-size: 0.7rem;
-  margin-left: 4px;
-}
-
-
-.language-dropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  background: var(--bg-navbar-modal, #ffffff);
-  border: 1px solid var(--border-ui, rgba(0,0,0,0.06));
-  border-radius: 8px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-  z-index: 1200;
-  min-width: 200px;
-  padding: 8px;
-}
-
-.language-option {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  padding: 8px 10px;
+/* ================================================================
+   BOTÓN DE TEMA
+   ================================================================ */
+.theme-button {
+  padding: 7px 10px;
+  border-radius: 10px;
   background: transparent;
-  color: var(--text-main, #08331f);
   border: none;
   cursor: pointer;
-  font-size: 0.95rem;
-  text-align: left;
-  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  min-width: 38px;
+  transition: var(--transition, all 0.22s ease);
 }
 
-.language-option:hover { background: rgba(0,0,0,0.03); }
-
-.language-option.active { background: var(--btn-primary-bg); color: var(--text-main); font-weight:800 }
-
-.language-option .lang-name { flex: 1 }
-
-/* Responsive */
-@media (max-width: 768px) {
-  .language-button {
-    padding: 6px 12px;
-    font-size: 0.85rem;
-  }
-
-  .language-dropdown {
-    min-width: 140px;
-  }
-
-  .language-option {
-    padding: 10px 12px;
-    font-size: 0.85rem;
-  }
+.theme-button:hover {
+  background: rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
 }
 
-/* Theme button styles, reuse language-button look */
-.theme-wrapper { position: relative; display: inline-block }
-.theme-button { display: inline-flex; align-items: center; justify-content:center; padding: 6px; border-radius: 8px; background: transparent; border: none; cursor: pointer }
-.theme-icon { width: 20px; height: 20px; object-fit: contain }
+.theme-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
+}
 
+/* ================================================================
+   DROPDOWN DE TEMA
+   ================================================================ */
 .theme-dropdown {
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
   background: var(--bg-navbar-modal, #C9EFE4);
   border: 1px solid var(--border-ui, #A2E3D0);
-  border-radius: 10px;
-  box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+  border-radius: 12px;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.13);
   z-index: 1300;
   min-width: 160px;
   padding: 8px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
-.theme-option { background: transparent; border: none; padding: 8px 10px; text-align: left; cursor: pointer; color: var(--text-main, #08331f); font-weight: 700; border-radius: 6px }
-.theme-option:hover { background: rgba(0,0,0,0.03) }
-.theme-option.active { background: var(--btn-primary-bg, #66B09D); color: var(--text-main, #000) }
+
+.theme-option {
+  background: transparent;
+  border: none;
+  padding: 9px 12px;
+  text-align: left;
+  cursor: pointer;
+  color: var(--text-main, #08331f);
+  font-weight: 600;
+  font-size: 0.88rem;
+  border-radius: 8px;
+  transition: var(--transition, all 0.22s ease);
+  width: 100%;
+  min-height: 38px;
+}
+
+.theme-option:hover {
+  background: rgba(0, 0, 0, 0.05);
+  transform: none;
+  box-shadow: none;
+}
+
+.theme-option.active {
+  background: var(--btn-primary-bg, #9EE2CF);
+  color: var(--text-main, #000);
+}
+
+/* ================================================================
+   BANDERA / CÓDIGO DE IDIOMA
+   ================================================================ */
+.lang-flag-img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+  border-radius: 2px;
+}
+
+.lang-code {
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+}
+
+.arrow {
+  font-size: 0.65rem;
+  margin-left: 2px;
+  opacity: 0.7;
+}
+
+/* ================================================================
+   DROPDOWN DE IDIOMAS
+   ================================================================ */
+.language-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--bg-navbar-modal, #C9EFE4);
+  border: 1px solid var(--border-ui, #A2E3D0);
+  border-radius: 12px;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.13);
+  z-index: 1300;
+  min-width: 190px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  background: transparent;
+  color: var(--text-main, #08331f);
+  border: none;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 500;
+  text-align: left;
+  border-radius: 8px;
+  transition: var(--transition, all 0.22s ease);
+  min-height: 40px;
+}
+
+.language-option:hover {
+  background: rgba(0, 0, 0, 0.05);
+  transform: none;
+  box-shadow: none;
+}
+
+.language-option.active {
+  background: var(--btn-primary-bg, #9EE2CF);
+  color: var(--text-main, #000);
+  font-weight: 700;
+}
+
+.lang-name {
+  flex: 1;
+  font-size: 0.88rem;
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+
+/* ── TABLET PORTRAIT (≤ 768px) ── */
+@media (max-width: 768px) {
+  .language-selector {
+    gap: 4px;
+  }
+
+  /* Ocultar el código de idioma en texto, mostrar solo bandera */
+  .lang-code {
+    display: none;
+  }
+
+  .arrow {
+    display: none;
+  }
+
+  .language-button {
+    padding: 6px 8px;
+    min-height: 36px;
+    min-width: 36px;
+    justify-content: center;
+    border-radius: 50%;
+  }
+
+  .theme-button {
+    padding: 6px;
+    min-height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+  }
+
+  /* Dropdowns se abren hacia la derecha del viewport para no salirse */
+  .language-dropdown {
+    right: 0;
+    left: auto;
+    min-width: 170px;
+  }
+
+  .theme-dropdown {
+    left: auto;
+    right: 0;
+    min-width: 150px;
+  }
+}
+
+/* ── MÓVIL (≤ 480px) ── */
+@media (max-width: 480px) {
+  .lang-flag-img {
+    width: 18px;
+    height: 18px;
+  }
+
+  .theme-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .language-button {
+    padding: 5px 7px;
+    min-height: 34px;
+    min-width: 34px;
+  }
+
+  .theme-button {
+    padding: 5px;
+    min-height: 34px;
+    min-width: 34px;
+  }
+
+  .language-dropdown,
+  .theme-dropdown {
+    /* En mobile, posicionar con margen del borde */
+    position: fixed;
+    top: auto;
+    bottom: auto;
+    right: 8px;
+    left: auto;
+    min-width: 160px;
+    max-width: calc(100vw - 16px);
+  }
+
+  .language-option {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+
+  .theme-option {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+/* ── TOUCH DEVICES ── */
+@media (hover: none) and (pointer: coarse) {
+  .language-button,
+  .theme-button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .language-option,
+  .theme-option {
+    min-height: 44px;
+  }
+
+  /* Sin hover effects en touch */
+  .language-button:hover,
+  .theme-button:hover {
+    transform: none;
+    opacity: 1;
+  }
+}

@@ -20,12 +20,29 @@
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: var(--overlay-bg, rgba(0, 0, 0, 0.55));
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2000;
   backdrop-filter: blur(3px);
+}
+
+/* Mapeo de variables locales a variables globales del tema */
+:root {
+  --modal-bg: var(--modal-bg, #f5faf8);
+  --modal-text: var(--modal-text, #000000);
+  --modal-title-color: var(--modal-title-color, #66B09D);
+  --popup-strong: var(--popup-strong, #000000);
+  --placeholder-bg: var(--placeholder-fill, #A2E3D0);
+  --modal-border: var(--modal-border, #C9EFE4);
+  --btn-fill: var(--btn-fill, #66B09D);
+  --btn-text-color: var(--btn-text-color, #ffffff);
+  --btn-fill-hover: var(--btn-fill-hover, #9EE2CF);
+  --modal-placeholder-color: var(--modal-placeholder-color, rgba(0,0,0,0.45));
+  --modal-bg-accent: var(--modal-bg-accent, #C9EFE4);
+  --marker-hospital-dark: var(--error-color, #c0392b);
+  --modal-footer-text: var(--modal-footer-text, rgba(0,0,0,0.65));
 }
 
 /* ─── ANIMACIÓN ENTRADA ────────────────────────────────────── */
@@ -61,15 +78,15 @@
    ═══════════════════════════════════════════════════════════ */
 .modal-panel.small {
   width: 340px;
-  background: #f5faf8;
+  background: var(--modal-bg, #f5faf8);
   padding: 47px 47px 57px;
-  color: #000000;
+  color: var(--modal-text, #000000);
   border-radius: 17px;
   font-size: 1.3em;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   position: relative;
-  border: 2px solid #000000;
+  border: 2px solid var(--popup-strong, #000000);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   animation: modalFadeIn 0.35s cubic-bezier(0.2, 0.9, 0.2, 1);
 }
@@ -85,7 +102,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.2rem;
-  color: #000000;
+  color: var(--modal-title-color, var(--modal-text, #000000));
   text-align: center;
   animation: bounce2 1.6s;
 }
@@ -102,20 +119,20 @@
   margin: 20px 0 0 0;
   font-size: 0.8em;
   border-radius: 100px;
-  background: #A2E3D0;   /* placeholder-bg modo claro */
-  color: #000000;         /* texto modo claro */
+  background: var(--placeholder-bg, #A2E3D0);   /* placeholder-bg modo claro */
+  color: var(--modal-text, #000000);         /* texto modo claro */
   transition: all 0.3s ease;
   box-sizing: border-box;
 }
 
 .modal-panel.small input[type="text"]::placeholder,
 .modal-panel.small input[type="password"]::placeholder {
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--modal-placeholder-color, rgba(0, 0, 0, 0.5));
 }
 
 .modal-panel.small input[type="text"]:focus,
 .modal-panel.small input[type="password"]:focus {
-  outline: 2px solid #66B09D;
+  outline: 2px solid var(--modal-title-color, #66B09D);
   -webkit-appearance: none;
   appearance: none;
 }
@@ -142,9 +159,9 @@
   border-radius: 500px;
   font-weight: 700;
   font-size: 0.85em;
-  background: #66B09D;
-  color: #ffffff;
-  border: 2px solid #000000;
+  background: var(--btn-fill, #66B09D);
+  color: var(--btn-text-color, #ffffff);
+  border: 2px solid var(--popup-strong, #000000);
   cursor: pointer;
   letter-spacing: 0.08rem;
   text-align: center;
@@ -156,9 +173,9 @@
 }
 
 .modal-panel.small .btn:hover:not(:disabled) {
-  background: #9EE2CF;
-  color: #000000;
-  border-color: #000000;
+  background: var(--btn-fill-hover, #9EE2CF);
+  color: var(--btn-text-hover, #000000);
+  border-color: var(--popup-strong, #000000);
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(102, 176, 157, 0.5);
 }
@@ -182,9 +199,9 @@
   padding: 24px 24px 28px;
   border-radius: 20px;
   position: relative;
-  background-color: #f5faf8;
-  color: #000000;
-  border: 1px solid #C9EFE4;
+  background-color: var(--modal-bg, #f5faf8);
+  color: var(--modal-text, #000000);
+  border: 1px solid var(--modal-border, #C9EFE4);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   animation: modalFadeIn 0.35s cubic-bezier(0.2, 0.9, 0.2, 1);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
@@ -200,7 +217,7 @@
   display: flex;
   align-items: center;
   padding-left: 30px;
-  color: #66B09D;
+  color: var(--modal-title-color, #66B09D);
   text-transform: none;
   top: 0;
   margin-bottom: 8px;
@@ -215,7 +232,7 @@
   width: 16px;
   border-radius: 50%;
   left: 0px;
-  background-color: #66B09D;
+  background-color: var(--modal-title-color, #66B09D);
 }
 
 .modal-panel.register .h1::before {
@@ -232,12 +249,12 @@
 /* Inputs REGISTRO */
 .modal-panel.register input[type="text"],
 .modal-panel.register input[type="password"] {
-  background: #A2E3D0;
-  color: #000000;
+  background: var(--placeholder-bg, #A2E3D0);
+  color: var(--modal-text, #000000);
   width: 100%;
   padding: 16px 10px 6px 10px;
   outline: 0;
-  border: 1px solid #C9EFE4;
+  border: 1px solid var(--modal-border, #C9EFE4);
   border-radius: 10px;
   font-size: 0.85em;
   display: block;
@@ -248,14 +265,14 @@
 
 .modal-panel.register input[type="text"]::placeholder,
 .modal-panel.register input[type="password"]::placeholder {
-  color: rgba(0, 0, 0, 0.45);
+  color: var(--modal-placeholder-color, rgba(0, 0, 0, 0.45));
   font-size: 0.9em;
 }
 
 .modal-panel.register input[type="text"]:focus,
 .modal-panel.register input[type="password"]:focus {
-  outline: 2px solid #66B09D;
-  background: #C9EFE4;
+  outline: 2px solid var(--modal-title-color, #66B09D);
+  background: var(--modal-bg-accent, #C9EFE4);
 }
 
 /* Botón submit REGISTRO */
@@ -264,10 +281,10 @@
   outline: none;
   padding: 12px !important;
   border-radius: 10px;
-  color: #ffffff;
+  color: var(--btn-text-color, #ffffff);
   font-size: 0.85em;
   font-weight: 700;
-  background-color: #66B09D;
+  background-color: var(--btn-fill, #66B09D);
   cursor: pointer;
   margin: 8px 0 0 0;
   width: 100%;
@@ -304,7 +321,7 @@
   font-size: 1.6rem;
   line-height: 1;
   cursor: pointer;
-  color: #000000;
+  color: var(--modal-text, #000000);
   padding: 4px 6px;
   border-radius: 50%;
   transition: color 0.2s ease, background 0.2s ease;
@@ -316,7 +333,7 @@
 
 .modal-close:hover:not(:disabled) {
   background: rgba(0, 0, 0, 0.08);
-  color: #333;
+  color: var(--modal-text-muted-hover, #333);
 }
 
 .modal-close:disabled {
@@ -329,7 +346,7 @@
   margin-top: 16px;
   text-align: center;
   font-size: 0.7em;
-  color: rgba(0, 0, 0, 0.65);
+  color: var(--modal-footer-text, rgba(0, 0, 0, 0.65));
 }
 
 .modal-auth-footer {
@@ -339,7 +356,7 @@
 .btn-link {
   background: none;
   border: none;
-  color: #66B09D;
+  color: var(--modal-title-color, #66B09D);
   cursor: pointer;
   text-decoration: underline;
   font-size: 1em;
@@ -353,7 +370,7 @@
 }
 
 .btn-link:hover:not(:disabled) {
-  color: #000000;
+  color: var(--modal-text, #000000);
   transform: none;
   box-shadow: none;
 }
@@ -365,7 +382,7 @@
 
 /* ─── ERROR ──────────────────────────────────────────────────── */
 .modal-error {
-  color: #c0392b;
+  color: var(--marker-hospital-dark, #c0392b);
   margin-top: 10px;
   font-size: 0.7em;
   text-align: center;
@@ -376,118 +393,118 @@
    MODO OSCURO  (.dark-theme en body/app)
    ═══════════════════════════════════════════════════════════ */
 
-/* LOGIN - modo oscuro */
+/* LOGIN - modo oscuro: usar variables temáticas */
 .dark-theme .modal-panel.small {
-  background: #1e2a27;
-  color: #ffffff;
-  border-color: #2D3A37;
+  background: var(--modal-bg, #1e2a27);
+  color: var(--modal-text, #ffffff);
+  border-color: var(--modal-border, #2D3A37);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .dark-theme .modal-panel.small .h1 {
-  color: #9EE2CF;
+  color: var(--modal-title-color, #9EE2CF);
 }
 
 .dark-theme .modal-panel.small input[type="text"],
 .dark-theme .modal-panel.small input[type="password"] {
-  background: #2D3A37;
-  color: #ffffff;
+  background: var(--placeholder-fill, #2D3A37);
+  color: var(--modal-text, #ffffff);
   border: none;
 }
 
 .dark-theme .modal-panel.small input[type="text"]::placeholder,
 .dark-theme .modal-panel.small input[type="password"]::placeholder {
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--modal-placeholder-color, rgba(255, 255, 255, 0.45));
 }
 
 .dark-theme .modal-panel.small input[type="text"]:focus,
 .dark-theme .modal-panel.small input[type="password"]:focus {
-  outline: 2px solid #9EE2CF;
+  outline: 2px solid var(--modal-title-color, #9EE2CF);
 }
 
 .dark-theme .modal-panel.small .btn {
-  background: #9EE2CF;
-  color: #000000;
-  border-color: #2D3A37;
+  background: var(--btn-fill, #9EE2CF);
+  color: var(--btn-text-color, #000000);
+  border-color: var(--modal-border, #2D3A37);
 }
 
 .dark-theme .modal-panel.small .btn:hover:not(:disabled) {
-  background: #66B09D;
-  color: #ffffff;
-  border-color: #66B09D;
+  background: var(--btn-fill-hover, #66B09D);
+  color: var(--btn-text-hover, #ffffff);
+  border-color: var(--btn-fill-hover, #66B09D);
 }
 
-/* REGISTRO - modo oscuro */
+/* REGISTRO - modo oscuro: usar variables temáticas */
 .dark-theme .modal-panel.register {
-  background-color: #1e2a27;
-  color: #ffffff;
-  border-color: #66B09D;
+  background-color: var(--modal-bg, #1e2a27);
+  color: var(--modal-text, #ffffff);
+  border-color: var(--modal-border, #66B09D);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .dark-theme .modal-panel.register .h1 {
-  color: #9EE2CF;
+  color: var(--modal-title-color, #9EE2CF);
 }
 
 .dark-theme .modal-panel.register .h1::before,
 .dark-theme .modal-panel.register .h1::after {
-  background-color: #9EE2CF;
+  background-color: var(--modal-title-color, #9EE2CF);
 }
 
 .dark-theme .modal-panel.register input[type="text"],
 .dark-theme .modal-panel.register input[type="password"] {
-  background: #2D3A37;
-  color: #ffffff;
-  border-color: #66B09D;
+  background: var(--placeholder-fill, #2D3A37);
+  color: var(--modal-text, #ffffff);
+  border-color: var(--modal-border, #66B09D);
 }
 
 .dark-theme .modal-panel.register input[type="text"]::placeholder,
 .dark-theme .modal-panel.register input[type="password"]::placeholder {
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--modal-placeholder-color, rgba(255, 255, 255, 0.45));
 }
 
 .dark-theme .modal-panel.register input[type="text"]:focus,
 .dark-theme .modal-panel.register input[type="password"]:focus {
-  outline: 2px solid #9EE2CF;
-  background: #2D3A37;
+  outline: 2px solid var(--modal-title-color, #9EE2CF);
+  background: var(--placeholder-fill, #2D3A37);
 }
 
 .dark-theme .modal-panel.register .btn {
-  background-color: #9EE2CF;
-  color: #000000;
+  background-color: var(--btn-fill, #9EE2CF);
+  color: var(--btn-text-color, #000000);
 }
 
 .dark-theme .modal-panel.register .btn:hover:not(:disabled) {
-  background-color: #66B09D;
-  color: #ffffff;
+  background-color: var(--btn-fill-hover, #66B09D);
+  color: var(--btn-text-hover, #ffffff);
 }
 
 /* Botón cerrar - modo oscuro */
 .dark-theme .modal-close {
-  color: #9EE2CF;
+  color: var(--modal-title-color, #9EE2CF);
 }
 
 .dark-theme .modal-close:hover:not(:disabled) {
   background: rgba(158, 226, 207, 0.12);
-  color: #C9EFE4;
+  color: var(--modal-border, #C9EFE4);
 }
 
 /* Footer / links - modo oscuro */
 .dark-theme .modal-footer {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--modal-footer-text, rgba(255, 255, 255, 0.6));
 }
 
 .dark-theme .btn-link {
-  color: #9EE2CF;
+  color: var(--modal-title-color, #9EE2CF);
 }
 
 .dark-theme .btn-link:hover:not(:disabled) {
-  color: #ffffff;
+  color: var(--modal-text, #ffffff);
 }
 
 /* Error - modo oscuro */
 .dark-theme .modal-error {
-  color: #ff8080;
+  color: var(--modal-error, #ff8080);
 }
 
 /* ─── RESPONSIVE ─────────────────────────────────────────── */

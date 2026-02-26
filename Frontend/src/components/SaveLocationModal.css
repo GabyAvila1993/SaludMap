@@ -7,15 +7,16 @@
 
 /* ── Variables locales ── */
 :root {
-  --slm-bg-panel:      #ffffff;
-  --slm-bg-section:    #edf7f3;
-  --slm-border:        #A2E3D0;
-  --slm-border-strong: #66B09D;
-  --slm-text-main:     #000000;
-  --slm-text-accent:   #66B09D;
-  --slm-text-muted:    #6b8f87;
-  --slm-btn-bg:        #9EE2CF;
-  --slm-btn-text:      #08331f;
+  --slm-bg-panel:      var(--modal-bg, #ffffff);
+  --slm-bg-section:    var(--chat-fill, #edf7f3);
+  --slm-border:        var(--chat-border, #A2E3D0);
+  --slm-border-strong: var(--btn-fill, #66B09D);
+  --slm-text-main:     var(--modal-text, #000000);
+  --slm-text-accent:   var(--modal-title-color, #66B09D);
+  --slm-text-muted:    var(--modal-text-muted, #6b8f87);
+  --slm-btn-bg:        var(--btn-fill, #9EE2CF);
+  --slm-btn-text:      var(--btn-text-color, #08331f);
+  --slm-error:         var(--error-color, #c0392b);
   --slm-shadow-lg:     0 18px 48px rgba(0, 0, 0, 0.18);
   --slm-radius:        12px;
   --slm-radius-sm:     8px;
@@ -24,10 +25,10 @@
 }
 
 .dark-theme {
-  --slm-bg-panel:      #1e2e2b;
-  --slm-bg-section:    #1a2926;
-  --slm-text-main:     #dbeee6;
-  --slm-text-muted:    #8aada5;
+  --slm-bg-panel:      var(--modal-bg, #0B1F22);
+  --slm-bg-section:    var(--chat-fill, #0f2a2a);
+  --slm-text-main:     var(--modal-text, #e6fff9);
+  --slm-text-muted:    var(--modal-text-muted, #8aada5);
   --slm-shadow-lg:     0 18px 48px rgba(0, 0, 0, 0.6);
 }
 
@@ -148,8 +149,8 @@
   width: 100%;
   padding: 9px 12px;
   border-radius: var(--slm-radius-sm);
-  border: 1.5px solid var(--slm-border);
-  background: var(--slm-bg-section);
+  border: 3px solid var(--slm-border);
+  background: var(--placeholder-fill, #ffffff);
   color: var(--slm-text-main);
   font-family: var(--slm-font);
   font-size: 0.88rem;
@@ -216,7 +217,7 @@
 .error-message {
   background: rgba(192, 57, 43, 0.08);
   border: 1.5px solid rgba(192, 57, 43, 0.35);
-  color: #c0392b;
+  color: var(--slm-error);
   padding: 8px 12px;
   border-radius: var(--slm-radius-sm);
   margin-bottom: 0.75rem;
@@ -225,7 +226,7 @@
 
 .dark-theme .error-message {
   background: rgba(192, 57, 43, 0.15);
-  color: #ff8a80;
+  color: var(--slm-error);
   border-color: rgba(192, 57, 43, 0.4);
 }
 
@@ -244,7 +245,7 @@
 
 .modal-content .btn-primary {
   background: var(--slm-border-strong) !important;
-  color: #ffffff !important;
+  color: var(--slm-btn-text) !important;
   border: 1.5px solid var(--slm-border-strong) !important;
   padding: 9px 20px !important;
   border-radius: var(--slm-radius-sm) !important;

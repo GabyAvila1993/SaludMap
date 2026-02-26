@@ -7,17 +7,17 @@
 
 /* ── Variables locales ── */
 :root {
-  --ins-bg-panel:      #ffffff;
-  --ins-bg-section:    #edf7f3;
-  --ins-bg-card:       #edf7f3;
-  --ins-bg-card-hover: rgba(162, 227, 208, 0.25);
-  --ins-border:        #A2E3D0;
-  --ins-border-strong: #66B09D;
-  --ins-text-main:     #000000;
-  --ins-text-accent:   #66B09D;
-  --ins-text-muted:    #6b8f87;
-  --ins-btn-bg:        #9EE2CF;
-  --ins-btn-text:      #08331f;
+  --ins-bg-panel:      var(--modal-bg, #ffffff);
+  --ins-bg-section:    var(--chat-fill, #edf7f3);
+  --ins-bg-card:       var(--card-bg, #edf7f3);
+  --ins-bg-card-hover: var(--card-bg-hover, rgba(162, 227, 208, 0.25));
+  --ins-border:        var(--modal-border, #A2E3D0);
+  --ins-border-strong: var(--btn-fill, #66B09D);
+  --ins-text-main:     var(--modal-text, #000000);
+  --ins-text-accent:   var(--modal-title-color, #66B09D);
+  --ins-text-muted:    var(--modal-text-muted, #6b8f87);
+  --ins-btn-bg:        var(--btn-fill, #9EE2CF);
+  --ins-btn-text:      var(--btn-text-color, #08331f);
   --ins-shadow:        0 2px 12px rgba(102, 176, 157, 0.12);
   --ins-shadow-lg:     0 8px 28px rgba(102, 176, 157, 0.18);
   --ins-radius:        12px;
@@ -27,12 +27,12 @@
 }
 
 .dark-theme {
-  --ins-bg-panel:      #1e2e2b;
-  --ins-bg-section:    #1a2926;
-  --ins-bg-card:       #1a2926;
-  --ins-bg-card-hover: rgba(102, 176, 157, 0.1);
-  --ins-text-main:     #dbeee6;
-  --ins-text-muted:    #8aada5;
+  --ins-bg-panel:      var(--modal-bg, #1e2e2b);
+  --ins-bg-section:    var(--chat-fill, #1a2926);
+  --ins-bg-card:       var(--card-bg, #1a2926);
+  --ins-bg-card-hover: var(--card-bg-hover, rgba(102, 176, 157, 0.1));
+  --ins-text-main:     var(--modal-text, #dbeee6);
+  --ins-text-muted:    var(--modal-text-muted, #8aada5);
   --ins-shadow:        0 2px 12px rgba(0, 0, 0, 0.4);
   --ins-shadow-lg:     0 8px 28px rgba(0, 0, 0, 0.5);
 }
@@ -285,7 +285,7 @@
 
 .insurance-card.selected .card-button {
   background: var(--ins-border-strong) !important;
-  color: #ffffff !important;
+  color: var(--btn-text-color, #ffffff) !important;
 }
 
 /* ══════════════════════════════════════════
@@ -332,7 +332,7 @@
 .contract-button {
   padding: 11px 32px !important;
   background: var(--ins-border-strong) !important;
-  color: #ffffff !important;
+  color: var(--btn-text-color, #ffffff) !important;
   border: 1.5px solid var(--ins-border-strong) !important;
   border-radius: var(--ins-radius-sm) !important;
   font-family: var(--ins-font) !important;

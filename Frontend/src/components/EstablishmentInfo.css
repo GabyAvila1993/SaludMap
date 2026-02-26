@@ -6,7 +6,7 @@
 .establishment-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: var(--overlay-45, rgba(0,0,0,0.45));
   z-index: 1995;
   display: flex;
   align-items: center;
@@ -32,7 +32,7 @@
   --modal-border: var(--theme-modal-border-dark, #2D3A37);
   --accent: var(--theme-accent, #66B09D);
   --button-fill: var(--theme-button-fill, #9EE2CF);
-  --text-color: #e6f3ef;
+  --text-color: #f3e6e7;
 }
 
 .establishment-info {
@@ -47,7 +47,7 @@
   background: var(--modal-bg);
   border: 1px solid var(--modal-border);
   border-radius: var(--modal-radius);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+  box-shadow: var(--shadow-xxl-45);
   padding: 30px;
   font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   /* Ensure modal never exceeds viewport minus navbar so it doesn't touch the header */
@@ -70,7 +70,7 @@
   flex-direction: column; /* columna: X arriba, título abajo */
   gap: 8px;
   padding-bottom: 8px;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
+  border-bottom: 1px solid var(--border-opaque-06, rgba(0,0,0,0.06));
 }
 
 .card-header-top { width: 100%; display:flex; justify-content:flex-end }
@@ -110,7 +110,7 @@
 }
 
 .card-close:hover {
-  background: rgba(0,0,0,0.06);
+  background: var(--border-opaque-06, rgba(0,0,0,0.06));
   transform: scale(1.05);
 }
 
@@ -138,13 +138,13 @@
 
 .coordinates-row { margin-top: 15px; }
 .coordinates-row .coords-with-copy { display:flex; align-items:center; justify-content:space-between; gap:10px; }
-.copy-btn { margin-left:8px; padding:6px 10px; font-size:0.85rem; border-radius:8px; border:none; background: rgba(0,0,0,0.06); cursor:pointer }
+.copy-btn { margin-left:8px; padding:6px 10px; font-size:0.85rem; border-radius:8px; border:none; background: var(--border-opaque-06, rgba(0,0,0,0.06)); cursor:pointer }
 
 /* Separate Reviews Modal (independent overlay) */
 .resenias-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: var(--overlay-50, rgba(0,0,0,0.5));
   z-index: 2100; /* above establishment modal */
   display: flex;
   align-items: flex-start; /* start so modal sits below Navbar */
@@ -162,7 +162,7 @@
   border-radius: 16px;
   padding: 18px;
   overflow: auto;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+  box-shadow: var(--shadow-xxl-45);
   position: relative;
   margin: 0 auto;
 }
@@ -189,6 +189,7 @@
   height: 48px;
   padding: 10px 14px;
   background: #9EE2CF;
+    background: var(--button-fill, #9EE2CF);
   color: var(--text-color);
   border: none;
   border-radius: 12px;
@@ -201,20 +202,20 @@
   font-family: 'Roboto', sans-serif;
   white-space: nowrap;
 }
-.action-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
+  .action-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm-12); }
 
-.action-btn.primary { box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+  .action-btn.primary { box-shadow: var(--shadow-sm-12); }
 
 /* Reviews */
 .resenias-wrapper { margin-top: 20px; border-top: 1px solid #A2E3D0; padding-top: 16px; }
-.resenia-promedio { background: var(--modal-bg); padding: 12px; border-radius: 10px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); display:flex; align-items:center; margin-bottom:20px }
+.resenia-promedio { background: var(--modal-bg); padding: 12px; border-radius: 10px; box-shadow: var(--shadow-card); display:flex; align-items:center; margin-bottom:20px }
 .resenia-promedio .promedio-left { display:flex; align-items:center; gap:12px }
 .promedio-number { font-size: 2rem; font-weight:800; padding:8px 14px; background: transparent; border-radius:8px; color: var(--text-highlight) }
 .promedio-label { font-size:0.95rem; color: var(--text-color) }
 
 .establishment-resenias-section { margin-top: 12px; padding-top: 12px; max-height: 38vh; overflow-y: auto }
-.establishment-resenias-section .resenia-card { background: #ffffff; padding: 15px; border-radius: 10px; margin-top: 10px }
-.dark-theme .establishment-resenias-section .resenia-card { background: #A9B0AE }
+.establishment-resenias-section .resenia-card { background: var(--card-bg, #ffffff); padding: 15px; border-radius: 10px; margin-top: 10px }
+.dark-theme .establishment-resenias-section .resenia-card { background: var(--card-bg-dark, #A9B0AE) }
 
 .establishment-photo { width: 86px; height: 86px; object-fit: cover; border-radius: 50%; border: 2px solid var(--modal-border); }
 
@@ -230,7 +231,7 @@
   width: 70px;
   height: 70px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.04) 100%);
+  background: linear-gradient(135deg, var(--overlay-12, rgba(0,0,0,0.12)) 0%, var(--overlay-04, rgba(0,0,0,0.04)) 100%);
   color: var(--accent);
   display: flex;
   align-items: center;
@@ -238,13 +239,13 @@
   font-size: 1.6rem;
   font-weight: 700;
   margin-bottom: 8px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.16);
-  border: 3px solid rgba(0,0,0,0.06);
+  box-shadow: var(--shadow-md-16);
+  border: 3px solid var(--border-opaque-06);
 }
 
 .avatar-label {
   font-size: 0.8rem;
-  color: rgba(0,0,0,0.6);
+  color: var(--muted-text, rgba(0,0,0,0.6));
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -263,7 +264,7 @@
   flex-direction: column;
   gap: 6px;
   padding: 8px 0;
-  border-bottom: 1px solid rgba(0,0,0,0.04);
+  border-bottom: 1px solid var(--border-opaque-04, rgba(0,0,0,0.04));
 }
 
 .info-row:last-child { border-bottom: none; }
@@ -297,7 +298,7 @@
   cursor: pointer;
   font-weight: 600;
 }
-.extra-actions button:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+.extra-actions button:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm-12); }
 
 /* Legacy action-buttons and duplicate action-btn definitions removed. */
 
@@ -319,14 +320,14 @@
 .establishment-error {
   margin-top: 1rem;
   padding: 12px;
-  background: rgba(255,230,180,0.12);
-  color: #7a4f00;
+  background: var(--warning-bg, rgba(255,230,180,0.12));
+  color: var(--warning-text, #7a4f00);
   border-radius: 10px;
-  border: 1px solid rgba(0,0,0,0.06);
+  border: 1px solid var(--border-opaque-06, rgba(0,0,0,0.06));
   font-weight: 600;
 }
 
-.establishment-resenias-section { margin-top: 1rem; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.04); max-height: 40vh; overflow-y: auto }
+.establishment-resenias-section { margin-top: 1rem; padding-top: 12px; border-top: 1px solid var(--border-opaque-04, rgba(0,0,0,0.04)); max-height: 40vh; overflow-y: auto }
 
 .establishment-photo { width: 86px; height: 86px; object-fit: cover; border-radius: 10px; border: 2px solid var(--modal-border); }
 

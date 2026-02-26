@@ -7,17 +7,20 @@
 
 /* ── Variables locales ── */
 :root {
-  --sll-bg-panel:      #ffffff;
-  --sll-bg-section:    #edf7f3;
-  --sll-bg-item:       rgba(162, 227, 208, 0.08);
-  --sll-bg-item-hover: rgba(162, 227, 208, 0.18);
-  --sll-border:        #A2E3D0;
-  --sll-border-strong: #66B09D;
-  --sll-text-main:     #000000;
-  --sll-text-accent:   #66B09D;
-  --sll-text-muted:    #6b8f87;
-  --sll-btn-bg:        #9EE2CF;
-  --sll-btn-text:      #08331f;
+  --sll-bg-panel:      var(--modal-bg, #ffffff);
+  --sll-bg-section:    var(--chat-fill, #edf7f3);
+  --sll-bg-item:       var(--card-bg, rgba(162, 227, 208, 0.08));
+  --sll-bg-item-hover: var(--card-bg-hover, rgba(162, 227, 208, 0.18));
+  --sll-border:        var(--chat-border, #A2E3D0);
+  --sll-border-strong: var(--btn-fill, #66B09D);
+  --sll-text-main:     var(--modal-text, #000000);
+  --sll-text-accent:   var(--modal-title-color, #66B09D);
+  --sll-text-muted:    var(--modal-text-muted, #6b8f87);
+  --sll-btn-bg:        var(--btn-fill, #9EE2CF);
+  --sll-btn-text:      var(--btn-text-color, #08331f);
+  --sll-error:         var(--error-color, #c0392b);
+  --sll-error-bg:      rgba(192, 57, 43, 0.08);
+  --sll-error-border:  rgba(192, 57, 43, 0.35);
   --sll-shadow-lg:     0 18px 48px rgba(0, 0, 0, 0.18);
   --sll-radius:        12px;
   --sll-radius-sm:     8px;
@@ -26,12 +29,12 @@
 }
 
 .dark-theme {
-  --sll-bg-panel:      #1e2e2b;
-  --sll-bg-section:    #1a2926;
-  --sll-bg-item:       rgba(102, 176, 157, 0.05);
-  --sll-bg-item-hover: rgba(102, 176, 157, 0.12);
-  --sll-text-main:     #dbeee6;
-  --sll-text-muted:    #8aada5;
+  --sll-bg-panel:      var(--modal-bg, #1e2e2b);
+  --sll-bg-section:    var(--chat-fill, #1a2926);
+  --sll-bg-item:       var(--card-bg, rgba(102, 176, 157, 0.137));
+  --sll-bg-item-hover: var(--card-bg-hover, rgba(102, 176, 157, 0.12));
+  --sll-text-main:     var(--modal-text, #edf5f2);
+  --sll-text-muted:    var(--modal-text-muted, #b3cec8);
   --sll-shadow-lg:     0 18px 48px rgba(0, 0, 0, 0.6);
 }
 
@@ -177,9 +180,9 @@
 }
 
 .error-message {
-  background: rgba(192, 57, 43, 0.08);
-  border: 1.5px solid rgba(192, 57, 43, 0.35);
-  color: #c0392b;
+  background: var(--sll-error-bg);
+  border: 1.5px solid var(--sll-error-border);
+  color: var(--sll-error);
   padding: 8px 12px;
   border-radius: var(--sll-radius-sm);
   margin-bottom: 0.75rem;
@@ -230,7 +233,7 @@
   margin: 0;
   font-size: 0.92rem;
   font-weight: 700;
-  color: #ffff;
+  color: var(--sll-text-main);
   line-height: 1.3;
 }
 
@@ -261,9 +264,9 @@
 }
 
 .locations-modal .btn-delete {
-  background: rgba(192, 57, 43, 0.08) !important;
-  border: 1.5px solid rgba(192, 57, 43, 0.3) !important;
-  color: #c0392b !important;
+  background: var(--sll-error-bg) !important;
+  border: 1.5px solid var(--sll-error-border) !important;
+  color: var(--sll-error) !important;
   padding: 5px 10px !important;
   border-radius: var(--sll-radius-sm) !important;
   font-size: 0.8rem !important;
@@ -276,8 +279,8 @@
 
 .dark-theme .locations-modal .btn-delete {
   background: rgba(192, 57, 43, 0.15) !important;
-  color: #ff8a80 !important;
-  border-color: rgba(192, 57, 43, 0.35) !important;
+  color: var(--sll-error) !important;
+  border-color: var(--sll-error-border) !important;
 }
 
 .locations-modal .btn-delete:hover {

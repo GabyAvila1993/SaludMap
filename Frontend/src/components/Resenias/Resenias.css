@@ -1,3 +1,32 @@
+.resenias-root {
+  /* variables locales mapeadas a variables globales de tema */
+}
+
+:root {
+  --res-bg-panel: var(--modal-bg, #ffffff);
+  --res-bg-section: var(--modal-bg, #f8f9fa);
+  --res-border: var(--modal-border, #e9ecef);
+  --res-accent: var(--modal-title-color, #2b8b8c);
+  --res-text-main: var(--modal-text, #212529);
+  --res-text-muted: var(--modal-text-muted, #6c757d);
+  --res-gradient-start: var(--gradient-start, #ffe0a6);
+  --res-gradient-end: var(--gradient-end, #ffd700);
+  --res-avatar-start: var(--res-accent, #2b8b8c);
+  --res-avatar-end: var(--res-avatar-end, #1f6668);
+  --res-card-bg: var(--modal-bg, #ffffff);
+  --res-card-border: var(--res-border, #e9ecef);
+  --res-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.dark-theme {
+  --res-bg-panel: var(--modal-bg, #1e2a27);
+  --res-bg-section: var(--chat-fill, #1a2926);
+  --res-border: rgba(255,255,255,0.04);
+  --res-accent: var(--modal-title-color, #9EE2CF);
+  --res-text-main: var(--modal-text, #e6f3ef);
+  --res-text-muted: var(--modal-text-muted, #b3cec8);
+}
+
 .resenias-container {
   width: 100%;
   padding: 1.5rem 0;
@@ -6,40 +35,40 @@
 .loading-resenias {
   text-align: center;
   padding: 2rem;
-  color: #666;
+  color: var(--res-text-muted);
   font-style: italic;
 }
 
 .no-resenias {
   text-align: center;
   padding: 3rem 2rem;
-  background: #f8f9fa;
+  background: var(--res-bg-section);
   border-radius: 12px;
-  border: 2px dashed #dee2e6;
+  border: 2px dashed var(--res-border);
 }
 
 .no-resenias p {
   margin: 0.5rem 0;
   font-size: 1.1rem;
-  color: #495057;
+  color: var(--res-text-main);
 }
 
 .no-resenias-subtitle {
   font-size: 0.95rem !important;
-  color: #6c757d !important;
+  color: var(--res-text-muted) !important;
 }
 
 /* Header de reseñas */
 .resenias-header {
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 2px solid #e9ecef;
+  border-bottom: 2px solid var(--res-border);
 }
 
 .resenias-header h3 {
   margin: 0 0 1rem 0;
   font-size: 1.5rem;
-  color: #2b8b8c;
+    color: var(--res-text-main);
   font-weight: bold;
 }
 
@@ -49,7 +78,7 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: linear-gradient(135deg, #ffe0a6 0%, #ffd700 100%);
+  background: linear-gradient(135deg, var(--res-gradient-start) 0%, var(--res-gradient-end) 100%);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
 }
@@ -57,13 +86,13 @@
 .promedio-numero {
   font-size: 2.5rem;
   font-weight: bold;
-  color: #2b8b8c;
+  color: var(--res-accent);
   line-height: 1;
 }
 
 .promedio-texto {
   font-size: 0.9rem;
-  color: #495057;
+  color: var(--res-text-main);
   margin-left: auto;
 }
 
@@ -103,12 +132,12 @@
 
 /* Item de reseña */
 .resenia-item {
-  background: #ffffff;
-  border: 1px solid #e9ecef;
+  background: var(--res-card-bg);
+  border: 1px solid var(--res-card-border);
   border-radius: 12px;
   padding: 1.25rem;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--res-box-shadow);
 }
 
 .resenia-item:hover {
@@ -133,7 +162,7 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #2b8b8c 0%, #1f6668 100%);
+  background: linear-gradient(135deg, var(--res-avatar-start) 0%, var(--res-avatar-end) 100%);
   color: white;
   display: flex;
   align-items: center;
@@ -152,23 +181,23 @@
 
 .usuario-nombre {
   font-weight: 600;
-  color: #212529;
+  color: var(--res-text-main);
   font-size: 1rem;
 }
 
 .resenia-fecha {
   font-size: 0.85rem;
-  color: #6c757d;
+  color: var(--res-text-muted);
 }
 
 .resenia-comentario {
-  color: #495057;
+  color: var(--res-text-main);
   line-height: 1.6;
   font-size: 0.95rem;
   padding: 0.75rem;
-  background: #f8f9fa;
+  background: var(--res-bg-section);
   border-radius: 8px;
-  border-left: 3px solid #2b8b8c;
+  border-left: 3px solid var(--res-accent);
 }
 
 /* Responsive */

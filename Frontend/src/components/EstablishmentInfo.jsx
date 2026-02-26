@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import opening_hours from "opening_hours";
 import './EstablishmentInfo.css';
 import { useAuth } from './Auth/AuthContext.jsx';
@@ -468,9 +469,13 @@ export default function EstablishmentInfo({ place, onClose }) {
 							<div className="promedio-label">{`${typeof promedioEstrellas === 'number' ? promedioEstrellas.toFixed(1) : (promedioEstrellas || 0)} - ${totalResenias || 0} ${totalResenias === 1 ? 'reseña' : 'reseñas'}`}</div>
 						</div>
 					</div>
-					{showStats && establecimiento && (
-						<Analytics establecimientoId={establecimiento.id} place={place} />
-					)}
+					{showStats && establecimiento && (typeof document !== 'undefined' ? ReactDOM.createPortal(
+						<div className="analytics-overlay" onClick={() => setShowStats(false)}>
+							<div className="analytics-modal" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
+								<button className="analytics-close" onClick={() => setShowStats(false)} aria-label="Cerrar">×</button>
+								<Analytics establecimientoId={establecimiento.id} place={place} />
+							</div>
+						</div>, document.body) : null)}
 					{establecimiento && !showCrearResenia && (
 						<div className="establishment-resenias-section">
 							{/* Resumen reducido: ya se muestra en .resenia-promedio arriba */}
@@ -478,7 +483,7 @@ export default function EstablishmentInfo({ place, onClose }) {
 					)}
 
 					{/* Modal independiente para reseñas (se muestra siempre encima del mapa, debajo del Navbar) */}
-					{showReseniasModal && (
+					{showReseniasModal && (typeof document !== 'undefined' ? ReactDOM.createPortal(
 						<div className="resenias-overlay" onClick={() => setShowReseniasModal(false)}>
 							<div className="resenias-modal" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
 								<button className="resenias-close" onClick={() => setShowReseniasModal(false)} aria-label="Cerrar">×</button>
@@ -490,18 +495,20 @@ export default function EstablishmentInfo({ place, onClose }) {
 									loading={loadingResenias}
 								/>
 							</div>
-						</div>
-					)}
+						</div>, document.body) : null)}
 
-					{showCrearResenia && establecimiento && (
-						<div className="establishment-resenias-section">
-							<CrearResenia
-								establecimientoId={establecimiento.id}
-								onSuccess={handleReseniaCreada}
-								onCancel={() => setShowCrearResenia(false)}
-							/>
-						</div>
-					)}
+					{showCrearResenia && establecimiento && (typeof document !== 'undefined' ? ReactDOM.createPortal(
+						<div className="resenias-overlay" onClick={() => setShowCrearResenia(false)}>
+							<div className="resenias-modal" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
+								<button className="resenias-close" onClick={() => setShowCrearResenia(false)} aria-label="Cerrar">×</button>
+								<h3 style={{marginTop:0, color: 'var(--text-color)'}}>Dejar Reseña</h3>
+								<CrearResenia
+									establecimientoId={establecimiento.id}
+									onSuccess={handleReseniaCreada}
+									onCancel={() => setShowCrearResenia(false)}
+								/>
+							</div>
+						</div>, document.body) : null)}
 				</div>
 			</div>
 				</div>

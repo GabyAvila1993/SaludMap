@@ -4,31 +4,29 @@
   display: grid;
   grid-template-columns: 1fr 380px;
   gap: 1.5rem;
-  max-width: none; /* permitir ancho completo según requerimiento */
+  max-width: none;
   margin-left: 0;
   margin-right: 0;
   align-items: start;
 }
-
 /* INICIO CAMBIO - Archivo: src/components/Map.css - Estilos mejorados */
 .map-section {
   width: 100%;
   min-height: 100vh;
   padding: 12px;
+  padding-top: calc(var(--navbar-height) + 12px);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
 }
-
 @media (min-width: 768px) {
   .map-section.chat-open {
-    width: calc(100% - 420px); /* Cuando el chat está abierto */
+    width: calc(100% - 420px);
     margin-right: 420px;
   }
 }
-
 .map-root {
   position: absolute;
   top: 0;
@@ -40,10 +38,9 @@
   padding: 0;
   box-sizing: border-box;
 }
-
 .map-title {
   position: absolute;
-  top: 60px; /* centered above actions */
+  top: 60px;
   left: 50%;
   transform: translateX(-50%);
   color: var(--text-highlight);
@@ -57,33 +54,22 @@
   border-radius: 8px;
   display: inline-block;
   font-family: 'Roboto', sans-serif;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  box-shadow: var(--shadow-xs);
   z-index: 50;
   pointer-events: none;
 }
-
-/* Actions container: centered, absolute, floating over map */
 .map-actions {
   position: absolute;
   top: 90px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 500; /* sobre el mapa */
+  z-index: 500;
   width: 90%;
   display: flex;
   justify-content: center;
   gap: 15px;
   pointer-events: auto;
 }
-
-.offline-badge {
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-  margin-left: 1rem;
-}
-
-/* Consolidated offline-badge properties (fix: orphaned rules removed) */
 .offline-badge {
   height: 100%;
   width: 100%;
@@ -97,7 +83,6 @@
   font-weight: 600;
   box-sizing: border-box;
 }
-
 .map-controls {
   display: flex;
   flex-wrap: wrap;
@@ -105,38 +90,36 @@
   align-items: center;
   gap: 1rem;
   margin: 0;
-  padding: 14px 18px; /* aumentado para mayor legibilidad */
+  padding: 14px 18px;
   border-radius: 999px;
-  background: rgba(255,255,255,0.85);
+  background: var(--panel-bg-85, rgba(255,255,255,0.85));
   position: absolute;
   top: 90px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 500; /* sobre el mapa */
+  z-index: 500;
   min-height: 56px;
   width: 90%;
-  max-width: none; /* permitir ocupar todo el ancho pedido */
+  max-width: none;
   box-sizing: border-box;
   pointer-events: auto;
 }
-
 .map-controls button {
   background: var(--bg-navbar-modal);
   color: var(--text-dark);
   border: 1px solid var(--border-ui);
-  padding: 12px 20px; /* más padding para legibilidad */
+  padding: 12px 20px;
   border-radius: 999px;
   cursor: pointer;
-  font-size: 1rem; /* aumentar tamaño del texto */
+  font-size: 1rem;
   font-weight: 800;
   font-family: 'Roboto', sans-serif;
   text-transform: none;
   letter-spacing: 0.02rem;
   transition: var(--transition);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  box-shadow: var(--shadow-sm);
   min-height: 48px;
 }
-
 .btn-return-gps {
   background: var(--btn-gps);
   color: var(--white);
@@ -147,57 +130,48 @@
   font-size: 16px;
   font-weight: 600;
 }
-
 .map-controls button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  box-shadow: var(--shadow-sm);
 }
-
 .map-controls button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
-  box-shadow: 0 2px 8px rgba(250, 163, 3, 0.2);
+  box-shadow: var(--shadow-accent);
 }
-
-/* Estilos para filtros */
 .filter-group {
   display: flex;
   gap: 0.5rem;
   align-items: center;
   margin-left: auto;
 }
-
 .filter-btn {
-  background: rgba(255,255,255,0.02); /* menos brillante */
-  border: 1px solid rgba(255,255,255,0.06);
+  background: var(--white-02);
+  border: 1px solid var(--white-06);
   color: var(--color-text);
-  padding: 6px 10px; /* un poco más compacto */
+  padding: 6px 10px;
   border-radius: 10px;
   cursor: pointer;
   font-weight: 600;
   font-size: 0.95rem;
   text-transform: none;
   transition: background-color 0.18s, transform 0.12s, box-shadow 0.18s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  box-shadow: var(--shadow-xs);
 }
-
 .filter-btn:hover {
   transform: translateY(-2px);
 }
-
 .filter-btn.active {
-  /* seleccionado: usar verde del proyecto y texto en negro */
   background: var(--text-highlight);
   color: var(--text-main);
-  border-color: rgba(0,0,0,0.06);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  border-color: var(--border-opaque-06);
+  box-shadow: var(--shadow-sm);
   transform: translateY(-2px);
 }
-
 .location-info {
   padding: 1.5rem 2rem;
-  border: 1px solid rgba(255, 224, 166, 0.3);
+  border: 1px solid var(--accent-contrast-30, rgba(255, 224, 166, 0.3));
   border-radius: var(--radius);
   background: var(--info-bg-dark);
   color: var(--text-main);
@@ -206,32 +180,29 @@
   width: 100%;
   box-sizing: border-box;
 }
-
 .location-info h3 {
   font-size: clamp(1.2rem, 2vw, 1.8rem);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.3rem;
-  background: linear-gradient(135deg, var(--bg-main), rgba(255,224,166,0.6));
+  background: linear-gradient(135deg, var(--bg-main), var(--accent-contrast-60));
   background-clip: text;
   -webkit-background-clip: text;
   color: var(--white);
   margin: 0;
   margin-bottom: 0.5rem;
 }
-
 .location-info p {
   font-size: clamp(0.9rem, 1.5vw, 1.1rem);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.2rem;
-  background: linear-gradient(135deg, var(--bg-main), rgba(255,224,166,0.6));
+  background: linear-gradient(135deg, var(--bg-main), var(--accent-contrast-60));
   background-clip: text;
   -webkit-background-clip: text;
   color: var(--white);
   margin: 0.25rem 0;
 }
-
 .map-info {
   margin-bottom: 1rem;
   padding: 0.5rem;
@@ -240,15 +211,13 @@
   font-size: 0.875rem;
   color: var(--placeholder-bg);
 }
-
 .location-source {
   font-weight: 600;
   margin-left: 0.5rem;
 }
-
 .map-info {
   position: absolute;
-  top: 160px; /* increased spacing below actions */
+  top: 160px;
   left: 50%;
   transform: translateX(-50%);
   padding: 8px 12px;
@@ -263,15 +232,13 @@
   pointer-events: none;
   font-family: 'Roboto', sans-serif;
 }
-
 .location-source {
   font-weight: 600;
   margin-left: 0.5rem;
 }
-
 .map-wrapper {
   width: 100%;
-  height: 100%; /* fill full map-root */
+  height: 100%;
   border-radius: 0;
   overflow: hidden;
   border: none;
@@ -280,8 +247,6 @@
   margin: 0;
   padding: 0;
 }
-
-/* Marker div-icon styles (replaces inline styles previously used) - global (all viewports) */
 .marker-div-icon {
   display:flex;
   align-items:center;
@@ -293,58 +258,31 @@
   font-weight:700;
   font-size:14px;
   line-height:36px;
-  box-shadow:0 1px 4px rgba(0,0,0,0.6);
-  border:2px solid rgba(255,255,255,0.6);
+  box-shadow: var(--shadow-strong);
+  border:2px solid var(--panel-border-60, rgba(255,255,255,0.6));
 }
 .marker-hospital { background: var(--marker-hospital); }
 .marker-clinica { background: var(--marker-clinica); }
 .marker-doctor { background: var(--marker-doctor); }
 .marker-veterinaria { background: var(--marker-veterinaria); }
 .marker-default { background: var(--marker-default); }
-
-/* Sidebar filter button color helpers to match marker colors */
-.filter-hospital { background: var(--marker-hospital); color: var(--white); border-color: rgba(231,76,60,0.28); }
-.filter-clinica { background: var(--marker-clinica); color: var(--white); border-color: rgba(52,152,219,0.28); }
-.filter-doctor { background: var(--marker-doctor); color: var(--white); border-color: rgba(46,204,113,0.28); }
-.filter-veterinaria { background: var(--marker-veterinaria); color: var(--white); border-color: rgba(155,89,182,0.28); }
-
-
-/* Layout para mapa + sidebar de filtros */
+.filter-hospital { background: var(--marker-hospital); color: var(--white); border-color: var(--marker-hospital-28, rgba(231,76,60,0.28)); }
+.filter-clinica { background: var(--marker-clinica); color: var(--white); border-color: var(--marker-clinic-28, rgba(52,152,219,0.28)); }
+.filter-doctor { background: var(--marker-doctor); color: var(--white); border-color: var(--marker-doctors-28, rgba(46,204,113,0.28)); }
+.filter-veterinaria { background: var(--marker-veterinaria); color: var(--white); border-color: var(--marker-vet-28, rgba(155,89,182,0.28)); }
 .map-layout { display:block; }
-
-/* Sidebar flotante sobre el mapa (panel de selección de local) */
 .map-sidebar {
-  /* Legacy sidebar disabled: use modal filters instead */
   display: none !important;
 }
-
-/* Estado cerrado de la sidebar (espera que JS añada la clase `closed`) */
 .map-sidebar.closed {
   transform: translateX(-100%);
   opacity: 0;
   pointer-events: none;
 }
-
-/* Toggle visible (hamburguesa) */
+/* sidebar-toggle eliminado del JSX, se oculta definitivamente */
 .sidebar-toggle {
-  position: absolute;
-  left: 12px;
-  top: 12px;
-  z-index: 900;
-  background: var(--border-ui);
-  border: none;
-  color: var(--text-dark);
-  width:44px;
-  height:44px;
-  display:inline-flex !important;
-  align-items:center;
-  justify-content:center;
-  border-radius:50%;
-  cursor:pointer;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  display: none !important;
 }
-
-/* Asegurar que el botón X cierre desplazando la sidebar (si JS aplica .closed) */
 .map-sidebar .sidebar-close {
   background: transparent;
   border: none;
@@ -352,12 +290,10 @@
   cursor: pointer;
   color: var(--text-dark);
 }
-
-/* Mejorar legibilidad de botones dentro de la sidebar */
 .map-sidebar .filter-btn {
-  background: rgba(255,255,255,0.9);
+  background: var(--panel-bg-90, rgba(255,255,255,0.9));
   color: var(--text-main);
-  border: 1px solid rgba(0,0,0,0.06);
+  border: 1px solid var(--border-opaque-06);
   padding: 10px 12px;
   display:flex;
   align-items:center;
@@ -365,62 +301,49 @@
   border-radius: 10px;
   font-weight: 700;
 }
-.map-sidebar .filter-btn i { /* placeholder para iconos */
+.map-sidebar .filter-btn i {
   width:20px; height:20px; display:inline-block; flex: 0 0 20px;
 }
-
-/* Open/closed states */
 .map-sidebar.active {
   transform: translateX(0);
   opacity: 1;
   pointer-events: auto;
-  box-shadow: 0 12px 36px rgba(0,0,0,0.12);
-  z-index: 600; /* aseguramos que quede por encima del mapa */
+  box-shadow: var(--shadow-md);
+  z-index: 600;
 }
-
 .sidebar-actions { display:flex; justify-content:flex-end; }
 .sidebar-close { background: transparent; border: none; font-size: 1.1rem; cursor: pointer; color: var(--text-dark); padding: 6px; }
-
 .filter-all-btn { width:100%; margin-bottom:8px; }
-
 .map-sidebar .result-item {
-  display:flex; gap:10px; align-items:flex-start; padding:10px; background:transparent; border-radius:10px; border-bottom:1px solid rgba(0,0,0,0.04);
+  display:flex; gap:10px; align-items:flex-start; padding:10px; background:transparent; border-radius:10px; border-bottom:1px solid var(--border-subtle);
 }
 .map-sidebar .result-item img { width:72px; height:56px; object-fit:cover; border-radius:8px; border:2px solid var(--color-border); }
 .map-sidebar .result-item .meta { flex:1; }
 .map-sidebar .result-item .meta .name { font-weight:700; color:var(--text-main); }
 .map-sidebar .result-item .meta .address { font-size:0.9rem; color:var(--placeholder-bg); }
 .map-sidebar .result-item .meta .rating { color: var(--rating-color); font-weight:700; margin-top:6px; }
-
 .sidebar-inner {
   display:flex;
   flex-direction:column;
   gap:8px;
 }
-
 .filters-title {
   margin: 0 0 6px 0;
   font-size: 0.95rem;
-  /* color: var(--color-primary); */
   color: black;
-  /* mostrar con capitalización normal */
   text-transform: none;
   font-weight: 700;
 }
-
 .filters-vertical {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-
 .leaflet-map {
   height: 100%;
   width: 100%;
   display: block;
 }
-
-/* Tema explícito: asegurar estilo claro por defecto y paleta en modo oscuro */
 body:not(.dark-theme) .map-controls button,
 body:not(.dark-theme) .map-buttons button,
 body:not(.dark-theme) .map-btn {
@@ -428,27 +351,20 @@ body:not(.dark-theme) .map-btn {
   color: var(--text-dark);
   border: 1px solid var(--border-ui);
 }
-
 body.dark-theme .map-controls button,
 body.dark-theme .map-buttons button,
 body.dark-theme .map-btn {
   background: var(--bg-navbar-modal);
-  /* en modo oscuro usar texto verde resaltable para destacar sobre el fondo oscuro */
   color: var(--text-highlight);
   border: 1px solid var(--border-ui);
 }
-
-/* Ensure MapContainer fills the wrapper exactly */
 .map-wrapper .leaflet-container { height:100% !important; width:100% !important }
-
 .map-container {
   display: block;
   width:100%;
   padding:0;
   margin:0;
 }
-
-/* Icono personalizado del usuario */
 .user-icon {
   width: 24px;
   height: 24px;
@@ -463,45 +379,37 @@ body.dark-theme .map-btn {
   border-radius: 50%;
   box-sizing: border-box;
 }
-
-/* Estilos para popups */
 .popup-content {
   font-family: inherit;
   font-size: 0.875rem;
   line-height: 1.4;
 }
-
 .popup-content strong {
   display: block;
   color: var(--popup-strong);
   margin-bottom: 0.5rem;
   font-size: 1rem;
 }
-
 .popup-detail {
   color: var(--popup-detail);
   margin-bottom: 0.25rem;
 }
-
 .popup-type {
   color: var(--popup-type);
   font-weight: 500;
   margin-bottom: 0.25rem;
   text-transform: capitalize;
 }
-
 .popup-cached {
   color: var(--popup-cached);
   font-size: 0.8rem;
   font-style: italic;
 }
-
 .popup-actions {
   margin-top: 0.5rem;
   display: flex;
   gap: 0.5rem;
 }
-
 .popup-btn {
   background: var(--marker-hospital);
   color: var(--white);
@@ -512,12 +420,9 @@ body.dark-theme .map-btn {
   cursor: pointer;
   transition: background-color 0.2s;
 }
-
 .popup-btn:hover {
   background: var(--marker-hospital-dark);
 }
-
-/* Media Queries Responsive */
 @media (max-width: 1200px) {
   .map-root {
     max-width: 95%;
@@ -527,33 +432,27 @@ body.dark-theme .map-btn {
     height: 450px;
   }
 }
-
 @media (max-width: 768px) {
   .map-root {
     max-width: 98%;
     padding: 1rem;
     margin: 0 auto;
   }
-  
   .leaflet-map {
     height: 400px;
   }
-  
   .map-controls {
     gap: 0.5rem;
     flex-direction: column;
   }
-  
   .map-controls button {
     width: 100%;
     margin-bottom: 0.5rem;
   }
-  
   .map-title {
     font-size: 1.2rem;
     letter-spacing: 0.1rem;
   }
-  
   .offline-badge {
     padding: 0.4rem 0.8rem;
     font-size: 0.8rem;
@@ -563,7 +462,9 @@ body.dark-theme .map-btn {
     text-align: center;
   }
 }
-
+@media (max-width: 1024px) {
+  .map-controls { width: calc(100% - 32px) !important; left: 50% !important; transform: translateX(-50%) !important; top: calc(var(--navbar-height) + 12px) !important; max-width: 980px !important; }
+}
 @media (max-width: 480px) {
   .map-root {
     max-width: 100%;
@@ -571,84 +472,67 @@ body.dark-theme .map-btn {
     margin: 0;
     border-radius: 0;
   }
-  
   .leaflet-map {
     height: 350px;
   }
-  
   .map-controls button {
     padding: 0.6rem 1rem;
     font-size: 0.8rem;
   }
-  
   .map-title {
     font-size: 1rem;
     margin-bottom: 0.75rem;
   }
-  
   .map-error {
     padding: 0.75rem;
     font-size: 0.8rem;
   }
-  
   .map-info {
     padding: 0.75rem;
     font-size: 0.8rem;
   }
 }
-
-/* Animaciones para estados de carga */
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
 }
-
 .map-controls button:disabled {
   animation: pulse 1.5s infinite;
 }
-
-/* Mejoras para modo oscuro del sistema */
 @media (prefers-color-scheme: dark) {
   .map-root {
     color: var(--muted-light);
   }
-  
   .map-title {
     color: var(--muted-light);
   }
-  
   .map-info {
     background: var(--bg-navbar-modal);
     color: var(--muted-light);
   }
-  
   .map-error {
     background: var(--error-bg);
     border-color: var(--error-border);
     color: var(--error-text);
   }
 }
-/* Sección de Reseñas - Fuera del mapa */
 .resenias-section {
   width: 100%;
   max-width: 1400px;
   margin: 3rem auto;
   padding: 2rem;
-  border: 1px solid rgba(255, 224, 166, 0.3);
+  border: 1px solid var(--accent-contrast-30);
   border-radius: var(--radius);
-  background: rgba(2, 2, 2, 0.15);
+  background: var(--overlay-dark-15);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   box-sizing: border-box;
 }
-
 .resenias-header-info {
   margin-bottom: 1.5rem;
   text-align: center;
 }
-
-/* ==== OVERRIDES: Enforce strict layer order and positions (final rules) ==== */
-/* 1. Base: full-screen map */
+/* ==== OVERRIDES ==== */
 .map-root {
   position: absolute !important;
   top: 0 !important;
@@ -660,7 +544,6 @@ body.dark-theme .map-btn {
   padding: 0 !important;
   box-sizing: border-box !important;
 }
-
 .map-wrapper {
   position: relative !important;
   width: 100% !important;
@@ -668,15 +551,10 @@ body.dark-theme .map-btn {
   margin: 0 !important;
   padding: 0 !important;
 }
-
 .leaflet-map, .map-wrapper .leaflet-container {
   width: 100% !important;
   height: 100% !important;
 }
-
-/* 2. Navbar layer (kept in App.css but ensure map sits below) */
-
-/* 3. Sidebar: legacy disabled (use modal) */
 .map-sidebar {
   display: none !important;
   position: absolute !important;
@@ -685,8 +563,6 @@ body.dark-theme .map-btn {
   z-index: 400 !important;
   width: 320px !important;
 }
-
-/* 4. Controles de acción: centrados y absolutos */
 .map-controls {
   position: absolute !important;
   top: 90px !important;
@@ -703,7 +579,6 @@ body.dark-theme .map-btn {
   padding: 8px 12px !important;
   background: transparent !important;
 }
-
 .map-controls button {
   background: var(--btn-primary-bg) !important;
   color: var(--text-main) !important;
@@ -714,22 +589,18 @@ body.dark-theme .map-btn {
   font-weight: 700 !important;
   cursor: pointer !important;
 }
-
-/* 5. Información: título y precisión centrados y legibles */
 .map-title {
   position: absolute !important;
   top: 60px !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
   z-index: 500 !important;
-  background: var(--bg-navbar-modal) !important; /* sólido para máxima legibilidad */
+  background: var(--bg-navbar-modal) !important;
   color: var(--text-main) !important;
   padding: 8px 12px !important;
   border-radius: 10px !important;
   font-family: 'Roboto', sans-serif !important;
 }
-
-/* Cartel de estado (loading/status) */
 .status-overlay {
   position: absolute;
   top: 50%;
@@ -739,51 +610,59 @@ body.dark-theme .map-btn {
   background: var(--bg-navbar-modal);
   padding: 18px 24px;
   border-radius: 12px;
-  box-shadow: 0 12px 36px rgba(0,0,0,0.18);
-  display: none; /* por defecto oculto; mostrar añadiendo .show */
+  box-shadow: var(--shadow-md-18);
+  display: none;
   min-width: 240px;
   text-align: center;
   font-weight: 700;
   color: var(--text-main);
 }
 .status-overlay.show { display: block; }
-
-/* Modal de filtros centrado */
 .filter-modal {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 2000;
+  z-index: 3000; /* por encima de todo incluyendo el navbar (z-index: 3000 en App.css) */
   background: var(--bg-navbar-modal);
   padding: 18px 22px;
   border-radius: 20px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+  box-shadow: var(--shadow-xl);
   min-width: 280px;
   max-width: 92vw;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  pointer-events: auto;
 }
 .filter-modal .filters-vertical { display:flex; flex-direction:column; gap:8px; }
-.filter-modal .filter-btn { background: var(--bg-main); color: var(--text-highlight); border:1px solid var(--border-ui); }
+.filter-modal .filter-btn {
+  background: var(--bg-main) !important;
+  color: var(--text-highlight) !important;
+  border: 1px solid var(--border-ui) !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
 .filter-modal .filter-btn.active {
-  background: var(--text-highlight);
-  color: var(--text-main);
-  border-color: var(--border-ui);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  background: var(--text-highlight) !important;
+  color: var(--text-main) !important;
+  border-color: var(--border-ui) !important;
+  box-shadow: var(--shadow-lg) !important;
 }
 .filter-modal .filters-title { text-align:center; color:var(--text-main); }
-.filter-modal .btn { padding: 8px 14px; border-radius: 10px; cursor:pointer; }
-.filter-modal .btn-primary { background: var(--text-highlight); color: var(--bg-main); border:none; font-weight:700 }
-.filter-modal .btn-secondary { background:transparent; color:var(--text-main); border:1px solid rgba(0,0,0,0.06) }
-
+.filter-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+.filter-modal .btn { padding: 8px 14px; border-radius: 10px; cursor: pointer; pointer-events: auto; }
+.filter-modal .btn-primary { background: var(--text-highlight) !important; color: var(--bg-main) !important; border:none !important; font-weight:700 !important; }
+.filter-modal .btn-secondary { background:transparent !important; color:var(--text-main) !important; border:1px solid var(--border-opaque-06) !important; }
 .map-controls { z-index: 500; }
-.map-controls { z-index: 500; }
-
 .map-info {
   position: absolute !important;
-  top: 180px !important; /* debajo de acciones - aumentado para separar precisión de botones */
+  top: 180px !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
   z-index: 500 !important;
@@ -794,8 +673,6 @@ body.dark-theme .map-btn {
   border: 1px solid var(--border-ui) !important;
   font-family: 'Roboto', sans-serif !important;
 }
-
-/* En modo oscuro, asegurar que el modal de filtros use la paleta y texto/iconos verdes */
 body.dark-theme .filter-modal {
   background: var(--bg-navbar-modal);
   color: var(--text-highlight);
@@ -806,36 +683,26 @@ body.dark-theme .filter-modal .filter-btn {
   border: 1px solid var(--border-ui);
 }
 body.dark-theme .filter-modal .btn-primary { background: var(--text-highlight); color: var(--bg-main); }
-
-/* Asegurar buen contraste para filtros en la barra y modal cuando están activos en modo oscuro */
 body.dark-theme .filter-btn.active,
 body.dark-theme .filter-modal .filter-btn.active {
   background: var(--text-highlight) !important;
   color: var(--text-main) !important;
-  border-color: rgba(0,0,0,0.12) !important;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.35) !important;
+  border-color: var(--border-opaque-12) !important;
+  box-shadow: var(--shadow-xl-35) !important;
 }
-
-/* Si el botón tiene una clase por tipo (hospital/clinica/doctor/veterinaria), preferir su versión 'dark' si existe */
 body.dark-theme .filter-hospital.active { background: var(--marker-hospital-dark, var(--marker-hospital)) !important; color: var(--white) !important; }
-
-/* Safety: ensure no parent containers limit width or add padding */
-.container-12, .map-section, .app, .app-main {
+/* Solo resetear contenedores propios del mapa, NO .app ni .app-main (rompen el navbar) */
+.container-12, .map-section {
   max-width: none !important;
   padding: 0 !important;
   margin: 0 !important;
 }
-
-/* Ensure sidebar and controls are reachable on small screens */
 @media (max-width: 600px) {
   .map-sidebar { left: 12px !important; top: calc(var(--navbar-height) + 8px) !important; width: 86vw !important; }
   .map-controls { top: calc(var(--navbar-height) + 12px) !important; width: calc(100% - 24px) !important; }
   .map-title { top: calc(var(--navbar-height) + 6px) !important; }
   .map-info { top: calc(var(--navbar-height) + 90px) !important; }
 }
-
-/* End overrides */
-
 .resenias-title {
   color: var(--color-primary);
   font-size: clamp(1.2rem, 2vw, 1.8rem);
@@ -844,7 +711,6 @@ body.dark-theme .filter-hospital.active { background: var(--marker-hospital-dark
   letter-spacing: 0.2rem;
   margin: 0;
 }
-
 .resenias-loading {
   text-align: center;
   padding: 2rem;
@@ -852,21 +718,17 @@ body.dark-theme .filter-hospital.active { background: var(--marker-hospital-dark
   font-size: 1.1rem;
   font-weight: 500;
 }
-
-/* Responsive para reseñas */
 @media (max-width: 768px) {
   .resenias-section {
     max-width: 98%;
     margin: 2rem auto;
     padding: 1.5rem;
   }
-  
   .resenias-title {
     font-size: 1.2rem;
     letter-spacing: 0.1rem;
   }
 }
-
 @media (max-width: 480px) {
   .resenias-section {
     max-width: 100%;
@@ -874,33 +736,323 @@ body.dark-theme .filter-hospital.active { background: var(--marker-hospital-dark
     padding: 1rem;
     border-radius: 0;
   }
-  
   .resenias-title {
     font-size: 1rem;
   }
 }
-
-/* === DARK MODE: Mapa estilo oscuro mejorado === */
-
-/* body.dark-theme .leaflet-tile-pane {
-  filter: brightness(0.3) contrast(1.1) saturate(1.1) grayscale(0.3);
-}
-
-body.dark-theme .leaflet-marker-pane,
-body.dark-theme .leaflet-shadow-pane,
-body.dark-theme .leaflet-overlay-pane {
-  filter: none;
-} */
-
-/* === DARK MODE: Mapa estilo oscuro (tipo Google Maps dark) === */
 body.dark-theme .leaflet-tile-pane {
   filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%) saturate(0.4);
 }
-
 body.dark-theme .leaflet-marker-pane,
 body.dark-theme .leaflet-shadow-pane,
 body.dark-theme .leaflet-overlay-pane {
   filter: invert(100%) hue-rotate(180deg);
 }
-
 /* FIN CAMBIO - Archivo: src/components/Map.css */
+
+
+/* ================================================================
+   MENÚ HAMBURGUESA MÓVIL
+   Visible solo en ≤ 1024px. En desktop está oculto con display:none.
+   No toca nada del CSS original de arriba.
+   ================================================================ */
+
+/* ── Botón hamburguesa ── */
+.mobile-map-toggle {
+  display: none; /* oculto por defecto en desktop */
+  position: absolute;
+  top: calc(var(--navbar-height) + 12px); /* debajo del navbar fijo */
+  right: 16px;
+  z-index: 4100; /* elevado para quedar por encima de overlays (establishment, filtros) */
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--bg-navbar-modal);
+  border: 1.5px solid var(--border-ui);
+  box-shadow: var(--shadow-sm-18);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: var(--transition);
+  pointer-events: auto;
+}
+
+.mobile-map-toggle:hover {
+  background: var(--btn-primary-bg);
+  transform: scale(1.06);
+}
+
+.mobile-map-toggle-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.mobile-map-toggle-icon.open {
+  transform: rotate(90deg);
+}
+
+body.dark-theme .mobile-map-toggle {
+  background: var(--bg-navbar-modal);
+  border-color: var(--border-ui);
+}
+
+body.dark-theme .mobile-map-toggle-icon {
+  color: var(--text-highlight);
+}
+
+/* ── Panel drawer ── */
+.mobile-map-menu {
+  display: none; /* oculto en desktop, flex en móvil via media query */
+  position: absolute;
+  top: calc(var(--navbar-height) + 66px); /* debajo del navbar + toggle */
+  right: 16px;
+  z-index: 4000; /* elevado para estar por encima de otros overlays en la app */
+  width: min(300px, calc(100vw - 32px));
+  background: var(--bg-navbar-modal);
+  border: 1.5px solid var(--border-ui);
+  border-radius: 20px;
+  box-shadow: var(--shadow-xxl-20);
+  flex-direction: column;
+  overflow: hidden;
+  animation: mobileMenuIn 0.22s cubic-bezier(0.2, 0.9, 0.2, 1);
+  pointer-events: auto;
+}
+
+@keyframes mobileMenuIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ── Header del drawer ── */
+.mobile-map-menu-header {
+  padding: 14px 18px 10px;
+  border-bottom: 1px solid var(--border-ui);
+}
+
+.mobile-map-menu-title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-highlight);
+}
+
+/* ── Cuerpo: lista de botones ── */
+.mobile-map-menu-body {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ── Botón individual del menú ── */
+/* Se usa !important para ganar al reset global de App.css (button { background: #1a1a1a }) */
+.mobile-map-menu-btn {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  padding: 11px 14px !important;
+  border-radius: 12px !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  color: var(--text-dark) !important;
+  font-family: 'Roboto', sans-serif !important;
+  font-size: 0.92rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  text-align: left !important;
+  transition: var(--transition) !important;
+  min-height: 44px !important;
+  box-shadow: none !important;
+  pointer-events: auto !important;
+}
+
+.mobile-map-menu-btn:hover:not(:disabled) {
+  background: var(--btn-primary-bg) !important;
+  border-color: var(--border-ui) !important;
+  transform: translateX(3px) !important;
+  box-shadow: none !important;
+}
+
+.mobile-map-menu-btn:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+.mobile-map-menu-btn--gps {
+  color: var(--btn-gps) !important;
+}
+
+.mobile-map-menu-btn--filters {
+  color: var(--text-highlight) !important;
+}
+
+.mobile-map-menu-btn-icon {
+  font-size: 1.1rem;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* ── Barra de progreso de descarga ── */
+.mobile-map-menu-progress {
+  padding: 8px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 0.8rem;
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+.mobile-map-menu-progress-bar {
+  width: 100%;
+  height: 5px;
+  background: rgba(0,0,0,0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.mobile-map-menu-progress-fill {
+  height: 100%;
+  background: var(--text-highlight);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+/* ── Footer: precisión GPS ── */
+.mobile-map-menu-footer {
+  padding: 10px 16px 14px;
+  border-top: 1px solid var(--border-ui);
+}
+
+.mobile-map-menu-accuracy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mobile-map-menu-accuracy-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-highlight);
+}
+
+.mobile-map-menu-accuracy-value {
+  font-family: 'Roboto Mono', monospace, 'Roboto', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  background: rgba(0,0,0,0.05);
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-ui);
+}
+
+.mobile-map-menu-accuracy-source {
+  font-size: 0.72rem;
+  color: var(--placeholder-bg);
+  font-style: italic;
+}
+
+/* ── Tema oscuro ── */
+body.dark-theme .mobile-map-menu {
+  background: var(--bg-navbar-modal);
+  border-color: var(--border-ui);
+}
+
+body.dark-theme .mobile-map-menu-btn {
+  color: var(--text-highlight);
+}
+
+body.dark-theme .mobile-map-menu-btn:hover:not(:disabled) {
+  background: rgba(102, 176, 157, 0.12);
+  border-color: var(--border-ui);
+}
+
+body.dark-theme .mobile-map-menu-accuracy-value {
+  color: var(--text-highlight);
+  background: rgba(255,255,255,0.04);
+}
+
+body.dark-theme .mobile-map-menu-progress-bar {
+  background: rgba(255,255,255,0.08);
+}
+
+/* ================================================================
+   ACTIVAR MENÚ MÓVIL EN ≤ 1024px
+   En este breakpoint:
+   - Ocultar la pill .map-controls
+   - Ocultar .map-info (la precisión pasa al drawer)
+   - Mostrar el botón hamburguesa y el drawer
+   ================================================================ */
+@media (max-width: 1024px) {
+
+  /* Ocultar pill de controles desktop — usar !important para ganar a los overrides del archivo */
+  .map-controls {
+    display: none !important;
+  }
+
+  /* Ocultar precisión desktop (está en el drawer) */
+  .map-info {
+    display: none !important;
+  }
+
+  /* Mostrar botón hamburguesa como flex */
+  .mobile-map-toggle {
+    display: inline-flex !important;
+  }
+
+  /* Mostrar drawer cuando React lo renderiza (showMobileMenu === true) */
+  .mobile-map-menu {
+    display: flex !important;
+  }
+}
+
+/* ── Ajustes en móvil pequeño (≤ 480px) ── */
+@media (max-width: 480px) {
+  .mobile-map-toggle {
+    top: calc(var(--navbar-height) + 10px);
+    right: 12px;
+    width: 42px;
+    height: 42px;
+  }
+
+  .mobile-map-menu {
+    top: calc(var(--navbar-height) + 60px);
+    right: 12px;
+    width: calc(100vw - 24px);
+    border-radius: 16px;
+  }
+
+  .mobile-map-menu-btn {
+    padding: 10px 12px !important;
+    font-size: 0.88rem !important;
+  }
+}
+
+/* ── Landscape en móvil (altura reducida) ── */
+@media (max-width: 812px) and (orientation: landscape) {
+  .mobile-map-menu {
+    max-height: calc(100vh - 90px);
+    overflow-y: auto;
+  }
+}

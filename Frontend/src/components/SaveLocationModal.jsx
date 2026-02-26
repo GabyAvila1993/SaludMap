@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import './SaveLocationModal.css';
 
@@ -53,7 +54,7 @@ export default function SaveLocationModal({ isOpen, onClose, onSave, currentLoca
 
     if (!isOpen) return null;
 
-    return (
+    const modal = (
         <div className="modal-overlay" onClick={handleClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
@@ -126,4 +127,6 @@ export default function SaveLocationModal({ isOpen, onClose, onSave, currentLoca
             </div>
         </div>
     );
+
+    return typeof document !== 'undefined' ? ReactDOM.createPortal(modal, document.body) : null;
 }

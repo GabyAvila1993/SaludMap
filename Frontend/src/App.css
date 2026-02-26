@@ -1,157 +1,471 @@
-/*--------------- Inicio App.css -------------------*/
-/* App.css - Estilos globales para SaludMap */
+/* ================================================================
+   App.css — SaludMap
+   Navbar completamente responsive sin inline styles, sin Tailwind,
+   sin Bootstrap. CSS puro con variables y media queries limpias.
+   ================================================================ */
+
 @import url('https://fonts.googleapis.com/css2?family=Headland+One&family=Roboto:wght@300;400;500;700;900&display=swap');
 @import './styles/modal.css';
 
+/* ================================================================
+   VARIABLES GLOBALES — Tema Claro
+   ================================================================ */
 :root {
-  /* Variables tema claro (valores exactos solicitados) */
-  --bg-navbar-modal: #C9EFE4;
-  --btn-primary-bg: #9EE2CF;
-  --text-highlight: #66B09D;
-  --border-ui: #A2E3D0;
-  --placeholder-bg: #cecece;
-  --text-main: #000000;
-  --text-dark: #08331f;
-  --btn-gps: #10b981;
-  --marker-hospital: #e74c3c;
-  --marker-clinica: #3498db;
-  --marker-doctor: #2ecc71;
-  --marker-veterinaria: #9b59b6;
-  --marker-default: #34495e;
-  --gradient-accent-start: #ffffff;
-  --gradient-accent-end: #ffe0a6;
-  --white: #ffffff;
-  --info-bg-dark: #4141428c;
-  --rating-color: #e6b800;
-  --user-icon-bg: #007bff;
-  --popup-strong: #2c3e50;
-  --popup-detail: #7f8c8d;
-  --popup-type: var(--marker-clinica);
-  --popup-cached: var(--marker-doctor);
+  --bg-navbar-modal:      #C9EFE4;
+  --btn-primary-bg:       #9EE2CF;
+  --text-highlight:       #66B09D;
+  --border-ui:            #A2E3D0;
+  --placeholder-bg:       #cecece;
+  --text-main:            #000000;
+  --text-dark:            #08331f;
+  --btn-gps:              #10b981;
+  --marker-hospital:      #e74c3c;
+  --marker-clinica:       #3498db;
+  --marker-doctor:        #2ecc71;
+  --marker-veterinaria:   #9b59b6;
+  --marker-default:       #34495e;
+  --gradient-accent-start:#ffffff;
+  --gradient-accent-end:  #ffe0a6;
+  --white:                #ffffff;
+  --info-bg-dark:         #4141428c;
+  --rating-color:         #e6b800;
+  --user-icon-bg:         #007bff;
+  --popup-strong:         #2c3e50;
+  --popup-detail:         #7f8c8d;
+  --popup-type:           var(--marker-clinica);
+  --popup-cached:         var(--marker-doctor);
   --marker-hospital-dark: #c0392b;
-  --muted-light: #ecf0f1;
-  --error-bg: #8b4513;
-  --error-border: #a0522d;
-  --error-text: #ffeaa7;
-  /* utilitarios adicionales */
-  --bg-main: #ffffff;
-  --transition: all 0.22s cubic-bezier(.2,.9,.2,1);
-  --radius: 12px;
-  --radius-mobile: 8px;
-  --navbar-height: 88px;
-  --footer-height: 64px;
-  --grid-gap: 10px;
+  --muted-light:          #ecf0f1;
+  --error-bg:             #8b4513;
+  --error-border:         #a0522d;
+  --error-text:           #ffeaa7;
+  --bg-main:              #ffffff;
+  --transition:           all 0.22s cubic-bezier(.2,.9,.2,1);
+  --radius:               12px;
+  --radius-mobile:        8px;
+  --navbar-height:        72px;
+  --footer-height:        64px;
+  --grid-gap:             10px;
+  --color-primary:        #ffe0a6;
+  --color-bg-dark:        #47472e;
+  --color-text:           #f0f0f0;
+  --color-text-dark:      #171717;
 }
 
-/* Modo oscuro: sobrescribe variables necesarias */
+/* ================================================================
+   TEMA OSCURO
+   ================================================================ */
 .dark-theme {
   --bg-navbar-modal: #2D3A37;
-  --btn-primary-bg: #060808;
-  --text-highlight: #66B09D;
-  --border-ui: #66B09D;
-  --placeholder-bg: #66B09D;
-  --text-main: #FFFFFF;
-  --info-bg-dark: #A9B0AE;
-  --bg-main: #0f1716;
+  --btn-primary-bg:  #060808;
+  --text-highlight:  #66B09D;
+  --border-ui:       #66B09D;
+  --placeholder-bg:  #66B09D;
+  --text-main:       #FFFFFF;
+  --info-bg-dark:    rgb(41, 44, 43);
+  --bg-main:         #0f1716;
 }
 
-* {
+/* ================================================================
+   RESET GLOBAL
+   ================================================================ */
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* RESET CRÍTICO: forzar contenedores raíz sin espacios laterales */
-html, body, #root, .app {
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-  height: 100vh;
-  /* allow vertical scrolling (only hide horizontal overflow) so sections like Turnos can scroll internally
-     this preserves the original intent to avoid horizontal scrollbars while fixing clipping issues */
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
   overflow-x: hidden;
 }
 
 body {
-  font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: var(--bg-main);
   color: var(--text-main);
+  min-width: 320px;
 }
 
+/* ================================================================
+   ESTRUCTURA DE LA APP
+   ================================================================ */
 .app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
-  padding: 0;
-  max-width: 100vw;
 }
 
+.app-main {
+  width: 100%;
+  flex: 1;
+  /* El padding-top igual al navbar-height evita que el contenido
+     quede tapado por el header fijo */
+  padding-top: var(--navbar-height);
+}
+
+/* ================================================================
+   HEADER / SITE-HEADER
+   ================================================================ */
 .site-header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: var(--navbar-height);
-  z-index: 3000; /* elevar por encima de modales para que Navbar quede siempre visible */
+  z-index: 3000;
   background-color: var(--bg-navbar-modal);
   border-bottom: 1px solid var(--border-ui);
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0 20px; /* reducir padding para evitar overflow horizontal */
-  box-sizing: border-box;
-  border-radius: 30px; /* cápsula simétrica: redondeo completo */
+  padding: 0 24px;
+  /* Cápsula redondeada en desktop */
+  border-radius: 0 0 24px 24px;
 }
 
-.site-header .header-top { width:100%; max-width:none; margin:0; display:flex; align-items:center; justify-content:space-between; gap:12px }
-
-.logo { font-family: 'Headland One', serif; font-size:1.9rem; color:var(--text-highlight); display:flex; align-items:center; gap:10px }
-.logo-img { width:36px; height:36px; object-fit:contain; display:inline-block }
-.logo-text { font-size:1.45rem; color:var(--text-highlight) }
-
-/* Navbar user area */
-.nav-user-inline { display:flex; align-items:center; gap:10px; margin-left:12px }
-.nav-avatar-image { width:34px; height:34px; border-radius:50%; object-fit:cover; border:2px solid rgba(0,0,0,0.06) }
-.nav-username { font-family: 'Roboto', sans-serif; font-weight:700; color:var(--text-highlight); margin-left:6px }
-.nav-auth-actions { display:flex; gap:8px; align-items:center }
-.nav-auth-btn { background: var(--btn-primary-bg, #9EE2CF); color: var(--text-highlight, #66B09D); font-family: 'Roboto', sans-serif; border: none; padding: 8px 12px; border-radius: 12px; cursor: pointer; font-weight:700 }
-.nav-auth-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08) }
-
-@media (min-width: 768px) {
-  .site-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: var(--navbar-height);
-    z-index: 3000; /* asegurar Navbar por encima de overlays */
-    background-color: var(--bg-navbar-modal);
-    border-bottom: 1px solid var(--border-ui);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 12px; /* evitar espacios en los bordes del monitor */
-    box-sizing: border-box;
-    border-radius: 30px; /* cápsula simétrica: redondeo completo */
-  }
-
+/* ================================================================
+   NAVBAR — LAYOUT PRINCIPAL (3 columnas: left | center | right)
+   ================================================================ */
+.app-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 6px;
+  position: relative; /* necesario para el dropdown absolute del mobile-menu */
 }
 
-.app footer {
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
+.nav-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  position: relative; /* para que el mobile-menu se posicione correctamente */
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
+/* ================================================================
+   LOGO
+   ================================================================ */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.logo-img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+}
+
+.logo-text {
+  font-family: 'Headland One', serif;
+  font-size: 1.4rem;
+  color: var(--text-highlight);
+  white-space: nowrap;
+}
+
+/* ================================================================
+   BOTONES DE NAVEGACIÓN (desktop: centrados en nav-center)
+   ================================================================ */
+.nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Botón base del navbar */
+.nav-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: none;
   background: transparent;
-  padding: 1rem 0;
-  height: var(--footer-height);
+  color: var(--text-highlight);
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: 'Roboto', sans-serif;
+  transition: var(--transition);
+  white-space: nowrap;
+  min-height: 40px;
 }
 
-/* Botones globales */
+.nav-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.nav-button.active {
+  background: var(--btn-primary-bg);
+  color: var(--text-main);
+  font-weight: 800;
+  border: 1px solid var(--border-ui);
+}
+
+.nav-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ================================================================
+   HAMBURGER (oculto en desktop, visible en móvil/tablet)
+   ================================================================ */
+.hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--border-ui);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: var(--text-highlight);
+  min-height: 40px;
+  min-width: 40px;
+  transition: var(--transition);
+}
+
+.hamburger:hover {
+  background: var(--btn-primary-bg);
+  transform: none;
+  box-shadow: none;
+}
+
+/* ================================================================
+   MOBILE MENU (dropdown que aparece al hacer clic en hamburger)
+
+   IMPORTANTE: React renderiza este elemento condicionalmente.
+   Cuando showMobileMenu === true el nodo existe en el DOM,
+   cuando es false NO existe. Por eso NO usamos display:none aquí —
+   simplemente declaramos cómo debe verse cuando está presente.
+   ================================================================ */
+.mobile-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 220px;
+  background: var(--bg-navbar-modal);
+  border: 1px solid var(--border-ui);
+  border-radius: 16px;
+  padding: 10px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.14);
+  z-index: 4000;
+  /* Animación sutil de entrada */
+  animation: menuFadeIn 0.18s cubic-bezier(.2,.9,.2,1);
+}
+
+@keyframes menuFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Título "SaludMap" dentro del mobile-menu */
+.mobile-menu-title {
+  font-family: 'Headland One', serif;
+  font-size: 1.3rem;
+  color: var(--text-highlight);
+  text-align: center;
+  padding: 8px 16px 10px;
+  border-bottom: 1px solid var(--border-ui);
+  margin-bottom: 4px;
+  letter-spacing: 0.02em;
+}
+
+.dark-theme .mobile-menu-title {
+  color: var(--text-highlight);
+}
+
+.mobile-menu .nav-button {
+  width: 100%;
+  text-align: left;
+  border-radius: 10px;
+  padding: 12px 16px;
+  justify-content: flex-start;
+  /* Forzar color visible: texto oscuro sobre fondo claro del menú */
+  color: var(--text-dark, #08331f);
+  background: transparent;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.mobile-menu .nav-button:hover {
+  background: rgba(0, 0, 0, 0.07);
+  transform: none;
+  box-shadow: none;
+  color: var(--text-dark, #08331f);
+}
+
+.mobile-menu .nav-button.active {
+  background: var(--btn-primary-bg);
+  color: var(--text-main, #000);
+  border: 1px solid var(--border-ui);
+}
+
+/* Tema oscuro: ajustar colores del mobile-menu */
+.dark-theme .mobile-menu {
+  background: var(--bg-navbar-modal);
+  border-color: var(--border-ui);
+}
+
+.dark-theme .mobile-menu .nav-button {
+  color: var(--text-highlight, #66B09D);
+}
+
+.dark-theme .mobile-menu .nav-button.active {
+  color: var(--text-main, #fff);
+}
+
+/* ================================================================
+   ZONA DERECHA — Controles de usuario
+   ================================================================ */
+.user-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Usuario logueado */
+.nav-user-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.profile-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--border-ui);
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  flex-shrink: 0;
+  min-height: unset;
+}
+
+.profile-avatar:hover {
+  transform: scale(1.06);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.nav-person-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.nav-username {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  color: var(--text-highlight);
+  white-space: nowrap;
+  font-size: 0.9rem;
+}
+
+/* Acciones de auth (sin usuario) */
+.nav-auth-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ================================================================
+   DROPDOWN DE USUARIO
+   ================================================================ */
+.user-menu {
+  position: relative;
+}
+
+.user-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: var(--bg-navbar-modal);
+  border: 1px solid var(--border-ui);
+  border-radius: 14px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+  padding: 8px;
+  min-width: 170px;
+  z-index: 3200;
+}
+
+.user-menu.open .user-dropdown {
+  display: block;
+}
+
+.user-dropdown .nav-button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border-radius: 10px;
+  padding: 9px 12px;
+  justify-content: flex-start;
+}
+
+.user-dropdown-logout {
+  background: var(--btn-primary-bg);
+  color: var(--text-main);
+  border: 1px solid var(--border-ui);
+}
+
+/* ================================================================
+   BOTONES GLOBALES
+   ================================================================ */
 button,
 .button--primary {
   background-color: var(--color-primary);
-  color: #08331f;
-  border: 2px solid var(--color-border);
+  color: var(--text-dark);
+  border: 2px solid var(--border-ui);
   padding: 10px 20px;
   border-radius: 10px;
   cursor: pointer;
@@ -160,14 +474,15 @@ button,
   text-transform: none;
   letter-spacing: 0.02rem;
   transition: var(--transition);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   min-height: 44px;
   touch-action: manipulation;
+  font-family: inherit;
 }
 
 button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(255, 224, 166, 0.5);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 button:active:not(:disabled) {
@@ -178,209 +493,11 @@ button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
-  box-shadow: 0 2px 8px rgba(255, 224, 166, 0.2);
 }
 
-/* Scrollbar personalizado */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 224, 166, 0.3);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 224, 166, 0.5);
-}
-
-/* Media Queries Responsive */
-
-/* Tablets y pantallas medianas (1200px y menos) */
-@media (max-width: 1200px) {
-  .app main {
-    padding: 0 0.5rem;
-  }
-
-  .app header,
-  .app footer {
-    padding: var(--padding-tablet);
-  }
-}
-
-/* Tablets (1024px y menos) */
-@media (max-width: 1024px) {
-  :root {
-    --radius: 20px;
-  }
-
-  .turnos-section {
-    grid-template-columns: 1fr;
-  }
-
-  .app header,
-  .app footer {
-    margin: 0.75rem;
-    padding: var(--padding-tablet);
-  }
-
-  button,
-  .button--primary {
-    padding: 10px 20px;
-    font-size: 0.9rem;
-  }
-}
-
-/* Tablets pequeñas y móviles grandes (768px y menos) */
-@media (max-width: 768px) {
-  :root {
-    --radius: var(--radius-mobile);
-  }
-
-  .app header,
-  .app footer {
-    margin: 0.5rem;
-    padding: var(--padding-mobile) var(--padding-tablet);
-    border-radius: var(--radius-mobile);
-  }
-  
-  .app header h1 {
-    font-size: clamp(1.2rem, 4vw, 1.5rem);
-    margin-bottom: 0.25rem;
-  }
-  
-  .app header p {
-    font-size: clamp(0.75rem, 2vw, 0.875rem);
-  }
-  
-  .app main {
-    padding: 0 0.25rem;
-  }
-
-  button,
-  .button--primary {
-    padding: 10px 16px;
-    font-size: 0.875rem;
-    letter-spacing: 0.05rem;
-  }
-
-  /* Ajuste del scrollbar en móviles */
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-
-  .app-nav .nav-buttons { display:none; }
-  .hamburger { display:inline-flex }
-  .mobile-menu { display:flex; flex-direction:column }
-}
-
-/* Móviles (480px y menos) */
-@media (max-width: 480px) {
-  .app header,
-  .app footer {
-    margin: 0.25rem;
-    padding: var(--padding-mobile);
-    border-radius: 12px;
-  }
-
-  .app header h1 {
-    font-size: clamp(1rem, 3.5vw, 1.2rem);
-  }
-
-  .app header p {
-    font-size: 0.75rem;
-  }
-  
-  .btn,
-  .button--primary {
-    padding: 0.6rem 1rem;
-    font-size: 0.8rem;
-    width: 100%;
-    max-width: 100%;
-    margin-bottom: 0.5rem;
-    border-radius: 10px;
-  }
-
-  button,
-  .button--primary {
-    min-height: 44px;
-    padding: 12px 16px;
-  }
-}
-
-/* Móviles muy pequeños (360px y menos) */
-@media (max-width: 360px) {
-  .app header,
-  .app footer {
-    margin: 0.2rem;
-    padding: 0.5rem;
-  }
-
-  .app header h1 {
-    font-size: 1rem;
-  }
-
-  .app header p {
-    font-size: 0.7rem;
-  }
-
-  button,
-  .button--primary {
-    font-size: 0.75rem;
-    padding: 10px 12px;
-  }
-}
-
-/* Orientación landscape en tablets y móviles */
-@media (max-width: 1024px) and (orientation: landscape) {
-  .app header,
-  .app footer {
-    margin: 0.5rem 1rem;
-    padding: 0.75rem 1.5rem;
-  }
-
-  .app main {
-    padding: 0 1rem;
-  }
-}
-
-/* Modo táctil - áreas de toque más grandes */
-@media (hover: none) and (pointer: coarse) {
-  button,
-  .button--primary {
-    min-height: 48px;
-    min-width: 48px;
-    padding: 12px 20px;
-  }
-
-  a {
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-  }
-}
-
-/* Reducir animaciones si el usuario lo prefiere */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-
-  button:hover:not(:disabled) {
-    transform: none;
-  }
-}
-
-/* Estilos añadidos al mover inline-styles de App.jsx */
+/* ================================================================
+   LOADING SCREEN
+   ================================================================ */
 .loading-screen {
   display: flex;
   justify-content: center;
@@ -389,95 +506,330 @@ button:disabled {
   flex-direction: column;
   gap: 1rem;
 }
-.loading-subtitle { font-size: 0.875rem; color: #666; }
 
-.app-header-row { display:flex; justify-content:space-between; align-items:center; padding: 0 20px; }
-.user-controls { display:flex; align-items:center; gap: 15px; }
-.user-info { display:flex; align-items:center; gap:10px; }
-.user-name { color: #47472e; font-weight: 700; }
-.btn-logout { background:#ff6b6b; color:#fff; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:700; }
-.btn-login { background:#47472e; color:#fff; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:700; }
+.loading-subtitle {
+  font-size: 0.875rem;
+  color: #666;
+}
 
-.app-nav {
+/* ================================================================
+   FOOTER
+   ================================================================ */
+.app-footer {
+  text-align: center;
+  padding: 1rem 0;
+  height: var(--footer-height);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  max-width: none; /* allow full width */
-  margin: 0;
-  gap: 12px;
-}
-
-.app-nav .nav-left,
-.app-nav .nav-center,
-.app-nav .nav-right {
-  display:flex;
-  align-items:center;
-  gap:12px;
-  flex: 1 1 0;
-}
-
-.app-nav .nav-left { justify-content: flex-start }
-.app-nav .nav-center { justify-content: center }
-.app-nav .nav-right { justify-content: flex-end }
-
-.app-nav .nav-buttons { display:flex; gap:20px; align-items:center; justify-content:center }
-
-/* Buttons: non-active text color requested */
-.app-nav .nav-button {
-  padding: 8px 16px;
-  border-radius: 999px;
-  border: none;
+  justify-content: center;
   background: transparent;
-  color: var(--text-highlight); /* texto no activo */
-  cursor:pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  font-family: 'Roboto', sans-serif;
 }
 
-/* Global override: asegurar que ningún contenedor superior limite el ancho del mapa */
-.container, .container-12, .app, .app-main, .map-section, .turnos-section, .map-controls, .map-wrapper {
-  max-width: none !important;
-  width: 100vw !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  box-sizing: border-box !important;
+/* ================================================================
+   MAP / MAIN SECTION OVERRIDES
+   (no tocar: necesarios para que el mapa funcione a full screen)
+   ================================================================ */
+.app-main,
+.map-section,
+.turnos-section,
+.map-controls,
+.map-wrapper {
+  max-width: none;
 }
 
-.app-nav .nav-button.active {
-  background: var(--btn-primary-bg); /* color activo */
-  color: var(--text-main);
-  font-weight: 800;
-  border: 1px solid var(--border-ui);
+.app-main {
+  min-height: calc(100vh - var(--navbar-height) - var(--footer-height));
+  width: 100%;
 }
 
-.profile-avatar { width:42px; height:42px; border-radius:50%; background:var(--border-ui); display:inline-flex; align-items:center; justify-content:center; color:var(--text-main); font-weight:800 }
-.nav-person-icon { width:40px; height:40px; border-radius:50%; object-fit:cover; background:var(--border-ui); padding:4px; display:inline-block }
-.nav-username { font-weight:700; color:var(--text-highlight); margin:0 8px }
+.map-section {
+  width: 100%;
+}
 
-/* User menu dropdown */
-.user-menu { position: relative; }
-.user-menu .user-dropdown { display: none; position: absolute; top: calc(100% + 8px); right: 0; background: var(--bg-navbar-modal); border: 1px solid var(--border-ui); box-shadow: 0 6px 18px rgba(0,0,0,0.08); padding: 8px; border-radius: 12px; min-width: 160px; z-index: 3100; }
-.user-menu.open .user-dropdown { display: block; }
-.user-dropdown .nav-button { display:block; width:100%; text-align:left; padding: 8px 10px; border-radius: 12px; font-weight:700; }
-.user-dropdown .nav-button:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
-.user-dropdown .user-dropdown-logout { background: var(--btn-primary-bg); color: var(--text-main); border: 1px solid var(--border-ui); }
+.map-layout {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+  width: 100%;
+}
 
-/* Hamburger / mobile menu */
-.hamburger { display:none; background:transparent; border:none; font-size:1.25rem; cursor:pointer; color:var(--text-highlight) }
-.mobile-menu { display:none; position: absolute; top: calc(var(--navbar-height)); right: 0; left: 0; background: var(--bg-navbar-modal); padding: 12px 20px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); z-index:1050; gap:12px; }
-.mobile-menu .nav-button { display:block; width:100%; text-align:left; padding:10px 12px; margin-bottom:8px; }
+.map-wrapper {
+  flex: 1 1 auto;
+  height: 100%;
+}
 
-/* 12-column grid utility */
-.container-12 { width:100%; max-width: none; margin:0; padding:0 16px; box-sizing:border-box; display:grid; grid-template-columns: repeat(12, 1fr); gap: var(--grid-gap); align-items:center }
-.col-1{grid-column:span 1} .col-2{grid-column:span 2} .col-3{grid-column:span 3} .col-4{grid-column:span 4} .col-5{grid-column:span 5} .col-6{grid-column:span 6}
-.col-7{grid-column:span 7} .col-8{grid-column:span 8} .col-9{grid-column:span 9} .col-10{grid-column:span 10} .col-11{grid-column:span 11} .col-12{grid-column:span 12}
+.leaflet-map {
+  width: 100%;
+  height: 100%;
+}
 
-.app-main { min-height: calc(100vh - var(--navbar-height) - var(--footer-height)); margin-top: var(--navbar-height); width:100%; }
+/* ================================================================
+   12-COLUMN GRID UTILITY
+   ================================================================ */
+.container-12 {
+  width: 100%;
+  margin: 0;
+  padding: 0 16px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--grid-gap);
+  align-items: center;
+}
 
-.map-section { width:100%; }
-.map-layout { display:flex; align-items:stretch; gap:0; height:100%; width:100%; }
-.map-wrapper { flex:1 1 auto; height:100%; }
-.leaflet-map { width:100%; height:100%; }
-.app-footer { text-align:center; padding: 1rem 0; }
+.col-1  { grid-column: span 1; }
+.col-2  { grid-column: span 2; }
+.col-3  { grid-column: span 3; }
+.col-4  { grid-column: span 4; }
+.col-5  { grid-column: span 5; }
+.col-6  { grid-column: span 6; }
+.col-7  { grid-column: span 7; }
+.col-8  { grid-column: span 8; }
+.col-9  { grid-column: span 9; }
+.col-10 { grid-column: span 10; }
+.col-11 { grid-column: span 11; }
+.col-12 { grid-column: span 12; }
+
+/* ================================================================
+   USER UTILITIES (heredadas de versión anterior)
+   ================================================================ */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-name {
+  color: var(--text-dark);
+  font-weight: 700;
+}
+
+/* ================================================================
+   SCROLLBAR PERSONALIZADO
+   ================================================================ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(102, 176, 157, 0.35);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 176, 157, 0.6);
+}
+
+/* ================================================================
+   RESPONSIVE — NAVBAR
+   ================================================================
+
+   Breakpoints:
+   - > 1024px  → Desktop grande: todo visible, logo con texto
+   - 769–1024px → Notebook/tablet landscape: todo visible, logo ajustado
+   - 481–768px  → Tablet portrait: hamburger, nav-buttons ocultos,
+                   username oculto, solo avatar
+   - ≤ 480px    → Móvil: hamburger, username oculto, logo sin texto
+   ================================================================ */
+
+/* ── DESKTOP (> 768px): hamburger oculto, mobile-menu nunca visible ── */
+@media (min-width: 769px) {
+  .hamburger {
+    display: none;
+  }
+  /* En desktop el mobile-menu nunca debe mostrarse aunque React lo renderice */
+  .mobile-menu {
+    display: none;
+  }
+}
+
+/* ── NOTEBOOK / TABLET LANDSCAPE (≤ 1024px) ── */
+@media (max-width: 1024px) {
+  .site-header {
+    padding: 0 16px;
+  }
+
+  .logo-text {
+    font-size: 1.2rem;
+  }
+
+  .nav-button {
+    padding: 7px 14px;
+    font-size: 0.9rem;
+  }
+}
+
+/* ── TABLET PORTRAIT (≤ 768px) ── */
+@media (max-width: 768px) {
+  :root {
+    --navbar-height: 64px;
+  }
+
+  .site-header {
+    padding: 0 14px;
+    border-radius: 0 0 18px 18px;
+  }
+
+  /* Ocultar botones de navegación del centro */
+  .nav-buttons {
+    display: none;
+  }
+
+  /* Mostrar hamburger */
+  .hamburger {
+    display: inline-flex;
+  }
+
+  /* Mostrar mobile-menu cuando React lo renderiza */
+  .mobile-menu {
+    display: flex;
+  }
+
+  /* Ocultar el texto "SaludMap" del navbar:
+     solo queda el logo imagen. El nombre aparecerá
+     dentro del mobile-menu como título. */
+  .logo-text {
+    display: none;
+  }
+
+  /* Ocultar nombre de usuario, mostrar solo avatar */
+  .nav-username {
+    display: none;
+  }
+
+    /* Logo imagen: leve ajuste de tamaño */
+    .logo-img {
+      width: 32px;
+      height: 32px;
+    }
+  
+    .logo-text {
+      font-size: 1.1rem;
+    }
+  
+    /* Botones de auth: reducir padding */
+    .nav-auth-actions .nav-button {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+    }
+  }
+
+
+/* ── MÓVIL (≤ 480px) ── */
+@media (max-width: 480px) {
+  :root {
+    --navbar-height: 58px;
+  }
+
+  .site-header {
+    padding: 0 10px;
+    border-radius: 0 0 14px 14px;
+  }
+
+  /* Ocultar texto del logo en pantallas muy pequeñas */
+  .logo-text {
+    display: none;
+  }
+
+  .logo-img {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Reducir gap general */
+  .app-nav {
+    gap: 8px;
+  }
+
+  .user-controls {
+    gap: 6px;
+  }
+
+  /* Mobile menu ocupa más ancho */
+  .mobile-menu {
+    min-width: calc(100vw - 20px);
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 14px;
+  }
+
+  /* Botones auth: solo texto corto */
+  .nav-auth-actions .nav-button {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
+
+  /* Avatar ligeramente más pequeño */
+  .profile-avatar {
+    width: 34px;
+    height: 34px;
+  }
+
+  .nav-person-icon {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+/* ── MÓVILES MUY PEQUEÑOS (≤ 360px) ── */
+@media (max-width: 360px) {
+  .site-header {
+    padding: 0 8px;
+  }
+
+  .nav-auth-actions {
+    gap: 4px;
+  }
+
+  .nav-auth-actions .nav-button {
+    padding: 5px 8px;
+    font-size: 0.75rem;
+  }
+}
+
+/* ── LANDSCAPE EN MÓVILES (altura baja) ── */
+@media (max-width: 812px) and (orientation: landscape) {
+  :root {
+    --navbar-height: 54px;
+  }
+
+  .site-header {
+    padding: 0 12px;
+  }
+}
+
+/* ================================================================
+   TOUCH DEVICES — áreas mínimas de toque
+   ================================================================ */
+@media (hover: none) and (pointer: coarse) {
+  .nav-button,
+  .hamburger,
+  .profile-avatar {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Quitar hover effects que no aplican en touch */
+  .nav-button:hover:not(:disabled) {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+/* ================================================================
+   ACCESIBILIDAD — reducir movimiento
+   ================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

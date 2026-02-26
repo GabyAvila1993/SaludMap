@@ -1,0 +1,317 @@
+/* Overrides visuales para MODOS CLAROS (body:not(.dark-theme))
+   - No se tocan tamaños, solo colores y estilos de botones para que
+     coincidan con el aspecto de "Actualizar ubicación" y el modal de Reseñas.
+   - Todos los selectores usan body:not(.dark-theme) como prefijo de alcance
+*/
+
+/* Paneles/modales principales en modo claro */
+body:not(.dark-theme) .modal-content,
+body:not(.dark-theme) .locations-modal,
+body:not(.dark-theme) .analytics-modal,
+body:not(.dark-theme) .resenias-modal,
+body:not(.dark-theme) .filter-modal {
+  background: var(--bg-navbar-modal, #E8FBF5) !important; /* tono mint claro similar a reseñas */
+  color: var(--text-dark, #0b2b26) !important;
+  border-color: var(--border-ui, rgba(0,0,0,0.06)) !important;
+  box-shadow: 0 18px 48px rgba(0,0,0,0.12) !important;
+}
+
+/* Encabezados dentro de modales */
+body:not(.dark-theme) .modal-content .modal-header h3,
+body:not(.dark-theme) .locations-modal .modal-header h3,
+body:not(.dark-theme) .analytics-modal .analytics-header h2 {
+  color: var(--text-highlight, #2b8b8c) !important; /* color acento tipo reseñas */
+}
+
+/* Botones primarios/segundos dentro de modales: coincidir con estilo de "Actualizar ubicación" */
+body:not(.dark-theme) .modal-content .btn-primary,
+body:not(.dark-theme) .locations-modal .btn-go,
+/* Estilos exactos para modo claro: igualar apariencia del modal "Dejar reseña"
+   Aplicar a los selectores de modal más comunes en el proyecto. */
+
+/* Light mode variables (exact colors requested) */
+body:not(.dark-theme) {
+  --modal-bg: #E8FBF5; /* base mint background */
+  --modal-title-color: #4daa90; /* Títulos */
+  --btn-fill: #66b09d; /* relleno botones */
+  --btn-text-color: #000000; /* texto dentro de botones y placeholder */
+  --chat-fill: #cecece; /* relleno chat e info */
+  --placeholder-fill: #b6e7d9; /* placeholder background */
+  --chat-border: #C9EFE4; /* border en chat */
+  --modal-text: #08331f;
+}
+
+body:not(.dark-theme) .modal-content,
+body:not(.dark-theme) .locations-modal,
+body:not(.dark-theme) .analytics-modal,
+body:not(.dark-theme) .resenias-modal,
+body:not(.dark-theme) .filter-modal,
+body:not(.dark-theme) .establishment-info,
+body:not(.dark-theme) .turnos-modal,
+body:not(.dark-theme) .saved-locations-modal {
+  background: var(--modal-bg) !important;
+  color: var(--modal-text) !important;
+  border-color: rgba(43,139,140,0.12) !important;
+  box-shadow: 0 18px 48px rgba(0,0,0,0.10) !important;
+}
+
+/* Encabezados */
+body:not(.dark-theme) .modal-content .modal-header h3,
+body:not(.dark-theme) .locations-modal .modal-header h3,
+body:not(.dark-theme) .analytics-modal .analytics-header h2,
+body:not(.dark-theme) .resenias-modal .resenias-header h3 {
+  color: var(--modal-title-color) !important;
+  font-weight: 800 !important;
+}
+
+/* Botones primarios: degradado teal (publish / actualizar) */
+body:not(.dark-theme) .modal-content .btn-primary,
+body:not(.dark-theme) .locations-modal .btn-go,
+body:not(.dark-theme) .modal-actions .btn-primary,
+body:not(.dark-theme) .filter-modal .btn-primary,
+body:not(.dark-theme) .analytics-modal .export-button,
+body:not(.dark-theme) .modal-content .btn-primary:enabled {
+  background: var(--btn-fill) !important;
+  color: var(--btn-text-color) !important;
+  border: none !important;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08) !important;
+  border-radius: 8px !important;
+  padding: 10px 18px !important;
+  font-weight: 700 !important;
+}
+
+/* Botón secundario: gris suave (Cancelar) */
+body:not(.dark-theme) .modal-content .btn-secondary,
+body:not(.dark-theme) .locations-modal .btn-secondary,
+body:not(.dark-theme) .modal-content .btn-secondary:enabled {
+  background: var(--light-btn-secondary, #6c757d) !important;
+  color: var(--btn-text-color) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 10px 18px !important;
+  font-weight: 700 !important;
+}
+
+/* Botón cerrar (círculo) */
+body:not(.dark-theme) .modal-close,
+body:not(.dark-theme) .resenias-modal .resenias-close,
+body:not(.dark-theme) .analytics-modal .analytics-close,
+body:not(.dark-theme) .establishment-info .card-close {
+  background: var(--light-modal-bg) !important;
+  border: 1px solid rgba(43,139,140,0.12) !important;
+  color: var(--light-text) !important;
+  width: 36px !important;
+  height: 36px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.06) !important;
+}
+
+/* Inputs / textarea */
+body:not(.dark-theme) .modal-content input,
+body:not(.dark-theme) .modal-content textarea,
+body:not(.dark-theme) .locations-modal input,
+body:not(.dark-theme) .locations-modal textarea,
+body:not(.dark-theme) select {
+  background: var(--placeholder-fill) !important;
+  color: var(--modal-text) !important;
+  border: 1.5px solid var(--chat-border, rgba(43,139,140,0.16)) !important;
+  border-radius: 8px !important;
+  padding: 8px 10px !important;
+}
+
+body:not(.dark-theme) .modal-content input:focus,
+body:not(.dark-theme) .modal-content textarea:focus,
+body:not(.dark-theme) select:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 6px rgba(43,139,140,0.08) !important;
+  border-color: rgba(43,139,140,0.28) !important;
+}
+
+/* Mantener scroll y tamaños — solo colores: */
+body:not(.dark-theme) .modal-content,
+body:not(.dark-theme) .locations-modal {
+  overflow: hidden;
+}
+
+/* Charts de Analytics con fondo claro */
+body:not(.dark-theme) .analytics-container {
+  background: transparent !important;
+}
+
+/* =====================
+   Dark theme equivalents
+   ===================== */
+body.dark-theme {
+  --modal-bg: #0B1F22; /* fondo modal oscuro */
+  --modal-title-color: #7fd6c2; /* acento claro sobre oscuro */
+  --btn-fill: #196f66; /* botones primarios oscuros */
+  --btn-text-color: #ffffff; /* texto en botones */
+  --chat-fill: #0f2a2a; /* fondos secundarios */
+  --placeholder-fill: #0c2f2b; /* inputs */
+  --chat-border: rgba(255,255,255,0.06);
+  --modal-text: #e6fff9; /* texto principal claro */
+  --overlay-bg: rgba(0,0,0,0.6);
+}
+
+/* Forzar aplicación de variables en modales bajo tema oscuro */
+body.dark-theme .modal-content,
+body.dark-theme .locations-modal,
+body.dark-theme .analytics-modal,
+body.dark-theme .resenias-modal,
+body.dark-theme .filter-modal,
+body.dark-theme .establishment-info,
+body.dark-theme .turnos-modal,
+body.dark-theme .saved-locations-modal {
+  background: var(--modal-bg) !important;
+  color: var(--modal-text) !important;
+  border-color: rgba(255,255,255,0.04) !important;
+  box-shadow: 0 18px 48px rgba(0,0,0,0.6) !important;
+}
+
+body.dark-theme .modal-content .modal-header h3,
+body.dark-theme .locations-modal .modal-header h3,
+body.dark-theme .analytics-modal .analytics-header h2,
+body.dark-theme .resenias-modal .resenias-header h3 {
+  color: var(--modal-title-color) !important;
+  font-weight: 800 !important;
+}
+
+body.dark-theme .modal-content .btn-primary,
+body.dark-theme .locations-modal .btn-go,
+body.dark-theme .modal-actions .btn-primary,
+body.dark-theme .filter-modal .btn-primary,
+body.dark-theme .analytics-modal .export-button,
+body.dark-theme .modal-content .btn-primary:enabled {
+  background: var(--btn-fill) !important;
+  color: var(--btn-text-color) !important;
+  border: none !important;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6) !important;
+  border-radius: 8px !important;
+  padding: 10px 18px !important;
+  font-weight: 700 !important;
+}
+
+body.dark-theme .modal-content .btn-secondary,
+body.dark-theme .locations-modal .btn-secondary,
+body.dark-theme .modal-content .btn-secondary:enabled {
+  background: rgba(255,255,255,0.06) !important;
+  color: var(--modal-text) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 10px 18px !important;
+  font-weight: 700 !important;
+}
+
+body.dark-theme .modal-close,
+body.dark-theme .resenias-modal .resenias-close,
+body.dark-theme .analytics-modal .analytics-close,
+body.dark-theme .establishment-info .card-close {
+  background: var(--chat-fill) !important;
+  border: 1px solid rgba(255,255,255,0.04) !important;
+  color: var(--modal-text) !important;
+  width: 36px !important;
+  height: 36px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.4) !important;
+}
+
+body.dark-theme .modal-content input,
+body.dark-theme .modal-content textarea,
+body.dark-theme .locations-modal input,
+body.dark-theme .locations-modal textarea,
+body.dark-theme select {
+  background: var(--placeholder-fill) !important;
+  color: var(--modal-text) !important;
+  border: 1.5px solid var(--chat-border, rgba(255,255,255,0.06)) !important;
+  border-radius: 8px !important;
+  padding: 8px 10px !important;
+}
+
+body.dark-theme .modal-content input:focus,
+body.dark-theme .modal-content textarea:focus,
+body.dark-theme select:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 6px rgba(125,255,218,0.04) !important;
+  border-color: rgba(127,214,194,0.28) !important;
+}
+
+/* Overlay backgrounds (asegurar contraste) */
+body:not(.dark-theme) .modal-overlay,
+body:not(.dark-theme) .analytics-overlay,
+body:not(.dark-theme) .resenias-overlay {
+  background: rgba(4,37,33,0.36) !important;
+}
+
+body.dark-theme .modal-overlay,
+body.dark-theme .analytics-overlay,
+body.dark-theme .resenias-overlay {
+  background: var(--overlay-bg, rgba(0,0,0,0.6)) !important;
+}
+
+/* Forzar color de texto de párrafos, labels y enlaces dentro de modales */
+body:not(.dark-theme) .modal-content p,
+body:not(.dark-theme) .modal-content label,
+body:not(.dark-theme) .modal-content a {
+  color: var(--modal-text) !important;
+}
+
+body.dark-theme .modal-content p,
+body.dark-theme .modal-content label,
+body.dark-theme .modal-content a {
+  color: var(--modal-text) !important;
+}
+
+/* Small helper: asegurar que iconos y SVG que usen currentColor sigan la variable */
+body:not(.dark-theme) .modal-content svg,
+body.dark-theme .modal-content svg {
+  color: var(--modal-text) !important;
+}
+
+/* End of theme overrides */
+
+/* ==============================
+   Force text color inside all modals
+   (catch components that still use hardcoded hex colors)
+   ============================== */
+body:not(.dark-theme) .modal-content *,
+body:not(.dark-theme) .locations-modal *,
+body:not(.dark-theme) .analytics-modal *,
+body:not(.dark-theme) .resenias-modal *,
+body:not(.dark-theme) .filter-modal *,
+body:not(.dark-theme) .establishment-info *,
+body:not(.dark-theme) .turnos-modal *,
+body:not(.dark-theme) .saved-locations-modal *,
+body:not(.dark-theme) .save-location-modal *,
+body:not(.dark-theme) .saved-locations-list * {
+  color: var(--modal-text) !important;
+}
+
+body.dark-theme .modal-content *,
+body.dark-theme .locations-modal *,
+body.dark-theme .analytics-modal *,
+body.dark-theme .resenias-modal *,
+body.dark-theme .filter-modal *,
+body.dark-theme .establishment-info *,
+body.dark-theme .turnos-modal *,
+body.dark-theme .saved-locations-modal *,
+body.dark-theme .save-location-modal *,
+body.dark-theme .saved-locations-list * {
+  color: var(--modal-text) !important;
+}
+
+/* También forzar el color de placeholders y textos en inputs */
+body:not(.dark-theme) .modal-content ::placeholder,
+body:not(.dark-theme) .locations-modal ::placeholder {
+  color: rgba(8,51,31,0.6) !important;
+}
+
+body.dark-theme .modal-content ::placeholder,
+body.dark-theme .locations-modal ::placeholder {
+  color: rgba(230,255,249,0.6) !important;
+}

@@ -26,8 +26,8 @@
 .modal {
   width: min(96vw, 980px);
   max-width: 980px;
-  background: rgba(23,23,23,0.96);
-  color: #f4f4f4;
+  background: var(--modal-bg);
+  color: var(--modal-text);
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 18px 48px rgba(0,0,0,0.6);
@@ -55,7 +55,7 @@
   align-items:center;
   justify-content:center;
   cursor:pointer;
-  color: #fff;
+  color: var(--btn-text-color, #fff);
 }
 
 /* header / title */
@@ -82,8 +82,8 @@
 .cost-compare-panel button,
 .login input[type="submit"],
 .checkout-modal button {
-  background: linear-gradient(180deg, var(--primary-green), #7fd9b6);
-  color: #08331f;
+  background: linear-gradient(180deg, var(--primary-green), var(--btn-primary-bg));
+  color: var(--btn-text-color);
   border: 1px solid var(--border-ui);
   padding: 10px 16px;
   border-radius: 10px;

@@ -11,7 +11,7 @@
 
 /* Mensaje de error */
 .map-error {
-    color: orange;
+    color: var(--error-color, orange);
     margin-bottom: 8px;
 }
 
@@ -41,12 +41,12 @@ body.dark-theme .map-precision {
 
 /* Estado */
 .map-state {
-    color: #666;
+    color: var(--text-muted, #666);
 }
 
 /* Contenedor principal */
 .map-wrapper {
-    width: 95%;
+    width: 0%;
     max-width: 1200px;
     margin: 8px auto;
     border-radius: 8px;
@@ -99,8 +99,8 @@ body.dark-theme .map-precision {
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: #007bff;
-    border: 3px solid #fff;
+    background: var(--marker-primary, #007bff);
+    border: 3px solid var(--user-icon-border, #ffffff);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
@@ -196,7 +196,7 @@ body.dark-theme .map-precision {
     flex-direction: column;
     gap: 12px;
     padding: 10px;
-    background: #f9f9f9;
+    background: var(--bg-main, #f9f9f9);
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     height: fit-content;
@@ -254,4 +254,19 @@ body.dark-theme .map-btn,
 body.dark-theme .popup-btn {
     background: var(--btn-primary-bg);
     color: var(--text-main);
+}
+
+/* Responsive: apilar layout y ajustar alturas en pantallas pequeñas */
+@media (max-width: 1024px) {
+    .map-layout { flex-direction: column; height: auto; gap: 12px; padding: 0 12px; }
+    .map-wrapper { height: 60vh; max-height: 78vh; }
+    .sidebar { width: 100%; flex: 0 0 auto; order: 2; }
+    .map-container { flex: 1 1 auto; order: 1; width: 100%; }
+    .map-buttons { right: 12px; top: calc(var(--navbar-height) + 12px); }
+}
+
+@media (max-width: 480px) {
+    .map-wrapper { height: 48vh; }
+    .map-buttons { right: 8px; top: calc(var(--navbar-height) + 8px); }
+    .map-title { font-size: 1rem; }
 }

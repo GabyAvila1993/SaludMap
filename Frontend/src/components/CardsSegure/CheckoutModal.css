@@ -7,15 +7,15 @@
 
 /* ── Variables locales ── */
 :root {
-  --chk-bg-panel:      #ffffff;
-  --chk-bg-section:    #edf7f3;
-  --chk-border:        #A2E3D0;
-  --chk-border-strong: #66B09D;
-  --chk-text-main:     #000000;
-  --chk-text-accent:   #66B09D;
-  --chk-text-muted:    #6b8f87;
-  --chk-btn-bg:        #9EE2CF;
-  --chk-btn-text:      #08331f;
+  --chk-bg-panel:      var(--modal-bg, #ffffff);
+  --chk-bg-section:    var(--chat-fill, #edf7f3);
+  --chk-border:        var(--modal-border, #A2E3D0);
+  --chk-border-strong: var(--btn-fill, #66B09D);
+  --chk-text-main:     var(--modal-text, #000000);
+  --chk-text-accent:   var(--modal-title-color, #66B09D);
+  --chk-text-muted:    var(--modal-text-muted, #6b8f87);
+  --chk-btn-bg:        var(--btn-fill, #9EE2CF);
+  --chk-btn-text:      var(--btn-text-color, #08331f);
   --chk-shadow-lg:     0 18px 48px rgba(0, 0, 0, 0.18);
   --chk-radius:        12px;
   --chk-radius-sm:     8px;
@@ -24,10 +24,10 @@
 }
 
 .dark-theme {
-  --chk-bg-panel:      #1e2e2b;
-  --chk-bg-section:    #1a2926;
-  --chk-text-main:     #dbeee6;
-  --chk-text-muted:    #8aada5;
+  --chk-bg-panel:      var(--modal-bg, #1e2e2b);
+  --chk-bg-section:    var(--chat-fill, #1a2926);
+  --chk-text-main:     var(--modal-text, #dbeee6);
+  --chk-text-muted:    var(--modal-text-muted, #8aada5);
   --chk-shadow-lg:     0 18px 48px rgba(0, 0, 0, 0.6);
 }
 
@@ -232,7 +232,7 @@
 
 .checkout-modal .btn-primary {
   background: var(--chk-border-strong) !important;
-  color: #ffffff !important;
+  color: var(--btn-text-color, #ffffff) !important;
   border: 1.5px solid var(--chk-border-strong) !important;
   padding: 9px 20px !important;
   border-radius: var(--chk-radius-sm) !important;

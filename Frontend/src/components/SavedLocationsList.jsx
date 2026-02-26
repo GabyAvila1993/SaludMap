@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { getSavedLocations, deleteSavedLocation } from '../services/db.js';
 import locationService from '../services/locationService.js';
@@ -81,7 +82,7 @@ export default function SavedLocationsList({ isOpen, onClose }) {
 
     if (!isOpen) return null;
 
-    return (
+    const modal = (
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content locations-modal" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
@@ -157,4 +158,6 @@ export default function SavedLocationsList({ isOpen, onClose }) {
             </div>
         </div>
     );
+
+    return typeof document !== 'undefined' ? ReactDOM.createPortal(modal, document.body) : null;
 }
