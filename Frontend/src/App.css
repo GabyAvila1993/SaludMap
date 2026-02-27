@@ -631,7 +631,7 @@ button:disabled {
   }
 
   .mobile-menu {
-    min-width: calc(100vw - 20px);
+    min-width: calc(80px - 20px);
     border-radius: 14px;
   }
 

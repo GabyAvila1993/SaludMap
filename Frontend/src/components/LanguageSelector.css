@@ -80,7 +80,7 @@
 /* ── Dropdown de tema ── */
 .theme-dropdown {
   position: absolute;
-  top: calc(100% + 8px);
+  top: calc(50px);
   left: 0;
   background: var(--bg-navbar-modal);
   border: 1px solid var(--border-ui);
@@ -146,7 +146,7 @@
 /* ── Dropdown de idiomas ── */
 .language-dropdown {
   position: absolute;
-  top: calc(100% + 8px);
+  top: 50px;
   right: 0;
   background: var(--bg-navbar-modal);
   border: 1px solid var(--border-ui);

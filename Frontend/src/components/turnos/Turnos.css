@@ -451,8 +451,8 @@
   box-shadow: var(--t-shadow-md);
 }
 
-.turn-card-figma.status-pending   { border-color: #ecb10f; }
-.turn-card-figma.status-cancelled { border-color: var(--t-error); opacity: 0.85; }
+.turn-card-figma.status-pending   { border-color: #e4a802; }
+.turn-card-figma.status-cancelled { border-color: red}
 
 /* Badge de estado */
 .turn-card-status {
@@ -465,13 +465,13 @@
   font-weight: 700;
 }
 
-.badge-pending   { background: var(--t-badge-pending-bg); color: var(--t-badge-pending-color); }
-.badge-completed { background: rgba(102,176,157,0.25); color: var(--t-btn-text); }
-.badge-cancelled { background: rgba(192,57,43,0.12); color: var(--t-error); }
+.badge-pending   { background: #f8d302; color: black; }
+.badge-completed { background: rgb(2, 196, 11); color: var(--t-btn-text); }
+.badge-cancelled { background: rgba(252, 25, 0, 0.747); color: black; }
 
-.dark-theme .badge-pending   { background: var(--badge-pending-bg-dark); color: var(--badge-pending-color-dark); }
-.dark-theme .badge-completed { background: rgba(102,176,157,0.15); color: var(--t-text-accent); }
-.dark-theme .badge-cancelled { background: var(--badge-cancelled-bg-dark); color: var(--badge-cancelled-color-dark); }
+.dark-theme .badge-pending   { background: #f8d302; color: black; }
+.dark-theme .badge-completed { background: rgb(2, 196, 11); color: var(--t-btn-text); }
+.dark-theme .badge-cancelled { background: rgba(252, 25, 0, 0.747); color: black;  }
 
 .turn-card-title {
   font-weight: 700;
