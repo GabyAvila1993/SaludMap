@@ -13,7 +13,7 @@
 
 /* ── Variables locales — todas apuntan al index.css ── */
 :root {
-  --ins-bg-panel:      var(--modal-bg);
+  --ins-bg-panel:      var(--color-background);
   --ins-bg-section:    var(--placeholder-fill);
   --ins-bg-card:       var(--modal-bg);
   --ins-bg-card-hover: var(--border-ui-translucent);
@@ -35,6 +35,7 @@
 /* En dark-theme las variables del index ya se actualizan automáticamente.
    Solo ajustes puntuales que no se pueden inferir. */
 .dark-theme {
+  --ins-bg-panel:      var(--color-background);
   --ins-bg-card-hover: rgba(102,176,157,0.1);
 }
 

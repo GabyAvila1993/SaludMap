@@ -15,7 +15,7 @@
 
 /* ── Variables locales — todas apuntan al index.css ── */
 :root {
-  --t-bg-page:          var(--bg-main);
+  --t-bg-page:          var(--color-background);
   --t-bg-card:          var(--modal-bg);
   --t-bg-section:       var(--placeholder-fill);
   --t-border:           var(--chat-border);
@@ -39,6 +39,7 @@
 }
 
 .dark-theme {
+  --t-bg-page:        var(--color-background);
   --t-bg-card:       var(--modal-bg);
   --t-bg-section:    var(--placeholder-fill);
   --t-button-surface: rgba(0,0,0,0.2);
