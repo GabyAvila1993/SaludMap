@@ -6,7 +6,8 @@ import Turnos from './components/turnos/Turnos.jsx';
 import InsuranceSection from './components/CardsSegure/InsuranceSection.jsx';
 import LanguageSelector from './components/LanguageSelector.jsx';
 import ModalAuth from './components/Auth/ModalAuth.jsx';
-import ChatBot from './components/ChatBot/ChatBot.jsx';
+// el widget del asistente se encuentre en un único archivo
+import { ChatbotWidget } from "./components/ChatbotWidget.jsx";
 import { useAuth } from './components/Auth/AuthContext';
 import locationService from './services/locationService.js';
 import { cleanOldTiles } from './services/db.js';
@@ -97,7 +98,7 @@ function App() {
 
   return (
     <div className="app">
-      <ChatBot />
+      <ChatbotWidget />
       <header className="site-header">
         <nav className="app-nav">
 

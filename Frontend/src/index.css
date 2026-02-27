@@ -13,7 +13,6 @@
   --resenia-item-texto        #000000   Texto en tarjeta de reseña
   --resenia-comentario-bg     #ffffff   Fondo del bloque de comentario
   --resenia-comentario-texto  #000000   Texto del bloque de comentario
-
   MODO OSCURO
   --color-titulo              #66b09d   Títulos / texto verde oscuro
   --color-boton-relleno       #9EE2CF   Fondo de botones primarios
@@ -44,7 +43,7 @@
   --resenia-comentario-texto:  #000000;
 
   /* === FONDO Y TEXTOS GENERALES === */
-  --bg-main:               #f4faf8;
+  --bg-main:               #cdebe1;
   --modal-bg:              #ffffff;
   --modal-text:            #000000;
   --text-main:             #000000;
@@ -226,36 +225,25 @@ a:hover {
 html, body, #root {
   margin: 0;
   padding: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  min-height: 100vh;
   overflow-x: hidden;
 }
 
 body {
   margin: 0;
   padding: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow-x: hidden;
   min-width: 320px;
-  background:
-    radial-gradient(100% 100% at 50% 50%,
-      #b5e2e1 0%,
-      #66aaaa 35%,
-      #2b8b8c 65%,
-      #1f6668 85%,
-      #dfecec 100%
-    );
+  /* ── Fondo controlado por la variable del tema ── */
+  background: var(--bg-main);
   background-attachment: fixed;
-  background-size: cover;
-  background-repeat: no-repeat;
-  position: relative;
+  color: var(--text-main);
+  transition: background 0.3s ease;
 }
 
 h1 {
   font-size: clamp(1.8rem, 5vw, 3.2rem);
   line-height: 1.1;
-  color: #fff;
   text-align: center;
   padding: 0 1rem;
 }
@@ -267,15 +255,12 @@ button {
   font-size: clamp(0.875rem, 2vw, 1rem);
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
   min-width: 44px;
   min-height: 44px;
 }
-button:hover {
-  border-color: #646cff;
-}
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -283,17 +268,9 @@ button:focus-visible {
 
 /* ── MEDIA QUERIES ──────────────────────────────── */
 @media (max-width: 768px) {
-  body {
-    padding: 0.5rem;
-  }
   h1 {
     font-size: clamp(1.5rem, 4vw, 2rem);
     padding: 0 0.5rem;
-  }
-  button {
-    padding: 0.5em 1em;
-    width: 100%;
-    max-width: 300px;
   }
 }
 
@@ -301,35 +278,18 @@ button:focus-visible {
   :root {
     font-size: 14px;
   }
-  body {
-    padding: 0.25rem;
-  }
   h1 {
     font-size: clamp(1.2rem, 3.5vw, 1.8rem);
     padding: 0 0.25rem;
   }
   button {
-    padding: 0.7em 1em;
     font-size: 0.9rem;
-  }
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    color: #f9f9f9;
   }
 }
 
 @media (max-width: 768px) and (orientation: landscape) {
   body {
     min-height: 100vh;
-    padding: 0.5rem;
   }
   h1 {
     font-size: clamp(1.2rem, 3vw, 1.8rem);

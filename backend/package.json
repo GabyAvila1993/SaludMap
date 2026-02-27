@@ -1,8 +1,8 @@
 {
-  "name": "backend",
+  "name": "saludmap-backend",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Backend unificado SaludMap con Chatbot Gemini + MCP",
+  "author": "Gabriel",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -24,6 +24,8 @@
     "prisma:studio": "prisma studio"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.3.0",
+    "@modelcontextprotocol/sdk": "^1.20.2",
     "@nestjs/common": "^11.1.6",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
@@ -39,6 +41,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "cors": "^2.8.6",
+    "dotenv": "^16.4.5",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^8.23.0",
     "passport": "^0.7.0",
@@ -46,7 +49,8 @@
     "passport-local": "^1.0.0",
     "react-chartjs-2": "^5.3.1",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
@@ -82,19 +86,13 @@
     "typescript-eslint": "^8.20.0"
   },
   "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
+    "moduleFileExtensions": ["js", "json", "ts"],
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
+    "collectCoverageFrom": ["**/*.(t|j)s"],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   }

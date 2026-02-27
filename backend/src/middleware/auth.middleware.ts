@@ -17,12 +17,12 @@ export class AuthMiddleware implements NestMiddleware {
 
     try {
       // AÑADE ESTOS LOGS TEMPORALES
-      console.log('Token recibido:', token);
-      console.log('JWT_SECRET configurado:', process.env.JWT_SECRET);
+      // console.log('Token recibido:', token);
+      // console.log('JWT_SECRET configurado:', process.env.JWT_SECRET);
       
       const decoded = this.jwtService.verify(token);
       
-      console.log('Token decodificado correctamente:', decoded);
+      // console.log('Token decodificado correctamente:', decoded);
       
       (req as any).user = {
         userId: decoded.sub,

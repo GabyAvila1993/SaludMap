@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 export class TurnosService {
   async createTurno(data: CrearTurnoDto) {
     try {
-      console.log('[TurnosService] Creando turno con datos:', data);
+      // console.log('[TurnosService] Creando turno con datos:', data);
       
       // Validaciones
       if (!data.usuarioId) {
@@ -53,7 +53,7 @@ export class TurnosService {
         }
       });
 
-      console.log('[TurnosService] Turno creado exitosamente:', turno);
+      // console.log('[TurnosService] Turno creado exitosamente:', turno);
       return turno;
       
     } catch (error) {
@@ -194,7 +194,7 @@ export class TurnosService {
           where: { id: { in: toUpdateIds }, estado: 'pendiente' },
           data: { estado: 'completado' }
         });
-        console.log(`[TurnosService] markExpiredTurnosCron: marcados ${res.count} turnos como completado`);
+        // console.log(`[TurnosService] markExpiredTurnosCron: marcados ${res.count} turnos como completado`);
       }
     } catch (err) {
       console.error('[TurnosService] markExpiredTurnosCron error', err);

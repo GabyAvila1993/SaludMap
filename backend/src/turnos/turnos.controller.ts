@@ -13,7 +13,7 @@ export class TurnosController {
     fecha: string;
     hora: string;
   }) {
-    console.log('[TurnosController] Recibiendo solicitud:', data);
+    // console.log('[TurnosController] Recibiendo solicitud:', data);
     
     // Validaciones
     if (!data.usuarioId) {
@@ -38,7 +38,7 @@ export class TurnosController {
         fecha: new Date(data.fecha)
       });
 
-      console.log('[TurnosController] Turno creado exitosamente');
+      // console.log('[TurnosController] Turno creado exitosamente');
       return turno;
     } catch (error) {
       console.error('[TurnosController] Error:', error.message);
@@ -51,7 +51,7 @@ export class TurnosController {
     @Query('user') userEmail?: string,
     @Query('includeCancelled') includeCancelled?: string,
   ) {
-    console.log('[TurnosController] Listando turnos para:', userEmail || 'todos', 'includeCancelled=', includeCancelled);
+    // console.log('[TurnosController] Listando turnos para:', userEmail || 'todos', 'includeCancelled=', includeCancelled);
     const includeCancelledFlag = includeCancelled === 'true' || includeCancelled === '1';
     return this.turnosService.listTurnos(userEmail, includeCancelledFlag);
   }
@@ -65,7 +65,7 @@ export class TurnosController {
     @Param('id', ParseIntPipe) id: number,
     @Body() data: ActualizarTurnoDto,
   ) {
-    console.log('[TurnosController] Update turno:', id, data);
+    // console.log('[TurnosController] Update turno:', id, data);
     return this.turnosService.updateTurno(id, data);
   }
 }
