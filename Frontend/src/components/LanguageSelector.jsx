@@ -7,7 +7,7 @@ import IconGB from '../assets/Icon_reinoUnido.png';
 import IconTema from '../assets/Icon_tema.png';
 
 const LanguageSelector = () => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [themeOpen, setThemeOpen] = useState(false);
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'claro');
@@ -47,9 +47,9 @@ const LanguageSelector = () => {
         <button
           className={`language-button nav-button theme-button ${theme === 'claro' ? 'active' : ''}`}
           onClick={() => setThemeOpen(!themeOpen)}
-          aria-label="Seleccionar tema"
+          aria-label="Seleccionar tema" 
         >
-          <img src={IconTema} alt="tema" className="theme-icon" />
+          <img src={IconTema} alt="tema" className="theme-icon" /><h4>{t('common.theme')}</h4>
         </button>
 
         {themeOpen && (

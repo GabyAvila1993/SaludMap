@@ -119,12 +119,12 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
+  gap: 16px; /* más separación */
+  padding: 8px 14px;
   border-radius: 999px;
   background: transparent;
   position: absolute;
-  top: calc(var(--navbar-height) + 12px);
+  top: calc(var(--navbar-height) + 24px); /* mayor separación visual del navbar */
   left: 50%;
   transform: translateX(-50%);
   z-index: 500;

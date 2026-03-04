@@ -16,6 +16,7 @@ import './App.css';
 import './styles/modal-light-overrides.css';
 import LogoImg from './assets/Logo_saludmap_sinfondo.png';
 import IconPerson from './assets/Icono_persona.png';
+import { startTutorial } from './utils/tutorial.js';
 
 function App() {
   const { t } = useTranslation();
@@ -69,6 +70,7 @@ function App() {
       window.removeEventListener('saludmap:change-tab', handleChangeTab);
     };
   }, []);
+
 
   if (isLoading) {
     return (
@@ -133,7 +135,15 @@ function App() {
               >
                 Seguros
               </button>
+              <button
+                onClick={startTutorial}
+                className="nav-button tutorial-btn"
+                title="Iniciar tutorial"
+              >
+                Tutorial
+              </button>
             </div>
+            
 
             {/* Hamburger: visible solo en ≤768px */}
             <button
@@ -154,21 +164,33 @@ function App() {
                 <button
                   onClick={() => { setActiveTab('mapa'); setShowMobileMenu(false); }}
                   className={`nav-button ${activeTab === 'mapa' ? 'active' : ''}`}
+                  data-tour="nav-mapa"
                 >
                   Mapa
                 </button>
                 <button
                   onClick={() => { setActiveTab('turnos'); setShowMobileMenu(false); }}
                   className={`nav-button ${activeTab === 'turnos' ? 'active' : ''}`}
+                  data-tour="nav-turnos"
                 >
                   Turnos
                 </button>
                 <button
                   onClick={() => { setActiveTab('seguros'); setShowMobileMenu(false); }}
                   className={`nav-button ${activeTab === 'seguros' ? 'active' : ''}`}
+                  data-tour="nav-seguros"
                 >
                   Seguros
                 </button>
+                <button
+                  onClick={() => { startTutorial(); setShowMobileMenu(false); }}
+                  className="nav-button tutorial-btn"
+                  title="Iniciar tutorial"
+                  data-tour="nav-tutorial"
+                >
+                 Tutorial
+                </button>
+                
               </div>
             )}
           </div>
@@ -233,5 +255,4 @@ function App() {
     </div>
   );
 }
-
 export default App;

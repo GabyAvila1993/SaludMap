@@ -4,7 +4,7 @@ import './Turnos.css';
 
 import locationService from '../../services/locationService.js';
 import turnosService, { saveAppointment, guardarTurno, fetchMisTurnos, cancelAppointment } from '../../services/turnosService.js';
-import { initializeEmailJS } from '../../services/emailService.js';
+import { initializeEmailJS, sendAppointmentEmail } from '../../services/emailService.js';
 import { useAuth } from '../Auth/AuthContext.jsx';
 import ModalAuth from '../Auth/ModalAuth.jsx';
 
@@ -13,6 +13,7 @@ import { MisTurnosList } from './MisTurnosList2.jsx';
 import { TurnoModal } from './TurnoModal2.jsx';
 import CostComparator from './CostComparator.jsx';
 import establecimientosService from '../../services/establecimientosService';
+
 
 const getTypeFromPlace = (place) => place.type || 'default';
 
@@ -156,13 +157,13 @@ export default function Turnos() {
 
 	// sessionStorage al montar
 	useEffect(() => {
-		const storedEst   = sessionStorage.getItem('selectedEstablecimiento');
+		const storedEst = sessionStorage.getItem('selectedEstablecimiento');
 		const storedPlace = sessionStorage.getItem('selectedPlace');
 
 		if (storedEst && storedPlace) {
 			try {
 				const establecimiento = JSON.parse(storedEst);
-				const place           = JSON.parse(storedPlace);
+				const place = JSON.parse(storedPlace);
 
 				sessionStorage.removeItem('selectedEstablecimiento');
 				sessionStorage.removeItem('selectedPlace');
@@ -195,7 +196,7 @@ export default function Turnos() {
 				(turnos || []).map(t => ({
 					id: t.id,
 					professionalName: t.establecimiento?.nombre || t.professionalName || 'Profesional',
-					professionalType: t.establecimiento?.tipo   || t.professionalType  || 'default',
+					professionalType: t.establecimiento?.tipo || t.professionalType || 'default',
 					// Combinar fecha+hora en la zona local para evitar desfases UTC
 					datetime: (() => {
 						if (t.fecha) {
@@ -220,10 +221,10 @@ export default function Turnos() {
 						}
 						return t.datetime || '';
 					})(),
-					notes:     t.observaciones || t.notes || '',
-					email:     t.usuario?.mail || t.email || emailUsuario,
+					notes: t.observaciones || t.notes || '',
+					email: t.usuario?.mail || t.email || emailUsuario,
 					establecimientoId: t.establecimientoId || t.establecimiento?.id,
-					estado:    t.estado || 'pendiente'
+					estado: t.estado || 'pendiente'
 				}))
 			));
 		} catch {
@@ -275,25 +276,42 @@ export default function Turnos() {
 			}
 
 			const turnoGuardado = await guardarTurno({
-				usuarioId:          user.id,
-				establecimientoId:  datos.establecimientoId,
-				fecha:              datos.fecha,
-				hora:               datos.hora
+				usuarioId: user.id,
+				establecimientoId: datos.establecimientoId,
+				fecha: datos.fecha,
+				hora: datos.hora
 			});
+
+			// ✅ AGREGAR ESTO — Enviar email de confirmación
+			try {
+				await sendAppointmentEmail(
+					selected,
+					`${datos.fecha.split('T')[0]}T${datos.hora}`,  // datetime
+					datos.observaciones || '',                        // notes
+					user.mail,                                        // correo del usuario
+					`${user.nombre} ${user.apellido}`,               // userName
+					selectedType,                                     // selectedType
+					prettyType                                        // prettyTypeFunc
+				);
+				console.log('[Turnos] ✅ Email enviado correctamente');
+			} catch (emailError) {
+				// El email falló pero el turno ya se guardó — no bloquear al usuario
+				console.error('[Turnos] ⚠️ Turno guardado pero error al enviar email:', emailError);
+			}
 
 			// Agregar a lista local
 			try {
-				const fechaStr  = turnoGuardado?.fecha ? String(turnoGuardado.fecha) : datos.fecha;
-				const horaStr   = turnoGuardado?.hora ?? datos.hora;
+				const fechaStr = turnoGuardado?.fecha ? String(turnoGuardado.fecha) : datos.fecha;
+				const horaStr = turnoGuardado?.hora ?? datos.hora;
 				const nuevoTurno = {
-					id:                turnoGuardado?.id || Date.now(),
-					professionalName:  datos.professionalName || selected?.name || 'Profesional',
-					professionalType:  datos.professionalType || selectedType,
-					datetime:          `${fechaStr.split('T')[0]}T${horaStr}`,
-					notes:             datos.observaciones || '',
-					email:             datos.correo || user.mail,
+					id: turnoGuardado?.id || Date.now(),
+					professionalName: datos.professionalName || selected?.name || 'Profesional',
+					professionalType: datos.professionalType || selectedType,
+					datetime: `${fechaStr.split('T')[0]}T${horaStr}`,
+					notes: datos.observaciones || '',
+					email: datos.correo || user.mail,
 					establecimientoId: datos.establecimientoId,
-					estado:            turnoGuardado?.estado || 'pendiente'
+					estado: turnoGuardado?.estado || 'pendiente'
 				};
 				setMisTurnos(prev => sortTurnosDesc([...prev, nuevoTurno]));
 			} catch { /* error al agregar localmente, no crítico */ }
@@ -418,7 +436,7 @@ export default function Turnos() {
 					notes={notes}
 					setNotes={setNotes}
 					correo={user.mail}
-					setCorreo={() => {}}
+					setCorreo={() => { }}
 					loading={loading}
 					error={error}
 					onClose={() => setModalOpen(false)}

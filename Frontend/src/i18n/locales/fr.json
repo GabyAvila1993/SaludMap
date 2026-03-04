@@ -4,6 +4,7 @@
     "allowLocation": "Veuillez autoriser l'accès à votre position",
     "appName": "SaludMap",
     "appDescription": "Trouvez des services de santé à proximité",
+    "theme": "Thème",
     "processing": "Traitement...",
     "success": "Succès",
     "error": "Erreur",

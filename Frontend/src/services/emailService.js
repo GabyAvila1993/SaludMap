@@ -1,33 +1,44 @@
 import emailjs from '@emailjs/browser';
 
 export const initializeEmailJS = () => {
-    // console.log('[DEBUG] Inicializando EmailJS...');
-    emailjs.init('jBIfJ7kR2vFO0xd0e'); // tu public key
-    // console.log('[DEBUG] EmailJS inicializado con public key');
+    console.log('[DEBUG] Inicializando EmailJS...');
+    emailjs.init('jBIfJ7kR2vFO0xd0e');
+    console.log('[DEBUG] EmailJS inicializado con public key');
 };
 
-export const sendAppointmentEmail = async (selected, datetime, notes, correo, selectedType, prettyTypeFunc) => {
+export const sendAppointmentEmail = async (
+    selected,
+    datetime,
+    notes,
+    correo,
+    userName,
+    selectedType,
+    prettyTypeFunc
+) => {
     const payload = {
         professionalId: selected.id ?? selected.osm_id ?? null,
         professionalName: selected.tags?.name ?? selected.properties?.name ?? 'Profesional',
         datetime,
         notes,
-        user: correo,
+        userEmail: correo,
+        userName,
         professionalType: selectedType,
     };
 
-    // console.log('[DEBUG] Payload para backend:', payload);
+    console.log('[DEBUG] Payload para backend:', payload);
 
-    // Preparar datos para EmailJS
+    // Preparar datos para EmailJS (coincide con los placeholders del template)
     const datosCorreo = {
-        to_email: correo,
-        correo: correo,
-        user_email: correo,
-        email: correo,
-        to: correo,
-        profesional: payload.professionalName,
-        direccion: selected.tags?.addr_full ?? selected.tags?.address ?? 'Dirección no disponible',
-        tipo: prettyTypeFunc(payload.professionalType),
+        // {{name}} — nombre del usuario que pide el turno
+        name: payload.userName,
+
+        // {{correo}} — correo del usuario (aparece en el cuerpo y en Reply-To)
+        correo,
+
+        // {{email}} — destinatario de la notificación (To Email en el template)
+        email: 'saludmap4@gmail.com',
+
+        // {{fechaHora}} — fecha y hora seleccionadas por el usuario
         fechaHora: new Date(datetime).toLocaleString('es-AR', {
             year: 'numeric',
             month: 'long',
@@ -35,11 +46,21 @@ export const sendAppointmentEmail = async (selected, datetime, notes, correo, se
             hour: '2-digit',
             minute: '2-digit'
         }),
-        observaciones: notes || 'Sin observaciones',
-        message: `Turno solicitado para ${payload.professionalName} el ${new Date(datetime).toLocaleString()}`
+
+        // {{tipo}} — nombre del lugar del turno
+        tipo: payload.professionalName,
+
+        // {{observaciones}} — observaciones del usuario o mensaje por defecto
+        observaciones: notes || 'NO HAY OBSERVACIONES',
+
+        // {{direccion}} — tipo de establecimiento (hospital, clínica, etc.)
+        direccion: prettyTypeFunc(payload.professionalType),
+
+        // reply_to — para que al responder el mail llegue al usuario
+        reply_to: correo,
     };
 
-    
+    console.log('[DEBUG] Datos para EmailJS:', datosCorreo);
 
     const emailResponse = await emailjs.send(
         'service_fr86hqi',
@@ -48,9 +69,9 @@ export const sendAppointmentEmail = async (selected, datetime, notes, correo, se
         'jBIfJ7kR2vFO0xd0e'
     );
 
-    // console.log('[DEBUG] ✅ Respuesta EmailJS:', emailResponse);
-    // console.log('[DEBUG] Status:', emailResponse.status);
-    // console.log('[DEBUG] Text:', emailResponse.text);
+    console.log('[DEBUG] ✅ Respuesta EmailJS:', emailResponse);
+    console.log('[DEBUG] Status:', emailResponse.status);
+    console.log('[DEBUG] Text:', emailResponse.text);
 
     return { emailResponse, payload };
 };

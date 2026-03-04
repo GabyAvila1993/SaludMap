@@ -1,4 +1,3 @@
-// INICIO CAMBIO - Archivo: src/components/Map.jsx - Integración con servicios
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useTranslation } from 'react-i18next';
@@ -430,7 +429,7 @@ export default function MapComponent() {
 
                 {/* ── DESKTOP: pill de controles (visible solo en > 1024px) ── */}
                 <div className="map-controls">
-                    <button onClick={handleCalibrate} disabled={isCalibrating}>
+                    <button onClick={handleCalibrate} disabled={isCalibrating} data-tour="update-location">
                         {isCalibrating ? t('map.updating') : t('map.updateLocation')}
                     </button>
                     {currentLocation?.source === 'manual' && (
@@ -438,16 +437,16 @@ export default function MapComponent() {
                             Volver a GPS
                         </button>
                     )}
-                    <button onClick={handleDownloadOffline}>
+                    <button onClick={handleDownloadOffline} data-tour="offline-download">
                         {t('map.downloadOfflineArea')}
                     </button>
-                    <button onClick={() => setShowSaveLocationModal(true)} className="btn-save-location">
+                    <button onClick={() => setShowSaveLocationModal(true)} className="btn-save-location" data-tour="save-location">
                         {t('map.saveLocation')}
                     </button>
-                    <button onClick={() => setShowSavedLocationsList(true)} className="btn-view-locations">
+                    <button onClick={() => setShowSavedLocationsList(true)} className="btn-view-locations" data-tour="view-locations">
                         {t('map.viewLocations')}
                     </button>
-                    <button onClick={() => setShowFiltersModal(true)} className="btn-show-filters">
+                    <button onClick={() => setShowFiltersModal(true)} className="btn-show-filters" data-tour="filters">
                         {t('map.filters.title') || 'Filtros'}
                     </button>
                     {downloadProgress > 0 && downloadProgress < 100 && (
@@ -478,6 +477,7 @@ export default function MapComponent() {
                                 className="mobile-map-menu-btn"
                                 onClick={handleCalibrate}
                                 disabled={isCalibrating}
+                                data-tour="update-location"
                             >
                                 <span className="mobile-map-menu-btn-icon">📍</span>
                                 {isCalibrating ? t('map.updating') : t('map.updateLocation')}
@@ -495,6 +495,7 @@ export default function MapComponent() {
                             <button
                                 className="mobile-map-menu-btn"
                                 onClick={handleDownloadOffline}
+                                data-tour="offline-download"
                             >
                                 <span className="mobile-map-menu-btn-icon">⬇️</span>
                                 {t('map.downloadOfflineArea')}
@@ -502,6 +503,7 @@ export default function MapComponent() {
                             <button
                                 className="mobile-map-menu-btn"
                                 onClick={() => { setShowSaveLocationModal(true); setShowMobileMenu(false); }}
+                                data-tour="save-location"
                             >
                                 <span className="mobile-map-menu-btn-icon">💾</span>
                                 {t('map.saveLocation')}
@@ -509,6 +511,7 @@ export default function MapComponent() {
                             <button
                                 className="mobile-map-menu-btn"
                                 onClick={() => { setShowSavedLocationsList(true); setShowMobileMenu(false); }}
+                                data-tour="view-locations"
                             >
                                 <span className="mobile-map-menu-btn-icon">📋</span>
                                 {t('map.viewLocations')}
@@ -516,6 +519,7 @@ export default function MapComponent() {
                             <button
                                 className="mobile-map-menu-btn mobile-map-menu-btn--filters"
                                 onClick={() => { setShowFiltersModal(true); setShowMobileMenu(false); }}
+                                data-tour="filters"
                             >
                                 <span className="mobile-map-menu-btn-icon">🔍</span>
                                 {t('map.filters.title') || 'Filtros'}
@@ -687,4 +691,3 @@ export default function MapComponent() {
         </>
     );
 }
-// FIN CAMBIO - Archivo: src/components/Map.jsx

@@ -93,6 +93,7 @@ body {
   justify-content: center;
   flex: 1 1 auto;
   position: relative;
+  gap: 12px; /* espacio entre grupos dentro del centro */
 }
 
 .nav-right {
@@ -130,8 +131,9 @@ body {
 .nav-buttons {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 16px; /* aumenta separación entre secciones */
 }
+
 
 .nav-button {
   display: inline-flex;
@@ -170,6 +172,9 @@ body {
   cursor: not-allowed;
   transform: none;
 }
+
+
+
 
 /* ── Hamburger ── */
 .hamburger {
@@ -330,6 +335,10 @@ body {
   position: relative;
 }
 
+.tour-button-text {
+  display: inline;
+}
+
 .user-dropdown {
   display: none;
   position: absolute;
@@ -343,6 +352,7 @@ body {
   min-width: 170px;
   z-index: 3200;
 }
+
 
 .user-menu.open .user-dropdown {
   display: block;
@@ -588,6 +598,10 @@ button:disabled {
   }
 
   .nav-username {
+    display: none;
+  }
+
+  .tour-button-text {
     display: none;
   }
 
