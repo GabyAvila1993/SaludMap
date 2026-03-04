@@ -23,7 +23,7 @@ const config: runtime.GetPrismaClientConfig = {
       "value": "prisma-client"
     },
     "output": {
-      "value": "C:\\Users\\tomas\\OneDrive\\Escritorio\\SaludMap\\backend\\generated",
+      "value": "C:\\Users\\Usuario\\Desktop\\SaludMap\\backend\\generated",
       "fromEnvVar": null
     },
     "config": {
@@ -37,7 +37,7 @@ const config: runtime.GetPrismaClientConfig = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\tomas\\OneDrive\\Escritorio\\SaludMap\\backend\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\Usuario\\Desktop\\SaludMap\\backend\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativePath": "../prisma",

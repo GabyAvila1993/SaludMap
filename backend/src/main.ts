@@ -21,7 +21,7 @@ async function bootstrap() {
     const port = process.env.PORT || 3000;
 
     try {
-        await app.listen(port);
+        await app.listen(port,'0.0.0.0');
         //console.log(`🚀 Servidor de SaludMap + Chatbot corriendo en: http://localhost:${port}/api`);
     } catch (error: any) {
         if (error.code === 'EADDRINUSE') {
