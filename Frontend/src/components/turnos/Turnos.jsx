@@ -1,26 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './Turnos.css';
-
 import locationService from '../../services/locationService.js';
 import turnosService, { saveAppointment, guardarTurno, fetchMisTurnos, cancelAppointment } from '../../services/turnosService.js';
 import { initializeEmailJS, sendAppointmentEmail } from '../../services/emailService.js';
 import { useAuth } from '../Auth/AuthContext.jsx';
 import ModalAuth from '../Auth/ModalAuth.jsx';
-
 import { ProfesionalesList } from './ProfesionalesList2.jsx';
 import { MisTurnosList } from './MisTurnosList2.jsx';
 import { TurnoModal } from './TurnoModal2.jsx';
 import CostComparator from './CostComparator.jsx';
 import establecimientosService from '../../services/establecimientosService';
 
-
 const getTypeFromPlace = (place) => place.type || 'default';
 
 export default function Turnos() {
 	const { t } = useTranslation();
 	const { user } = useAuth();
-
 	const [showAuthModal, setShowAuthModal] = useState(false);
 	const [showRegister, setShowRegister] = useState(false);
 
@@ -34,13 +30,11 @@ export default function Turnos() {
 	const [selectedType, setSelectedType] = useState('default');
 	const [loading, setLoading] = useState(false);
 	const [error, _setError] = useState('');
-
 	const [lugares, setLugares] = useState([]);
 	const [loadingPlaces, setLoadingPlaces] = useState(false);
 	const [errorPlaces, setErrorPlaces] = useState('');
 	const [misTurnos, setMisTurnos] = useState([]);
 	const [cancellingId, setCancellingId] = useState(null);
-
 	const [preSelectedEstablecimiento, setPreSelectedEstablecimiento] = useState(null);
 	const [preSelectedPlace, setPreSelectedPlace] = useState(null);
 	const [showCostComparator, setShowCostComparator] = useState(false);
@@ -94,7 +88,6 @@ export default function Turnos() {
 	// Suscripción a profesionales
 	useEffect(() => {
 		initializeEmailJS();
-
 		const unsubscribe = turnosService.subscribe(({ lugares, loading, error }) => {
 			setLugares((lugares || []).map(lugar => {
 				const tags = lugar.tags || lugar.properties || {};
@@ -107,7 +100,6 @@ export default function Turnos() {
 			setLoadingPlaces(loading || false);
 			setErrorPlaces(error || '');
 		});
-
 		turnosService.initialize();
 		return unsubscribe;
 	}, []);
@@ -128,27 +120,20 @@ export default function Turnos() {
 	useEffect(() => {
 		const handleChangeTab = (e) => {
 			if (e.detail?.tab !== 'turnos') return;
-
 			const { establecimiento, place } = e.detail;
-
 			if (!establecimiento?.id || !place) {
 				alert('Error: No se recibió información completa del establecimiento.');
 				return;
 			}
-
 			setPreSelectedEstablecimiento(establecimiento);
 			setPreSelectedPlace(place);
-
 			setTimeout(() => openModal(place, establecimiento), 100);
 		};
-
 		const handleRefreshTurnos = () => {
 			if (user?.mail) cargarMisTurnos(user.mail);
 		};
-
 		window.addEventListener('saludmap:change-tab', handleChangeTab);
 		window.addEventListener('saludmap:refresh-turnos', handleRefreshTurnos);
-
 		return () => {
 			window.removeEventListener('saludmap:change-tab', handleChangeTab);
 			window.removeEventListener('saludmap:refresh-turnos', handleRefreshTurnos);
@@ -159,17 +144,13 @@ export default function Turnos() {
 	useEffect(() => {
 		const storedEst = sessionStorage.getItem('selectedEstablecimiento');
 		const storedPlace = sessionStorage.getItem('selectedPlace');
-
 		if (storedEst && storedPlace) {
 			try {
 				const establecimiento = JSON.parse(storedEst);
 				const place = JSON.parse(storedPlace);
-
 				sessionStorage.removeItem('selectedEstablecimiento');
 				sessionStorage.removeItem('selectedPlace');
-
 				if (!establecimiento.id) return;
-
 				setPreSelectedEstablecimiento(establecimiento);
 				setPreSelectedPlace(place);
 				setTimeout(() => openModal(place, establecimiento), 100);
@@ -197,7 +178,7 @@ export default function Turnos() {
 					id: t.id,
 					professionalName: t.establecimiento?.nombre || t.professionalName || 'Profesional',
 					professionalType: t.establecimiento?.tipo || t.professionalType || 'default',
-					// Combinar fecha+hora en la zona local para evitar desfases UTC
+					especialidad: t.especialidad?.nombre || '',  // NUEVO
 					datetime: (() => {
 						if (t.fecha) {
 							try {
@@ -209,7 +190,6 @@ export default function Turnos() {
 									mm = isNaN(parts[1]) ? 0 : parts[1];
 									ss = isNaN(parts[2]) ? 0 : (parts[2] || 0);
 								}
-								// usar componentes UTC de `fecha` para reconstruir la fecha calendario correcta
 								const y = base.getUTCFullYear();
 								const m = base.getUTCMonth();
 								const d = base.getUTCDate();
@@ -250,11 +230,10 @@ export default function Turnos() {
 
 	const handleSolicitarTurno = async (datos) => {
 		try {
-			// Intentar completar establecimientoId si falta
+			// Completar establecimientoId si falta
 			if (!datos.establecimientoId && preSelectedEstablecimiento?.id) {
 				datos.establecimientoId = preSelectedEstablecimiento.id;
 			}
-
 			if (!datos.establecimientoId && selected) {
 				try {
 					const placeForCreate = {
@@ -267,7 +246,7 @@ export default function Turnos() {
 						datos.establecimientoId = estResult.id;
 						setPreSelectedEstablecimiento(estResult);
 					}
-				} catch { /* falla silenciosa, se manejará abajo */ }
+				} catch { /* falla silenciosa */ }
 			}
 
 			if (!datos.establecimientoId) {
@@ -275,27 +254,27 @@ export default function Turnos() {
 				return;
 			}
 
+			// MODIFICADO: ahora incluye especialidadId
 			const turnoGuardado = await guardarTurno({
 				usuarioId: user.id,
 				establecimientoId: datos.establecimientoId,
+				especialidadId: datos.especialidadId, // NUEVO
 				fecha: datos.fecha,
 				hora: datos.hora
 			});
 
-			// ✅ AGREGAR ESTO — Enviar email de confirmación
+			// Enviar email de confirmación
 			try {
 				await sendAppointmentEmail(
 					selected,
-					`${datos.fecha.split('T')[0]}T${datos.hora}`,  // datetime
-					datos.observaciones || '',                        // notes
-					user.mail,                                        // correo del usuario
-					`${user.nombre} ${user.apellido}`,               // userName
-					selectedType,                                     // selectedType
-					prettyType                                        // prettyTypeFunc
+					`${datos.fecha.split('T')[0]}T${datos.hora}`,
+					datos.observaciones || '',
+					user.mail,
+					`${user.nombre} ${user.apellido}`,
+					selectedType,
+					prettyType
 				);
-				console.log('[Turnos] ✅ Email enviado correctamente');
 			} catch (emailError) {
-				// El email falló pero el turno ya se guardó — no bloquear al usuario
 				console.error('[Turnos] ⚠️ Turno guardado pero error al enviar email:', emailError);
 			}
 
@@ -307,6 +286,7 @@ export default function Turnos() {
 					id: turnoGuardado?.id || Date.now(),
 					professionalName: datos.professionalName || selected?.name || 'Profesional',
 					professionalType: datos.professionalType || selectedType,
+					especialidad: datos.especialidadNombre || '', // NUEVO
 					datetime: `${fechaStr.split('T')[0]}T${horaStr}`,
 					notes: datos.observaciones || '',
 					email: datos.correo || user.mail,
@@ -320,7 +300,6 @@ export default function Turnos() {
 			setPreSelectedEstablecimiento(null);
 			setPreSelectedPlace(null);
 			alert('Turno solicitado exitosamente');
-
 		} catch (err) {
 			alert('Error al solicitar turno: ' + (err.message || 'Error desconocido'));
 		}
@@ -344,7 +323,6 @@ export default function Turnos() {
 						<span className="turnos-badge">{t('appointments.badge')}</span>
 						<h3>{t('appointments.requestAppointments')}</h3>
 					</header>
-
 					<div className="turnos-auth-required">
 						<div className="auth-required-card">
 							<span className="auth-lock-emoji">🔒</span>
@@ -360,7 +338,6 @@ export default function Turnos() {
 							</button>
 						</div>
 					</div>
-
 					<ModalAuth
 						open={showAuthModal}
 						onClose={() => setShowAuthModal(false)}
@@ -376,7 +353,6 @@ export default function Turnos() {
 	return (
 		<div className="turnos-section">
 			<div className="turnos-root">
-
 				<header className="turnos-header">
 					<span className="turnos-badge turnos-badge--dark">{t('appointments.badge')}</span>
 					<h3>{t('appointments.requestAppointments')}</h3>
@@ -387,9 +363,8 @@ export default function Turnos() {
 						<strong>{user.nombre} {user.apellido}</strong> · {user.mail}
 					</div>
 				</header>
-
 				<div className="turnos-body">
-					{/* Panel izquierdo — Profesionales o Establecimiento seleccionado */}
+					{/* Panel izquierdo */}
 					{!preSelectedEstablecimiento ? (
 						<ProfesionalesList
 							lugares={lugares}
@@ -418,7 +393,7 @@ export default function Turnos() {
 						</div>
 					)}
 
-					{/* Panel derecho — Mis Turnos (incluye .turnos-right internamente) */}
+					{/* Panel derecho — Mis Turnos */}
 					<MisTurnosList
 						misTurnos={misTurnos}
 						onCancelTurno={handleCancelarTurno}
@@ -447,7 +422,6 @@ export default function Turnos() {
 				{showCostComparator && (
 					<CostComparator places={lugares} onClose={() => setShowCostComparator(false)} />
 				)}
-
 			</div>
 		</div>
 	);

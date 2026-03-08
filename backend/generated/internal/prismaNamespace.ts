@@ -391,6 +391,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   Establecimiento: 'Establecimiento',
+  Especialidad: 'Especialidad',
+  EstablecimientoEspecialidad: 'EstablecimientoEspecialidad',
   Usuario: 'Usuario',
   Turno: 'Turno',
   Resenia: 'Resenia',
@@ -410,7 +412,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "establecimiento" | "usuario" | "turno" | "resenia" | "ubicacion"
+    modelProps: "establecimiento" | "especialidad" | "establecimientoEspecialidad" | "usuario" | "turno" | "resenia" | "ubicacion"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -477,6 +479,138 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.EstablecimientoCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.EstablecimientoCountAggregateOutputType> | number
+        }
+      }
+    }
+    Especialidad: {
+      payload: Prisma.$EspecialidadPayload<ExtArgs>
+      fields: Prisma.EspecialidadFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EspecialidadFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EspecialidadPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EspecialidadFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EspecialidadPayload>
+        }
+        findFirst: {
+          args: Prisma.EspecialidadFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EspecialidadPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EspecialidadFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EspecialidadPayload>
+        }
+        findMany: {
+          args: Prisma.EspecialidadFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EspecialidadPayload>[]
+        }
+        create: {
+          args: Prisma.EspecialidadCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EspecialidadPayload>
+        }
+        createMany: {
+          args: Prisma.EspecialidadCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.EspecialidadDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EspecialidadPayload>
+        }
+        update: {
+          args: Prisma.EspecialidadUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EspecialidadPayload>
+        }
+        deleteMany: {
+          args: Prisma.EspecialidadDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EspecialidadUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.EspecialidadUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EspecialidadPayload>
+        }
+        aggregate: {
+          args: Prisma.EspecialidadAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEspecialidad>
+        }
+        groupBy: {
+          args: Prisma.EspecialidadGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EspecialidadGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EspecialidadCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EspecialidadCountAggregateOutputType> | number
+        }
+      }
+    }
+    EstablecimientoEspecialidad: {
+      payload: Prisma.$EstablecimientoEspecialidadPayload<ExtArgs>
+      fields: Prisma.EstablecimientoEspecialidadFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EstablecimientoEspecialidadFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EstablecimientoEspecialidadPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EstablecimientoEspecialidadFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EstablecimientoEspecialidadPayload>
+        }
+        findFirst: {
+          args: Prisma.EstablecimientoEspecialidadFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EstablecimientoEspecialidadPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EstablecimientoEspecialidadFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EstablecimientoEspecialidadPayload>
+        }
+        findMany: {
+          args: Prisma.EstablecimientoEspecialidadFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EstablecimientoEspecialidadPayload>[]
+        }
+        create: {
+          args: Prisma.EstablecimientoEspecialidadCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EstablecimientoEspecialidadPayload>
+        }
+        createMany: {
+          args: Prisma.EstablecimientoEspecialidadCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.EstablecimientoEspecialidadDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EstablecimientoEspecialidadPayload>
+        }
+        update: {
+          args: Prisma.EstablecimientoEspecialidadUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EstablecimientoEspecialidadPayload>
+        }
+        deleteMany: {
+          args: Prisma.EstablecimientoEspecialidadDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EstablecimientoEspecialidadUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.EstablecimientoEspecialidadUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EstablecimientoEspecialidadPayload>
+        }
+        aggregate: {
+          args: Prisma.EstablecimientoEspecialidadAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEstablecimientoEspecialidad>
+        }
+        groupBy: {
+          args: Prisma.EstablecimientoEspecialidadGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EstablecimientoEspecialidadGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EstablecimientoEspecialidadCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EstablecimientoEspecialidadCountAggregateOutputType> | number
         }
       }
     }
@@ -800,6 +934,27 @@ export const EstablecimientoScalarFieldEnum = {
 export type EstablecimientoScalarFieldEnum = (typeof EstablecimientoScalarFieldEnum)[keyof typeof EstablecimientoScalarFieldEnum]
 
 
+export const EspecialidadScalarFieldEnum = {
+  id: 'id',
+  nombre: 'nombre',
+  descripcion: 'descripcion',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EspecialidadScalarFieldEnum = (typeof EspecialidadScalarFieldEnum)[keyof typeof EspecialidadScalarFieldEnum]
+
+
+export const EstablecimientoEspecialidadScalarFieldEnum = {
+  id: 'id',
+  establecimientoId: 'establecimientoId',
+  especialidadId: 'especialidadId',
+  horariosDisponibles: 'horariosDisponibles'
+} as const
+
+export type EstablecimientoEspecialidadScalarFieldEnum = (typeof EstablecimientoEspecialidadScalarFieldEnum)[keyof typeof EstablecimientoEspecialidadScalarFieldEnum]
+
+
 export const UsuarioScalarFieldEnum = {
   id: 'id',
   nombre: 'nombre',
@@ -817,6 +972,7 @@ export const TurnoScalarFieldEnum = {
   id: 'id',
   usuarioId: 'usuarioId',
   establecimientoId: 'establecimientoId',
+  especialidadId: 'especialidadId',
   fecha: 'fecha',
   hora: 'hora',
   estado: 'estado'
@@ -901,6 +1057,21 @@ export const EstablecimientoOrderByRelevanceFieldEnum = {
 } as const
 
 export type EstablecimientoOrderByRelevanceFieldEnum = (typeof EstablecimientoOrderByRelevanceFieldEnum)[keyof typeof EstablecimientoOrderByRelevanceFieldEnum]
+
+
+export const EspecialidadOrderByRelevanceFieldEnum = {
+  nombre: 'nombre',
+  descripcion: 'descripcion'
+} as const
+
+export type EspecialidadOrderByRelevanceFieldEnum = (typeof EspecialidadOrderByRelevanceFieldEnum)[keyof typeof EspecialidadOrderByRelevanceFieldEnum]
+
+
+export const EstablecimientoEspecialidadOrderByRelevanceFieldEnum = {
+  horariosDisponibles: 'horariosDisponibles'
+} as const
+
+export type EstablecimientoEspecialidadOrderByRelevanceFieldEnum = (typeof EstablecimientoEspecialidadOrderByRelevanceFieldEnum)[keyof typeof EstablecimientoEspecialidadOrderByRelevanceFieldEnum]
 
 
 export const UsuarioOrderByRelevanceFieldEnum = {
@@ -1071,6 +1242,8 @@ export interface PrismaClientOptions {
 }
 export type GlobalOmitConfig = {
   establecimiento?: Prisma.EstablecimientoOmit
+  especialidad?: Prisma.EspecialidadOmit
+  establecimientoEspecialidad?: Prisma.EstablecimientoEspecialidadOmit
   usuario?: Prisma.UsuarioOmit
   turno?: Prisma.TurnoOmit
   resenia?: Prisma.ReseniaOmit

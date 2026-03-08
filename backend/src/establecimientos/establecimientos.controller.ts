@@ -48,7 +48,7 @@ export class EstablecimientosController {
   /**
    * GET /establecimientos/coords/:lat/:lng
    * Busca un establecimiento por coordenadas
-   * IMPORTANTE: Debe ir ANTES de la ruta :id para que funcione correctamente
+   * IMPORTANTE: Debe ir ANTES de la ruta :id
    */
   @Get('coords/:lat/:lng')
   async findByCoordinates(
@@ -62,7 +62,7 @@ export class EstablecimientosController {
   /**
    * GET /establecimientos/:id/resenias
    * Obtiene las reseñas de un establecimiento con estadísticas
-   * IMPORTANTE: Debe ir ANTES de la ruta :id para que funcione correctamente
+   * IMPORTANTE: Debe ir ANTES de la ruta :id
    */
   @Get(':id/resenias')
   async getResenias(@Param('id', ParseIntPipe) id: number) {
@@ -70,9 +70,19 @@ export class EstablecimientosController {
   }
 
   /**
+   * NUEVO: GET /establecimientos/:id/especialidades
+   * Obtiene las especialidades disponibles en un establecimiento
+   * IMPORTANTE: Debe ir ANTES de la ruta :id
+   */
+  @Get(':id/especialidades')
+  async getEspecialidades(@Param('id', ParseIntPipe) id: number) {
+    return await this.service.getEspecialidades(id);
+  }
+
+  /**
    * GET /establecimientos/:id
    * Obtiene un establecimiento por ID
-   * IMPORTANTE: Esta ruta genérica debe ir AL FINAL de todas las rutas GET
+   * IMPORTANTE: Esta ruta genérica debe ir AL FINAL
    */
   @Get(':id')
   async findById(@Param('id', ParseIntPipe) id: number) {

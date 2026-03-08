@@ -1,6 +1,7 @@
 export interface CrearTurnoDto {
   usuarioId: number;
   establecimientoId: number;
+  especialidadId: number; // NUEVO: requerido
   fecha: Date;
   hora: string;
 }

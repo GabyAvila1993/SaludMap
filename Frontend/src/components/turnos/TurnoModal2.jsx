@@ -1,7 +1,8 @@
-// INICIO CAMBIO - Archivo: src/components/TurnoModal2.jsx - Modal actualizado
-import React from 'react';
+// Archivo: src/components/TurnoModal2.jsx
+import React, { useEffect, useState } from 'react';
 import './TurnoModal2.css';
 import { useTranslation } from 'react-i18next';
+import { getEspecialidadesByEstablecimiento } from '../../services/especialidadesService.js';
 
 export const TurnoModal = ({
     modalOpen,
@@ -20,32 +21,71 @@ export const TurnoModal = ({
     prettyType
 }) => {
     const { t } = useTranslation();
-    
+
+    const [especialidades, setEspecialidades] = useState([]);
+    const [especialidadSeleccionada, setEspecialidadSeleccionada] = useState(null);
+    const [loadingEspecialidades, setLoadingEspecialidades] = useState(false);
+    const [errorEspecialidades, setErrorEspecialidades] = useState('');
+
+    // Cargar especialidades cuando se abre el modal y hay un establecimiento
+    useEffect(() => {
+        if (!modalOpen || !selected?.establecimientoId) {
+            setEspecialidades([]);
+            setEspecialidadSeleccionada(null);
+            return;
+        }
+
+        const cargarEspecialidades = async () => {
+            setLoadingEspecialidades(true);
+            setErrorEspecialidades('');
+            try {
+                const data = await getEspecialidadesByEstablecimiento(selected.establecimientoId);
+                setEspecialidades(data);
+            } catch {
+                setErrorEspecialidades('No se pudieron cargar las especialidades');
+                setEspecialidades([]);
+            } finally {
+                setLoadingEspecialidades(false);
+            }
+        };
+
+        cargarEspecialidades();
+    }, [modalOpen, selected?.establecimientoId]);
+
+    // Limpiar especialidad seleccionada al cerrar
+    useEffect(() => {
+        if (!modalOpen) {
+            setEspecialidadSeleccionada(null);
+            setEspecialidades([]);
+            setErrorEspecialidades('');
+        }
+    }, [modalOpen]);
+
     if (!modalOpen || !selected) return null;
 
-    // Obtener datos del profesional usando la nueva estructura normalizada
     const professionalName = selected.name || t('appointments.professional');
     const professionalAddress = selected.address || '';
-    const professionalType = prettyType(selectedType);
 
-    // ✅ FUNCIÓN AGREGADA: Manejar confirmación con todos los datos
     const handleConfirm = () => {
+        if (!especialidadSeleccionada) {
+            alert('Por favor seleccioná una especialidad');
+            return;
+        }
         if (!datetime) {
-            alert('Por favor selecciona fecha y hora');
+            alert('Por favor seleccioná fecha y hora');
             return;
         }
-
         if (!correo) {
-            alert('Por favor ingresa tu correo electrónico');
+            alert('Por favor ingresá tu correo electrónico');
             return;
         }
 
-        // Separar fecha y hora del datetime-local
         const [fecha, hora] = datetime.split('T');
 
-        // Preparar datos completos
         const datos = {
             establecimientoId: selected.establecimientoId,
+            especialidadId: especialidadSeleccionada.id,       // NUEVO
+            especialidadNombre: especialidadSeleccionada.nombre, // NUEVO
             fecha: fecha,
             hora: hora,
             observaciones: notes,
@@ -54,7 +94,6 @@ export const TurnoModal = ({
             professionalType: selectedType
         };
 
-        // console.log('[TurnoModal] Enviando datos:', datos);
         onConfirm(datos);
     };
 
@@ -74,7 +113,7 @@ export const TurnoModal = ({
                 </div>
 
                 <div className="modal__body">
-                    {/* Indicador de establecimiento seleccionado desde el mapa */}
+                    {/* Establecimiento seleccionado desde el mapa */}
                     {selected.establecimientoNombre && selected.establecimientoId && (
                         <div className="selected-establishment">
                             <div className="selected-establishment-header">
@@ -86,69 +125,115 @@ export const TurnoModal = ({
                         </div>
                     )}
 
+                    {/* NUEVO: Selector de Especialidad (reemplaza al campo "Profesional") */}
                     <div className="input">
-                        <label className="input__label">{t('appointments.professional')}</label>
-                        <div className="input__field">{professionalName}</div>
-                        {professionalAddress && (
-                            <p className="input__description">{professionalAddress}</p>
-                        )}
-                        {selected.source && selected.source !== 'api' && (
-                            <p className="input__description">
-                                {selected.source === 'mock' ? t('appointments.source.demo') : 
-                                    selected.source === 'cache' ? t('appointments.source.saved') : 
-                                    selected.source}
-                            </p>
-                        )}
-                    </div>
+                        <label className="input__label">Especialidad</label>
 
-                    <div className="input">
-                        <label className="input__label">{t('appointments.serviceType')}</label>
-                        <div className="input__field">{professionalType}</div>
-                    </div>
+                        {loadingEspecialidades && (
+                            <div className="input__field">Cargando especialidades...</div>
+                        )}
 
-                    <div className="input">
-                        <label className="input__label">{t('appointments.dateTime')}</label>
-                        <div className="input-with-icon">
-                            <input
-                                id="turnos-datetime"
+                        {errorEspecialidades && (
+                            <div className="turnos-error">{errorEspecialidades}</div>
+                        )}
+
+                        {!loadingEspecialidades && !errorEspecialidades && especialidades.length === 0 && (
+                            <div className="input__field">No hay especialidades disponibles para este establecimiento</div>
+                        )}
+
+                        {!loadingEspecialidades && especialidades.length > 0 && (
+                            <select
                                 className="input__field"
-                                type="datetime-local"
-                                value={datetime}
-                                onChange={(e) => setDatetime(e.target.value)}
-                                min={new Date().toISOString().slice(0, 16)}
-                            />
-                            <button
-                                type="button"
-                                className="calendar-btn"
-                                onClick={() => {
-                                    const el = document.getElementById('turnos-datetime');
-                                    if (el && typeof el.showPicker === 'function') {
-                                        el.showPicker();
-                                    } else {
-                                        el?.focus();
-                                    }
+                                value={especialidadSeleccionada?.id || ''}
+                                onChange={(e) => {
+                                    const id = parseInt(e.target.value, 10);
+                                    const esp = especialidades.find(es => es.id === id) || null;
+                                    setEspecialidadSeleccionada(esp);
+                                    // Limpiar fecha/hora al cambiar especialidad
+                                    setDatetime('');
                                 }}
-                                aria-label={t('appointments.openDatePicker')}
-                                title={t('appointments.openDatePicker')}
                             >
-                                <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                    <path fill="none" d="M0 0h24v24H0z" />
-                                    <path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H5V9h14v9zM7 11h5v5H7v-5z" />
-                                </svg>
-                            </button>
-                        </div>
+                                <option value="">-- Seleccioná una especialidad --</option>
+                                {especialidades.map(esp => (
+                                    <option key={esp.id} value={esp.id}>
+                                        {esp.nombre}
+                                    </option>
+                                ))}
+                            </select>
+                        )}
+
+                        {/* Mostrar descripción y horarios disponibles de la especialidad seleccionada */}
+                        {especialidadSeleccionada && (
+                            <div className="especialidad-info">
+                                {especialidadSeleccionada.descripcion && (
+                                    <p className="input__description">{especialidadSeleccionada.descripcion}</p>
+                                )}
+                                {especialidadSeleccionada.horariosDisponibles && (
+                                    <p className="input__description">
+                                        🕐 Horarios disponibles: {especialidadSeleccionada.horariosDisponibles}
+                                    </p>
+                                )}
+                            </div>
+                        )}
                     </div>
 
-                    <div className="input">
-                        <label className="input__label">{t('appointments.observations')}</label>
-                        <textarea
-                            className="input__field input__field--textarea"
-                            value={notes}
-                            onChange={(e) => setNotes(e.target.value)}
-                            placeholder={t('appointments.observationsPlaceholder')}
-                            rows="3"
-                        />
-                    </div>
+                    {/* Tipo de servicio — solo se muestra si hay especialidad seleccionada */}
+                    {especialidadSeleccionada && (
+                        <div className="input">
+                            <label className="input__label">{t('appointments.serviceType')}</label>
+                            <div className="input__field">{prettyType(selectedType)}</div>
+                        </div>
+                    )}
+
+                    {/* Fecha y hora — solo se muestra si hay especialidad seleccionada */}
+                    {especialidadSeleccionada && (
+                        <div className="input">
+                            <label className="input__label">{t('appointments.dateTime')}</label>
+                            <div className="input-with-icon">
+                                <input
+                                    id="turnos-datetime"
+                                    className="input__field"
+                                    type="datetime-local"
+                                    value={datetime}
+                                    onChange={(e) => setDatetime(e.target.value)}
+                                    min={new Date().toISOString().slice(0, 16)}
+                                />
+                                <button
+                                    type="button"
+                                    className="calendar-btn"
+                                    onClick={() => {
+                                        const el = document.getElementById('turnos-datetime');
+                                        if (el && typeof el.showPicker === 'function') {
+                                            el.showPicker();
+                                        } else {
+                                            el?.focus();
+                                        }
+                                    }}
+                                    aria-label={t('appointments.openDatePicker')}
+                                    title={t('appointments.openDatePicker')}
+                                >
+                                    <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path fill="none" d="M0 0h24v24H0z" />
+                                        <path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H5V9h14v9zM7 11h5v5H7v-5z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Observaciones — solo se muestra si hay especialidad seleccionada */}
+                    {especialidadSeleccionada && (
+                        <div className="input">
+                            <label className="input__label">{t('appointments.observations')}</label>
+                            <textarea
+                                className="input__field input__field--textarea"
+                                value={notes}
+                                onChange={(e) => setNotes(e.target.value)}
+                                placeholder={t('appointments.observationsPlaceholder')}
+                                rows="3"
+                            />
+                        </div>
+                    )}
                 </div>
 
                 <div className="modal__footer">
@@ -167,7 +252,7 @@ export const TurnoModal = ({
                         <button
                             className="button button--primary"
                             onClick={handleConfirm}
-                            disabled={loading || !correo || !datetime}
+                            disabled={loading || !correo || !datetime || !especialidadSeleccionada}
                         >
                             {loading ? t('common.processing') : t('appointments.confirmAppointment')}
                         </button>
@@ -175,14 +260,9 @@ export const TurnoModal = ({
                 </div>
 
                 {error && (
-                    <div className="turnos-error">
-                        {error}
-                    </div>
+                    <div className="turnos-error">{error}</div>
                 )}
             </div>
         </div>
     );
 };
-
-// Nota: Los estilos del modal se encuentran en TurnoModal2.css
-// FIN CAMBIO - Archivo: src/components/TurnoModal2.jsx

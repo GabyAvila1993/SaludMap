@@ -270,6 +270,7 @@ export type EstablecimientoWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Establecimiento"> | Date | string
   turnos?: Prisma.TurnoListRelationFilter
   resenias?: Prisma.ReseniaListRelationFilter
+  especialidades?: Prisma.EstablecimientoEspecialidadListRelationFilter
 }
 
 export type EstablecimientoOrderByWithRelationInput = {
@@ -286,6 +287,7 @@ export type EstablecimientoOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   turnos?: Prisma.TurnoOrderByRelationAggregateInput
   resenias?: Prisma.ReseniaOrderByRelationAggregateInput
+  especialidades?: Prisma.EstablecimientoEspecialidadOrderByRelationAggregateInput
   _relevance?: Prisma.EstablecimientoOrderByRelevanceInput
 }
 
@@ -307,6 +309,7 @@ export type EstablecimientoWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Establecimiento"> | Date | string
   turnos?: Prisma.TurnoListRelationFilter
   resenias?: Prisma.ReseniaListRelationFilter
+  especialidades?: Prisma.EstablecimientoEspecialidadListRelationFilter
 }, "id" | "lat_lng">
 
 export type EstablecimientoOrderByWithAggregationInput = {
@@ -358,6 +361,7 @@ export type EstablecimientoCreateInput = {
   updatedAt?: Date | string
   turnos?: Prisma.TurnoCreateNestedManyWithoutEstablecimientoInput
   resenias?: Prisma.ReseniaCreateNestedManyWithoutEstablecimientoInput
+  especialidades?: Prisma.EstablecimientoEspecialidadCreateNestedManyWithoutEstablecimientoInput
 }
 
 export type EstablecimientoUncheckedCreateInput = {
@@ -374,6 +378,7 @@ export type EstablecimientoUncheckedCreateInput = {
   updatedAt?: Date | string
   turnos?: Prisma.TurnoUncheckedCreateNestedManyWithoutEstablecimientoInput
   resenias?: Prisma.ReseniaUncheckedCreateNestedManyWithoutEstablecimientoInput
+  especialidades?: Prisma.EstablecimientoEspecialidadUncheckedCreateNestedManyWithoutEstablecimientoInput
 }
 
 export type EstablecimientoUpdateInput = {
@@ -389,6 +394,7 @@ export type EstablecimientoUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   turnos?: Prisma.TurnoUpdateManyWithoutEstablecimientoNestedInput
   resenias?: Prisma.ReseniaUpdateManyWithoutEstablecimientoNestedInput
+  especialidades?: Prisma.EstablecimientoEspecialidadUpdateManyWithoutEstablecimientoNestedInput
 }
 
 export type EstablecimientoUncheckedUpdateInput = {
@@ -405,6 +411,7 @@ export type EstablecimientoUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   turnos?: Prisma.TurnoUncheckedUpdateManyWithoutEstablecimientoNestedInput
   resenias?: Prisma.ReseniaUncheckedUpdateManyWithoutEstablecimientoNestedInput
+  especialidades?: Prisma.EstablecimientoEspecialidadUncheckedUpdateManyWithoutEstablecimientoNestedInput
 }
 
 export type EstablecimientoCreateManyInput = {
@@ -544,6 +551,20 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type EstablecimientoCreateNestedOneWithoutEspecialidadesInput = {
+  create?: Prisma.XOR<Prisma.EstablecimientoCreateWithoutEspecialidadesInput, Prisma.EstablecimientoUncheckedCreateWithoutEspecialidadesInput>
+  connectOrCreate?: Prisma.EstablecimientoCreateOrConnectWithoutEspecialidadesInput
+  connect?: Prisma.EstablecimientoWhereUniqueInput
+}
+
+export type EstablecimientoUpdateOneRequiredWithoutEspecialidadesNestedInput = {
+  create?: Prisma.XOR<Prisma.EstablecimientoCreateWithoutEspecialidadesInput, Prisma.EstablecimientoUncheckedCreateWithoutEspecialidadesInput>
+  connectOrCreate?: Prisma.EstablecimientoCreateOrConnectWithoutEspecialidadesInput
+  upsert?: Prisma.EstablecimientoUpsertWithoutEspecialidadesInput
+  connect?: Prisma.EstablecimientoWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EstablecimientoUpdateToOneWithWhereWithoutEspecialidadesInput, Prisma.EstablecimientoUpdateWithoutEspecialidadesInput>, Prisma.EstablecimientoUncheckedUpdateWithoutEspecialidadesInput>
+}
+
 export type EstablecimientoCreateNestedOneWithoutTurnosInput = {
   create?: Prisma.XOR<Prisma.EstablecimientoCreateWithoutTurnosInput, Prisma.EstablecimientoUncheckedCreateWithoutTurnosInput>
   connectOrCreate?: Prisma.EstablecimientoCreateOrConnectWithoutTurnosInput
@@ -572,6 +593,84 @@ export type EstablecimientoUpdateOneRequiredWithoutReseniasNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EstablecimientoUpdateToOneWithWhereWithoutReseniasInput, Prisma.EstablecimientoUpdateWithoutReseniasInput>, Prisma.EstablecimientoUncheckedUpdateWithoutReseniasInput>
 }
 
+export type EstablecimientoCreateWithoutEspecialidadesInput = {
+  lat: number
+  lng: number
+  nombre: string
+  tipo: string
+  direccion?: string | null
+  telefono?: string | null
+  horarios?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  turnos?: Prisma.TurnoCreateNestedManyWithoutEstablecimientoInput
+  resenias?: Prisma.ReseniaCreateNestedManyWithoutEstablecimientoInput
+}
+
+export type EstablecimientoUncheckedCreateWithoutEspecialidadesInput = {
+  id?: number
+  lat: number
+  lng: number
+  nombre: string
+  tipo: string
+  direccion?: string | null
+  telefono?: string | null
+  horarios?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  turnos?: Prisma.TurnoUncheckedCreateNestedManyWithoutEstablecimientoInput
+  resenias?: Prisma.ReseniaUncheckedCreateNestedManyWithoutEstablecimientoInput
+}
+
+export type EstablecimientoCreateOrConnectWithoutEspecialidadesInput = {
+  where: Prisma.EstablecimientoWhereUniqueInput
+  create: Prisma.XOR<Prisma.EstablecimientoCreateWithoutEspecialidadesInput, Prisma.EstablecimientoUncheckedCreateWithoutEspecialidadesInput>
+}
+
+export type EstablecimientoUpsertWithoutEspecialidadesInput = {
+  update: Prisma.XOR<Prisma.EstablecimientoUpdateWithoutEspecialidadesInput, Prisma.EstablecimientoUncheckedUpdateWithoutEspecialidadesInput>
+  create: Prisma.XOR<Prisma.EstablecimientoCreateWithoutEspecialidadesInput, Prisma.EstablecimientoUncheckedCreateWithoutEspecialidadesInput>
+  where?: Prisma.EstablecimientoWhereInput
+}
+
+export type EstablecimientoUpdateToOneWithWhereWithoutEspecialidadesInput = {
+  where?: Prisma.EstablecimientoWhereInput
+  data: Prisma.XOR<Prisma.EstablecimientoUpdateWithoutEspecialidadesInput, Prisma.EstablecimientoUncheckedUpdateWithoutEspecialidadesInput>
+}
+
+export type EstablecimientoUpdateWithoutEspecialidadesInput = {
+  lat?: Prisma.FloatFieldUpdateOperationsInput | number
+  lng?: Prisma.FloatFieldUpdateOperationsInput | number
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  tipo?: Prisma.StringFieldUpdateOperationsInput | string
+  direccion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telefono?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  horarios?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  turnos?: Prisma.TurnoUpdateManyWithoutEstablecimientoNestedInput
+  resenias?: Prisma.ReseniaUpdateManyWithoutEstablecimientoNestedInput
+}
+
+export type EstablecimientoUncheckedUpdateWithoutEspecialidadesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  lat?: Prisma.FloatFieldUpdateOperationsInput | number
+  lng?: Prisma.FloatFieldUpdateOperationsInput | number
+  nombre?: Prisma.StringFieldUpdateOperationsInput | string
+  tipo?: Prisma.StringFieldUpdateOperationsInput | string
+  direccion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  telefono?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  horarios?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  turnos?: Prisma.TurnoUncheckedUpdateManyWithoutEstablecimientoNestedInput
+  resenias?: Prisma.ReseniaUncheckedUpdateManyWithoutEstablecimientoNestedInput
+}
+
 export type EstablecimientoCreateWithoutTurnosInput = {
   lat: number
   lng: number
@@ -584,6 +683,7 @@ export type EstablecimientoCreateWithoutTurnosInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   resenias?: Prisma.ReseniaCreateNestedManyWithoutEstablecimientoInput
+  especialidades?: Prisma.EstablecimientoEspecialidadCreateNestedManyWithoutEstablecimientoInput
 }
 
 export type EstablecimientoUncheckedCreateWithoutTurnosInput = {
@@ -599,6 +699,7 @@ export type EstablecimientoUncheckedCreateWithoutTurnosInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   resenias?: Prisma.ReseniaUncheckedCreateNestedManyWithoutEstablecimientoInput
+  especialidades?: Prisma.EstablecimientoEspecialidadUncheckedCreateNestedManyWithoutEstablecimientoInput
 }
 
 export type EstablecimientoCreateOrConnectWithoutTurnosInput = {
@@ -629,6 +730,7 @@ export type EstablecimientoUpdateWithoutTurnosInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resenias?: Prisma.ReseniaUpdateManyWithoutEstablecimientoNestedInput
+  especialidades?: Prisma.EstablecimientoEspecialidadUpdateManyWithoutEstablecimientoNestedInput
 }
 
 export type EstablecimientoUncheckedUpdateWithoutTurnosInput = {
@@ -644,6 +746,7 @@ export type EstablecimientoUncheckedUpdateWithoutTurnosInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resenias?: Prisma.ReseniaUncheckedUpdateManyWithoutEstablecimientoNestedInput
+  especialidades?: Prisma.EstablecimientoEspecialidadUncheckedUpdateManyWithoutEstablecimientoNestedInput
 }
 
 export type EstablecimientoCreateWithoutReseniasInput = {
@@ -658,6 +761,7 @@ export type EstablecimientoCreateWithoutReseniasInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   turnos?: Prisma.TurnoCreateNestedManyWithoutEstablecimientoInput
+  especialidades?: Prisma.EstablecimientoEspecialidadCreateNestedManyWithoutEstablecimientoInput
 }
 
 export type EstablecimientoUncheckedCreateWithoutReseniasInput = {
@@ -673,6 +777,7 @@ export type EstablecimientoUncheckedCreateWithoutReseniasInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   turnos?: Prisma.TurnoUncheckedCreateNestedManyWithoutEstablecimientoInput
+  especialidades?: Prisma.EstablecimientoEspecialidadUncheckedCreateNestedManyWithoutEstablecimientoInput
 }
 
 export type EstablecimientoCreateOrConnectWithoutReseniasInput = {
@@ -703,6 +808,7 @@ export type EstablecimientoUpdateWithoutReseniasInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   turnos?: Prisma.TurnoUpdateManyWithoutEstablecimientoNestedInput
+  especialidades?: Prisma.EstablecimientoEspecialidadUpdateManyWithoutEstablecimientoNestedInput
 }
 
 export type EstablecimientoUncheckedUpdateWithoutReseniasInput = {
@@ -718,6 +824,7 @@ export type EstablecimientoUncheckedUpdateWithoutReseniasInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   turnos?: Prisma.TurnoUncheckedUpdateManyWithoutEstablecimientoNestedInput
+  especialidades?: Prisma.EstablecimientoEspecialidadUncheckedUpdateManyWithoutEstablecimientoNestedInput
 }
 
 
@@ -728,11 +835,13 @@ export type EstablecimientoUncheckedUpdateWithoutReseniasInput = {
 export type EstablecimientoCountOutputType = {
   turnos: number
   resenias: number
+  especialidades: number
 }
 
 export type EstablecimientoCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   turnos?: boolean | EstablecimientoCountOutputTypeCountTurnosArgs
   resenias?: boolean | EstablecimientoCountOutputTypeCountReseniasArgs
+  especialidades?: boolean | EstablecimientoCountOutputTypeCountEspecialidadesArgs
 }
 
 /**
@@ -759,6 +868,13 @@ export type EstablecimientoCountOutputTypeCountReseniasArgs<ExtArgs extends runt
   where?: Prisma.ReseniaWhereInput
 }
 
+/**
+ * EstablecimientoCountOutputType without action
+ */
+export type EstablecimientoCountOutputTypeCountEspecialidadesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EstablecimientoEspecialidadWhereInput
+}
+
 
 export type EstablecimientoSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -774,6 +890,7 @@ export type EstablecimientoSelect<ExtArgs extends runtime.Types.Extensions.Inter
   updatedAt?: boolean
   turnos?: boolean | Prisma.Establecimiento$turnosArgs<ExtArgs>
   resenias?: boolean | Prisma.Establecimiento$reseniasArgs<ExtArgs>
+  especialidades?: boolean | Prisma.Establecimiento$especialidadesArgs<ExtArgs>
   _count?: boolean | Prisma.EstablecimientoCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["establecimiento"]>
 
@@ -797,6 +914,7 @@ export type EstablecimientoOmit<ExtArgs extends runtime.Types.Extensions.Interna
 export type EstablecimientoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   turnos?: boolean | Prisma.Establecimiento$turnosArgs<ExtArgs>
   resenias?: boolean | Prisma.Establecimiento$reseniasArgs<ExtArgs>
+  especialidades?: boolean | Prisma.Establecimiento$especialidadesArgs<ExtArgs>
   _count?: boolean | Prisma.EstablecimientoCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -805,6 +923,7 @@ export type $EstablecimientoPayload<ExtArgs extends runtime.Types.Extensions.Int
   objects: {
     turnos: Prisma.$TurnoPayload<ExtArgs>[]
     resenias: Prisma.$ReseniaPayload<ExtArgs>[]
+    especialidades: Prisma.$EstablecimientoEspecialidadPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1160,6 +1279,7 @@ export interface Prisma__EstablecimientoClient<T, Null = never, ExtArgs extends 
   readonly [Symbol.toStringTag]: "PrismaPromise"
   turnos<T extends Prisma.Establecimiento$turnosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Establecimiento$turnosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TurnoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   resenias<T extends Prisma.Establecimiento$reseniasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Establecimiento$reseniasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReseniaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  especialidades<T extends Prisma.Establecimiento$especialidadesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Establecimiento$especialidadesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EstablecimientoEspecialidadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1588,6 +1708,30 @@ export type Establecimiento$reseniasArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.ReseniaScalarFieldEnum | Prisma.ReseniaScalarFieldEnum[]
+}
+
+/**
+ * Establecimiento.especialidades
+ */
+export type Establecimiento$especialidadesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EstablecimientoEspecialidad
+   */
+  select?: Prisma.EstablecimientoEspecialidadSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EstablecimientoEspecialidad
+   */
+  omit?: Prisma.EstablecimientoEspecialidadOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EstablecimientoEspecialidadInclude<ExtArgs> | null
+  where?: Prisma.EstablecimientoEspecialidadWhereInput
+  orderBy?: Prisma.EstablecimientoEspecialidadOrderByWithRelationInput | Prisma.EstablecimientoEspecialidadOrderByWithRelationInput[]
+  cursor?: Prisma.EstablecimientoEspecialidadWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EstablecimientoEspecialidadScalarFieldEnum | Prisma.EstablecimientoEspecialidadScalarFieldEnum[]
 }
 
 /**

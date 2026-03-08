@@ -50,6 +50,8 @@ export const AnyNull = runtime.objectEnumValues.instances.AnyNull
 
 export const ModelName = {
   Establecimiento: 'Establecimiento',
+  Especialidad: 'Especialidad',
+  EstablecimientoEspecialidad: 'EstablecimientoEspecialidad',
   Usuario: 'Usuario',
   Turno: 'Turno',
   Resenia: 'Resenia',
@@ -89,6 +91,27 @@ export const EstablecimientoScalarFieldEnum = {
 export type EstablecimientoScalarFieldEnum = (typeof EstablecimientoScalarFieldEnum)[keyof typeof EstablecimientoScalarFieldEnum]
 
 
+export const EspecialidadScalarFieldEnum = {
+  id: 'id',
+  nombre: 'nombre',
+  descripcion: 'descripcion',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EspecialidadScalarFieldEnum = (typeof EspecialidadScalarFieldEnum)[keyof typeof EspecialidadScalarFieldEnum]
+
+
+export const EstablecimientoEspecialidadScalarFieldEnum = {
+  id: 'id',
+  establecimientoId: 'establecimientoId',
+  especialidadId: 'especialidadId',
+  horariosDisponibles: 'horariosDisponibles'
+} as const
+
+export type EstablecimientoEspecialidadScalarFieldEnum = (typeof EstablecimientoEspecialidadScalarFieldEnum)[keyof typeof EstablecimientoEspecialidadScalarFieldEnum]
+
+
 export const UsuarioScalarFieldEnum = {
   id: 'id',
   nombre: 'nombre',
@@ -106,6 +129,7 @@ export const TurnoScalarFieldEnum = {
   id: 'id',
   usuarioId: 'usuarioId',
   establecimientoId: 'establecimientoId',
+  especialidadId: 'especialidadId',
   fecha: 'fecha',
   hora: 'hora',
   estado: 'estado'
@@ -190,6 +214,21 @@ export const EstablecimientoOrderByRelevanceFieldEnum = {
 } as const
 
 export type EstablecimientoOrderByRelevanceFieldEnum = (typeof EstablecimientoOrderByRelevanceFieldEnum)[keyof typeof EstablecimientoOrderByRelevanceFieldEnum]
+
+
+export const EspecialidadOrderByRelevanceFieldEnum = {
+  nombre: 'nombre',
+  descripcion: 'descripcion'
+} as const
+
+export type EspecialidadOrderByRelevanceFieldEnum = (typeof EspecialidadOrderByRelevanceFieldEnum)[keyof typeof EspecialidadOrderByRelevanceFieldEnum]
+
+
+export const EstablecimientoEspecialidadOrderByRelevanceFieldEnum = {
+  horariosDisponibles: 'horariosDisponibles'
+} as const
+
+export type EstablecimientoEspecialidadOrderByRelevanceFieldEnum = (typeof EstablecimientoEspecialidadOrderByRelevanceFieldEnum)[keyof typeof EstablecimientoEspecialidadOrderByRelevanceFieldEnum]
 
 
 export const UsuarioOrderByRelevanceFieldEnum = {

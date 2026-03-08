@@ -11,23 +11,20 @@ export class EstablecimientosService {
    */
   async findByCoordinates(lat: number, lng: number) {
     return await this.prisma.establecimiento.findFirst({
-      where: {
-        lat: lat,
-        lng: lng,
-      },
+      where: { lat, lng },
       include: {
         resenias: {
           include: {
             usuario: {
-              select: {
-                id: true,
-                nombre: true,
-                apellido: true,
-              },
+              select: { id: true, nombre: true, apellido: true },
             },
           },
-          orderBy: {
-            createdAt: 'desc',
+          orderBy: { createdAt: 'desc' },
+        },
+        // NUEVO: incluir especialidades asignadas
+        especialidades: {
+          include: {
+            especialidad: true,
           },
         },
       },
@@ -44,15 +41,15 @@ export class EstablecimientosService {
         resenias: {
           include: {
             usuario: {
-              select: {
-                id: true,
-                nombre: true,
-                apellido: true,
-              },
+              select: { id: true, nombre: true, apellido: true },
             },
           },
-          orderBy: {
-            createdAt: 'desc',
+          orderBy: { createdAt: 'desc' },
+        },
+        // NUEVO: incluir especialidades asignadas
+        especialidades: {
+          include: {
+            especialidad: true,
           },
         },
       },
@@ -61,7 +58,6 @@ export class EstablecimientosService {
     if (!establecimiento) {
       throw new NotFoundException('Establecimiento no encontrado');
     }
-
     return establecimiento;
   }
 
@@ -69,9 +65,7 @@ export class EstablecimientosService {
    * Crea un nuevo establecimiento
    */
   async create(dto: CrearEstablecimientoDto) {
-    // Verificar si ya existe un establecimiento en esas coordenadas
     const existente = await this.findByCoordinates(dto.lat, dto.lng);
-    
     if (existente) {
       throw new ConflictException('Ya existe un establecimiento en esas coordenadas');
     }
@@ -94,14 +88,11 @@ export class EstablecimientosService {
    * Busca o crea un establecimiento
    */
   async findOrCreate(dto: CrearEstablecimientoDto) {
-    // Buscar primero
     const existente = await this.findByCoordinates(dto.lat, dto.lng);
-    
     if (existente) {
       return existente;
     }
 
-    // Intentar crear, pero manejar si otro request ya lo creó (race condition)
     try {
       return await this.prisma.establecimiento.create({
         data: {
@@ -118,15 +109,15 @@ export class EstablecimientosService {
           resenias: {
             include: {
               usuario: {
-                select: {
-                  id: true,
-                  nombre: true,
-                  apellido: true,
-                },
+                select: { id: true, nombre: true, apellido: true },
               },
             },
-            orderBy: {
-              createdAt: 'desc',
+            orderBy: { createdAt: 'desc' },
+          },
+          // NUEVO: incluir especialidades asignadas
+          especialidades: {
+            include: {
+              especialidad: true,
             },
           },
         },
@@ -134,10 +125,7 @@ export class EstablecimientosService {
     } catch (error) {
       // Si falla por duplicado (race condition), buscar de nuevo
       const retry = await this.findByCoordinates(dto.lat, dto.lng);
-      if (retry) {
-        return retry;
-      }
-      // Si aún así no existe, lanzar el error original
+      if (retry) return retry;
       throw error;
     }
   }
@@ -147,10 +135,9 @@ export class EstablecimientosService {
    */
   async getResenias(id: number) {
     const establecimiento = await this.findById(id);
-    
     const resenias = establecimiento.resenias;
     const totalResenias = resenias.length;
-    
+
     let promedioEstrellas = 0;
     if (totalResenias > 0) {
       const sumaEstrellas = resenias.reduce((sum, r) => sum + r.puntuacion, 0);
@@ -167,7 +154,32 @@ export class EstablecimientosService {
   }
 
   /**
-   * Lista todos los establecimientos (con paginación opcional)
+   * NUEVO: Obtiene las especialidades de un establecimiento
+   */
+  async getEspecialidades(id: number) {
+    const establecimiento = await this.prisma.establecimiento.findUnique({
+      where: { id },
+    });
+    if (!establecimiento) {
+      throw new NotFoundException('Establecimiento no encontrado');
+    }
+
+    const relaciones = await this.prisma.establecimientoEspecialidad.findMany({
+      where: { establecimientoId: id },
+      include: { especialidad: true },
+      orderBy: { especialidad: { nombre: 'asc' } },
+    });
+
+    return relaciones.map((r) => ({
+      id: r.especialidad.id,
+      nombre: r.especialidad.nombre,
+      descripcion: r.especialidad.descripcion,
+      horariosDisponibles: r.horariosDisponibles,
+    }));
+  }
+
+  /**
+   * Lista todos los establecimientos con paginación
    */
   async findAll(skip?: number, take?: number) {
     return await this.prisma.establecimiento.findMany({
@@ -175,9 +187,14 @@ export class EstablecimientosService {
       take: take || 50,
       include: {
         resenias: {
-          select: {
-            id: true,
-            puntuacion: true,
+          select: { id: true, puntuacion: true },
+        },
+        // NUEVO: incluir especialidades en el listado general
+        especialidades: {
+          include: {
+            especialidad: {
+              select: { id: true, nombre: true },
+            },
           },
         },
       },

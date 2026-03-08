@@ -17,6 +17,7 @@ import { TurnosModule } from './turnos/turnos.module';
 import { EstablecimientosModule } from './establecimientos/establecimientos.module';
 import { ReseniasModule } from './resenias/resenias.module';
 import { PlacesModule } from './places/places.module';
+import { EspecialidadesModule } from './especialidades/especialidades.module'; // NUEVO
 
 // Guards
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -28,20 +29,20 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
       isGlobal: true,
       envFilePath: ['.env', '.env.production'],
     }),
-
     // Configuración Asíncrona de JWT
     JwtModule.registerAsync({
       imports: [ConfigModule],
       global: true,
       useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET') || 'tu-secreto-super-seguro-cambiar-en-produccion',
+        secret:
+          configService.get<string>('JWT_SECRET') ||
+          'tu-secreto-super-seguro-cambiar-en-produccion',
         signOptions: {
           expiresIn: configService.get<string>('JWT_EXPIRES_IN') || '24h',
         },
       }),
       inject: [ConfigService],
     }),
-
     // Módulos del Sistema
     PlacesModule,
     ScheduleModule.forRoot(),
@@ -49,16 +50,10 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
     UsuariosModule,
     EstablecimientosModule,
     ReseniasModule,
+    EspecialidadesModule, // NUEVO
   ],
-  controllers: [
-    AppController, 
-    ChatbotController // Añadido aquí
-  ],
-  providers: [
-    AppService, 
-    JwtAuthGuard, 
-    GeminiService // Añadido aquí
-  ],
+  controllers: [AppController, ChatbotController],
+  providers: [AppService, JwtAuthGuard, GeminiService],
   exports: [JwtAuthGuard],
 })
 export class AppModule {}

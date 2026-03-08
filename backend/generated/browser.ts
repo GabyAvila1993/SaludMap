@@ -23,6 +23,16 @@ export * from './enums';
  */
 export type Establecimiento = Prisma.EstablecimientoModel
 /**
+ * Model Especialidad
+ * 
+ */
+export type Especialidad = Prisma.EspecialidadModel
+/**
+ * Model EstablecimientoEspecialidad
+ * 
+ */
+export type EstablecimientoEspecialidad = Prisma.EstablecimientoEspecialidadModel
+/**
  * Model Usuario
  * 
  */

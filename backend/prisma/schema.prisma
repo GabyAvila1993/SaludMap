@@ -1,9 +1,7 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
   output   = "../generated"
@@ -15,64 +13,91 @@ datasource db {
 }
 
 model Establecimiento {
-  id        Int        @id @default(autoincrement())
-  lat       Float
-  lng       Float
-  nombre    String
-  tipo      String     // hospital, clinic, doctors, etc.
-  direccion String?
-  telefono  String?
-  horarios  String?    @db.Text
-  metadata  Json?      // datos adicionales de OSM/Leaflet
-  turnos    Turno[]
-  resenias  Resenia[]  @relation("ReseniasPorEstablecimiento")
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  
-  @@unique([lat, lng]) // Identificador único basado en coordenadas
+  id          Int                          @id @default(autoincrement())
+  lat         Float
+  lng         Float
+  nombre      String
+  tipo        String                       // hospital, clinic, doctors, etc.
+  direccion   String?
+  telefono    String?
+  horarios    String?                      @db.Text
+  metadata    Json?                        // datos adicionales de OSM/Leaflet
+  turnos      Turno[]
+  resenias    Resenia[]                    @relation("ReseniasPorEstablecimiento")
+  especialidades EstablecimientoEspecialidad[]
+  createdAt   DateTime                     @default(now())
+  updatedAt   DateTime                     @updatedAt
+
+  @@unique([lat, lng])
   @@index([lat, lng])
+}
+
+model Especialidad {
+  id           Int                          @id @default(autoincrement())
+  nombre       String                       @unique
+  descripcion  String?                      @db.Text
+  establecimientos EstablecimientoEspecialidad[]
+  turnos       Turno[]
+  createdAt    DateTime                     @default(now())
+  updatedAt    DateTime                     @updatedAt
+}
+
+// Tabla puente many-to-many entre Establecimiento y Especialidad
+model EstablecimientoEspecialidad {
+  id                Int             @id @default(autoincrement())
+  establecimientoId Int
+  especialidadId    Int
+  // Horarios específicos de esa especialidad en ese establecimiento (opcional)
+  horariosDisponibles String?       @db.Text
+  establecimiento   Establecimiento @relation(fields: [establecimientoId], references: [id])
+  especialidad      Especialidad    @relation(fields: [especialidadId], references: [id])
+
+  @@unique([establecimientoId, especialidadId])
+  @@index([establecimientoId])
+  @@index([especialidadId])
 }
 
 model Usuario {
   id          Int        @id @default(autoincrement())
   nombre      String
   apellido    String
-  mail        String      @unique
+  mail        String     @unique
   contrasenia String
   turnos      Turno[]
-  resenias    Resenia[]   @relation("ReseniasPorUsuario")
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  resenias    Resenia[]  @relation("ReseniasPorUsuario")
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 }
 
 model Turno {
   id                Int             @id @default(autoincrement())
   usuarioId         Int
   establecimientoId Int
+  especialidadId    Int             // NUEVO: especialidad del turno
   fecha             DateTime
   hora              String?
   estado            String          @default("pendiente")
   usuario           Usuario         @relation(fields: [usuarioId], references: [id])
   establecimiento   Establecimiento @relation(fields: [establecimientoId], references: [id])
+  especialidad      Especialidad    @relation(fields: [especialidadId], references: [id])
   resenia           Resenia?
 
   @@index([usuarioId])
   @@index([establecimientoId])
+  @@index([especialidadId])
 }
 
 model Resenia {
   id                Int             @id @default(autoincrement())
   usuarioId         Int
   establecimientoId Int
-  turnoId           Int             @unique // Solo una reseña por turno
+  turnoId           Int             @unique
   puntuacion        Int             // 1-5 estrellas
   comentario        String          @db.Text
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
-
-  // Relaciones corregidas y nombradas
   usuario           Usuario         @relation("ReseniasPorUsuario", fields: [usuarioId], references: [id])
-  establecimiento   Establecimiento  @relation("ReseniasPorEstablecimiento", fields: [establecimientoId], references: [id])
+  establecimiento   Establecimiento @relation("ReseniasPorEstablecimiento", fields: [establecimientoId], references: [id])
   turno             Turno           @relation(fields: [turnoId], references: [id])
 
   @@index([establecimientoId])

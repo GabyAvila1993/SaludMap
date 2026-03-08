@@ -48,6 +48,16 @@ path.join(process.cwd(), "generated/query_engine-windows.dll.node")
  */
 export type Establecimiento = Prisma.EstablecimientoModel
 /**
+ * Model Especialidad
+ * 
+ */
+export type Especialidad = Prisma.EspecialidadModel
+/**
+ * Model EstablecimientoEspecialidad
+ * 
+ */
+export type EstablecimientoEspecialidad = Prisma.EstablecimientoEspecialidadModel
+/**
  * Model Usuario
  * 
  */
