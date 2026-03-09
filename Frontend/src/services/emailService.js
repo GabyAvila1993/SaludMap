@@ -13,50 +13,43 @@ export const sendAppointmentEmail = async (
     correo,
     userName,
     selectedType,
-    prettyTypeFunc
+    prettyTypeFunc,
+    especialidadNombre   // NUEVO parámetro
 ) => {
     const payload = {
-        professionalId: selected.id ?? selected.osm_id ?? null,
-        professionalName: selected.tags?.name ?? selected.properties?.name ?? 'Profesional',
+        professionalId:   selected.id ?? selected.osm_id ?? null,
+        professionalName: selected.tags?.name ?? selected.properties?.name ?? selected.name ?? 'Profesional',
         datetime,
         notes,
-        userEmail: correo,
+        userEmail:        correo,
         userName,
         professionalType: selectedType,
     };
 
     console.log('[DEBUG] Payload para backend:', payload);
 
-    // Preparar datos para EmailJS (coincide con los placeholders del template)
     const datosCorreo = {
         // {{name}} — nombre del usuario que pide el turno
         name: payload.userName,
-
-        // {{correo}} — correo del usuario (aparece en el cuerpo y en Reply-To)
+        // {{correo}} — correo del usuario
         correo,
-
-        // {{email}} — destinatario de la notificación (To Email en el template)
+        // {{email}} — destinatario de la notificación
         email: 'saludmap4@gmail.com',
-
-        // {{fechaHora}} — fecha y hora seleccionadas por el usuario
+        // {{fechaHora}} — fecha y hora seleccionadas
         fechaHora: new Date(datetime).toLocaleString('es-AR', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
+            year:   'numeric',
+            month:  'long',
+            day:    'numeric',
+            hour:   '2-digit',
             minute: '2-digit'
         }),
-
         // {{tipo}} — nombre del lugar del turno
         tipo: payload.professionalName,
-
-        // {{observaciones}} — observaciones del usuario o mensaje por defecto
+        // {{observaciones}} — observaciones o mensaje por defecto
         observaciones: notes || 'NO HAY OBSERVACIONES',
-
-        // {{direccion}} — tipo de establecimiento (hospital, clínica, etc.)
-        direccion: prettyTypeFunc(payload.professionalType),
-
-        // reply_to — para que al responder el mail llegue al usuario
+        // {{direccion}} — MODIFICADO: ahora muestra la especialidad
+        direccion: especialidadNombre || prettyTypeFunc(payload.professionalType),
+        // reply_to — para que al responder llegue al usuario
         reply_to: correo,
     };
 

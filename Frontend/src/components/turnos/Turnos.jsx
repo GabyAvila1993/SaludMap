@@ -88,18 +88,18 @@ export default function Turnos() {
 	// Handler del buscador: recibe establecimiento Y especialidad
 	const handleSeleccionarDesdeBuscador = async (estData, especialidad) => {
 		const establecimiento = {
-			id:        estData.id,
-			nombre:    estData.nombre,
-			tipo:      estData.tipo,
+			id: estData.id,
+			nombre: estData.nombre,
+			tipo: estData.tipo,
 			direccion: estData.direccion,
-			lat:       estData.lat,
-			lng:       estData.lng,
+			lat: estData.lat,
+			lng: estData.lng,
 		};
 		const place = {
 			...estData,
-			name:    estData.nombre,
+			name: estData.nombre,
 			address: estData.direccion || '',
-			type:    estData.tipo || 'default',
+			type: estData.tipo || 'default',
 		};
 		setPreSelectedEstablecimiento(establecimiento);
 		setPreSelectedPlace(place);
@@ -292,7 +292,8 @@ export default function Turnos() {
 					user.mail,
 					`${user.nombre} ${user.apellido}`,
 					selectedType,
-					prettyType
+					prettyType,
+					datos.especialidadNombre   // NUEVO — línea que hay que agregar
 				);
 			} catch (emailError) {
 				console.error('[Turnos] ⚠️ Turno guardado pero error al enviar email:', emailError);
