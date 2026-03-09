@@ -161,16 +161,19 @@ export default function MapComponent({ onEstablishmentSelect }) {
     }, []);
 
     const handleLocationChange = async (location) => {
-        setCurrentLocation(location);
-        setError('');
-        if (mapRef.current && !userInteracting.current) {
-            try {
-                const center = mapRef.current.getCenter();
-                const dist = center ? center.distanceTo(L.latLng(location.lat, location.lng)) : Infinity;
-                if (dist >= 25) {
-                    mapRef.current.setView([location.lat, location.lng], 15, { animate: true, duration: 0.5 });
-                }
-            } catch { /* noop */ }
+        // Solo actualizar si la ubicación no fue establecida manualmente por el usuario
+        if (currentLocation?.source !== 'manual') {
+            setCurrentLocation(location);
+            setError('');
+            if (mapRef.current && !userInteracting.current) {
+                try {
+                    const center = mapRef.current.getCenter();
+                    const dist = center ? center.distanceTo(L.latLng(location.lat, location.lng)) : Infinity;
+                    if (dist >= 25) {
+                        mapRef.current.setView([location.lat, location.lng], 15, { animate: true, duration: 0.5 });
+                    }
+                } catch { /* noop */ }
+            }
         }
         await fetchNearbyPlaces(location);
     };
@@ -413,7 +416,7 @@ export default function MapComponent({ onEstablishmentSelect }) {
                         <Marker
                             position={[currentLocation.lat, currentLocation.lng]}
                             icon={userIcon}
-                            draggable={currentLocation.source === 'manual'}
+                            draggable={true}
                             eventHandlers={{ dragend: handleMarkerDrag }}
                         />
                         {currentLocation.accuracy && (
