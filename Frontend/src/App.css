@@ -683,6 +683,45 @@ button:disabled {
   .nav-button  { padding: 7px 14px; font-size: 0.9rem; }
 }
 
+/* ── Ajustes de botones de Ingreso para Tablet (≤ 768px) ── */
+@media (max-width: 768px) {
+  .nav-auth-actions {
+    gap: 6px; /* Juntamos un poquito los botones */
+    margin-left: 0;
+  }
+
+  .btn-auth {
+    padding: 6px 14px; /* Menos relleno para que ocupen menos espacio */
+    font-size: 0.75rem; /* Letra más chica */
+    letter-spacing: 0;
+  }
+}
+
+/* ── Ajustes extremos para Celular (≤ 480px) ── */
+@media (max-width: 480px) {
+  .nav-auth-actions {
+    gap: 4px; /* Súper pegaditos */
+  }
+
+  .btn-auth {
+    padding: 5px 8px; /* Relleno mínimo */
+    font-size: 0.7rem; /* Letra bien chiquita pero legible */
+    border-width: 1.5px; /* Bordes más finos para no robar espacio */
+  }
+
+  /* Hacemos el contenedor del idioma un poco más chico para darles lugar */
+  .language-selector-container {
+    transform: scale(0.9);
+  }
+}
+
+/* ── Si el celular es minúsculo (≤ 360px), ej. iPhone SE ── */
+@media (max-width: 360px) {
+  .btn-auth {
+    padding: 4px 6px;
+    font-size: 0.65rem;
+  }
+}
 /* ── Tablet chica / landscape móvil (≤ 768px) ── */
 @media (max-width: 768px) {
   :root { --navbar-height: 64px; }
@@ -699,18 +738,41 @@ button:disabled {
 }
 
 /* ── Celular (≤ 480px) ── */
+/* ── Ajustes extremos para Celular (≤ 480px) ── */
 @media (max-width: 480px) {
-  :root { --navbar-height: 58px; }
+  .nav-auth-actions {
+    gap: 0; /* Ya no necesitamos separación porque habrá un solo botón */
+  }
 
-  .site-header  { padding: 0 10px; border-radius: 0 0 14px 14px; }
-  .logo-text    { display: none; }
-  .logo-img     { width: 32px; height: 32px; }
-  .app-nav      { gap: 8px; }
-  .user-controls { gap: 6px; }
-  .mobile-menu  { min-width: calc(80px - 20px); border-radius: 14px; }
-  .nav-auth-actions .nav-button { padding: 5px 10px; font-size: 0.8rem; }
-  .profile-avatar   { width: 34px; height: 34px; }
-  .nav-person-icon  { width: 30px; height: 30px; }
+  /* 1. Ocultamos el botón de registro en la barra para que no rompa la pantalla */
+  .btn-auth.btn-register {
+    display: none; 
+  }
+
+  /* 2. Transformamos el botón de Login para que parezca el botón principal */
+  .btn-auth.btn-login {
+    background: #61A196; /* Lo rellenamos de verde */
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    box-shadow: 0 2px 8px rgba(97, 161, 150, 0.3);
+  }
+
+  /* 3. Achicamos un pelín el selector de idioma para dar aire */
+  .language-selector-container {
+    transform: scale(0.85);
+    transform-origin: right center;
+    margin-right: -4px;
+  }
+}
+
+/* ── Si el celular es minúsculo (≤ 360px) ── */
+@media (max-width: 360px) {
+  .btn-auth.btn-login {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+  }
 }
 
 /* ── Móviles muy pequeños (≤ 360px) ── */

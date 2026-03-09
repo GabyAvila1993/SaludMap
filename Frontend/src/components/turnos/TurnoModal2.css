@@ -284,3 +284,15 @@
   .slots-grilla { gap: 4px; }
   .slot-btn { font-size: 0.72rem; padding: 0.25rem 0.45rem; border-radius: 5px; }
 }
+/* Especialidad fija (viene del buscador) */
+.input__field--readonly {
+  background: var(--t-bg-section);
+  color: var(--t-text-main);
+  border: 1.5px solid var(--t-border);
+  border-radius: 8px;
+  padding: 0.58rem 0.75rem;
+  font-size: 0.87rem;
+  font-weight: 600;
+  cursor: default;
+  pointer-events: none;
+}
