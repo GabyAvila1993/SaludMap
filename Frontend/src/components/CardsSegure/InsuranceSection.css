@@ -627,7 +627,7 @@
 .calendario__celda--hoy:not(.calendario__celda--seleccionado) {
   outline: 2px solid var(--t-border-strong);
   outline-offset: 1px;
-  color: var(--t-text-accent);
+  color: #000000;
   font-weight: 700;
 }
 
@@ -673,7 +673,7 @@
   color: var(--white);
 }
 .dark-theme .calendario__celda--hoy:not(.calendario__celda--seleccionado) {
-  color: var(--t-text-accent);
+  color: #FFFFFF;
 }
 
 
