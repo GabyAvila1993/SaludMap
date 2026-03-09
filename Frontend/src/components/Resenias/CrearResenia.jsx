@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { useTurnosParaReseniar } from '../../hooks/useResenias';
 import { Estrellas } from './Resenias';
 import reseniasService from '../../services/reseniasService';
@@ -37,7 +38,7 @@ const SelectorEstrellas = ({ puntuacion, onChange }) => {
  */
 export default function CrearResenia({ establecimientoId, onSuccess, onCancel }) {
   const { turnos, loading: loadingTurnos } = useTurnosParaReseniar(establecimientoId);
-  
+
   const [turnoSeleccionado, setTurnoSeleccionado] = useState(null);
   const [puntuacion, setPuntuacion] = useState(0);
   const [comentario, setComentario] = useState('');
@@ -61,24 +62,20 @@ export default function CrearResenia({ establecimientoId, onSuccess, onCancel })
       setError('Debe seleccionar un turno');
       return;
     }
-
     if (puntuacion === 0) {
       setError('Debe seleccionar una puntuación');
       return;
     }
-
     if (!comentario.trim()) {
       setError('Debe escribir un comentario');
       return;
     }
-
     if (comentario.trim().length < 10) {
       setError('El comentario debe tener al menos 10 caracteres');
       return;
     }
 
     setSubmitting(true);
-
     try {
       await reseniasService.crearResenia(
         turnoSeleccionado,
@@ -86,15 +83,14 @@ export default function CrearResenia({ establecimientoId, onSuccess, onCancel })
         puntuacion,
         comentario.trim()
       );
-
       setSuccess(true);
-      
+
       // Llamar al callback de éxito después de un breve delay
       setTimeout(() => {
         if (onSuccess) onSuccess();
       }, 1500);
     } catch (err) {
-      console.error('Error creando reseña:', err);
+      toast.error('Error al crear la reseña');
       setError(err.response?.data?.message || err.message || 'Error al crear la reseña');
     } finally {
       setSubmitting(false);
@@ -150,7 +146,7 @@ export default function CrearResenia({ establecimientoId, onSuccess, onCancel })
   return (
     <div className="crear-resenia-container">
       <h3>Dejar una reseña</h3>
-      
+
       <form onSubmit={handleSubmit} className="form-resenia">
         {/* Selector de turno (si hay más de uno) */}
         {turnos.length > 1 && (
@@ -173,7 +169,6 @@ export default function CrearResenia({ establecimientoId, onSuccess, onCancel })
             </select>
           </div>
         )}
-
         {/* Información del turno si solo hay uno */}
         {turnos.length === 1 && (
           <div className="turno-info">
@@ -186,13 +181,11 @@ export default function CrearResenia({ establecimientoId, onSuccess, onCancel })
             )}
           </div>
         )}
-
         {/* Selector de puntuación */}
         <div className="form-group">
           <label>Puntuación:</label>
           <SelectorEstrellas puntuacion={puntuacion} onChange={setPuntuacion} />
         </div>
-
         {/* Campo de comentario */}
         <div className="form-group">
           <label htmlFor="comentario">Tu opinión:</label>
@@ -210,14 +203,12 @@ export default function CrearResenia({ establecimientoId, onSuccess, onCancel })
             {comentario.length} / 1000 caracteres
           </div>
         </div>
-
         {/* Mensajes de error */}
         {error && (
           <div className="error-message">
             ⚠️ {error}
           </div>
         )}
-
         {/* Botones de acción */}
         <div className="form-actions">
           <button

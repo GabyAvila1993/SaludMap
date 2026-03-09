@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 export const ProfesionalesList = ({ lugares, loading, error, onOpenModal, getTypeFromPlace, prettyType }) => {
     const { t } = useTranslation();
-    
+
     return (
         <div className="turnos-left">
             <h4>{t('appointments.nearbyProfessionals')}</h4>
@@ -17,7 +17,6 @@ export const ProfesionalesList = ({ lugares, loading, error, onOpenModal, getTyp
                     const name = p.name || t('appointments.professionalWithoutName');
                     const addr = p.address || '';
                     const tipo = getTypeFromPlace(p);
-
                     return (
                         <li key={p.id || i} className="prof-item">
                             <div className="prof-info">
@@ -29,12 +28,10 @@ export const ProfesionalesList = ({ lugares, loading, error, onOpenModal, getTyp
                                         {p.source === 'mock' ? '(Demo)' :
                                             p.source === 'cache' ? '(Guardado)' :
                                                 `(${p.source})`}
-
-
                                     </div>
                                 )}
                             </div>
-                            <div>
+                            <div className="prof-actions">
                                 <button
                                     className="btn-primary"
                                     onClick={() => onOpenModal(p)}

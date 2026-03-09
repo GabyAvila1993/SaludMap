@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import './SaveLocationModal.css';
 
 export default function SaveLocationModal({ isOpen, onClose, onSave, currentLocation }) {
@@ -12,20 +13,17 @@ export default function SaveLocationModal({ isOpen, onClose, onSave, currentLoca
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!name.trim()) {
             setError(t('map.locationNameRequired'));
             return;
         }
-
         if (!currentLocation) {
             setError(t('map.noLocationAvailable'));
             return;
         }
-
         setIsLoading(true);
         setError('');
-
         try {
             await onSave({
                 name: name.trim(),
@@ -33,13 +31,16 @@ export default function SaveLocationModal({ isOpen, onClose, onSave, currentLoca
                 lat: currentLocation.lat,
                 lng: currentLocation.lng
             });
-            
+
             // Limpiar formulario y cerrar modal
             setName('');
             setDescription('');
+            toast.success('Ubicación guardada exitosamente');
             onClose();
         } catch (err) {
-            setError(err.message || t('map.errorSaving'));
+            const msg = err.message || t('map.errorSaving');
+            setError(msg);
+            toast.error('Error al guardar la ubicación');
         } finally {
             setIsLoading(false);
         }
@@ -61,7 +62,6 @@ export default function SaveLocationModal({ isOpen, onClose, onSave, currentLoca
                     <h3>{t('map.saveLocationTitle')}</h3>
                     <button className="modal-close" onClick={handleClose}>×</button>
                 </div>
-
                 <form onSubmit={handleSubmit} className="modal-form">
                     <div className="form-group">
                         <label htmlFor="location-name">{t('map.locationName')} *</label>
@@ -75,7 +75,6 @@ export default function SaveLocationModal({ isOpen, onClose, onSave, currentLoca
                             disabled={isLoading}
                         />
                     </div>
-
                     <div className="form-group">
                         <label htmlFor="location-description">{t('map.description')}</label>
                         <textarea
@@ -88,12 +87,11 @@ export default function SaveLocationModal({ isOpen, onClose, onSave, currentLoca
                             disabled={isLoading}
                         />
                     </div>
-
                     {currentLocation && (
                         <div className="location-info">
                             <strong>{t('map.coordinates')}:</strong>
                             <div className="coordinates">
-                                Lat: {currentLocation.lat.toFixed(6)}, 
+                                Lat: {currentLocation.lat.toFixed(6)},
                                 Lng: {currentLocation.lng.toFixed(6)}
                             </div>
                             {currentLocation.accuracy && (
@@ -103,20 +101,18 @@ export default function SaveLocationModal({ isOpen, onClose, onSave, currentLoca
                             )}
                         </div>
                     )}
-
                     {error && <div className="error-message">{error}</div>}
-
                     <div className="modal-actions">
-                        <button 
-                            type="button" 
+                        <button
+                            type="button"
                             onClick={handleClose}
                             disabled={isLoading}
                             className="btn-secondary"
                         >
                             {t('map.cancel')}
                         </button>
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             disabled={isLoading || !name.trim()}
                             className="btn-primary"
                         >

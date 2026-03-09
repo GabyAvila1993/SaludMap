@@ -4,12 +4,10 @@ import './LanguageSelector.css';
 import IconEspanol from '../assets/Icon_Spañol.png';
 import IconFrance from '../assets/Icon_france.png';
 import IconGB from '../assets/Icon_reinoUnido.png';
-import IconTema from '../assets/Icon_tema.png';
 
 const LanguageSelector = () => {
-  const { i18n, t } = useTranslation();
+  const { i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const [themeOpen, setThemeOpen] = useState(false);
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'claro');
 
   const languages = [
@@ -35,7 +33,6 @@ const LanguageSelector = () => {
   const selectTheme = (t) => {
     setTheme(t);
     localStorage.setItem('theme', t);
-    setThemeOpen(false);
   };
 
   return (
@@ -49,7 +46,6 @@ const LanguageSelector = () => {
         <span className="lang-code">{currentLanguage.code.toUpperCase()}</span>
         <span className="arrow">{isOpen ? '▲' : '▼'}</span>
       </button>
-
       {isOpen && (
         <div className="language-dropdown">
           {languages.map((lang) => (

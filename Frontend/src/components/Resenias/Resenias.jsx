@@ -18,7 +18,9 @@ const Estrellas = ({ puntuacion, size = 'medium' }) => {
   }
   return <div className="estrellas">{stars}</div>;
 };
+
 /* Agregamos un boton de reseñas */
+
 /**
  * Componente individual para una reseña
  */
@@ -91,7 +93,6 @@ export default function Resenias({ resenias, promedioEstrellas, totalResenias, l
           </div>
         )}
       </div>
-
       <div className="resenias-lista">
         {resenias.map((resenia) => (
           <ReseniaItem key={resenia.id} resenia={resenia} />

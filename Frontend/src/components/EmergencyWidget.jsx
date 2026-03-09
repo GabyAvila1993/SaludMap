@@ -5,7 +5,7 @@ import './EmergencyWidget.css';
 export const EmergencyWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
-  
+
   // En lugar de texto fijo, guardamos la "llave" (key) del JSON
   const [emergencyData, setEmergencyData] = useState({
     countryKey: 'country_international',
@@ -15,7 +15,7 @@ export const EmergencyWidget = () => {
 
   useEffect(() => {
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
-    
+
     // Hacemos la detección más robusta para atrapar todas las provincias
     if (timeZone.includes('Argentina') || timeZone.includes('Buenos_Aires') || timeZone.includes('Mendoza') || timeZone.includes('Cordoba')) {
       setEmergencyData({ countryKey: 'country_argentina', ambulance: '107', police: '911' });
@@ -29,14 +29,13 @@ export const EmergencyWidget = () => {
   return (
     <div className="emergency-nav-container">
       {/* Botón Circular S.O.S */}
-      <button 
-        className="btn-emergency-nav-circle" 
+      <button
+        className="btn-emergency-nav-circle"
         onClick={() => setIsOpen(true)}
         title={t('emergency.title', 'Centro de Emergencia')}
       >
         <span className="emergency-icon-nav">🚨</span>
       </button>
-
       {/* Modal de Emergencia */}
       {isOpen && (
         <div className="emergency-overlay" onClick={() => setIsOpen(false)}>
@@ -45,30 +44,25 @@ export const EmergencyWidget = () => {
               <h3>{t('emergency.title', 'Centro de Emergencia')}</h3>
               <button className="emergency-close" onClick={() => setIsOpen(false)}>✕</button>
             </div>
-            
             <div className="emergency-body">
               {/* ¡Aquí aplicamos las traducciones! */}
               <div className="location-detector">
                 📍 {t('emergency.location_detected')}: <strong>{t(`emergency.${emergencyData.countryKey}`)}</strong>
               </div>
-              
               <p>{t('emergency.question', '¿Qué tipo de ayuda necesitas?')}</p>
-              
               <a href={`tel:${emergencyData.ambulance}`} className="emergency-btn btn-red">
                 <span className="btn-icon">🚑</span>
                 <div>
                   <strong>{t('emergency.ambulance_desc', 'Ambulancia')} ({emergencyData.ambulance})</strong>
                 </div>
               </a>
-
               <a href={`tel:${emergencyData.police}`} className="emergency-btn btn-dark">
                 <span className="btn-icon">🚓</span>
                 <div>
                   <strong>{t('emergency.police_desc', 'Policía')} ({emergencyData.police})</strong>
                 </div>
               </a>
-
-              <button 
+              <button
                 className="emergency-btn btn-outline"
                 onClick={() => {
                   setIsOpen(false);

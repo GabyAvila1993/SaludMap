@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import * as authService from './services/authService.js';
 
 const AuthContext = createContext();
@@ -23,7 +24,7 @@ export function AuthProvider({ children }) {
 			try {
 				setUser(JSON.parse(stored));
 			} catch (error) {
-				console.error('Error al parsear usuario guardado:', error);
+				toast.error('Error al cargar datos del usuario');
 				localStorage.removeItem('saludmap_user');
 			}
 		}
@@ -47,7 +48,7 @@ export function AuthProvider({ children }) {
 				localStorage.setItem('token', userData.token);
 			}
 		} catch (error) {
-			console.error('Error en login:', error);
+			toast.error('Error al iniciar sesión');
 			throw error;
 		}
 	};
@@ -71,7 +72,7 @@ export function AuthProvider({ children }) {
 				localStorage.setItem('token', userData.token);
 			}
 		} catch (error) {
-			console.error('Error en registro:', error);
+			toast.error('Error al registrarse');
 			throw error;
 		}
 	};

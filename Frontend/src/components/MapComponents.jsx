@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { toast } from 'sonner';
 import { MapContainer, TileLayer, Marker, Circle, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import './MapComponents.css';
@@ -104,7 +105,7 @@ export default function MapComponents() {
         const data = await res.json();
         return data.lugares ?? data.elements ?? [];
       } catch {
-        console.warn('No se pudo precargar lugares:', lat, lng);
+        toast.error('No se pudo precargar lugares para uso offline');
         return [];
       }
     });

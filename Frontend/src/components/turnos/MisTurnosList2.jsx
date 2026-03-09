@@ -90,13 +90,11 @@ export const MisTurnosList = ({ misTurnos = [], onCancelTurno, cancellingId, pre
             {/* Imágenes decorativas de fondo */}
             <img src={IconMano}   alt="" aria-hidden="true" className="mis-turnos-bg-img mis-turnos-bg-img--mano" />
             <img src={IconHuella} alt="" aria-hidden="true" className="mis-turnos-bg-img mis-turnos-bg-img--huella" />
-
             {/* Contenido encima del fondo */}
             <div className="mis-turnos-content">
                 <div className="mis-turnos-header">
                     <h4>{t('appointments.myAppointments', 'Mis Turnos')}</h4>
                 </div>
-
                 {grupos.map(({ key, label, items, emptyMsg }) => (
                     <section key={key} className="turnos-group">
                         <h5>{label}</h5>

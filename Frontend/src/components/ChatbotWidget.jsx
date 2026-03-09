@@ -1,5 +1,6 @@
 // src/components/ChatbotWidget.jsx
 import React, { useState, useRef, useEffect } from 'react';
+import { toast } from 'sonner';
 import { sendMessageToAura } from '../api/chatbotService';
 import './ChatbotWidget.css';
 import chatIcon from '../assets/Icon_chat.png';
@@ -29,12 +30,12 @@ export const ChatbotWidget = () => {
 
     try {
       const auraResponseText = await sendMessageToAura(input);
-      
+
       // Mensaje de Aura
       const auraMessage = { text: auraResponseText, sender: 'aura' };
       setMessages((prev) => [...prev, auraMessage]);
     } catch (error) {
-      console.error("Error al obtener respuesta de Aura:", error);
+      toast.error('Error al obtener respuesta de AURA');
     } finally {
       setIsLoading(false);
     }
@@ -52,13 +53,11 @@ export const ChatbotWidget = () => {
           </div>
         </div>
       )}
-
       {/* Overlay + Modal de chat */}
       {isOpen && (
         <>
           {/* Overlay oscuro detrás del modal */}
           <div className="chat-overlay" onClick={handleClose} />
-
           {/* Ventana de chat — modal centrado grande */}
           <div className="chat-window">
             <div className="chat-header">
@@ -77,7 +76,6 @@ export const ChatbotWidget = () => {
                 ×
               </button>
             </div>
-
             <div className="chat-messages">
               {messages.map((msg, index) => (
                 <div key={index} className={`message ${msg.sender}`}>
@@ -89,7 +87,6 @@ export const ChatbotWidget = () => {
               )}
               <div ref={messagesEndRef} />
             </div>
-
             <form onSubmit={handleSend} className="chat-input-form">
               <input
                 type="text"

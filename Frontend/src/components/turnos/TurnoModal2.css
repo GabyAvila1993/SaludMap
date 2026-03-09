@@ -1,5 +1,5 @@
 /* ── TurnoModal2.css ────────────────────────────────────────────────────────
-   SOLO contiene clases del calendario y slots.
+   SOLO contiene clases del calendario, slots y selector custom.
    Las clases base del modal (.modal, .input, .selected-establishment, etc.)
    ya están definidas en Turnos.css — no se repiten aquí.
    ────────────────────────────────────────────────────────────────────────── */
@@ -14,8 +14,6 @@
   border: 1.5px solid var(--t-border);
   box-shadow: var(--t-shadow);
 }
-
-/* ── Navegación mes/año ── */
 .calendario__nav {
   display: flex;
   align-items: center;
@@ -48,15 +46,11 @@
   filter: brightness(1.1);
   transform: scale(1.06);
 }
-
-/* ── Grilla 7 columnas ── */
 .calendario__grilla {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 4px;
 }
-
-/* ── Cabeceras ── */
 .calendario__cabecera {
   text-align: center;
   font-size: 0.7rem;
@@ -65,8 +59,6 @@
   padding: 0.25rem 0 0.35rem;
   letter-spacing: 0.03em;
 }
-
-/* ── Celdas base ── */
 .calendario__celda {
   aspect-ratio: 1;
   display: flex;
@@ -86,11 +78,7 @@
   transition: var(--t-transition);
   box-shadow: none;
 }
-.calendario__celda--vacia {
-  pointer-events: none;
-}
-
-/* ── Días disponibles ── */
+.calendario__celda--vacia { pointer-events: none; }
 .calendario__celda--disponible {
   background: var(--t-border-strong);
   color: var(--white);
@@ -102,8 +90,6 @@
   transform: scale(1.09);
   box-shadow: var(--t-shadow);
 }
-
-/* ── Día seleccionado ── */
 .calendario__celda--seleccionado {
   background: var(--t-btn-bg);
   color: var(--white);
@@ -113,28 +99,14 @@
   outline-offset: 2px;
   box-shadow: var(--t-shadow);
 }
-
-/* ── Días pasados ── */
-.calendario__celda--pasado {
-  opacity: 0.3;
-  pointer-events: none;
-}
-
-/* ── Días sin atención ── */
-.calendario__celda--no-disponible {
-  opacity: 0.4;
-  pointer-events: none;
-}
-
-/* ── Hoy ── */
+.calendario__celda--pasado { opacity: 0.3; pointer-events: none; }
+.calendario__celda--no-disponible { opacity: 0.4; pointer-events: none; }
 .calendario__celda--hoy:not(.calendario__celda--seleccionado) {
   outline: 2px solid var(--t-border-strong);
   outline-offset: 1px;
   color: var(--t-text-accent);
   font-weight: 700;
 }
-
-/* ── Leyenda ── */
 .calendario__leyenda {
   display: flex;
   gap: 0.9rem;
@@ -161,23 +133,10 @@
 .leyenda__item--disponible::before   { background: var(--t-border-strong); }
 .leyenda__item--seleccionado::before { background: var(--t-btn-bg); outline: 1.5px solid var(--t-border-strong); outline-offset: 1px; }
 .leyenda__item--no-disponible::before { background: var(--t-text-muted); opacity: 0.4; }
-
-/* ── Dark mode calendario ── */
-.dark-theme .calendario {
-  background: var(--t-bg-section);
-  border-color: var(--t-border);
-}
-.dark-theme .calendario__celda--disponible {
-  background: var(--t-border-strong);
-  color: var(--t-bg-card);
-}
-.dark-theme .calendario__celda--seleccionado {
-  background: var(--t-btn-bg);
-  color: var(--white);
-}
-.dark-theme .calendario__celda--hoy:not(.calendario__celda--seleccionado) {
-  color: var(--t-text-accent);
-}
+.dark-theme .calendario { background: var(--t-bg-section); border-color: var(--t-border); }
+.dark-theme .calendario__celda--disponible { background: var(--t-border-strong); color: var(--t-bg-card); }
+.dark-theme .calendario__celda--seleccionado { background: var(--t-btn-bg); color: var(--white); }
+.dark-theme .calendario__celda--hoy:not(.calendario__celda--seleccionado) { color: var(--t-text-accent); }
 
 /* ════════════════════════════════════════════════
    SLOTS DE HORA
@@ -217,21 +176,10 @@
   font-weight: 700;
   box-shadow: var(--t-shadow);
 }
-
-/* ── Dark mode slots ── */
-.dark-theme .slot-btn {
-  background: var(--t-bg-section);
-  color: var(--t-text-main);
-  border-color: var(--t-border);
-}
+.dark-theme .slot-btn { background: var(--t-bg-section); color: var(--t-text-main); border-color: var(--t-border); }
 .dark-theme .slot-btn:hover,
-.dark-theme .slot-btn--activo {
-  background: var(--t-border-strong);
-  color: var(--t-bg-card);
-  border-color: var(--t-border-strong);
-}
+.dark-theme .slot-btn--activo { background: var(--t-border-strong); color: var(--t-bg-card); border-color: var(--t-border-strong); }
 
-/* ── Info especialidad ── */
 .especialidad-info {
   margin-top: 0.3rem;
   display: flex;
@@ -240,26 +188,200 @@
 }
 
 /* ════════════════════════════════════════════════
-   RESPONSIVE
+   SELECTOR DE ESPECIALIDADES CUSTOM
+   Lista inline que empuja el contenido — nunca
+   queda cortada por el overflow del modal
    ════════════════════════════════════════════════ */
 
-/* ── Desktop grande (≥ 1280px) ── */
+.esp-selector {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Botón trigger ── */
+.esp-selector__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  text-align: left;
+  cursor: pointer;
+  user-select: none;
+  background: var(--t-bg-section);
+  border: 1.5px solid var(--t-border);
+  /* Borde inferior redondeado solo cuando cerrado */
+  border-radius: 8px;
+  padding: 0.58rem 0.75rem;
+  font-family: var(--t-font-body);
+  font-size: 0.87rem;
+  color: var(--modal-text);
+  transition: border-color 0.2s, box-shadow 0.2s, border-radius 0.15s;
+  min-height: unset;
+  box-shadow: none;
+}
+
+/* Cuando está abierto: conecta visualmente con el panel */
+.esp-selector__trigger--abierto {
+  border-color: var(--t-border-strong);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-color: var(--t-bg-section); /* "fusiona" con el panel */
+  box-shadow: 0 0 0 3px rgba(77, 170, 144, 0.12);
+}
+
+.esp-selector__trigger:hover:not(.esp-selector__trigger--abierto) {
+  border-color: var(--t-border-strong);
+}
+
+.esp-selector__label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.esp-selector__arrow {
+  font-size: 0.6rem;
+  color: var(--t-text-accent);
+  flex-shrink: 0;
+  font-weight: 700;
+}
+
+/* ── Panel inline con scroll ── */
+.esp-selector__panel {
+  border: 1.5px solid var(--t-border-strong);
+  border-top: none; /* se une al trigger visualmente */
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  background: var(--t-bg-card);
+  overflow: hidden; /* contiene el scroll interno */
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+}
+
+/* ── Lista con scroll — ~8 ítems visibles ── */
+.esp-selector__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0.2rem 0;
+  /* 8 ítems × ~2.4rem cada uno */
+  max-height: 19.2rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--t-border-strong) transparent;
+}
+
+.esp-selector__lista::-webkit-scrollbar { width: 5px; }
+.esp-selector__lista::-webkit-scrollbar-track { background: transparent; }
+.esp-selector__lista::-webkit-scrollbar-thumb {
+  background: var(--t-border-strong);
+  border-radius: 4px;
+}
+
+/* Sombra superior cuando hay scroll arriba */
+.esp-selector__panel::before {
+  content: '';
+  display: block;
+  height: 4px;
+  background: linear-gradient(to bottom, var(--t-bg-section), transparent);
+  pointer-events: none;
+}
+
+/* ── Ítems ── */
+.esp-selector__item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.58rem 0.9rem;
+  font-size: 0.87rem;
+  color: var(--t-text-main);
+  cursor: pointer;
+  transition: background 0.12s;
+  line-height: 1.3;
+  border-left: 3px solid transparent;
+}
+
+.esp-selector__item:hover {
+  background: var(--t-bg-section);
+  border-left-color: var(--t-border-strong);
+}
+
+.esp-selector__item--activo {
+  background: var(--t-bg-section);
+  border-left-color: var(--t-border-strong);
+  color: var(--t-text-accent);
+  font-weight: 700;
+}
+
+.esp-selector__check {
+  color: var(--t-border-strong);
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  width: 14px;
+}
+
+/* Separador visual al final de la lista */
+.esp-selector__lista::after {
+  content: '';
+  display: block;
+  height: 4px;
+}
+
+/* ── Dark mode ── */
+.dark-theme .esp-selector__trigger {
+  background: var(--t-bg-section);
+  border-color: var(--t-border);
+  color: var(--t-text-main);
+}
+.dark-theme .esp-selector__trigger--abierto {
+  border-bottom-color: var(--t-bg-section);
+  border-color: var(--t-border-strong);
+}
+.dark-theme .esp-selector__panel {
+  background: var(--t-bg-card);
+  border-color: var(--t-border);
+}
+.dark-theme .esp-selector__item:hover,
+.dark-theme .esp-selector__item--activo {
+  background: var(--t-bg-section);
+}
+.dark-theme .esp-selector__item--activo {
+  color: var(--t-text-accent);
+  border-left-color: var(--t-border-strong);
+}
+
+/* ── Especialidad fija (viene del buscador) ── */
+.input__field--readonly {
+  background: var(--t-bg-section);
+  color: var(--t-text-main);
+  border: 1.5px solid var(--t-border);
+  border-radius: 8px;
+  padding: 0.58rem 0.75rem;
+  font-size: 0.87rem;
+  font-weight: 600;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ════════════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════════════ */
 @media (min-width: 1280px) {
   .calendario { padding: 1rem; }
   .calendario__celda { font-size: 0.9rem; border-radius: 7px; }
   .calendario__cabecera { font-size: 0.75rem; }
   .calendario__mes-anio { font-size: 1rem; }
   .slot-btn { font-size: 0.85rem; padding: 0.35rem 0.75rem; }
+  .esp-selector__item { font-size: 0.9rem; }
 }
-
-/* ── Tablet (≤ 1024px) ── */
 @media (max-width: 1024px) {
   .calendario { padding: 0.7rem; }
   .calendario__grilla { gap: 3px; }
   .slot-btn { font-size: 0.78rem; padding: 0.3rem 0.6rem; }
 }
-
-/* ── Tablet chica / landscape (≤ 768px) ── */
 @media (max-width: 768px) {
   .calendario { padding: 0.65rem; }
   .calendario__celda { font-size: 0.78rem; border-radius: 5px; }
@@ -268,9 +390,9 @@
   .slots-grilla { gap: 5px; }
   .slot-btn { font-size: 0.76rem; padding: 0.28rem 0.52rem; }
   .leyenda__item { font-size: 0.67rem; }
+  .esp-selector__lista { max-height: 14.4rem; }
+  .esp-selector__item { font-size: 0.84rem; padding: 0.52rem 0.8rem; }
 }
-
-/* ── Celular (≤ 480px) ── */
 @media (max-width: 480px) {
   .calendario { padding: 0.55rem; }
   .calendario__grilla { gap: 2px; }
@@ -283,16 +405,7 @@
   .leyenda__item::before { width: 9px; height: 9px; }
   .slots-grilla { gap: 4px; }
   .slot-btn { font-size: 0.72rem; padding: 0.25rem 0.45rem; border-radius: 5px; }
-}
-/* Especialidad fija (viene del buscador) */
-.input__field--readonly {
-  background: var(--t-bg-section);
-  color: var(--t-text-main);
-  border: 1.5px solid var(--t-border);
-  border-radius: 8px;
-  padding: 0.58rem 0.75rem;
-  font-size: 0.87rem;
-  font-weight: 600;
-  cursor: default;
-  pointer-events: none;
+  .esp-selector__lista { max-height: 12rem; }
+  .esp-selector__trigger { font-size: 0.82rem; }
+  .esp-selector__item { font-size: 0.8rem; padding: 0.48rem 0.75rem; }
 }

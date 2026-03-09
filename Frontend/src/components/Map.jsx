@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { MapContainer, TileLayer, Marker, Circle, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css'; 
@@ -315,7 +316,7 @@ export default function MapComponent({ onEstablishmentSelect }) {
             setSelectedEstablecimiento(est);
             if (onEstablishmentSelect) onEstablishmentSelect(est); // Notificamos a App.jsx
         } catch (error) {
-            console.error('Error cargando establecimiento:', error);
+            toast.error('Error al cargar el establecimiento');
             setSelectedEstablecimiento(null);
             if (onEstablishmentSelect) onEstablishmentSelect(null);
         } finally {

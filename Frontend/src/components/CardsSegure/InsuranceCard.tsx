@@ -10,7 +10,7 @@ interface InsuranceCardProps {
 
 const InsuranceCard: React.FC<InsuranceCardProps> = ({ plan, onSelect, isSelected = false }) => {
     const { t } = useTranslation();
-    
+
     return (
         <div
             className={`insurance-card ${isSelected ? 'selected' : ''}`}
@@ -19,15 +19,12 @@ const InsuranceCard: React.FC<InsuranceCardProps> = ({ plan, onSelect, isSelecte
             <h3 className={`card-title ${isSelected ? 'selected' : ''}`}>
                 {t(`insurance.plans.${plan.id}.name`)}
             </h3>
-
             <div className={`card-price ${isSelected ? 'selected' : ''}`}>
                 ${plan.price}{t('insurance.perMonth')}
             </div>
-
             <p className="card-description">
                 {t(`insurance.plans.${plan.id}.description`)}
             </p>
-
             <div className="card-coverage">
                 <h4 className={`coverage-title ${isSelected ? 'selected' : ''}`}>
                     {t('insurance.coverageIncluded')}
@@ -40,7 +37,6 @@ const InsuranceCard: React.FC<InsuranceCardProps> = ({ plan, onSelect, isSelecte
                     ))}
                 </ul>
             </div>
-
             <button className="card-button">
                 {isSelected ? t('insurance.selected') : t('insurance.selectPlan')}
             </button>

@@ -1,5 +1,6 @@
 // Archivo: src/components/turnos/BuscadorEspecialidades.jsx
 import React, { useState, useEffect, useRef } from 'react';
+import { toast } from 'sonner';
 import { getEspecialidades } from '../../services/especialidadesService.js';
 import axios from 'axios';
 
@@ -21,7 +22,10 @@ export default function BuscadorEspecialidades({ onSeleccionarEstablecimiento })
     useEffect(() => {
         getEspecialidades()
             .then(data => setTodasEspecialidades(Array.isArray(data) ? data : []))
-            .catch(() => setTodasEspecialidades([]));
+            .catch(() => {
+                setTodasEspecialidades([]);
+                toast.error('No se pudieron cargar las especialidades');
+            });
     }, []);
 
     // Filtrar sugerencias al escribir
@@ -65,6 +69,7 @@ export default function BuscadorEspecialidades({ onSeleccionarEstablecimiento })
             setEstablecimientos(Array.isArray(res.data) ? res.data : []);
         } catch {
             setErrorEst('No se pudieron cargar los establecimientos');
+            toast.error('No se pudieron cargar los establecimientos para esta especialidad');
         } finally {
             setLoadingEst(false);
         }
@@ -137,7 +142,6 @@ export default function BuscadorEspecialidades({ onSeleccionarEstablecimiento })
                     </button>
                 )}
             </div>
-
             {/* Input + dropdown */}
             <div className="buscador__input-wrap" ref={wrapperRef}>
                 <div className="buscador__input-row">
@@ -170,7 +174,6 @@ export default function BuscadorEspecialidades({ onSeleccionarEstablecimiento })
                         >×</button>
                     )}
                 </div>
-
                 {/* Dropdown */}
                 {dropdownVisible && sugerencias.length > 0 && (
                     <ul className="buscador__dropdown" ref={listRef} role="listbox">
@@ -192,7 +195,6 @@ export default function BuscadorEspecialidades({ onSeleccionarEstablecimiento })
                     </ul>
                 )}
             </div>
-
             {/* Resultados */}
             {especialidadSeleccionada && (
                 <div className="buscador__resultados">
@@ -203,14 +205,12 @@ export default function BuscadorEspecialidades({ onSeleccionarEstablecimiento })
                         </div>
                     )}
                     {errorEst && <div className="turnos-error">{errorEst}</div>}
-
                     {!loadingEst && !errorEst && establecimientos.length === 0 && (
                         <div className="buscador__vacio">
                             <span className="buscador__vacio-icono">🏥</span>
                             <p>No hay establecimientos con <strong>{especialidadSeleccionada.nombre}</strong> disponible.</p>
                         </div>
                     )}
-
                     {!loadingEst && establecimientos.length > 0 && (
                         <>
                             <p className="buscador__subtitulo">

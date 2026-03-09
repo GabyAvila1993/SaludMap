@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { toast } from 'sonner';
 import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { getTile, saveTile } from '../services/db.js';
@@ -14,18 +15,17 @@ const OfflineTileLayer = ({ url, attribution, ...props }) => {
             createTile: function(coords, done) {
                 const tile = document.createElement('img');
                 const tileUrl = this.getTileUrl(coords);
-                
+
                 // Try to load from cache first
                 this._loadFromCache(tileUrl, tile, coords, done);
-                
+
                 return tile;
             },
-
             _loadFromCache: async function(tileUrl, tile, coords, done) {
                 try {
                     // Try to get cached tile
                     const cachedBlob = await getTile(tileUrl);
-                    
+
                     if (cachedBlob) {
                         // Load from cache
                         const objectUrl = URL.createObjectURL(cachedBlob);
@@ -43,11 +43,10 @@ const OfflineTileLayer = ({ url, attribution, ...props }) => {
                         this._loadFromNetwork(tileUrl, tile, coords, done);
                     }
                 } catch (error) {
-                    console.warn('Error loading from cache:', error);
+                    toast.error('Error al cargar el tile del caché');
                     this._loadFromNetwork(tileUrl, tile, coords, done);
                 }
             },
-
             _loadFromNetwork: function(tileUrl, tile, coords, done) {
                 // Check if we're online
                 if (!navigator.onLine) {
@@ -63,7 +62,6 @@ const OfflineTileLayer = ({ url, attribution, ...props }) => {
                     done(null, tile);
                     return;
                 }
-
                 // Load from network and cache
                 tile.onload = async () => {
                     try {
@@ -74,11 +72,10 @@ const OfflineTileLayer = ({ url, attribution, ...props }) => {
                             await saveTile(tileUrl, blob, coords.z, coords.x, coords.y);
                         }
                     } catch (error) {
-                        console.warn('Error caching tile:', error);
+                        toast.error('Error al guardar el tile en caché');
                     }
                     done(null, tile);
                 };
-
                 tile.onerror = (error) => {
                     // Show error placeholder
                     tile.src = 'data:image/svg+xml;base64,' + btoa(`
@@ -91,7 +88,6 @@ const OfflineTileLayer = ({ url, attribution, ...props }) => {
                     `);
                     done(error, tile);
                 };
-
                 tile.src = tileUrl;
             }
         });
@@ -101,7 +97,6 @@ const OfflineTileLayer = ({ url, attribution, ...props }) => {
             attribution: attribution,
             ...props
         });
-
         layerRef.current = offlineTileLayer;
         map.addLayer(offlineTileLayer);
 

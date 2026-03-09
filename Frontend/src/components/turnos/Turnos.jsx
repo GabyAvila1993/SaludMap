@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import './Turnos.css';
 import locationService from '../../services/locationService.js';
 import turnosService, { saveAppointment, guardarTurno, fetchMisTurnos, cancelAppointment } from '../../services/turnosService.js';
@@ -68,7 +69,7 @@ export default function Turnos() {
 				setPreSelectedEstablecimiento(estResult);
 				setPreSelectedPlace(placeForCreate);
 			} catch {
-				alert('Error al preparar el establecimiento. Por favor intenta desde el mapa o reintenta.');
+				toast.error('Error al preparar el establecimiento. Por favor intenta desde el mapa o reintenta.');
 				return;
 			}
 		}
@@ -145,7 +146,7 @@ export default function Turnos() {
 			if (e.detail?.tab !== 'turnos') return;
 			const { establecimiento, place } = e.detail;
 			if (!establecimiento?.id || !place) {
-				alert('Error: No se recibió información completa del establecimiento.');
+				toast.error('Error: No se recibió información completa del establecimiento.');
 				return;
 			}
 			setPreSelectedEstablecimiento(establecimiento);
@@ -244,11 +245,12 @@ export default function Turnos() {
 			const res = await cancelAppointment(turnoId);
 			if (res && (res.status === 200 || res.status === 204)) {
 				setMisTurnos(prev => prev.filter(t => t.id !== turnoId));
+				toast.success('Turno cancelado exitosamente');
 			} else {
 				throw new Error('No se pudo cancelar el turno en el servidor');
 			}
 		} catch (err) {
-			alert('Error cancelando turno: ' + (err.message || 'Error desconocido'));
+			toast.error('Error cancelando turno: ' + (err.message || 'Error desconocido'));
 		} finally {
 			setCancellingId(null);
 		}
@@ -274,7 +276,7 @@ export default function Turnos() {
 				} catch { /* falla silenciosa */ }
 			}
 			if (!datos.establecimientoId) {
-				alert('Error: No hay establecimiento seleccionado. Por favor intenta nuevamente.');
+				toast.error('Error: No hay establecimiento seleccionado. Por favor intenta nuevamente.');
 				return;
 			}
 			const turnoGuardado = await guardarTurno({
@@ -296,7 +298,7 @@ export default function Turnos() {
 					datos.especialidadNombre   // NUEVO — línea que hay que agregar
 				);
 			} catch (emailError) {
-				console.error('[Turnos] ⚠️ Turno guardado pero error al enviar email:', emailError);
+				toast.error('⚠️ Turno guardado pero error al enviar email');
 			}
 			try {
 				const fechaStr = turnoGuardado?.fecha ? String(turnoGuardado.fecha) : datos.fecha;
@@ -314,25 +316,33 @@ export default function Turnos() {
 				};
 				setMisTurnos(prev => sortTurnosDesc([...prev, nuevoTurno]));
 			} catch { /* no crítico */ }
-
 			setModalOpen(false);
 			// NUEVO: limpiar especialidad pre-seleccionada al cerrar
 			setEspecialidadPreseleccionada(null);
 			setPreSelectedEstablecimiento(null);
 			setPreSelectedPlace(null);
-			alert('Turno solicitado exitosamente');
+			toast.success('Turno solicitado exitosamente');
 		} catch (err) {
-			alert('Error al solicitar turno: ' + (err.message || 'Error desconocido'));
+			toast.error('Error al solicitar turno: ' + (err.message || 'Error desconocido'));
 		}
 	};
 
 	const handleCancelarTurno = async (id) => {
 		if (!user?.mail) {
-			alert(t('appointments.errorCancelNoEmail'));
+			toast.error(t('appointments.errorCancelNoEmail'));
 			return;
 		}
-		if (!window.confirm(t('appointments.confirmCancel'))) return;
-		await cancelarTurno(id);
+		// Reemplaza window.confirm — toast de confirmación con acciones
+		toast(t('appointments.confirmCancel', '¿Estás seguro que querés cancelar este turno?'), {
+			duration: 8000,
+			action: {
+				label: 'Sí, cancelar',
+				onClick: () => cancelarTurno(id),
+			},
+			cancel: {
+				label: 'No',
+			},
+		});
 	};
 
 	// ── Vista no autenticada ────────────────────────────────────
@@ -384,12 +394,10 @@ export default function Turnos() {
 						<strong>{user.nombre} {user.apellido}</strong> · {user.mail}
 					</div>
 				</header>
-
 				{/* Buscador de especialidades */}
 				<BuscadorEspecialidades
 					onSeleccionarEstablecimiento={handleSeleccionarDesdeBuscador}
 				/>
-
 				<div className="turnos-body">
 					{/* Panel izquierdo */}
 					{!preSelectedEstablecimiento ? (
@@ -419,7 +427,6 @@ export default function Turnos() {
 							</div>
 						</div>
 					)}
-
 					{/* Panel derecho — Mis Turnos */}
 					<MisTurnosList
 						misTurnos={misTurnos}
@@ -428,7 +435,6 @@ export default function Turnos() {
 						prettyType={prettyType}
 					/>
 				</div>
-
 				{/* NUEVO: se pasa especialidadPreseleccionada al modal */}
 				<TurnoModal
 					modalOpen={modalOpen}
@@ -450,7 +456,6 @@ export default function Turnos() {
 					prettyType={prettyType}
 					especialidadPreseleccionada={especialidadPreseleccionada}
 				/>
-
 				{showCostComparator && (
 					<CostComparator places={lugares} onClose={() => setShowCostComparator(false)} />
 				)}

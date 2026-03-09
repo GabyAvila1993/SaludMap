@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import * as XLSX from 'xlsx';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
@@ -220,8 +221,8 @@ const Analytics = ({ establecimientoId, place }) => {
       saveAs(new Blob([buffer]), fileName);
 
     } catch (error) {
-      console.error('Error al exportar:', error);
-      alert('Hubo un error al exportar el archivo. Por favor, intente nuevamente.');
+      toast.error('Error al exportar los datos');
+      alert('Hubo un error al exportar el archivo. Por favor, intente nuevamente');
     }
   };
 

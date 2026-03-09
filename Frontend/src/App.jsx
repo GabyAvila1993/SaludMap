@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Routes, Route } from 'react-router-dom';
+import { Toaster, toast } from 'sonner';
 import MapComponent from './components/Map.jsx';
 import Turnos from './components/turnos/Turnos.jsx';
 import InsuranceSection from './components/CardsSegure/InsuranceSection.jsx';
@@ -22,22 +23,18 @@ import IconPerson from './assets/Icono_persona.png';
 function App() {
   const { t } = useTranslation();
   const { user, logout } = useAuth();
-
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-
   // Estado para el menú del Mapa en el Navbar
   const [showMapMenu, setShowMapMenu] = useState(false);
   const mapMenuRef = useRef(null);
   const userMenuRef = useRef(null);
-
   // Lógica del Tema Oscuro
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) return savedTheme === 'dark';
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
-
   // Aplica la clase al body si cambia el estado interno
   useEffect(() => {
     if (isDarkMode) {
@@ -48,7 +45,6 @@ function App() {
       localStorage.setItem('theme', 'light');
     }
   }, [isDarkMode]);
-
   // Escuchar al botón de tema de otros componentes (LanguageSelector)
   useEffect(() => {
     const observer = new MutationObserver(() => {
@@ -60,7 +56,6 @@ function App() {
     observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
     return () => observer.disconnect();
   }, [isDarkMode]);
-
   // Clics fuera de los menús
   useEffect(() => {
     const handleDocClick = (e) => {
@@ -77,16 +72,16 @@ function App() {
     document.addEventListener('click', handleDocClick);
     return () => document.removeEventListener('click', handleDocClick);
   }, []);
-
   const [isLoading, setIsLoading] = useState(true);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [activeTab, setActiveTab] = useState('mapa');
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [selectedEstablishment, setSelectedEstablishment] = useState(null);
-
   useEffect(() => {
-    cleanOldTiles().catch(console.error);
+    cleanOldTiles().catch(err => {
+      toast.error('Error al limpiar archivos temporales de caché');
+    });
     const unsubscribe = locationService.subscribe((location) => {
       setCurrentLocation(location);
       setIsLoading(false);
@@ -94,7 +89,7 @@ function App() {
     locationService.loadLastKnownLocation().then((lastLocation) => {
       if (!lastLocation) {
         locationService.getCurrentPosition().catch((error) => {
-          console.error('Error obteniendo ubicación inicial:', error);
+          toast.error('Error al obtener tu ubicación');
           setIsLoading(false);
         });
       }
@@ -108,14 +103,12 @@ function App() {
       window.removeEventListener('saludmap:change-tab', handleChangeTab);
     };
   }, []);
-
   // Disparador de eventos para el mapa
   const dispatchMapAction = (action) => {
     window.dispatchEvent(new CustomEvent('map-action', { detail: action }));
     setShowMapMenu(false);
     setShowMobileMenu(false);
   };
-
   if (isLoading) {
     return (
       <div className="loading-screen">
@@ -124,7 +117,6 @@ function App() {
       </div>
     );
   }
-
   const renderActiveSection = () => {
     switch (activeTab) {
       case 'mapa':      return <MapComponent onEstablishmentSelect={setSelectedEstablishment} />;
@@ -134,7 +126,6 @@ function App() {
       default:          return <MapComponent />;
     }
   };
-
   return (
     <div className="app">
       <ChatbotWidget />
@@ -152,11 +143,9 @@ function App() {
             </div>
             <EmergencyWidget />
           </div>
-
           {/* ── CENTRO: BOTONES Y MENÚS ── */}
           <div className="nav-center">
             <div className="nav-buttons">
-
               {/* BOTÓN MAPA CON MENÚ DESPLEGABLE */}
               <div className="nav-item-dropdown" ref={mapMenuRef}>
                 <button
@@ -171,7 +160,6 @@ function App() {
                     <span className={`dropdown-arrow ${showMapMenu ? 'open' : ''}`}>▼</span>
                   )}
                 </button>
-
                 {/* Dropdown del Mapa (Desktop) */}
                 {showMapMenu && activeTab === 'mapa' && (
                   <div className="navbar-dropdown-menu">
@@ -198,7 +186,6 @@ function App() {
                   </div>
                 )}
               </div>
-
               <button
                 onClick={() => { setActiveTab('turnos'); setShowMapMenu(false); }}
                 className={`nav-button ${activeTab === 'turnos' ? 'active' : ''}`}
@@ -219,7 +206,6 @@ function App() {
                 {t('nav.tutorial', 'Tutorial')}
               </button>
             </div>
-
             <button
               className="hamburger"
               onClick={(e) => { e.stopPropagation(); setShowMobileMenu(m => !m); }}
@@ -228,12 +214,10 @@ function App() {
             >
               ☰
             </button>
-
             {/* MENÚ MÓVIL */}
             {showMobileMenu && (
               <div className="mobile-menu" onClick={(e) => e.stopPropagation()}>
                 <span className="mobile-menu-title">SaludMap</span>
-
                 <button
                   onClick={() => setActiveTab('mapa')}
                   className={`nav-button ${activeTab === 'mapa' ? 'active' : ''}`}
@@ -241,7 +225,6 @@ function App() {
                 >
                   {t('nav.map', 'Mapa')}
                 </button>
-
                 {/* Submenú de mapa en móvil */}
                 {activeTab === 'mapa' && (
                   <div className="mobile-submenu">
@@ -255,7 +238,6 @@ function App() {
                     <button className="mobile-submenu-item" onClick={() => dispatchMapAction('filters')}>🔍 Filtros</button>
                   </div>
                 )}
-
                 <button
                   onClick={() => { setActiveTab('turnos'); setShowMobileMenu(false); }}
                   className={`nav-button ${activeTab === 'turnos' ? 'active' : ''}`}
@@ -281,11 +263,9 @@ function App() {
               </div>
             )}
           </div>
-
           {/* ── DERECHA: tema + idioma + auth ── */}
           <div className="nav-right">
             <div className="user-controls">
-
               {/* Botón de Tema (Sol / Luna) */}
               <button
                 className="theme-toggle-btn"
@@ -306,9 +286,7 @@ function App() {
                   </svg>
                 )}
               </button>
-
               <LanguageSelector />
-
               {user ? (
                 <div className="nav-user-inline">
                   <button
@@ -351,18 +329,22 @@ function App() {
           </div>
         </nav>
       </header>
-
       <main className="app-main">{renderActiveSection()}</main>
       <footer className="app-footer"><p>{t('footer.copyright')}</p></footer>
-
       <ModalAuth
         open={showAuthModal}
         onClose={() => setShowAuthModal(false)}
         showRegister={showRegister}
         setShowRegister={setShowRegister}
       />
+      {/* AQUI TIENES ESTILOS [Tipo: Inline] — las variables CSS del Toaster se movieron a index.css bajo la clase .sonner-toaster */}
+      <Toaster
+        position="top-center"
+        richColors
+        theme={isDarkMode ? 'dark' : 'light'}
+        className="sonner-toaster"
+      />
     </div>
   );
 }
-
 export default App;

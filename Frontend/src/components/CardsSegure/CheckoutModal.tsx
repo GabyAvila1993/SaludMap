@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { PDFGenerator, InsurancePlan, UserInfo } from './PDFGenerator';
 import { sendInsuranceConfirmationEmail, downloadInsurancePDF, initializeEmailJS } from '../../services/emailSegurosService';
 import { sendTestEmail, initializeEmailJS as initTest } from '../../services/emailSegurosServiceTest';
+import { useAuth } from '../Auth/AuthContext.jsx';
 
 interface CheckoutModalProps {
     plan: InsurancePlan;
@@ -10,20 +12,55 @@ interface CheckoutModalProps {
     onClose: () => void;
 }
 
+// Tipo del usuario tal como lo expone AuthContext
+interface AuthUser {
+    nombre?: string;
+    apellido?: string;
+    mail?: string;
+    [key: string]: unknown;
+}
+
 import './CheckoutModal.css';
 
 const CheckoutModal: React.FC<CheckoutModalProps> = ({ plan, isOpen, onClose }) => {
     const { t } = useTranslation();
-    
+    const { user } = useAuth() as { user: AuthUser | null };
+
     const [userInfo, setUserInfo] = useState<UserInfo>({
         name: '',
         email: '',
         phone: '',
         address: ''
     });
-
     const [isProcessing, setIsProcessing] = useState(false);
     const [emailSent, setEmailSent] = useState(false);
+
+    // Auto-completar nombre y email cuando el modal se abre y hay usuario logueado
+    useEffect(() => {
+        if (isOpen && user) {
+            const fullName = [(user.nombre ?? ''), (user.apellido ?? '')].filter(Boolean).join(' ');
+            setUserInfo(prev => ({
+                ...prev,
+                name:  prev.name  || fullName,
+                email: prev.email || (user.mail ?? ''),
+            }));
+        }
+    }, [isOpen, user]);
+
+    // Limpiar teléfono y dirección al cerrar (nombre y email se preservan del usuario)
+    useEffect(() => {
+        if (!isOpen) {
+            const fullName = user
+                ? [(user.nombre ?? ''), (user.apellido ?? '')].filter(Boolean).join(' ')
+                : '';
+            setUserInfo({
+                name:    fullName,
+                email:   user?.mail ?? '',
+                phone:   '',
+                address: '',
+            });
+        }
+    }, [isOpen]);
 
     const handleInputChange = (field: keyof UserInfo, value: string) => {
         setUserInfo(prev => ({
@@ -38,46 +75,33 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ plan, isOpen, onClose }) 
         setEmailSent(false);
 
         try {
-            // Inicializar EmailJS
             initializeEmailJS();
 
-            // Generar y descargar PDF localmente
             const pdfDownloaded = downloadInsurancePDF(plan, userInfo);
-
             if (!pdfDownloaded) {
                 throw new Error('Error generando el PDF de la tarjeta de seguro');
             }
 
-            // Enviar correo de confirmación completo
             // console.log('[DEBUG] Enviando correo de confirmación...');
             const emailResult = await sendInsuranceConfirmationEmail(plan, userInfo);
 
             if (emailResult.success) {
                 setEmailSent(true);
                 // console.log('[DEBUG] Correo enviado exitosamente:', emailResult);
-
-                alert(`¡Seguro contratado exitosamente! 
-                
-✅ Se ha descargado tu tarjeta de seguro
-✅ Se ha enviado confirmación a ${userInfo.email}
-📧 Revisa tu correo para ver los detalles completos
-📋 Número de póliza: ${emailResult.orderId}`);
+                toast.success(
+                    `¡Seguro contratado! Confirmación enviada a ${userInfo.email}. Póliza: ${emailResult.orderId}`
+                );
             } else {
-                // Si falla el correo, al menos se descargó el PDF
-                alert('¡Seguro contratado exitosamente! Se ha descargado tu tarjeta de seguro. El correo de confirmación no pudo enviarse, pero tu seguro está activo.');
+                toast.info('¡Seguro contratado! Se descargó tu tarjeta. El correo de confirmación no pudo enviarse, pero tu seguro está activo.');
             }
 
             onClose();
         } catch (error) {
-            console.error('Error processing checkout:', error);
-
-            // Determinar el tipo de error para mostrar mensaje apropiado
             const errorMessage = (error instanceof Error ? error.message : String(error)) || 'Error desconocido';
-
             if (errorMessage.includes('correo') || errorMessage.includes('email')) {
-                alert(`Seguro contratado, pero hubo un problema enviando el correo: ${errorMessage}. Tu seguro está activo y se descargó tu tarjeta.`);
+                toast.info(`Seguro contratado, pero hubo un problema enviando el correo: ${errorMessage}. Tu seguro está activo.`);
             } else {
-                alert(`Error al procesar el seguro: ${errorMessage}. Por favor intenta nuevamente.`);
+                toast.error(`Error al procesar el seguro: ${errorMessage}. Por favor intenta nuevamente.`);
             }
         } finally {
             setIsProcessing(false);
@@ -93,37 +117,66 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ plan, isOpen, onClose }) 
                     <h2 className="checkout-title">{t('insurance.contractInsurance')}</h2>
                     <button className="checkout-close" onClick={onClose}>×</button>
                 </div>
-
                 <div className="plan-info">
                     <h3 className="plan-name">{t(`insurance.plans.${plan.id}.name`)}</h3>
                     <p className="plan-price">${plan.price}{t('insurance.perMonth')}</p>
                     <p className="plan-desc">{t(`insurance.plans.${plan.id}.description`)}</p>
                 </div>
-
                 <form className="checkout-form" onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label>{t('insurance.fullName')} *</label>
-                        <input type="text" required value={userInfo.name} onChange={(e) => handleInputChange('name', e.target.value)} />
+                        <input
+                            type="text"
+                            required
+                            value={userInfo.name}
+                            onChange={(e) => handleInputChange('name', e.target.value)}
+                        />
                     </div>
-
                     <div className="form-group">
                         <label>{t('appointments.email')} *</label>
-                        <input type="email" required value={userInfo.email} onChange={(e) => handleInputChange('email', e.target.value)} />
+                        <input
+                            type="email"
+                            required
+                            value={userInfo.email}
+                            onChange={(e) => handleInputChange('email', e.target.value)}
+                        />
                     </div>
-
                     <div className="form-group">
                         <label>{t('insurance.phone')} *</label>
-                        <input type="tel" required value={userInfo.phone} onChange={(e) => handleInputChange('phone', e.target.value)} />
+                        <input
+                            type="tel"
+                            required
+                            value={userInfo.phone}
+                            onChange={(e) => handleInputChange('phone', e.target.value)}
+                        />
                     </div>
-
                     <div className="form-group">
                         <label>{t('insurance.address')} *</label>
-                        <textarea required value={userInfo.address} onChange={(e) => handleInputChange('address', e.target.value)} rows={3} />
+                        <textarea
+                            required
+                            value={userInfo.address}
+                            onChange={(e) => handleInputChange('address', e.target.value)}
+                            rows={3}
+                        />
                     </div>
-
                     <div className="form-actions">
-                        <button type="button" className="btn-secondary" onClick={onClose}>{t('map.cancel')}</button>
-                        <button type="submit" className="btn-primary" disabled={isProcessing}>{isProcessing ? t('common.processing') : `${t('insurance.contractFor')} $${plan.price}${t('insurance.perMonth')}`}</button>
+                        <button
+                            type="button"
+                            className="btn-secondary"
+                            onClick={onClose}
+                        >
+                            {t('map.cancel')}
+                        </button>
+                        <button
+                            type="submit"
+                            className="btn-primary"
+                            disabled={isProcessing}
+                        >
+                            {isProcessing
+                                ? t('common.processing')
+                                : `${t('insurance.contractFor')} $${plan.price}${t('insurance.perMonth')}`
+                            }
+                        </button>
                     </div>
                 </form>
             </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { getSavedLocations, deleteSavedLocation } from '../services/db.js';
 import locationService from '../services/locationService.js';
 import './SavedLocationsList.css';
@@ -10,6 +11,7 @@ export default function SavedLocationsList({ isOpen, onClose }) {
     const [savedLocations, setSavedLocations] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    const [pendingDeleteId, setPendingDeleteId] = useState(null);
 
     useEffect(() => {
         if (isOpen) {
@@ -25,7 +27,7 @@ export default function SavedLocationsList({ isOpen, onClose }) {
             setSavedLocations(locations);
         } catch (err) {
             setError(t('map.errorLoading'));
-            console.error('Error loading saved locations:', err);
+            toast.error('Error al cargar ubicaciones guardadas');
         } finally {
             setIsLoading(false);
         }
@@ -41,21 +43,31 @@ export default function SavedLocationsList({ isOpen, onClose }) {
             onClose();
         } catch (err) {
             setError(t('map.errorGoingTo'));
-            console.error('Error going to location:', err);
+            toast.error('Error al navegar a la ubicación');
         }
     };
 
-    const handleDeleteLocation = async (locationId, locationName) => {
-        if (!confirm(`${t('map.confirmDelete')} "${locationName}"?`)) {
-            return;
-        }
+    const handleDeleteLocation = (locationId, locationName) => {
+        // Usamos toast con acción de confirmación en lugar de confirm()
+        toast(`¿Eliminar "${locationName}"?`, {
+            action: {
+                label: 'Eliminar',
+                onClick: () => confirmDeleteLocation(locationId),
+            },
+            cancel: {
+                label: 'Cancelar',
+            },
+        });
+    };
 
+    const confirmDeleteLocation = async (locationId) => {
         try {
             await deleteSavedLocation(locationId);
             setSavedLocations(prev => prev.filter(loc => loc.id !== locationId));
+            toast.success('Ubicación eliminada');
         } catch (err) {
             setError(t('map.errorDeleting'));
-            console.error('Error deleting location:', err);
+            toast.error('Error al eliminar la ubicación');
         }
     };
 
@@ -89,10 +101,8 @@ export default function SavedLocationsList({ isOpen, onClose }) {
                     <h3>{t('map.savedLocations')}</h3>
                     <button className="modal-close" onClick={onClose}>×</button>
                 </div>
-
                 <div className="locations-content">
                     {error && <div className="error-message">{error}</div>}
-
                     {isLoading ? (
                         <div className="loading-message">{t('map.loadingLocations')}</div>
                     ) : savedLocations.length === 0 ? (
@@ -127,11 +137,9 @@ export default function SavedLocationsList({ isOpen, onClose }) {
                                                 </button>
                                             </div>
                                         </div>
-
                                         {location.description && (
                                             <p className="location-description">{location.description}</p>
                                         )}
-
                                         <div className="location-details">
                                             <div className="location-coords">
                                                 <span className="coords-label">{t('map.coordinates')}:</span>
@@ -149,7 +157,6 @@ export default function SavedLocationsList({ isOpen, onClose }) {
                         </div>
                     )}
                 </div>
-
                 <div className="modal-footer">
                     <button className="btn-secondary" onClick={onClose}>
                         {t('map.close')}
