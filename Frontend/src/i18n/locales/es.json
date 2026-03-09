@@ -13,8 +13,30 @@
   "nav": {
     "map": "Mapa",
     "appointments": "Turnos",
-    "insurance": "Seguros"
+    "insurance": "Seguros",
+    "tutorial": "Tutorial"
   },
+  "auth": {
+    "login": "Ingresar",
+    "register": "Registrarse"
+  },
+  "emergency": {
+    "btn_sos": "S.O.S",
+    "title": "Centro de Emergencia",
+    "question": "¿Qué tipo de ayuda necesitas?",
+    "ambulance_num": "107",
+    "ambulance_desc": "Emergencias médicas SAME",
+    "police_num": "911",
+    "police_desc": "Central de emergencias",
+    "find_hospital": "Buscar Hospital",
+    "find_desc": "Ver centros cercanos en el mapa",
+    "location_detected": "Ubicación detectada",
+    "country_argentina": "Argentina",
+    "country_france": "Francia",
+    "country_america": "América",
+    "country_international": "Internacional"
+  },
+
   "map": {
     "title": "Mapa de Servicios de Salud",
     "nearbyServicesMap": "Mapa de servicios cercanos",

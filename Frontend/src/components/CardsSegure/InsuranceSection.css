@@ -1,17 +1,25 @@
-/* ============================================================
+/* ══════════════════════════════════════════════════════════════════════════
    InsuranceSection.css — SaludMap
-   Todos los colores usan variables definidas en index.css.
-   No hay colores hardcodeados ni !important.
+   
+   Contiene:
+   1. Variables locales (InsuranceSection)
+   2. InsuranceSection — layout, header, cards, plan seleccionado
+   3. Calendario visual (.calendario__*)
+   4. Slots de hora (.slot-btn, .slots-grilla)
+   5. Responsive (todos los breakpoints unificados)
 
    Breakpoints:
    ≥ 1280px  → Desktop grande
    default   → Notebook / Desktop normal (base)
-   ≤ 1024px  → Tablet (2 columnas)
+   ≤ 1024px  → Tablet
    ≤ 768px   → Tablet chica / landscape
-   ≤ 480px   → Celular (1 columna)
-   ============================================================ */
+   ≤ 480px   → Celular
+   ══════════════════════════════════════════════════════════════════════════ */
 
-/* ── Variables locales — todas apuntan al index.css ── */
+
+/* ════════════════════════════════════════════════
+   1. VARIABLES LOCALES
+   ════════════════════════════════════════════════ */
 :root {
   --ins-bg-panel:      var(--color-background);
   --ins-bg-section:    var(--placeholder-fill);
@@ -28,20 +36,28 @@
   --ins-shadow-lg:     var(--shadow-md);
   --ins-radius:        12px;
   --ins-radius-sm:     8px;
-  --ins-transition:    var(--transition);
+  --ins-transition:    all 0.22s cubic-bezier(0.2, 0.9, 0.2, 1);
   --ins-font:          'DM Sans', 'Roboto', sans-serif;
 }
 
-/* En dark-theme las variables del index ya se actualizan automáticamente.
-   Solo ajustes puntuales que no se pueden inferir. */
 .dark-theme {
   --ins-bg-panel:      var(--color-background);
-  --ins-bg-card-hover: rgba(102,176,157,0.1);
+  --ins-bg-section:    var(--placeholder-fill);
+  --ins-bg-card:       var(--modal-bg);
+  --ins-bg-card-hover: var(--modal-bg);
+  --ins-border:        var(--chat-border);
+  --ins-border-strong: #61A196;
+  --ins-text-main:     var(--text-main);
+  --ins-text-accent:   #FFFFFF;
+  --ins-text-muted:    var(--text-muted);
+  --ins-btn-bg:        transparent;
+  --ins-btn-text:      #76C2B6;
 }
 
-/* ══════════════════════════════════════════
-   SECCIÓN PRINCIPAL
-══════════════════════════════════════════ */
+
+/* ════════════════════════════════════════════════
+   2. INSURANCE SECTION — LAYOUT PRINCIPAL
+   ════════════════════════════════════════════════ */
 .insurance-section {
   width: 100%;
   min-height: calc(100vh - var(--navbar-height));
@@ -53,6 +69,7 @@
   justify-content: flex-start;
   font-family: var(--ins-font);
   color: var(--ins-text-main);
+  background-color: var(--ins-bg-panel);
 }
 
 .insurance-container {
@@ -63,9 +80,7 @@
   box-sizing: border-box;
 }
 
-/* ══════════════════════════════════════════
-   HEADER
-══════════════════════════════════════════ */
+/* ── Header ── */
 .insurance-header {
   text-align: center;
   margin-bottom: 36px;
@@ -91,10 +106,8 @@
   line-height: 1.6;
 }
 
-/* ══════════════════════════════════════════
-   GRID DE TARJETAS — subgrid para alineación real
-   5 filas: título / precio / descripción / cobertura(1fr) / botón
-══════════════════════════════════════════ */
+/* ── Grid de tarjetas ── */
+/* 5 filas: título / precio / descripción / cobertura(1fr) / botón */
 .insurance-cards-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -130,9 +143,161 @@
   box-shadow: var(--shadow-md);
 }
 
-/* ══════════════════════════════════════════
-   TARJETA DE SEGURO
-══════════════════════════════════════════ */
+
+/* ════════════════════════════════════════════════
+   3. TARJETA DE SEGURO
+   ════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════════════════
+   InsuranceSection.css — SaludMap
+
+   Contiene:
+   1. Variables locales (InsuranceSection)
+   2. InsuranceSection — layout, header, cards, plan seleccionado
+   3. Calendario visual (.calendario__*)
+   4. Slots de hora (.slot-btn, .slots-grilla)
+   5. Responsive (todos los breakpoints unificados)
+
+   Breakpoints:
+   ≥ 1280px  → Desktop grande
+   default   → Notebook / Desktop normal (base)
+   ≤ 1024px  → Tablet
+   ≤ 768px   → Tablet chica / landscape
+   ≤ 480px   → Celular
+   ══════════════════════════════════════════════════════════════════════════ */
+
+
+/* ════════════════════════════════════════════════
+   1. VARIABLES LOCALES
+   ════════════════════════════════════════════════ */
+:root {
+  --ins-bg-panel:      var(--color-background);
+  --ins-bg-section:    var(--placeholder-fill);
+  --ins-bg-card:       var(--modal-bg);
+  --ins-bg-card-hover: var(--border-ui-translucent);
+  --ins-border:        var(--chat-border);
+  --ins-border-strong: var(--color-titulo);
+  --ins-text-main:     var(--text-main);
+  --ins-text-accent:   var(--color-titulo);
+  --ins-text-muted:    var(--text-muted);
+  --ins-btn-bg:        var(--color-boton-relleno);
+  --ins-btn-text:      var(--color-boton-texto);
+  --ins-shadow:        var(--shadow-sm-8);
+  --ins-shadow-lg:     var(--shadow-md);
+  --ins-radius:        12px;
+  --ins-radius-sm:     8px;
+  --ins-transition:    all 0.22s cubic-bezier(0.2, 0.9, 0.2, 1);
+  --ins-font:          'DM Sans', 'Roboto', sans-serif;
+}
+
+/* ── Dark mode: prioridad versión compañero ── */
+.dark-theme {
+  --ins-bg-panel:      var(--color-background);
+  --ins-bg-section:    var(--placeholder-fill);
+  --ins-bg-card:       var(--modal-bg);
+  /* Fondo hover oscuro para no perder legibilidad — resalte via borde y sombra */
+  --ins-bg-card-hover: var(--modal-bg);
+  --ins-border:        var(--chat-border);
+  --ins-border-strong: #61A196;
+  --ins-text-main:     var(--text-main);
+  --ins-text-accent:   #FFFFFF;
+  --ins-text-muted:    var(--text-muted);
+  --ins-btn-bg:        transparent;
+  --ins-btn-text:      #76C2B6;
+}
+
+
+/* ════════════════════════════════════════════════
+   2. INSURANCE SECTION — LAYOUT PRINCIPAL
+   ════════════════════════════════════════════════ */
+.insurance-section {
+  width: 100%;
+  min-height: calc(100vh - var(--navbar-height));
+  padding: 32px 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  font-family: var(--ins-font);
+  color: var(--ins-text-main);
+  background-color: var(--ins-bg-panel);
+}
+
+.insurance-container {
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* ── Header ── */
+.insurance-header {
+  text-align: center;
+  margin-bottom: 36px;
+  width: 100%;
+}
+
+.insurance-title {
+  font-family: var(--ins-font);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 700;
+  color: var(--ins-text-accent);
+  margin: 0 0 12px;
+  letter-spacing: 0.01em;
+}
+
+.insurance-subtitle {
+  font-family: var(--ins-font);
+  font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+  color: var(--ins-text-muted);
+  font-weight: 500;
+  max-width: 660px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ── Grid de tarjetas ── */
+/* 5 filas: título / precio / descripción / cobertura(1fr) / botón */
+.insurance-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto auto auto 1fr auto;
+  column-gap: 20px;
+  row-gap: 0;
+  margin-bottom: 36px;
+  width: 100%;
+}
+
+.insurance-card-wrapper {
+  grid-row: span 5;
+  display: grid;
+  grid-template-rows: subgrid;
+  background: var(--ins-bg-card);
+  border: 1.5px solid var(--ins-border);
+  border-radius: var(--ins-radius);
+  box-shadow: none;
+  transition: var(--ins-transition);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.insurance-card-wrapper:hover {
+  background: var(--ins-bg-card-hover);
+  border-color: var(--ins-border-strong);
+  transform: translateY(-4px);
+  box-shadow: var(--ins-shadow-lg);
+}
+
+.insurance-card-wrapper:has(.insurance-card.selected) {
+  border: 2px solid var(--ins-border-strong);
+  box-shadow: var(--shadow-md);
+}
+
+
+/* ════════════════════════════════════════════════
+   3. TARJETA DE SEGURO
+   ════════════════════════════════════════════════ */
 .insurance-card {
   display: grid;
   grid-template-rows: subgrid;
@@ -152,7 +317,6 @@
 .insurance-card .card-price       { padding: 0 22px 6px; }
 .insurance-card .card-description { padding: 0 22px 10px; }
 .insurance-card .card-coverage    { padding: 0 22px; }
-.insurance-card .card-button      { margin: 14px 22px 22px; }
 
 .insurance-card:hover,
 .insurance-card.selected { background: transparent; border: none; box-shadow: none; }
@@ -170,7 +334,6 @@
   align-items: center;
   justify-content: center;
 }
-
 .card-title.selected { color: var(--ins-text-accent); }
 
 /* ── Precio ── */
@@ -184,7 +347,6 @@
   align-items: center;
   justify-content: center;
 }
-
 .card-price.selected { color: var(--ins-border-strong); }
 
 /* ── Descripción ── */
@@ -216,7 +378,6 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
-
 .coverage-title.selected { color: var(--ins-border-strong); }
 
 .coverage-list {
@@ -227,7 +388,6 @@
   max-height: 260px;
   overflow-y: auto;
 }
-
 .coverage-list::-webkit-scrollbar       { width: 4px; }
 .coverage-list::-webkit-scrollbar-thumb { background: var(--ins-border); border-radius: 4px; }
 
@@ -238,7 +398,6 @@
   color: var(--ins-text-main);
   line-height: 1.4;
 }
-
 .coverage-item::before {
   content: '✓';
   position: absolute;
@@ -247,11 +406,13 @@
   color: var(--ins-text-accent);
   font-weight: 700;
 }
-
 .coverage-item.selected::before { color: var(--ins-border-strong); }
 
 /* ── Botón dentro de la card ── */
-.card-button {
+.insurance-card .card-button {
+  margin: 14px auto 22px auto;
+  width: calc(100% - 44px);
+  display: block;
   padding: 10px 20px;
   background: var(--ins-btn-bg);
   color: var(--ins-btn-text);
@@ -260,7 +421,6 @@
   font-family: var(--ins-font);
   font-size: 0.85rem;
   font-weight: 700;
-  width: 100%;
   text-align: center;
   cursor: pointer;
   min-height: unset;
@@ -270,21 +430,20 @@
   text-transform: uppercase;
   box-sizing: border-box;
 }
-
-.card-button:hover {
+.insurance-card .card-button:hover {
   filter: brightness(0.94);
   transform: translateY(-1px);
   box-shadow: var(--ins-shadow);
 }
-
 .insurance-card.selected .card-button {
   background: var(--ins-border-strong);
   color: var(--white);
 }
 
-/* ══════════════════════════════════════════
-   SECCIÓN PLAN SELECCIONADO
-══════════════════════════════════════════ */
+
+/* ════════════════════════════════════════════════
+   4. SECCIÓN PLAN SELECCIONADO
+   ════════════════════════════════════════════════ */
 .selected-plan-section {
   text-align: center;
   padding: 24px;
@@ -321,7 +480,7 @@
   line-height: 1.5;
 }
 
-/* Botón contratar */
+/* ── Botón contratar ── */
 .contract-button {
   padding: 11px 32px;
   background: var(--ins-border-strong);
@@ -337,159 +496,356 @@
   transition: var(--ins-transition);
   letter-spacing: 0.03em;
 }
-
 .contract-button:hover {
   filter: brightness(1.08);
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm-12);
 }
 
+
 /* ════════════════════════════════════════════════
-   RESPONSIVE
+   5. CALENDARIO VISUAL
+   ════════════════════════════════════════════════ */
+.calendario {
+  background: var(--t-bg-section);
+  border-radius: 10px;
+  padding: 0.8rem;
+  border: 1.5px solid var(--t-border);
+  box-shadow: var(--t-shadow);
+}
+
+/* ── Navegación mes/año ── */
+.calendario__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.65rem;
+}
+.calendario__mes-anio {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--t-text-accent);
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
+}
+.calendario__nav-btn {
+  background: var(--t-btn-bg);
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  padding: 0.18rem 0.6rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: unset;
+  min-width: unset;
+  line-height: 1.5;
+  transition: var(--t-transition);
+  box-shadow: none;
+}
+.calendario__nav-btn:hover {
+  filter: brightness(1.1);
+  transform: scale(1.06);
+}
+
+/* ── Grilla 7 columnas ── */
+.calendario__grilla {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+/* ── Cabeceras ── */
+.calendario__cabecera {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--t-text-accent);
+  padding: 0.25rem 0 0.35rem;
+  letter-spacing: 0.03em;
+}
+
+/* ── Celdas base ── */
+.calendario__celda {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  border: none;
+  cursor: default;
+  min-height: unset;
+  min-width: unset;
+  padding: 0;
+  line-height: 1;
+  background: transparent;
+  color: var(--t-text-muted);
+  transition: var(--t-transition);
+  box-shadow: none;
+}
+.calendario__celda--vacia { pointer-events: none; }
+
+/* ── Días disponibles ── */
+.calendario__celda--disponible {
+  background: var(--t-border-strong);
+  color: var(--white);
+  cursor: pointer;
+  font-weight: 700;
+}
+.calendario__celda--disponible:hover {
+  filter: brightness(1.12);
+  transform: scale(1.09);
+  box-shadow: var(--t-shadow);
+}
+
+/* ── Día seleccionado ── */
+.calendario__celda--seleccionado {
+  background: var(--t-btn-bg);
+  color: var(--white);
+  cursor: pointer;
+  font-weight: 700;
+  outline: 2px solid var(--t-border-strong);
+  outline-offset: 2px;
+  box-shadow: var(--t-shadow);
+}
+
+/* ── Días pasados ── */
+.calendario__celda--pasado {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* ── Días sin atención ── */
+.calendario__celda--no-disponible {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* ── Hoy ── */
+.calendario__celda--hoy:not(.calendario__celda--seleccionado) {
+  outline: 2px solid var(--t-border-strong);
+  outline-offset: 1px;
+  color: var(--t-text-accent);
+  font-weight: 700;
+}
+
+/* ── Leyenda ── */
+.calendario__leyenda {
+  display: flex;
+  gap: 0.9rem;
+  margin-top: 0.7rem;
+  flex-wrap: wrap;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--t-border);
+}
+.leyenda__item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.7rem;
+  color: var(--t-text-muted);
+}
+.leyenda__item::before {
+  content: '';
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.leyenda__item--disponible::before   { background: var(--t-border-strong); }
+.leyenda__item--seleccionado::before { background: var(--t-btn-bg); outline: 1.5px solid var(--t-border-strong); outline-offset: 1px; }
+.leyenda__item--no-disponible::before { background: var(--t-text-muted); opacity: 0.4; }
+
+/* ── Dark mode calendario ── */
+.dark-theme .calendario {
+  background: var(--t-bg-section);
+  border-color: var(--t-border);
+}
+.dark-theme .calendario__celda--disponible {
+  background: var(--t-border-strong);
+  color: var(--t-bg-card);
+}
+.dark-theme .calendario__celda--seleccionado {
+  background: var(--t-btn-bg);
+  color: var(--white);
+}
+.dark-theme .calendario__celda--hoy:not(.calendario__celda--seleccionado) {
+  color: var(--t-text-accent);
+}
+
+
+/* ════════════════════════════════════════════════
+   6. SLOTS DE HORA
+   ════════════════════════════════════════════════ */
+.slots-grilla {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 0.4rem;
+}
+.slot-btn {
+  background: var(--t-bg-section);
+  color: var(--t-text-main);
+  border: 1.5px solid var(--t-border);
+  border-radius: 7px;
+  padding: 0.32rem 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  min-height: unset;
+  min-width: unset;
+  line-height: 1.4;
+  transition: var(--t-transition);
+  box-shadow: none;
+}
+.slot-btn:hover {
+  background: var(--t-border-strong);
+  color: var(--white);
+  border-color: var(--t-border-strong);
+  transform: translateY(-1px);
+  box-shadow: var(--t-shadow);
+}
+.slot-btn--activo {
+  background: var(--t-border-strong);
+  color: var(--white);
+  border-color: var(--t-border-strong);
+  font-weight: 700;
+  box-shadow: var(--t-shadow);
+}
+
+/* ── Dark mode slots ── */
+.dark-theme .slot-btn {
+  background: var(--t-bg-section);
+  color: var(--t-text-main);
+  border-color: var(--t-border);
+}
+.dark-theme .slot-btn:hover,
+.dark-theme .slot-btn--activo {
+  background: var(--t-border-strong);
+  color: var(--t-bg-card);
+  border-color: var(--t-border-strong);
+}
+
+/* ── Info especialidad ── */
+.especialidad-info {
+  margin-top: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+
+/* ════════════════════════════════════════════════
+   7. RESPONSIVE — BREAKPOINTS UNIFICADOS
    ════════════════════════════════════════════════ */
 
 /* ── Desktop grande (≥ 1280px) ── */
 @media (min-width: 1280px) {
-  .insurance-section {
-    padding: 48px 28px;
-  }
-
-  .insurance-container {
-    padding: 0 28px;
-  }
-
-  .insurance-header {
-    margin-bottom: 48px;
-  }
-
-  .insurance-cards-grid {
-    column-gap: 28px;
-  }
-
-  .card-title    { font-size: 1.55rem; }
-  .card-price    { font-size: 1.45rem; }
-
-  .coverage-list { max-height: 320px; }
-
-  .selected-plan-section {
-    max-width: 700px;
-    padding: 32px;
-  }
-
-  .contract-button {
-    font-size: 1rem;
-    padding: 13px 40px;
-  }
+  .insurance-section       { padding: 48px 28px; }
+  .insurance-container     { padding: 0 28px; }
+  .insurance-header        { margin-bottom: 48px; }
+  .insurance-cards-grid    { column-gap: 28px; }
+  .card-title              { font-size: 1.55rem; }
+  .card-price              { font-size: 1.45rem; }
+  .coverage-list           { max-height: 320px; }
+  .selected-plan-section   { max-width: 700px; padding: 32px; }
+  .contract-button         { font-size: 1rem; padding: 13px 40px; }
+  .calendario              { padding: 1rem; }
+  .calendario__celda       { font-size: 0.9rem; border-radius: 7px; }
+  .calendario__cabecera    { font-size: 0.75rem; }
+  .calendario__mes-anio    { font-size: 1rem; }
+  .slot-btn                { font-size: 0.85rem; padding: 0.35rem 0.75rem; }
 }
 
-/* ── Tablet (≤ 1024px) — 2 columnas ── */
+/* ── Tablet (≤ 1024px) ── */
 @media (max-width: 1024px) {
-  .insurance-cards-grid {
-    grid-template-columns: repeat(2, 1fr);
-    column-gap: 16px;
-  }
-
-  .insurance-section {
-    padding: 28px 16px;
-  }
-
-  .card-title { font-size: 1.25rem; }
-  .card-price { font-size: 1.15rem; }
+  .insurance-section    { padding: 28px 16px; }
+  .insurance-cards-grid { grid-template-columns: repeat(2, 1fr); column-gap: 16px; }
+  .card-title           { font-size: 1.25rem; }
+  .card-price           { font-size: 1.15rem; }
+  .calendario           { padding: 0.7rem; }
+  .calendario__grilla   { gap: 3px; }
+  .slot-btn             { font-size: 0.78rem; padding: 0.3rem 0.6rem; }
 }
 
 /* ── Tablet chica / landscape (≤ 768px) ── */
 @media (max-width: 768px) {
-  .insurance-section {
-    padding: 24px 12px;
-  }
-
-  .insurance-container {
-    padding: 0 8px;
-  }
-
-  .insurance-header {
-    margin-bottom: 24px;
-  }
-
-  .insurance-cards-grid {
-    grid-template-columns: repeat(2, 1fr);
-    column-gap: 12px;
-  }
+  .insurance-section    { padding: 24px 12px; }
+  .insurance-container  { padding: 0 8px; }
+  .insurance-header     { margin-bottom: 24px; }
+  .insurance-cards-grid { grid-template-columns: repeat(2, 1fr); column-gap: 12px; }
 
   .insurance-card .card-title       { padding: 16px 16px 8px; }
   .insurance-card .card-price       { padding: 0 16px 4px; }
   .insurance-card .card-description { padding: 0 16px 8px; }
   .insurance-card .card-coverage    { padding: 0 16px; }
-  .insurance-card .card-button      { margin: 12px 16px 16px; }
+  .insurance-card .card-button      { width: calc(100% - 32px); margin: 12px auto 16px auto; }
 
-  .card-title { font-size: 1.1rem; }
-  .card-price { font-size: 1rem; }
+  .card-title  { font-size: 1.1rem; }
+  .card-price  { font-size: 1rem; }
 
-  .selected-plan-section {
-    padding: 18px 16px;
-  }
+  .selected-plan-section { padding: 18px 16px; }
+  .contract-button       { width: 100%; padding: 12px 20px; }
 
-  .contract-button {
-    width: 100%;
-    padding: 12px 20px;
-  }
+  .calendario           { padding: 0.65rem; }
+  .calendario__celda    { font-size: 0.78rem; border-radius: 5px; }
+  .calendario__cabecera { font-size: 0.66rem; }
+  .calendario__mes-anio { font-size: 0.88rem; }
+  .slots-grilla         { gap: 5px; }
+  .slot-btn             { font-size: 0.76rem; padding: 0.28rem 0.52rem; }
+  .leyenda__item        { font-size: 0.67rem; }
 }
 
-/* ── Celular (≤ 480px) — 1 columna ── */
+/* ── Celular (≤ 480px) ── */
 @media (max-width: 480px) {
-  .insurance-section {
-    padding: 20px 8px;
-  }
-
-  .insurance-container {
-    padding: 0 4px;
-  }
-
+  .insurance-section    { padding: 20px 8px; }
+  .insurance-container  { padding: 0 4px; }
+  .insurance-header     { margin-bottom: 20px; }
   .insurance-cards-grid {
     grid-template-columns: 1fr;
-    /* En 1 columna el subgrid sigue funcionando pero la card ocupa todo el ancho */
     gap: 16px;
-    /* Resetear subgrid en columna única para evitar espacios vacíos */
     grid-template-rows: none;
   }
 
-  /* En columna única, el wrapper no necesita subgrid */
   .insurance-card-wrapper {
     grid-row: auto;
     grid-template-rows: none;
     display: flex;
     flex-direction: column;
   }
-
   .insurance-card {
     grid-template-rows: none;
     display: flex;
     flex-direction: column;
     grid-row: auto;
   }
-
-  .insurance-card .card-coverage {
-    flex: 1;
-  }
-
+  .insurance-card .card-coverage    { flex: 1; }
   .insurance-card .card-title       { padding: 16px 16px 8px; }
   .insurance-card .card-price       { padding: 0 16px 4px; }
   .insurance-card .card-description { padding: 0 16px 8px; }
   .insurance-card .card-coverage    { padding: 0 16px; }
-  .insurance-card .card-button      { margin: 12px 16px 16px; }
+  .insurance-card .card-button      { width: calc(100% - 32px); margin: 12px auto 16px auto; }
 
-  .card-title { font-size: 1.05rem; }
-  .card-price { font-size: 1rem; }
-  .card-description { font-size: 0.84rem; }
-  .coverage-item { font-size: 0.82rem; }
-
-  .insurance-header { margin-bottom: 20px; }
-
-  .selected-plan-section {
-    padding: 16px 14px;
-    margin-top: 20px;
-  }
-
-  .selected-plan-title { font-size: 0.95rem; }
+  .card-title              { font-size: 1.05rem; }
+  .card-price              { font-size: 1rem; }
+  .card-description        { font-size: 0.84rem; }
+  .coverage-item           { font-size: 0.82rem; }
+  .selected-plan-section   { padding: 16px 14px; margin-top: 20px; }
+  .selected-plan-title     { font-size: 0.95rem; }
   .selected-plan-description { font-size: 0.85rem; }
+
+  .calendario           { padding: 0.55rem; }
+  .calendario__grilla   { gap: 2px; }
+  .calendario__celda    { font-size: 0.72rem; border-radius: 4px; }
+  .calendario__cabecera { font-size: 0.6rem; padding-bottom: 0.28rem; }
+  .calendario__mes-anio { font-size: 0.82rem; }
+  .calendario__nav-btn  { font-size: 1rem; padding: 0.15rem 0.5rem; }
+  .calendario__leyenda  { gap: 0.55rem; padding-top: 0.4rem; }
+  .leyenda__item        { font-size: 0.62rem; }
+  .leyenda__item::before { width: 9px; height: 9px; }
+  .slots-grilla         { gap: 4px; }
+  .slot-btn             { font-size: 0.72rem; padding: 0.25rem 0.45rem; border-radius: 5px; }
 }

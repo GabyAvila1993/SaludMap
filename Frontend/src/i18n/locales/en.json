@@ -1,4 +1,7 @@
-{
+{ "auth": {
+    "login": "Log in",
+    "register": "Sign up"
+  },
   "common": {
     "loading": "Loading location...",
     "allowLocation": "Please allow access to your location",
@@ -13,8 +16,26 @@
   "nav": {
     "map": "Map",
     "appointments": "Appointments",
-    "insurance": "Insurance"
+    "insurance": "Insurance",
+    "tutorial": "Tutorial"
   },
+  "emergency": {
+    "btn_sos": "S.O.S",
+    "title": "Emergency Center",
+    "question": "What kind of help do you need?",
+    "ambulance_num": "911",
+    "ambulance_desc": "Medical Emergencies",
+    "police_num": "911",
+    "police_desc": "Police / General",
+    "find_hospital": "Find Hospital",
+    "find_desc": "See nearby centers on the map",
+    "location_detected": "Detected location",
+    "country_argentina": "Argentina",
+    "country_france": "France",
+    "country_america": "Americas",
+    "country_international": "International"
+  },
+  
   "map": {
     "title": "Health Services Map",
     "nearbyServicesMap": "Nearby services map",

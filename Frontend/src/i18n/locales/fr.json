@@ -13,7 +13,28 @@
   "nav": {
     "map": "Carte",
     "appointments": "Rendez-vous",
-    "insurance": "Assurance"
+    "insurance": "Assurance",
+    "tutorial": "Tutoriel"
+  },
+  "auth": {
+    "login": "Connexion",
+    "register": "Inscription"
+  },
+  "emergency": {
+    "btn_sos": "S.O.S",
+    "title": "Centre d'urgence",
+    "question": "De quel type d'aide avez-vous besoin?",
+    "ambulance_num": "15",
+    "ambulance_desc": "Urgences médicales (SAMU)",
+    "police_num": "17",
+    "police_desc": "Police Secours",
+    "find_hospital": "Trouver un hôpital",
+    "find_desc": "Voir les centres à proximité",
+    "location_detected": "Emplacement détecté",
+    "country_argentina": "Argentine",
+    "country_france": "France",
+    "country_america": "Amériques",
+    "country_international": "International"
   },
   "map": {
     "title": "Carte des Services de Santé",

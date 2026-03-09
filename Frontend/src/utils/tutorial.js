@@ -10,17 +10,18 @@ const customPopoverStyles = `
   .saludmap-tour .driver-popover-title {
     font-size: 1.25rem;
     font-weight: bold;
-    color: #0056b3;
+    color: #61A196; /* Verde marca SaludMap */
   }
   .saludmap-tour .driver-popover-description {
     font-size: 1rem;
   }
   .saludmap-tour .driver-popover-footer button {
-    background-color: #007bff;
+    background-color: #61A196;
     color: white;
     border-radius: 4px;
     padding: 8px 16px;
     text-shadow: none;
+    border: none;
   }
   .saludmap-tour .driver-popover-footer .driver-close-btn {
     background-color: transparent;
@@ -46,22 +47,11 @@ const ensureMainMenuOpen = (isMobile) => {
   }
 };
 
-const ensureMapMenuOpen = (isMobileMap) => {
-    if (!isMobileMap) return;
-    if (!document.querySelector('.mobile-map-menu')) {
-        click('.mobile-map-toggle');
-    }
-}
-
-const ensureAllMenusClosed = (isMobile, isMobileMap) => {
+const ensureAllMenusClosed = (isMobile) => {
   if (isMobile && document.querySelector('.mobile-menu')) {
     click('.hamburger');
   }
-  if (isMobileMap && document.querySelector('.mobile-map-menu')) {
-    click('.mobile-map-toggle');
-  }
 };
-
 
 export const startTutorial = async () => {
   try {
@@ -71,89 +61,55 @@ export const startTutorial = async () => {
     addCustomStyles();
 
     const isMobile = window.innerWidth <= 768;
-    const isMobileMap = window.innerWidth <= 1024;
 
     let steps = [
       {
         element: '.logo',
         popover: {
           title: '🗺️ Bienvenido a SaludMap',
-          description: 'Tu guía para encontrar servicios de salud. ¡Empecemos el recorrido!',
+          description: 'Tu guía inteligente para encontrar servicios de salud. ¡Empecemos el recorrido!',
           side: 'bottom',
           align: 'start',
         },
-        onHighlightStarted: () => ensureAllMenusClosed(isMobile, isMobileMap),
+        onHighlightStarted: () => ensureAllMenusClosed(isMobile),
       },
       {
-        id: 'main-nav', // Add an ID to find this step easily
-        element: '.nav-buttons',
+        element: '.emergency-nav-container', /* <-- ¡AQUÍ ESTÁ EL CAMBIO! Apuntamos al contenedor */
         popover: {
-          title: '📌 Navegación Principal',
-          description: 'Usa estos botones para cambiar entre el mapa, tus turnos y los seguros de salud.',
+          title: '🚨 Centro de Emergencias',
+          description: 'En caso de crisis, este botón detecta tu país y te conecta con los servicios locales (Ambulancia o Policía).',
           side: 'bottom',
           align: 'center',
         },
       },
       {
+        id: 'main-nav', 
+        element: '.nav-buttons',
+        popover: {
+          title: '📌 Navegación Principal',
+          description: 'Cambia entre las distintas secciones de la aplicación de forma rápida.',
+          side: 'bottom',
+          align: 'center',
+        },
+      },
+      {
+        element: '.nav-item-dropdown',
+        popover: {
+          title: '📍 Opciones del Mapa',
+          description: 'Haz clic en la flechita del Mapa para desplegar herramientas como: Actualizar ubicación, descargar áreas offline, guardar lugares y aplicar filtros.',
+          side: 'bottom',
+          align: 'start',
+        },
+      },
+      {
         element: '.nav-right',
         popover: {
-          title: '⚙️ Controles de Usuario',
-          description: 'Desde aquí puedes cambiar el idioma, cambiar el tema, ver tu perfil o iniciar sesión.',
+          title: '⚙️ Tu Cuenta e Idioma',
+          description: 'Cambia el idioma de la plataforma o inicia sesión para gestionar tus turnos y seguros.',
           side: 'bottom',
           align: 'end',
         },
-        onHighlightStarted: () => ensureAllMenusClosed(isMobile, isMobileMap),
-      },
-      {
-        id: 'map-controls-intro', // Add an ID
-        element: '[data-tour="update-location"]',
-        popover: {
-          title: '📍 Controles del Mapa',
-          description: 'Desde aquí puedes actualizar tu ubicación.',
-          side: 'right',
-          align: 'start',
-        },
-        onHighlightStarted: () => ensureAllMenusClosed(isMobile, isMobileMap),
-      },
-      {
-        element: '[data-tour="filters"]',
-        popover: {
-          title: '🔍 Filtros del Mapa',
-          description: 'Filtra los establecimientos por tipo (hospital, clínica, etc.) para encontrar lo que necesitas.',
-          side: 'left',
-          align: 'start',
-        },
-        onHighlightStarted: () => ensureMapMenuOpen(isMobileMap),
-      },
-      {
-        element: '[data-tour="offline-download"]',
-        popover: {
-            title: '⬇️ Área Offline',
-            description: 'Descarga un área del mapa para poder usar la aplicación sin conexión a internet.',
-            side: 'left',
-            align: 'start',
-        },
-        onHighlightStarted: () => ensureMapMenuOpen(isMobileMap),
-      },
-      {
-        element: '[data-tour="save-location"]',
-        popover: {
-            title: '💾 Guardar Ubicación',
-            description: 'Guarda una ubicación específica con un nombre para acceder a ella rápidamente más tarde.',
-            side: 'left',
-            align: 'start',
-        },
-        onHighlightStarted: () => ensureMapMenuOpen(isMobileMap),
-      },
-      {
-        element: '[data-tour="view-locations"]',
-        popover: {
-            title: '📋 Ver Ubicaciones',
-            description: 'Accede a tu lista de ubicaciones guardadas.',
-            side: 'left',
-            align: 'start',
-        },
-        onHighlightStarted: () => ensureMapMenuOpen(isMobileMap),
+        onHighlightStarted: () => ensureAllMenusClosed(isMobile),
       },
       {
         element: '.map-root',
@@ -163,73 +119,43 @@ export const startTutorial = async () => {
           side: 'top',
           align: 'center',
         },
-        onHighlightStarted: () => ensureAllMenusClosed(isMobile, isMobileMap),
+        onHighlightStarted: () => ensureAllMenusClosed(isMobile),
       },
       {
         element: '.chatbot-avatar',
         popover: {
-            title: '🤖 Asistente Virtual AURA',
-            description: 'Haz clic aquí para hablar con nuestro asistente y resolver tus dudas.',
+            title: '🤖 Asistente Virtual',
+            description: '¿Tienes dudas? Haz clic aquí para hablar con nuestro asistente inteligente en cualquier momento.',
             side: 'top',
             align: 'start',
         },
-        onHighlightStarted: () => ensureAllMenusClosed(isMobile, isMobileMap),
+        onHighlightStarted: () => ensureAllMenusClosed(isMobile),
       },
       {
         popover: {
             title: '🎉 ¡Recorrido finalizado!',
-            description: '¡Ya estás listo para usar SaludMap! Si necesitas ayuda, siempre puedes volver a iniciar este tutorial.',
+            description: 'Ya estás listo para sacarle todo el provecho a SaludMap. Puedes volver a ver este tutorial cuando quieras.',
         },
-        onHighlightStarted: () => ensureAllMenusClosed(isMobile, isMobileMap),
+        onHighlightStarted: () => ensureAllMenusClosed(isMobile),
       }
     ];
 
+    // Adaptación del tutorial para pantallas de celular
     if (isMobile) {
         const navStepIndex = steps.findIndex(s => s.id === 'main-nav');
         if (navStepIndex !== -1) {
-            steps.splice(navStepIndex, 1, 
+            steps.splice(navStepIndex, 2, // Reemplazamos la nav de desktop por la de móvil
                 {
                     element: '.hamburger',
                     popover: {
                         title: '📌 Menú Principal',
-                        description: 'Toca aquí para abrir la navegación principal de la aplicación.',
+                        description: 'Toca aquí para abrir la navegación y las opciones del mapa.',
                         side: 'bottom',
                         align: 'center',
                     },
                     onHighlightStarted: () => ensureMainMenuOpen(isMobile),
-                },
-                {
-                    element: '[data-tour="nav-mapa"]',
-                    popover: { title: '🗺️ Mapa', description: 'Vuelve al mapa principal.' },
-                    onHighlightStarted: () => ensureMainMenuOpen(isMobile),
-                },
-                {
-                    element: '[data-tour="nav-turnos"]',
-                    popover: { title: '🗓️ Turnos', description: 'Consulta tus próximos turnos.' },
-                    onHighlightStarted: () => ensureMainMenuOpen(isMobile),
-                },
-                {
-                    element: '[data-tour="nav-seguros"]',
-                    popover: { title: '🛡️ Seguros', description: 'Explora las opciones de seguros de salud.' },
-                    onHighlightStarted: () => ensureMainMenuOpen(isMobile),
                 }
             );
-        }
-    }
-
-    if (isMobileMap) {
-        const mapIntroIndex = steps.findIndex(s => s.id === 'map-controls-intro');
-        if (mapIntroIndex !== -1) {
-            steps[mapIntroIndex] = {
-                element: '.mobile-map-toggle',
-                popover: {
-                  title: '📍 Controles del Mapa',
-                  description: 'Toca aquí para ver todas las opciones disponibles para el mapa.',
-                  side: 'bottom',
-                  align: 'start',
-                },
-                onHighlightStarted: () => ensureAllMenusClosed(isMobile, isMobileMap),
-            };
         }
     }
 
@@ -251,7 +177,7 @@ export const startTutorial = async () => {
         }
       },
        onCloseClick: () => {
-        ensureAllMenusClosed(isMobile, isMobileMap);
+        ensureAllMenusClosed(isMobile);
         driverInstance.destroy();
       },
     });

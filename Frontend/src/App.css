@@ -46,7 +46,6 @@ body {
   background: var(--bg-main);
 }
 
-
 .app-main {
   width: 100%;
   flex: 1;
@@ -93,7 +92,7 @@ body {
   justify-content: center;
   flex: 1 1 auto;
   position: relative;
-  gap: 12px; /* espacio entre grupos dentro del centro */
+  gap: 12px;
 }
 
 .nav-right {
@@ -113,27 +112,38 @@ body {
 }
 
 .logo-img {
-  width: 36px;
-  height: 36px;
+  width: 50px;
+  height: 50px;
   object-fit: contain;
   display: block;
   flex-shrink: 0;
+  transition: all 0.3s ease;
 }
 
+/* ── Texto del Logo ── */
 .logo-text {
-  font-family: 'Headland One', serif;
-  font-size: 1.4rem;
-  color: var(--color-titulo);
+  font-family: 'Montserrat', 'Roboto', sans-serif;
+  font-weight: 800;
+  font-size: 1.6rem;
   white-space: nowrap;
+  letter-spacing: -0.01em;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
 }
+
+.logo-part-1 { color: #1E2C3D; }
+.logo-part-2 { color: #61A196; }
+
+body.dark-theme .logo-part-1 { color: #FFFFFF; }
+/* .logo-part-2 se mantiene verde en dark mode */
 
 /* ── Botones de navegación (desktop) ── */
 .nav-buttons {
   display: flex;
   align-items: center;
-  gap: 16px; /* aumenta separación entre secciones */
+  gap: 16px;
 }
-
 
 .nav-button {
   display: inline-flex;
@@ -172,9 +182,6 @@ body {
   cursor: not-allowed;
   transform: none;
 }
-
-
-
 
 /* ── Hamburger ── */
 .hamburger {
@@ -259,18 +266,101 @@ body {
   border: 1px solid var(--border-ui);
 }
 
-.dark-theme .mobile-menu {
+.dark-theme .mobile-menu { background: var(--bg-navbar-modal); border-color: var(--border-ui); }
+.dark-theme .mobile-menu .nav-button { color: var(--color-titulo); }
+.dark-theme .mobile-menu .nav-button.active { color: var(--color-boton-texto); }
+
+/* ── Dropdown del Mapa en Navbar ── */
+.nav-item-dropdown {
+  position: relative;
+  display: inline-flex;
+}
+
+.dropdown-arrow {
+  display: inline-block;
+  width: 12px;
+  text-align: center;
+  font-size: 0.7rem;
+  margin-left: 6px;
+  transition: transform 0.2s ease;
+}
+
+.dropdown-arrow.open { transform: rotate(180deg); }
+
+.navbar-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
   background: var(--bg-navbar-modal);
-  border-color: var(--border-ui);
+  border: 1px solid var(--border-ui);
+  border-radius: 14px;
+  padding: 8px;
+  box-shadow: var(--shadow-lg);
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 4000;
+  animation: dropdownSmoothFade 0.2s ease-out forwards;
 }
 
-.dark-theme .mobile-menu .nav-button {
-  color: var(--color-titulo);
+@keyframes dropdownSmoothFade {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.dark-theme .mobile-menu .nav-button.active {
-  color: var(--color-boton-texto);
+.dropdown-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-main);
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: left;
+  transition: all 0.2s ease;
+  min-height: unset;
+  box-shadow: none;
 }
+
+.dropdown-menu-item:hover {
+  background: var(--btn-primary-bg);
+  transform: translateX(4px);
+}
+
+.dropdown-menu-item.gps-item { color: var(--btn-gps); }
+
+/* ── Submenú móvil ── */
+.mobile-submenu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-left: 16px;
+  margin-bottom: 8px;
+  border-left: 2px solid var(--border-ui);
+  margin-left: 16px;
+}
+
+.mobile-submenu-item {
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  padding: 8px;
+  text-align: left;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 6px;
+  min-height: unset;
+  box-shadow: none;
+}
+
+.mobile-submenu-item:hover { background: var(--border-opaque-08); }
+.mobile-submenu-item.gps-item { color: var(--btn-gps); }
 
 /* ── Controles de usuario ── */
 .user-controls {
@@ -324,20 +414,93 @@ body {
   font-size: 0.9rem;
 }
 
+/* ── Auth actions ── */
 .nav-auth-actions {
   display: flex;
+  gap: 12px;
   align-items: center;
-  gap: 8px;
+  margin-left: 10px;
+  padding-left: 16px;
+  border-left: 2px solid var(--border-ui);
+}
+
+.btn-auth {
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-family: 'Montserrat', 'Roboto', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-login {
+  background: transparent;
+  color: #61A196;
+  border: 2px solid #61A196;
+}
+
+.btn-login:hover {
+  background: rgba(97, 161, 150, 0.1);
+  color: #4A8076;
+  border-color: #4A8076;
+  transform: scale(1.05);
+}
+
+.btn-register {
+  background: #61A196;
+  color: #ffffff;
+  border: 2px solid #61A196;
+  box-shadow: 0 4px 10px rgba(97, 161, 150, 0.25);
+}
+
+.btn-register:hover {
+  background: #4A8076;
+  border-color: #4A8076;
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(97, 161, 150, 0.4);
+}
+
+body.dark-theme .btn-login {
+  color: #76C2B6;
+  border-color: #76C2B6;
+}
+
+/* ── Botón toggle de tema (sol/luna) ── */
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--border-ui);
+  color: var(--color-titulo);
+  cursor: pointer;
+  transition: var(--transition);
+  padding: 0;
+  min-height: unset;
+  box-shadow: none;
+  flex-shrink: 0;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--btn-primary-bg);
+  transform: scale(1.08);
+  border-color: transparent;
+  box-shadow: var(--shadow-sm-8);
 }
 
 /* ── Dropdown de usuario ── */
-.user-menu {
-  position: relative;
-}
+.user-menu { position: relative; }
 
-.tour-button-text {
-  display: inline;
-}
+.tour-button-text { display: inline; }
 
 .user-dropdown {
   display: none;
@@ -353,10 +516,7 @@ body {
   z-index: 3200;
 }
 
-
-.user-menu.open .user-dropdown {
-  display: block;
-}
+.user-menu.open .user-dropdown { display: block; }
 
 .user-dropdown .nav-button {
   display: block;
@@ -399,9 +559,7 @@ button:hover:not(:disabled) {
   border-color: transparent;
 }
 
-button:active:not(:disabled) {
-  transform: translateY(0);
-}
+button:active:not(:disabled) { transform: translateY(0); }
 
 button:disabled {
   opacity: 0.6;
@@ -446,9 +604,7 @@ button:disabled {
   max-width: none;
 }
 
-.map-section {
-  width: 100%;
-}
+.map-section { width: 100%; }
 
 .map-layout {
   display: flex;
@@ -493,35 +649,15 @@ button:disabled {
 .col-12 { grid-column: span 12; }
 
 /* ── Utilidades de usuario ── */
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.user-name {
-  color: var(--text-main);
-  font-weight: 700;
-}
+.user-info { display: flex; align-items: center; gap: 10px; }
+.user-name  { color: var(--text-main); font-weight: 700; }
 
 /* ── Scrollbar personalizado ── */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--white-08); }
+::-webkit-scrollbar-thumb { background: var(--border-opaque-12); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-opaque-08); }
 
-::-webkit-scrollbar-track {
-  background: var(--white-08);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--border-opaque-12);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--border-opaque-08);
-}
 
 /* ════════════════════════════════════════════════
    RESPONSIVE
@@ -529,167 +665,65 @@ button:disabled {
 
 /* ── Desktop grande (≥ 1280px) ── */
 @media (min-width: 1280px) {
-  .site-header {
-    padding: 0 32px;
-  }
-
-  .logo-text {
-    font-size: 1.5rem;
-  }
-
-  .nav-button {
-    padding: 9px 20px;
-    font-size: 1rem;
-  }
+  .site-header { padding: 0 32px; }
+  .logo-text   { font-size: 1.5rem; }
+  .nav-button  { padding: 9px 20px; font-size: 1rem; }
 }
 
 /* ── Desktop: hamburger oculto ── */
 @media (min-width: 769px) {
-  .hamburger {
-    display: none;
-  }
-
-  .mobile-menu {
-    display: none;
-  }
+  .hamburger   { display: none; }
+  .mobile-menu { display: none; }
 }
 
 /* ── Tablet (≤ 1024px) ── */
 @media (max-width: 1024px) {
-  .site-header {
-    padding: 0 16px;
-  }
-
-  .logo-text {
-    font-size: 1.2rem;
-  }
-
-  .nav-button {
-    padding: 7px 14px;
-    font-size: 0.9rem;
-  }
+  .site-header { padding: 0 16px; }
+  .logo-text   { font-size: 1.2rem; }
+  .nav-button  { padding: 7px 14px; font-size: 0.9rem; }
 }
 
 /* ── Tablet chica / landscape móvil (≤ 768px) ── */
 @media (max-width: 768px) {
-  :root {
-    --navbar-height: 64px;
-  }
+  :root { --navbar-height: 64px; }
 
-  .site-header {
-    padding: 0 14px;
-    border-radius: 0 0 18px 18px;
-  }
-
-  .nav-buttons {
-    display: none;
-  }
-
-  .hamburger {
-    display: inline-flex;
-  }
-
-  .mobile-menu {
-    display: flex;
-  }
-
-  .logo-text {
-    display: none;
-  }
-
-  .nav-username {
-    display: none;
-  }
-
-  .tour-button-text {
-    display: none;
-  }
-
-  .logo-img {
-    width: 32px;
-    height: 32px;
-  }
-
-  .nav-auth-actions .nav-button {
-    padding: 6px 12px;
-    font-size: 0.85rem;
-  }
+  .site-header         { padding: 0 14px; border-radius: 0 0 18px 18px; }
+  .nav-buttons         { display: none; }
+  .hamburger           { display: inline-flex; }
+  .mobile-menu         { display: flex; }
+  .logo-text           { display: none; }
+  .nav-username        { display: none; }
+  .tour-button-text    { display: none; }
+  .logo-img            { width: 32px; height: 32px; }
+  .nav-auth-actions .nav-button { padding: 6px 12px; font-size: 0.85rem; }
 }
 
 /* ── Celular (≤ 480px) ── */
 @media (max-width: 480px) {
-  :root {
-    --navbar-height: 58px;
-  }
+  :root { --navbar-height: 58px; }
 
-  .site-header {
-    padding: 0 10px;
-    border-radius: 0 0 14px 14px;
-  }
-
-  .logo-text {
-    display: none;
-  }
-
-  .logo-img {
-    width: 32px;
-    height: 32px;
-  }
-
-  .app-nav {
-    gap: 8px;
-  }
-
-  .user-controls {
-    gap: 6px;
-  }
-
-  .mobile-menu {
-    min-width: calc(80px - 20px);
-    border-radius: 14px;
-  }
-
-  .nav-auth-actions .nav-button {
-    padding: 5px 10px;
-    font-size: 0.8rem;
-  }
-
-  .profile-avatar {
-    width: 34px;
-    height: 34px;
-  }
-
-  .nav-person-icon {
-    width: 30px;
-    height: 30px;
-  }
+  .site-header  { padding: 0 10px; border-radius: 0 0 14px 14px; }
+  .logo-text    { display: none; }
+  .logo-img     { width: 32px; height: 32px; }
+  .app-nav      { gap: 8px; }
+  .user-controls { gap: 6px; }
+  .mobile-menu  { min-width: calc(80px - 20px); border-radius: 14px; }
+  .nav-auth-actions .nav-button { padding: 5px 10px; font-size: 0.8rem; }
+  .profile-avatar   { width: 34px; height: 34px; }
+  .nav-person-icon  { width: 30px; height: 30px; }
 }
 
 /* ── Móviles muy pequeños (≤ 360px) ── */
 @media (max-width: 360px) {
-  .site-header {
-    padding: 0 8px;
-  }
-
-  .nav-auth-actions {
-    gap: 4px;
-  }
-
-  .nav-auth-actions .nav-button {
-    padding: 5px 8px;
-    font-size: 0.75rem;
-  }
+  .site-header { padding: 0 8px; }
+  .nav-auth-actions { gap: 4px; }
+  .nav-auth-actions .nav-button { padding: 5px 8px; font-size: 0.75rem; }
 }
 
 /* ── Landscape en móviles ── */
 @media (max-width: 812px) and (orientation: landscape) {
-  :root {
-    --navbar-height: 54px;
-  }
-
-  .site-header {
-    padding: 0 12px;
-  }
+  :root { --navbar-height: 54px; }
+  .site-header { padding: 0 12px; }
 }
 
 /* ── Touch devices ── */
@@ -700,7 +734,6 @@ button:disabled {
     min-height: 44px;
     min-width: 44px;
   }
-
   .nav-button:hover:not(:disabled) {
     transform: none;
     box-shadow: none;

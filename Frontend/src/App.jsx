@@ -6,29 +6,69 @@ import Turnos from './components/turnos/Turnos.jsx';
 import InsuranceSection from './components/CardsSegure/InsuranceSection.jsx';
 import LanguageSelector from './components/LanguageSelector.jsx';
 import ModalAuth from './components/Auth/ModalAuth.jsx';
-// el widget del asistente se encuentre en un único archivo
 import { ChatbotWidget } from "./components/ChatbotWidget.jsx";
 import { useAuth } from './components/Auth/AuthContext';
 import locationService from './services/locationService.js';
 import { cleanOldTiles } from './services/db.js';
 import Analytics from './components/Analytics/Analytics';
+import { EmergencyWidget } from './components/EmergencyWidget.jsx';
+import { startTutorial } from './utils/tutorial.js';
 import './App.css';
 import './styles/modal-light-overrides.css';
-import LogoImg from './assets/Logo_saludmap_sinfondo.png';
+import LogoLight from './assets/logo-light.png';
+import LogoDark from './assets/logo-dark.png';
 import IconPerson from './assets/Icono_persona.png';
-import { startTutorial } from './utils/tutorial.js';
 
 function App() {
   const { t } = useTranslation();
   const { user, logout } = useAuth();
+
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+
+  // Estado para el menú del Mapa en el Navbar
+  const [showMapMenu, setShowMapMenu] = useState(false);
+  const mapMenuRef = useRef(null);
   const userMenuRef = useRef(null);
 
+  // Lógica del Tema Oscuro
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) return savedTheme === 'dark';
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+
+  // Aplica la clase al body si cambia el estado interno
+  useEffect(() => {
+    if (isDarkMode) {
+      document.body.classList.add('dark-theme');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.body.classList.remove('dark-theme');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDarkMode]);
+
+  // Escuchar al botón de tema de otros componentes (LanguageSelector)
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      const isNowDark = document.body.classList.contains('dark-theme');
+      if (isDarkMode !== isNowDark) {
+        setIsDarkMode(isNowDark);
+      }
+    });
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, [isDarkMode]);
+
+  // Clics fuera de los menús
   useEffect(() => {
     const handleDocClick = (e) => {
       if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
         setShowUserMenu(false);
+      }
+      if (mapMenuRef.current && !mapMenuRef.current.contains(e.target)) {
+        setShowMapMenu(false);
       }
       if (!e.target.closest || !e.target.closest('.app-nav')) {
         setShowMobileMenu(false);
@@ -39,7 +79,7 @@ function App() {
   }, []);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [, setCurrentLocation] = useState(null);
+  const [currentLocation, setCurrentLocation] = useState(null);
   const [activeTab, setActiveTab] = useState('mapa');
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
@@ -60,9 +100,7 @@ function App() {
       }
     });
     const handleChangeTab = (e) => {
-      if (e.detail?.tab) {
-        setActiveTab(e.detail.tab);
-      }
+      if (e.detail?.tab) setActiveTab(e.detail.tab);
     };
     window.addEventListener('saludmap:change-tab', handleChangeTab);
     return () => {
@@ -71,6 +109,12 @@ function App() {
     };
   }, []);
 
+  // Disparador de eventos para el mapa
+  const dispatchMapAction = (action) => {
+    window.dispatchEvent(new CustomEvent('map-action', { detail: action }));
+    setShowMapMenu(false);
+    setShowMobileMenu(false);
+  };
 
   if (isLoading) {
     return (
@@ -83,69 +127,99 @@ function App() {
 
   const renderActiveSection = () => {
     switch (activeTab) {
-      case 'mapa':
-        return <MapComponent onEstablishmentSelect={setSelectedEstablishment} />;
-      case 'analytics':
-        return selectedEstablishment ?
-          <Analytics establishmentId={selectedEstablishment.id} /> :
-          <div>Por favor seleccione un establecimiento en el mapa</div>;
-      case 'turnos':
-        return <Turnos />;
-      case 'seguros':
-        return <InsuranceSection />;
-      default:
-        return <MapComponent />;
+      case 'mapa':      return <MapComponent onEstablishmentSelect={setSelectedEstablishment} />;
+      case 'analytics': return selectedEstablishment ? <Analytics establishmentId={selectedEstablishment.id} /> : <div>Seleccione un establecimiento</div>;
+      case 'turnos':    return <Turnos />;
+      case 'seguros':   return <InsuranceSection />;
+      default:          return <MapComponent />;
     }
   };
 
   return (
     <div className="app">
       <ChatbotWidget />
+      <EmergencyWidget />
       <header className="site-header">
         <nav className="app-nav">
-
-          {/* ── IZQUIERDA: solo logo imagen en móvil ── */}
+          {/* ── IZQUIERDA ── */}
           <div className="nav-left">
             <div className="logo">
-              <img src={LogoImg} alt="SaludMap" className="logo-img" />
-              {/* logo-text se oculta en ≤768px via CSS */}
-              <span className="logo-text">{t('common.appName')}</span>
+              <img src={isDarkMode ? LogoDark : LogoLight} alt="SaludMap Logo" className="logo-img" />
+              <span className="logo-text">
+                <span className="logo-part-1">Salud</span>
+                <span className="logo-part-2">Map</span>
+              </span>
             </div>
+            <EmergencyWidget />
           </div>
 
-          {/* ── CENTRO: botones desktop + hamburger + mobile-menu ── */}
+          {/* ── CENTRO: BOTONES Y MENÚS ── */}
           <div className="nav-center">
-            {/* Botones visibles en desktop */}
             <div className="nav-buttons">
+
+              {/* BOTÓN MAPA CON MENÚ DESPLEGABLE */}
+              <div className="nav-item-dropdown" ref={mapMenuRef}>
+                <button
+                  onClick={() => {
+                    if (activeTab !== 'mapa') setActiveTab('mapa');
+                    setShowMapMenu(!showMapMenu);
+                  }}
+                  className={`nav-button ${activeTab === 'mapa' ? 'active' : ''}`}
+                >
+                  {t('nav.map', 'Mapa')}
+                  {activeTab === 'mapa' && (
+                    <span className={`dropdown-arrow ${showMapMenu ? 'open' : ''}`}>▼</span>
+                  )}
+                </button>
+
+                {/* Dropdown del Mapa (Desktop) */}
+                {showMapMenu && activeTab === 'mapa' && (
+                  <div className="navbar-dropdown-menu">
+                    <button className="dropdown-menu-item" onClick={() => dispatchMapAction('calibrate')}>
+                      <span className="dropdown-icon">📍</span> {t('map.updateLocation', 'Actualizar ubicación')}
+                    </button>
+                    {currentLocation?.source === 'manual' && (
+                      <button className="dropdown-menu-item gps-item" onClick={() => dispatchMapAction('return-gps')}>
+                        <span className="dropdown-icon">🛰️</span> {t('map.returnGPS', 'Volver a GPS')}
+                      </button>
+                    )}
+                    <button className="dropdown-menu-item" onClick={() => dispatchMapAction('download-offline')}>
+                      <span className="dropdown-icon">⬇️</span> {t('map.downloadOfflineArea', 'Descargar área offline')}
+                    </button>
+                    <button className="dropdown-menu-item" onClick={() => dispatchMapAction('save-location')}>
+                      <span className="dropdown-icon">💾</span> {t('map.saveLocation', 'Guardar Ubicación')}
+                    </button>
+                    <button className="dropdown-menu-item" onClick={() => dispatchMapAction('view-locations')}>
+                      <span className="dropdown-icon">📋</span> {t('map.viewLocations', 'Ver Ubicaciones')}
+                    </button>
+                    <button className="dropdown-menu-item" onClick={() => dispatchMapAction('filters')}>
+                      <span className="dropdown-icon">🔍</span> {t('map.filters.title', 'Filtros')}
+                    </button>
+                  </div>
+                )}
+              </div>
+
               <button
-                onClick={() => setActiveTab('mapa')}
-                className={`nav-button ${activeTab === 'mapa' ? 'active' : ''}`}
-              >
-                Mapa
-              </button>
-              <button
-                onClick={() => setActiveTab('turnos')}
+                onClick={() => { setActiveTab('turnos'); setShowMapMenu(false); }}
                 className={`nav-button ${activeTab === 'turnos' ? 'active' : ''}`}
               >
-                Turnos
+                {t('nav.appointments', 'Turnos')}
               </button>
               <button
-                onClick={() => setActiveTab('seguros')}
+                onClick={() => { setActiveTab('seguros'); setShowMapMenu(false); }}
                 className={`nav-button ${activeTab === 'seguros' ? 'active' : ''}`}
               >
-                Seguros
+                {t('nav.insurance', 'Seguros')}
               </button>
               <button
                 onClick={startTutorial}
                 className="nav-button tutorial-btn"
-                title="Iniciar tutorial"
+                title={t('nav.tutorial', 'Iniciar tutorial')}
               >
-                Tutorial
+                {t('nav.tutorial', 'Tutorial')}
               </button>
             </div>
-            
 
-            {/* Hamburger: visible solo en ≤768px */}
             <button
               className="hamburger"
               onClick={(e) => { e.stopPropagation(); setShowMobileMenu(m => !m); }}
@@ -155,50 +229,86 @@ function App() {
               ☰
             </button>
 
-            {/* Mobile menu: React lo monta/desmonta según showMobileMenu */}
+            {/* MENÚ MÓVIL */}
             {showMobileMenu && (
               <div className="mobile-menu" onClick={(e) => e.stopPropagation()}>
-                {/* Título "SaludMap" como encabezado del menú */}
-                <span className="mobile-menu-title">{t('common.appName')}</span>
+                <span className="mobile-menu-title">SaludMap</span>
 
                 <button
-                  onClick={() => { setActiveTab('mapa'); setShowMobileMenu(false); }}
+                  onClick={() => setActiveTab('mapa')}
                   className={`nav-button ${activeTab === 'mapa' ? 'active' : ''}`}
                   data-tour="nav-mapa"
                 >
-                  Mapa
+                  {t('nav.map', 'Mapa')}
                 </button>
+
+                {/* Submenú de mapa en móvil */}
+                {activeTab === 'mapa' && (
+                  <div className="mobile-submenu">
+                    <button className="mobile-submenu-item" onClick={() => dispatchMapAction('calibrate')}>📍 Actualizar</button>
+                    {currentLocation?.source === 'manual' && (
+                      <button className="mobile-submenu-item gps-item" onClick={() => dispatchMapAction('return-gps')}>🛰️ Volver a GPS</button>
+                    )}
+                    <button className="mobile-submenu-item" onClick={() => dispatchMapAction('download-offline')}>⬇️ Descargar</button>
+                    <button className="mobile-submenu-item" onClick={() => dispatchMapAction('save-location')}>💾 Guardar</button>
+                    <button className="mobile-submenu-item" onClick={() => dispatchMapAction('view-locations')}>📋 Ver Ubicaciones</button>
+                    <button className="mobile-submenu-item" onClick={() => dispatchMapAction('filters')}>🔍 Filtros</button>
+                  </div>
+                )}
+
                 <button
                   onClick={() => { setActiveTab('turnos'); setShowMobileMenu(false); }}
                   className={`nav-button ${activeTab === 'turnos' ? 'active' : ''}`}
                   data-tour="nav-turnos"
                 >
-                  Turnos
+                  {t('nav.appointments', 'Turnos')}
                 </button>
                 <button
                   onClick={() => { setActiveTab('seguros'); setShowMobileMenu(false); }}
                   className={`nav-button ${activeTab === 'seguros' ? 'active' : ''}`}
                   data-tour="nav-seguros"
                 >
-                  Seguros
+                  {t('nav.insurance', 'Seguros')}
                 </button>
                 <button
                   onClick={() => { startTutorial(); setShowMobileMenu(false); }}
                   className="nav-button tutorial-btn"
-                  title="Iniciar tutorial"
+                  title={t('nav.tutorial', 'Iniciar tutorial')}
                   data-tour="nav-tutorial"
                 >
-                 Tutorial
+                  {t('nav.tutorial', 'Tutorial')}
                 </button>
-                
               </div>
             )}
           </div>
 
-          {/* ── DERECHA: idioma + tema + auth/usuario ── */}
+          {/* ── DERECHA: tema + idioma + auth ── */}
           <div className="nav-right">
             <div className="user-controls">
+
+              {/* Botón de Tema (Sol / Luna) */}
+              <button
+                className="theme-toggle-btn"
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                title={isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+              >
+                {isDarkMode ? (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                  </svg>
+                ) : (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                  </svg>
+                )}
+              </button>
+
               <LanguageSelector />
+
               {user ? (
                 <div className="nav-user-inline">
                   <button
@@ -209,7 +319,6 @@ function App() {
                   >
                     <img src={user.avatar || IconPerson} alt="perfil" className="nav-person-icon" />
                   </button>
-                  {/* nav-username oculto en ≤768px via CSS */}
                   <span className="nav-username">{`${user.nombre} ${user.apellido}`}</span>
                   <div className={`user-menu ${showUserMenu ? 'open' : ''}`} ref={userMenuRef}>
                     <div className="user-dropdown" role="menu">
@@ -225,27 +334,27 @@ function App() {
               ) : (
                 <div className="nav-auth-actions">
                   <button
-                    className="nav-button active"
+                    className="btn-auth btn-login"
                     onClick={() => { setShowAuthModal(true); setShowRegister(false); }}
                   >
-                    Login
+                    {t('auth.login', 'Login')}
                   </button>
                   <button
-                    className="nav-button active"
+                    className="btn-auth btn-register"
                     onClick={() => { setShowAuthModal(true); setShowRegister(true); }}
                   >
-                    Registro
+                    {t('auth.register', 'Registro')}
                   </button>
                 </div>
               )}
             </div>
           </div>
-
         </nav>
       </header>
 
       <main className="app-main">{renderActiveSection()}</main>
       <footer className="app-footer"><p>{t('footer.copyright')}</p></footer>
+
       <ModalAuth
         open={showAuthModal}
         onClose={() => setShowAuthModal(false)}
@@ -255,4 +364,5 @@ function App() {
     </div>
   );
 }
+
 export default App;

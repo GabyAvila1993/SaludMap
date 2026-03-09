@@ -27,7 +27,6 @@ const LanguageSelector = () => {
   };
 
   useEffect(() => {
-    // apply theme class to document body (add or remove only .dark-theme as requested)
     const body = document.body;
     if (theme === 'oscuro') body.classList.add('dark-theme');
     else body.classList.remove('dark-theme');
@@ -40,27 +39,8 @@ const LanguageSelector = () => {
   };
 
   return (
-
     <div className="language-selector">
-      {/* Theme button placed to the left of language selector */}
-      <div className="theme-wrapper">
-        <button
-          className={`language-button nav-button theme-button ${theme === 'claro' ? 'active' : ''}`}
-          onClick={() => setThemeOpen(!themeOpen)}
-          aria-label="Seleccionar tema" 
-        >
-          <img src={IconTema} alt="tema" className="theme-icon" /><h4>{t('common.theme')}</h4>
-        </button>
-
-        {themeOpen && (
-          <div className="theme-dropdown">
-            <button className={`theme-option ${theme === 'claro' ? 'active' : ''}`} onClick={() => selectTheme('claro')}>Tema Claro</button>
-            <button className={`theme-option ${theme === 'oscuro' ? 'active' : ''}`} onClick={() => selectTheme('oscuro')}>Tema Oscuro</button>
-          </div>
-        )}
-      </div>
-
-      <button 
+      <button
         className={`language-button nav-button ${i18n.language === currentLanguage.code ? 'active' : ''}`}
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Seleccionar idioma"

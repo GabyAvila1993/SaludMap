@@ -1,14 +1,14 @@
+// INICIO CAMBIO - Archivo: src/components/Map.jsx - Integración con Navbar Global
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { MapContainer, Marker, Popup, Circle, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Circle, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css'; 
 import axios from 'axios';
 import locationService from '../services/locationService';
 import SaveLocationModal from './SaveLocationModal';
 import SavedLocationsList from './SavedLocationsList';
-import OfflineTileLayer from './OfflineTileLayer';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -27,7 +27,7 @@ L.Icon.Default.mergeOptions({
     shadowUrl: markerShadow,
 });
 
-export default function MapComponent() {
+export default function MapComponent({ onEstablishmentSelect }) {
     const { t } = useTranslation();
     const [currentLocation, setCurrentLocation] = useState(null);
     const [lugares, setLugares] = useState([]);
@@ -55,43 +55,23 @@ export default function MapComponent() {
     const [selectedPlace, setSelectedPlace] = useState(null);
     const [selectedEstablecimiento, setSelectedEstablecimiento] = useState(null);
     const [loadingEstablecimiento, setLoadingEstablecimiento] = useState(false);
-    const [showSidebar, setShowSidebar] = useState(false);
     const [showFiltersModal, setShowFiltersModal] = useState(false);
     const [showStatus, setShowStatus] = useState(false);
     const [statusMessage, setStatusMessage] = useState('');
 
-    // ── NUEVO: estado del menú hamburguesa móvil ──
-    const [showMobileMenu, setShowMobileMenu] = useState(false);
-
     // Mostrar progreso durante descargas offline
     useEffect(() => {
         if (showStatus && downloadProgress > 0 && downloadProgress < 100) {
-            setStatusMessage(`Descargando área... ${Math.round(downloadProgress)}%`);
+            setStatusMessage(`${t('map.downloading')}: ${Math.round(downloadProgress)}%`);
         }
-    }, [downloadProgress, showStatus]);
-
-    // Cerrar menú móvil al hacer click fuera
-    useEffect(() => {
-        if (!showMobileMenu) return;
-        const handleOutside = (e) => {
-            if (!e.target.closest('.mobile-map-menu') && !e.target.closest('.mobile-map-toggle')) {
-                setShowMobileMenu(false);
-            }
-        };
-        document.addEventListener('mousedown', handleOutside);
-        document.addEventListener('touchstart', handleOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleOutside);
-            document.removeEventListener('touchstart', handleOutside);
-        };
-    }, [showMobileMenu]);
+    }, [downloadProgress, showStatus, t]);
 
     const mapRef = useRef(null);
     const unsubscribeRef = useRef(null);
     const lastUserInteractionAt = useRef(0);
     const userInteracting = useRef(false);
 
-    // Hook de reseñas (solo si tenemos establecimiento)
+    // Hook de reseñas
     const { resenias, loading: loadingResenias, promedioEstrellas, totalResenias } = 
         useResenias(selectedEstablecimiento?.id);
 
@@ -138,16 +118,10 @@ export default function MapComponent() {
         const handleOffline = () => setIsOnline(false);
         
         const handleCenterMap = (event) => {
-            if (mapRef.current) {
-                if (userInteracting.current) return;
+            if (mapRef.current && !userInteracting.current) {
                 try {
-                    mapRef.current.setView([event.detail.lat, event.detail.lng], 15, {
-                        animate: true,
-                        duration: 0.5
-                    });
-                } catch {
-                    // noop
-                }
+                    mapRef.current.setView([event.detail.lat, event.detail.lng], 15, { animate: true, duration: 0.5 });
+                } catch { /* noop */ }
             }
         };
         
@@ -164,23 +138,39 @@ export default function MapComponent() {
         };
     }, []);
 
+    // ── NUEVO: Escuchar órdenes del Navbar Global ──
+    const actionHandlerRef = useRef(null);
+    actionHandlerRef.current = (action) => {
+        switch(action) {
+            case 'calibrate': handleCalibrate(); break;
+            case 'return-gps': handleReturnToGPS(); break;
+            case 'download-offline': handleDownloadOffline(); break;
+            case 'save-location': setShowSaveLocationModal(true); break;
+            case 'view-locations': setShowSavedLocationsList(true); break;
+            case 'filters': setShowFiltersModal(true); break;
+            default: break;
+        }
+    };
+
+    useEffect(() => {
+        const listener = (e) => {
+            if (actionHandlerRef.current) actionHandlerRef.current(e.detail);
+        };
+        window.addEventListener('map-action', listener);
+        return () => window.removeEventListener('map-action', listener);
+    }, []);
+
     const handleLocationChange = async (location) => {
         setCurrentLocation(location);
         setError('');
-        if (mapRef.current) {
+        if (mapRef.current && !userInteracting.current) {
             try {
-                if (userInteracting.current) return;
                 const center = mapRef.current.getCenter();
                 const dist = center ? center.distanceTo(L.latLng(location.lat, location.lng)) : Infinity;
-                const DISTANCE_THRESHOLD = 25;
-                if (dist < DISTANCE_THRESHOLD) return;
-                mapRef.current.setView([location.lat, location.lng], 15, {
-                    animate: true,
-                    duration: 0.5
-                });
-            } catch {
-                // noop
-            }
+                if (dist >= 25) {
+                    mapRef.current.setView([location.lat, location.lng], 15, { animate: true, duration: 0.5 });
+                }
+            } catch { /* noop */ }
         }
         await fetchNearbyPlaces(location);
     };
@@ -199,18 +189,15 @@ export default function MapComponent() {
                     if (places.length > 0) await savePlaces(places);
                     setOfflineMode(false);
                 } catch {
-                    const offlinePlaces = await getNearbyPlaces(location);
-                    places = offlinePlaces;
+                    places = await getNearbyPlaces(location);
                     setOfflineMode(true);
                 }
             } else {
-                const offlinePlaces = await getNearbyPlaces(location);
-                places = offlinePlaces;
+                places = await getNearbyPlaces(location);
                 setOfflineMode(true);
             }
             setLugares(places);
         } catch (error) {
-            console.error('Error obteniendo lugares:', error);
             const cachedPlaces = await getNearbyPlaces(location);
             if (cachedPlaces.length > 0) {
                 setLugares(cachedPlaces);
@@ -255,19 +242,14 @@ export default function MapComponent() {
 
     const handleCalibrate = async () => {
         if (isCalibrating) return;
-        setShowMobileMenu(false);
         setShowStatus(true);
         setStatusMessage('Actualizando ubicación...');
         setIsCalibrating(true);
         setError('Obteniendo ubicación GPS...');
         try {
             const location = await locationService.calibratePosition();
-            if (mapRef.current && location) {
-                if (!userInteracting.current) {
-                    mapRef.current.setView([location.lat, location.lng], 15, {
-                        animate: true, duration: 0.5
-                    });
-                }
+            if (mapRef.current && location && !userInteracting.current) {
+                mapRef.current.setView([location.lat, location.lng], 15, { animate: true, duration: 0.5 });
             }
             setError('Ubicación actualizada exitosamente');
         } catch (error) {
@@ -281,7 +263,6 @@ export default function MapComponent() {
 
     const handleReturnToGPS = async () => {
         if (isCalibrating) return;
-        setShowMobileMenu(false);
         setShowStatus(true);
         setStatusMessage('Reactivando GPS...');
         setIsCalibrating(true);
@@ -289,12 +270,8 @@ export default function MapComponent() {
         try {
             const location = await locationService.calibratePosition();
             try { locationService.startWatching(); } catch { /* noop */ }
-            if (mapRef.current && location) {
-                if (!userInteracting.current) {
-                    mapRef.current.setView([location.lat, location.lng], 15, {
-                        animate: true, duration: 0.5
-                    });
-                }
+            if (mapRef.current && location && !userInteracting.current) {
+                mapRef.current.setView([location.lat, location.lng], 15, { animate: true, duration: 0.5 });
             }
             setError('GPS reactivado');
         } catch (error) {
@@ -308,7 +285,6 @@ export default function MapComponent() {
 
     const handleDownloadOffline = async () => {
         if (!currentLocation) return;
-        setShowMobileMenu(false);
         try {
             setShowStatus(true);
             setStatusMessage('Descargando área...');
@@ -334,9 +310,11 @@ export default function MapComponent() {
         try {
             const est = await establecimientosService.findOrCreate(lugar);
             setSelectedEstablecimiento(est);
+            if (onEstablishmentSelect) onEstablishmentSelect(est); // Notificamos a App.jsx
         } catch (error) {
             console.error('Error cargando establecimiento:', error);
             setSelectedEstablecimiento(null);
+            if (onEstablishmentSelect) onEstablishmentSelect(null);
         } finally {
             setLoadingEstablecimiento(false);
         }
@@ -345,50 +323,38 @@ export default function MapComponent() {
     const handlePlaceClose = () => {
         setSelectedPlace(null);
         setSelectedEstablecimiento(null);
+        if (onEstablishmentSelect) onEstablishmentSelect(null);
     };
 
     const MapController = () => {
         const map = useMap();
         useEffect(() => {
             mapRef.current = map;
-            try {
-                setTimeout(() => {
-                    if (map && typeof map.invalidateSize === 'function') {
-                        map.invalidateSize();
-                    }
-                }, 50);
-            } catch {
-                // noop
-            }
+            try { setTimeout(() => { if (map && typeof map.invalidateSize === 'function') map.invalidateSize(); }, 50); } catch { /* noop */ }
+            
             const onUserInteractionStart = () => {
                 userInteracting.current = true;
                 lastUserInteractionAt.current = Date.now();
             };
             const onUserInteractionEnd = () => {
                 lastUserInteractionAt.current = Date.now();
-                setTimeout(() => {
-                    if (Date.now() - lastUserInteractionAt.current > 1200) {
-                        userInteracting.current = false;
-                    }
-                }, 1200);
+                setTimeout(() => { if (Date.now() - lastUserInteractionAt.current > 1200) userInteracting.current = false; }, 1200);
             };
+            
             try {
                 map.on('movestart', onUserInteractionStart);
                 map.on('zoomstart', onUserInteractionStart);
                 map.on('moveend', onUserInteractionEnd);
                 map.on('zoomend', onUserInteractionEnd);
-            } catch {
-                // noop
-            }
+            } catch { /* noop */ }
+            
             return () => {
                 try {
                     map.off('movestart', onUserInteractionStart);
                     map.off('zoomstart', onUserInteractionStart);
                     map.off('moveend', onUserInteractionEnd);
                     map.off('zoomend', onUserInteractionEnd);
-                } catch {
-                    // noop
-                }
+                } catch { /* noop */ }
             };
         }, [map]);
         return null;
@@ -396,15 +362,9 @@ export default function MapComponent() {
 
     const handleSaveLocation = async (locationData) => {
         try {
-            await saveNamedLocation(
-                locationData.name,
-                locationData.lat,
-                locationData.lng,
-                locationData.description
-            );
+            await saveNamedLocation(locationData.name, locationData.lat, locationData.lng, locationData.description);
             setError(`Ubicación "${locationData.name}" guardada exitosamente`);
         } catch (error) {
-            console.error('Error saving location:', error);
             throw new Error('Error al guardar la ubicación: ' + error.message);
         }
     };
@@ -413,7 +373,7 @@ export default function MapComponent() {
         return (
             <div className="map-section">
                 <div className="map-root">
-                    <h3 className="map-title">Obteniendo ubicación...</h3>
+                    <h3 className="map-title">{t('common.loading', 'Obteniendo ubicación...')}</h3>
                     {error && <div className="map-error">{error}</div>}
                 </div>
             </div>
@@ -424,270 +384,111 @@ export default function MapComponent() {
         <>
         <div className="map-section">
             <div className="map-root">
-                {!isOnline && <div className="offline-badge">{t('map.offline')}</div>}
+                {!isOnline && <div className="offline-badge">{t('map.offline', '(Offline)')}</div>}
                 {error && <div className="map-error">{error}</div>}
 
-                {/* ── DESKTOP: pill de controles (visible solo en > 1024px) ── */}
-                <div className="map-controls">
-                    <button onClick={handleCalibrate} disabled={isCalibrating} data-tour="update-location">
-                        {isCalibrating ? t('map.updating') : t('map.updateLocation')}
-                    </button>
-                    {currentLocation?.source === 'manual' && (
-                        <button onClick={handleReturnToGPS} disabled={isCalibrating} className="btn-return-gps">
-                            Volver a GPS
-                        </button>
-                    )}
-                    <button onClick={handleDownloadOffline} data-tour="offline-download">
-                        {t('map.downloadOfflineArea')}
-                    </button>
-                    <button onClick={() => setShowSaveLocationModal(true)} className="btn-save-location" data-tour="save-location">
-                        {t('map.saveLocation')}
-                    </button>
-                    <button onClick={() => setShowSavedLocationsList(true)} className="btn-view-locations" data-tour="view-locations">
-                        {t('map.viewLocations')}
-                    </button>
-                    <button onClick={() => setShowFiltersModal(true)} className="btn-show-filters" data-tour="filters">
-                        {t('map.filters.title') || 'Filtros'}
-                    </button>
-                    {downloadProgress > 0 && downloadProgress < 100 && (
-                        <div className="progress">{t('map.downloading')}: {Math.round(downloadProgress)}%</div>
-                    )}
-                </div>
-
-                {/* ── MÓVIL: botón hamburguesa (visible solo en ≤ 1024px) ── */}
-                <button
-                    className="mobile-map-toggle"
-                    onClick={() => setShowMobileMenu(prev => !prev)}
-                    aria-label="Menú del mapa"
-                    aria-expanded={showMobileMenu}
-                >
-                    <span className={`mobile-map-toggle-icon ${showMobileMenu ? 'open' : ''}`}>
-                        {showMobileMenu ? '✕' : '☰'}
-                    </span>
-                </button>
-
-                {/* ── MÓVIL: panel drawer ── */}
-                {showMobileMenu && (
-                    <div className="mobile-map-menu" role="menu">
-                        <div className="mobile-map-menu-header">
-                            <span className="mobile-map-menu-title">Opciones del mapa</span>
-                        </div>
-                        <div className="mobile-map-menu-body">
-                            <button
-                                className="mobile-map-menu-btn"
-                                onClick={handleCalibrate}
-                                disabled={isCalibrating}
-                                data-tour="update-location"
-                            >
-                                <span className="mobile-map-menu-btn-icon">📍</span>
-                                {isCalibrating ? t('map.updating') : t('map.updateLocation')}
-                            </button>
-                            {currentLocation?.source === 'manual' && (
-                                <button
-                                    className="mobile-map-menu-btn mobile-map-menu-btn--gps"
-                                    onClick={handleReturnToGPS}
-                                    disabled={isCalibrating}
-                                >
-                                    <span className="mobile-map-menu-btn-icon">🛰️</span>
-                                    Volver a GPS
-                                </button>
-                            )}
-                            <button
-                                className="mobile-map-menu-btn"
-                                onClick={handleDownloadOffline}
-                                data-tour="offline-download"
-                            >
-                                <span className="mobile-map-menu-btn-icon">⬇️</span>
-                                {t('map.downloadOfflineArea')}
-                            </button>
-                            <button
-                                className="mobile-map-menu-btn"
-                                onClick={() => { setShowSaveLocationModal(true); setShowMobileMenu(false); }}
-                                data-tour="save-location"
-                            >
-                                <span className="mobile-map-menu-btn-icon">💾</span>
-                                {t('map.saveLocation')}
-                            </button>
-                            <button
-                                className="mobile-map-menu-btn"
-                                onClick={() => { setShowSavedLocationsList(true); setShowMobileMenu(false); }}
-                                data-tour="view-locations"
-                            >
-                                <span className="mobile-map-menu-btn-icon">📋</span>
-                                {t('map.viewLocations')}
-                            </button>
-                            <button
-                                className="mobile-map-menu-btn mobile-map-menu-btn--filters"
-                                onClick={() => { setShowFiltersModal(true); setShowMobileMenu(false); }}
-                                data-tour="filters"
-                            >
-                                <span className="mobile-map-menu-btn-icon">🔍</span>
-                                {t('map.filters.title') || 'Filtros'}
-                            </button>
-
-                            {/* Progreso de descarga dentro del menú */}
-                            {downloadProgress > 0 && downloadProgress < 100 && (
-                                <div className="mobile-map-menu-progress">
-                                    <div className="mobile-map-menu-progress-bar">
-                                        <div
-                                            className="mobile-map-menu-progress-fill"
-                                            style={{ width: `${downloadProgress}%` }}
-                                        />
-                                    </div>
-                                    <span>{t('map.downloading')}: {Math.round(downloadProgress)}%</span>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Precisión al pie del drawer */}
-                        <div className="mobile-map-menu-footer">
-                            <div className="mobile-map-menu-accuracy">
-                                <span className="mobile-map-menu-accuracy-label">Precisión</span>
-                                <span className="mobile-map-menu-accuracy-value">
-                                    {currentLocation.accuracy
-                                        ? `~${Math.round(currentLocation.accuracy)}${t('map.meters')}`
-                                        : '—'}
-                                </span>
-                                <span className="mobile-map-menu-accuracy-source">
-                                    {currentLocation.source === 'manual'
-                                        ? t('map.locationSource.manual')
-                                        : currentLocation.source === 'calibrated'
-                                        ? t('map.locationSource.calibrated')
-                                        : t('map.locationSource.gps')}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* Cartel de estado */}
+                {/* Cartel de estado superior */}
                 <div className={`status-overlay ${showStatus ? 'show' : ''}`}>{statusMessage}</div>
 
-                {/* Precisión en desktop (visible solo en > 1024px) */}
+                {/* Info de precisión (esquina inferior izquierda) */}
                 <div className="map-info">
-                    {t('map.accuracy')}: {currentLocation.accuracy ? `${Math.round(currentLocation.accuracy)}${t('map.meters')}` : '—'}
+                    {t('map.accuracy', 'Precisión')}: {currentLocation.accuracy ? `${Math.round(currentLocation.accuracy)}m` : '—'}
                     <span className="location-source">
-                        ({currentLocation.source === 'manual' ? t('map.locationSource.manual') :
-                            currentLocation.source === 'calibrated' ? t('map.locationSource.calibrated') : t('map.locationSource.gps')})
+                        ({currentLocation.source === 'manual' ? t('map.locationSource.manual', 'Manual') :
+                            currentLocation.source === 'calibrated' ? t('map.locationSource.calibrated', 'Calibrado') : t('map.locationSource.gps', 'GPS')})
                     </span>
                 </div>
 
-                <div className="map-layout">
-                    <div className="map-wrapper">
-                        <MapContainer
-                            center={[currentLocation.lat, currentLocation.lng]}
-                            zoom={15}
-                            className="leaflet-map"
-                            whenCreated={(mapInstance) => { mapRef.current = mapInstance }}
-                            onClick={handlePlaceClose}
-                        >
-                            <MapController />
-                            <OfflineTileLayer 
-                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                {/* CONTENIDO DEL MAPA */}
+                <div className="map-wrapper">
+                    <MapContainer
+                        center={[currentLocation.lat, currentLocation.lng]}
+                        zoom={15}
+                        className="leaflet-map"
+                    >
+                        <TileLayer 
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        />
+                        <Marker
+                            position={[currentLocation.lat, currentLocation.lng]}
+                            icon={userIcon}
+                            draggable={currentLocation.source === 'manual'}
+                            eventHandlers={{ dragend: handleMarkerDrag }}
+                        />
+                        {currentLocation.accuracy && (
+                            <Circle 
+                                center={[currentLocation.lat, currentLocation.lng]} 
+                                radius={currentLocation.accuracy} 
+                                pathOptions={{ color: 'var(--path-highlight, #007bff)', fillOpacity: 0.08 }}
                             />
-                            {currentLocation.accuracy && (
-                                <Circle
-                                    center={[currentLocation.lat, currentLocation.lng]}
-                                    radius={currentLocation.accuracy}
-                                    pathOptions={{ color: 'var(--path-highlight, #007bff)', fillOpacity: 0.08 }}
-                                />
-                            )}
-                            <Marker
-                                position={[currentLocation.lat, currentLocation.lng]}
-                                icon={userIcon}
-                                draggable={true}
-                                eventHandlers={{ dragend: handleMarkerDrag }}
-                            />
-                            {visibleLugares.map((lugar, index) => {
-                                const lat = lugar.lat ?? lugar.center?.lat ?? lugar.geometry?.coordinates?.[1] ?? lugar.latitude ?? lugar.y ?? lugar.center?.latitude;
-                                const lng = lugar.lng ?? lugar.lon ?? lugar.center?.lon ?? lugar.geometry?.coordinates?.[0] ?? lugar.longitude ?? lugar.x ?? lugar.center?.longitude;
-                                if (lat == null || lng == null) return null;
-                                const coords = [lat, lng];
-                                const nombre = lugar.tags?.name ?? lugar.properties?.name ??
-                                        lugar.tags?.amenity ?? 'Servicio de salud';
-                                const direccion = lugar.tags?.addr_full ?? lugar.tags?.address ??
-                                    lugar.properties?.address ?? '';
-                                const tipo = lugar.type || 'default';
-                                return (
-                                    <Marker
-                                        key={index}
-                                        position={coords}
-                                        icon={getIconForType(tipo)}
-                                        title={nombre}
-                                        alt={direccion}
-                                        eventHandlers={{
-                                            click: () => { handlePlaceSelect(lugar); }
-                                        }}
-                                    />
-                                );
-                            })}
-                        </MapContainer>
-                        {selectedPlace && (
-                            <EstablishmentInfo place={selectedPlace} onClose={handlePlaceClose} />
                         )}
-                    </div>
-                    {/* Modal de filtros */}
-                        {showFiltersModal && (typeof document !== 'undefined' ? ReactDOM.createPortal(
-                            <div className="filter-modal show" role="dialog" aria-modal="true">
-                                <h4 className="filters-title">{t('map.filters.title') || 'Filtros'}</h4>
-                                <div className="filters-vertical">
-                                    <button type="button" className={`filter-btn filter-all-btn ${Object.values(filters).every(Boolean) ? 'active' : ''}`} onClick={toggleAllFilters}>
-                                        Todos
-                                    </button>
-                                    <button type="button" className={`filter-btn filter-hospital ${filters.hospital ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, hospital: !f.hospital }))}>
-                                        🏥 Hospital
-                                    </button>
-                                    <button type="button" className={`filter-btn filter-clinica ${filters.clinic ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, clinic: !f.clinic }))}>
-                                        🏩 Clínica
-                                    </button>
-                                    <button type="button" className={`filter-btn filter-doctor ${filters.doctors ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, doctors: !f.doctors }))}>
-                                        👨‍⚕️ Médico
-                                    </button>
-                                    <button type="button" className={`filter-btn filter-veterinaria ${filters.veterinary ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, veterinary: !f.veterinary }))}>
-                                        🐾 Veterinaria
-                                    </button>
-                                </div>
-                                <div className="filter-modal-actions">
-                                    <button className="btn btn-secondary" onClick={() => setShowFiltersModal(false)}>Cerrar</button>
-                                    <button className="btn btn-primary" onClick={() => setShowFiltersModal(false)}>Aplicar</button>
-                                </div>
-                            </div>, document.body) : null)}
+                        {visibleLugares.map((lugar, idx) => (
+                            <Marker
+                                key={lugar.id || `${lugar.lat}-${lugar.lng}-${idx}`}
+                                position={[lugar.lat, lugar.lng]}
+                                icon={getIconForType(lugar.type)}
+                                eventHandlers={{ click: () => handlePlaceSelect(lugar) }}
+                            />
+                        ))}
+                        <MapController />
+                    </MapContainer>
                 </div>
 
+                {/* ── MODALES DEL MAPA ── */}
                 <SaveLocationModal
                     isOpen={showSaveLocationModal}
                     onClose={() => setShowSaveLocationModal(false)}
                     onSave={handleSaveLocation}
                     currentLocation={currentLocation}
                 />
+                
                 <SavedLocationsList
                     isOpen={showSavedLocationsList}
                     onClose={() => setShowSavedLocationsList(false)}
                 />
-            </div>
-        </div>
 
-        {/* Sección de reseñas FUERA del contenedor del mapa */}
-        {selectedPlace && selectedEstablecimiento && (
-            <div className="resenias-section">
-                <div className="resenias-header-info">
-                    <h3 className="resenias-title">
-                        Reseñas de {selectedPlace.tags?.name ?? selectedPlace.properties?.name ?? 'este lugar'}
-                    </h3>
-                </div>
-                {loadingEstablecimiento ? (
-                    <div className="resenias-loading">Cargando reseñas...</div>
-                ) : (
-                    <Resenias 
+                {showFiltersModal && (typeof document !== 'undefined' ? ReactDOM.createPortal(
+                    <div className="filter-modal show" role="dialog" aria-modal="true">
+                        <h4 className="filters-title">{t('map.filters.title', 'Filtros')}</h4>
+                        <div className="filters-vertical">
+                            <button type="button" className={`filter-btn filter-all-btn ${Object.values(filters).every(Boolean) ? 'active' : ''}`} onClick={toggleAllFilters}>
+                                {t('map.filters.all', 'Todos')}
+                            </button>
+                            <button type="button" className={`filter-btn filter-hospital ${filters.hospital ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, hospital: !f.hospital }))}>
+                                🏥 {t('map.filters.hospital', 'Hospital')}
+                            </button>
+                            <button type="button" className={`filter-btn filter-clinica ${filters.clinic ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, clinic: !f.clinic }))}>
+                                🏩 {t('map.filters.clinic', 'Clínica')}
+                            </button>
+                            <button type="button" className={`filter-btn filter-doctor ${filters.doctors ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, doctors: !f.doctors }))}>
+                                👨‍⚕️ {t('map.filters.doctors', 'Médico')}
+                            </button>
+                            <button type="button" className={`filter-btn filter-veterinaria ${filters.veterinary ? 'active' : ''}`} onClick={() => setFilters(f => ({ ...f, veterinary: !f.veterinary }))}>
+                                🐾 {t('map.filters.veterinary', 'Veterinaria')}
+                            </button>
+                        </div>
+                        <div className="filter-modal-actions">
+                            <button className="btn btn-secondary" onClick={() => setShowFiltersModal(false)}>Cerrar</button>
+                            <button className="btn btn-primary" onClick={() => setShowFiltersModal(false)}>Aplicar</button>
+                        </div>
+                    </div>, document.body) : null)}
+
+                {selectedPlace && (
+                    <EstablishmentInfo
+                        place={selectedPlace}
+                        establecimiento={selectedEstablecimiento}
+                        loading={loadingEstablecimiento}
+                        onClose={handlePlaceClose}
                         resenias={resenias}
+                        loadingResenias={loadingResenias}
                         promedioEstrellas={promedioEstrellas}
                         totalResenias={totalResenias}
-                        loading={loadingResenias}
                     />
                 )}
+
             </div>
-        )}
+        </div>
         </>
     );
 }

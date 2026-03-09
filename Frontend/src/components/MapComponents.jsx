@@ -20,10 +20,8 @@ function Recentrar({ position }) {
   const map = useMap();
   useEffect(() => {
     if (!position) return;
-
     let userInteracting = false;
     let lastInteraction = 0;
-
     const onUserStart = () => {
       userInteracting = true;
       lastInteraction = Date.now();
@@ -34,40 +32,29 @@ function Recentrar({ position }) {
         if (Date.now() - lastInteraction > 1200) userInteracting = false;
       }, 1200);
     };
-
     try {
       map.on('movestart', onUserStart);
       map.on('zoomstart', onUserStart);
       map.on('moveend', onUserEnd);
       map.on('zoomend', onUserEnd);
-    } catch {
-      // noop
-    }
-
+    } catch { /* noop */ }
     try {
-      // No recenter if user is interacting.
       if (userInteracting) return;
-
       const center = map.getCenter();
       const target = L.latLng(position[0], position[1]);
       const dist = center ? center.distanceTo(target) : Infinity;
-      const DISTANCE_THRESHOLD = 25; // meters
+      const DISTANCE_THRESHOLD = 25;
       if (dist > DISTANCE_THRESHOLD) {
         map.setView(position, map.getZoom());
       }
-    } catch {
-      // noop
-    }
-
+    } catch { /* noop */ }
     return () => {
       try {
         map.off('movestart', onUserStart);
         map.off('zoomstart', onUserStart);
         map.off('moveend', onUserEnd);
         map.off('zoomend', onUserEnd);
-      } catch {
-        // noop
-      }
+      } catch { /* noop */ }
     };
   }, [position, map]);
   return null;
@@ -82,11 +69,9 @@ export default function MapComponents() {
     obtenerUbicacionUnaVez((p) => {
       if (p) setPos([p.lat, p.lng]);
     });
-
     watchIdRef.current = observarUbicacion((p) => {
       if (p) setPos([p.lat, p.lng]);
     });
-
     return () => {
       if (watchIdRef.current !== null) {
         detenerObservacion(watchIdRef.current);
@@ -95,7 +80,6 @@ export default function MapComponents() {
     };
   }, []);
 
-  // Funciones botones
   const handleDetener = () => {
     if (watchIdRef.current) {
       detenerObservacion(watchIdRef.current);
@@ -106,14 +90,12 @@ export default function MapComponents() {
 
   const handleDescargar = async () => {
     if (!pos) return;
-
     const bounds = {
       north: pos[0] + 0.02,
       south: pos[0] - 0.02,
       east: pos[1] + 0.02,
       west: pos[1] - 0.02,
     };
-
     await precargarArea(bounds, [14, 15], async ({ lat, lng }) => {
       try {
         const res = await fetch(
@@ -126,14 +108,11 @@ export default function MapComponents() {
         return [];
       }
     });
-
     alert('Área precargada para uso offline ✅');
   };
 
   return (
     <div className="map-root">
-      
-
       {!pos ? (
         <p>Obteniendo ubicación...</p>
       ) : (
@@ -146,8 +125,6 @@ export default function MapComponents() {
               <Recentrar position={pos} />
             </MapContainer>
           </div>
-
-          {/* Botones visibles fuera del mapa */}
           <div className="map-buttons">
             <button className="btn" onClick={handleDetener}>Detener</button>
             <button className="btn" onClick={handleDescargar}>Descargar área offline</button>
