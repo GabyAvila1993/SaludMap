@@ -64,26 +64,20 @@ const generarSlots = (franjas, fecha) => {
 function CalendarioVisual({ diasPermitidos, fechaSeleccionada, onSeleccionarFecha }) {
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
-
     const [anio, setAnio] = useState(hoy.getFullYear());
     const [mes, setMes]   = useState(hoy.getMonth());
-
     const irAnterior = () => mes === 0 ? (setMes(11), setAnio(a => a-1)) : setMes(m => m-1);
     const irSiguiente = () => mes === 11 ? (setMes(0), setAnio(a => a+1)) : setMes(m => m+1);
-
     const primerDia  = new Date(anio, mes, 1).getDay();
     const diasEnMes  = new Date(anio, mes + 1, 0).getDate();
-
     const celdas = [];
     for (let i = 0; i < primerDia; i++) celdas.push(null);
     for (let d = 1; d <= diasEnMes; d++) celdas.push(new Date(anio, mes, d));
-
     const esMismoDia = (a, b) =>
         a && b &&
         a.getFullYear() === b.getFullYear() &&
         a.getMonth()    === b.getMonth()    &&
         a.getDate()     === b.getDate();
-
     return (
         <div className="calendario">
             <div className="calendario__nav">
@@ -91,7 +85,6 @@ function CalendarioVisual({ diasPermitidos, fechaSeleccionada, onSeleccionarFech
                 <span className="calendario__mes-anio">{NOMBRES_MES[mes]} {anio}</span>
                 <button type="button" className="calendario__nav-btn" onClick={irSiguiente}>›</button>
             </div>
-
             <div className="calendario__grilla">
                 {NOMBRES_DIA.map(d => (
                     <div key={d} className="calendario__cabecera">{d}</div>
@@ -104,14 +97,12 @@ function CalendarioVisual({ diasPermitidos, fechaSeleccionada, onSeleccionarFech
                     const esDisponible  = !esPasado && diasPermitidos.has(fecha.getDay());
                     const esSeleccionado = esMismoDia(fecha, fechaSeleccionada);
                     const esHoy         = esMismoDia(fecha, hoy);
-
                     let clases = 'calendario__celda';
                     if (esSeleccionado)       clases += ' calendario__celda--seleccionado';
                     else if (esDisponible)    clases += ' calendario__celda--disponible';
                     else if (esPasado)        clases += ' calendario__celda--pasado';
                     else                      clases += ' calendario__celda--no-disponible';
                     if (esHoy)                clases += ' calendario__celda--hoy';
-
                     return (
                         <button
                             key={fecha.toISOString()}
@@ -125,7 +116,6 @@ function CalendarioVisual({ diasPermitidos, fechaSeleccionada, onSeleccionarFech
                     );
                 })}
             </div>
-
             <div className="calendario__leyenda">
                 <span className="leyenda__item leyenda__item--disponible">Disponible</span>
                 <span className="leyenda__item leyenda__item--seleccionado">Seleccionado</span>
@@ -136,14 +126,14 @@ function CalendarioVisual({ diasPermitidos, fechaSeleccionada, onSeleccionarFech
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-
 export const TurnoModal = ({
     modalOpen, selected, selectedType, datetime, setDatetime,
     notes, setNotes, correo, setCorreo, loading, error,
-    onClose, onConfirm, prettyType
+    onClose, onConfirm, prettyType,
+    // NUEVO: especialidad que viene pre-seleccionada desde el buscador
+    especialidadPreseleccionada
 }) => {
     const { t } = useTranslation();
-
     const [especialidades, setEspecialidades]                     = useState([]);
     const [especialidadSeleccionada, setEspecialidadSeleccionada] = useState(null);
     const [loadingEsp, setLoadingEsp]                             = useState(false);
@@ -151,25 +141,56 @@ export const TurnoModal = ({
     const [fechaSeleccionada, setFechaSeleccionada]               = useState(null);
     const [horaSeleccionada, setHoraSeleccionada]                 = useState('');
 
+    // Cargar especialidades del establecimiento
     useEffect(() => {
         if (!modalOpen || !selected?.establecimientoId) {
-            setEspecialidades([]); setEspecialidadSeleccionada(null); return;
+            setEspecialidades([]);
+            setEspecialidadSeleccionada(null);
+            return;
         }
-        setLoadingEsp(true); setErrorEsp('');
+        setLoadingEsp(true);
+        setErrorEsp('');
         getEspecialidadesByEstablecimiento(selected.establecimientoId)
-            .then(data => setEspecialidades(data))
-            .catch(() => { setErrorEsp('No se pudieron cargar las especialidades'); setEspecialidades([]); })
+            .then(data => {
+                setEspecialidades(data);
+                // NUEVO: si hay especialidad pre-seleccionada, buscarla en la lista
+                // y seleccionarla automáticamente
+                if (especialidadPreseleccionada) {
+                    const encontrada = data.find(
+                        esp => esp.id === especialidadPreseleccionada.id ||
+                               esp.nombre === especialidadPreseleccionada.nombre
+                    );
+                    setEspecialidadSeleccionada(encontrada || null);
+                }
+            })
+            .catch(() => {
+                setErrorEsp('No se pudieron cargar las especialidades');
+                setEspecialidades([]);
+            })
             .finally(() => setLoadingEsp(false));
     }, [modalOpen, selected?.establecimientoId]);
 
+    // NUEVO: si la especialidad pre-seleccionada ya tiene horariosDisponibles,
+    // aplicarla inmediatamente sin esperar la carga (mejora UX)
+    useEffect(() => {
+        if (modalOpen && especialidadPreseleccionada && especialidadPreseleccionada.horariosDisponibles) {
+            setEspecialidadSeleccionada(especialidadPreseleccionada);
+        }
+    }, [modalOpen, especialidadPreseleccionada]);
+
+    // Reset al cerrar el modal
     useEffect(() => {
         if (!modalOpen) {
-            setEspecialidadSeleccionada(null); setEspecialidades([]);
-            setErrorEsp(''); setFechaSeleccionada(null);
-            setHoraSeleccionada(''); setDatetime('');
+            setEspecialidadSeleccionada(null);
+            setEspecialidades([]);
+            setErrorEsp('');
+            setFechaSeleccionada(null);
+            setHoraSeleccionada('');
+            setDatetime('');
         }
     }, [modalOpen]);
 
+    // Sincronizar datetime cuando cambian fecha y hora
     useEffect(() => {
         if (fechaSeleccionada && horaSeleccionada) {
             const y = fechaSeleccionada.getFullYear();
@@ -194,7 +215,9 @@ export const TurnoModal = ({
     const handleCambiarEspecialidad = (e) => {
         const esp = especialidades.find(es => es.id === parseInt(e.target.value, 10)) || null;
         setEspecialidadSeleccionada(esp);
-        setFechaSeleccionada(null); setHoraSeleccionada(''); setDatetime('');
+        setFechaSeleccionada(null);
+        setHoraSeleccionada('');
+        setDatetime('');
     };
 
     const handleConfirm = () => {
@@ -212,6 +235,10 @@ export const TurnoModal = ({
         });
     };
 
+    // NUEVO: determinar si el selector debe mostrarse o no
+    // Si viene del buscador con especialidad pre-seleccionada, se muestra como texto fijo
+    const vieneDelBuscador = !!especialidadPreseleccionada && !!especialidadSeleccionada;
+
     return (
         <div className="modal-overlay" role="dialog" aria-modal="true">
             <div className="modal">
@@ -222,9 +249,7 @@ export const TurnoModal = ({
                         <span className="close-x" aria-hidden="true">×</span>
                     </button>
                 </div>
-
                 <div className="modal__body">
-
                     {selected.establecimientoNombre && selected.establecimientoId && (
                         <div className="selected-establishment">
                             <div className="selected-establishment-header">
@@ -239,20 +264,34 @@ export const TurnoModal = ({
                     {/* Especialidad */}
                     <div className="input">
                         <label className="input__label">Especialidad</label>
-                        {loadingEsp && <div className="input__field">Cargando especialidades...</div>}
-                        {errorEsp   && <div className="turnos-error">{errorEsp}</div>}
-                        {!loadingEsp && !errorEsp && especialidades.length === 0 && (
-                            <div className="input__field">No hay especialidades disponibles</div>
+
+                        {/* NUEVO: si viene del buscador, mostrar la especialidad fija sin selector */}
+                        {vieneDelBuscador ? (
+                            <div className="input__field input__field--readonly">
+                                {especialidadSeleccionada.nombre}
+                            </div>
+                        ) : (
+                            <>
+                                {loadingEsp && <div className="input__field">Cargando especialidades...</div>}
+                                {errorEsp   && <div className="turnos-error">{errorEsp}</div>}
+                                {!loadingEsp && !errorEsp && especialidades.length === 0 && (
+                                    <div className="input__field">No hay especialidades disponibles</div>
+                                )}
+                                {!loadingEsp && especialidades.length > 0 && (
+                                    <select
+                                        className="input__field"
+                                        value={especialidadSeleccionada?.id || ''}
+                                        onChange={handleCambiarEspecialidad}
+                                    >
+                                        <option value="">-- Seleccioná una especialidad --</option>
+                                        {especialidades.map(esp => (
+                                            <option key={esp.id} value={esp.id}>{esp.nombre}</option>
+                                        ))}
+                                    </select>
+                                )}
+                            </>
                         )}
-                        {!loadingEsp && especialidades.length > 0 && (
-                            <select className="input__field" value={especialidadSeleccionada?.id || ''}
-                                onChange={handleCambiarEspecialidad}>
-                                <option value="">-- Seleccioná una especialidad --</option>
-                                {especialidades.map(esp => (
-                                    <option key={esp.id} value={esp.id}>{esp.nombre}</option>
-                                ))}
-                            </select>
-                        )}
+
                         {especialidadSeleccionada?.horariosDisponibles && (
                             <p className="input__description">
                                 🕐 {especialidadSeleccionada.horariosDisponibles}
@@ -322,7 +361,6 @@ export const TurnoModal = ({
                         </button>
                     </div>
                 </div>
-
                 {error && <div className="turnos-error">{error}</div>}
             </div>
         </div>

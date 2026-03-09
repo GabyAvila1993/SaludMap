@@ -21,7 +21,6 @@ export class EstablecimientosService {
           },
           orderBy: { createdAt: 'desc' },
         },
-        // NUEVO: incluir especialidades asignadas
         especialidades: {
           include: {
             especialidad: true,
@@ -46,7 +45,6 @@ export class EstablecimientosService {
           },
           orderBy: { createdAt: 'desc' },
         },
-        // NUEVO: incluir especialidades asignadas
         especialidades: {
           include: {
             especialidad: true,
@@ -58,6 +56,7 @@ export class EstablecimientosService {
     if (!establecimiento) {
       throw new NotFoundException('Establecimiento no encontrado');
     }
+
     return establecimiento;
   }
 
@@ -114,7 +113,6 @@ export class EstablecimientosService {
             },
             orderBy: { createdAt: 'desc' },
           },
-          // NUEVO: incluir especialidades asignadas
           especialidades: {
             include: {
               especialidad: true,
@@ -154,12 +152,13 @@ export class EstablecimientosService {
   }
 
   /**
-   * NUEVO: Obtiene las especialidades de un establecimiento
+   * Obtiene las especialidades de un establecimiento
    */
   async getEspecialidades(id: number) {
     const establecimiento = await this.prisma.establecimiento.findUnique({
       where: { id },
     });
+
     if (!establecimiento) {
       throw new NotFoundException('Establecimiento no encontrado');
     }
@@ -179,6 +178,52 @@ export class EstablecimientosService {
   }
 
   /**
+   * Devuelve los establecimientos que ofrecen una especialidad
+   */
+  async findByEspecialidad(especialidadId: number) {
+    const especialidad = await this.prisma.especialidad.findUnique({
+      where: { id: especialidadId },
+    });
+
+    if (!especialidad) {
+      throw new NotFoundException(`Especialidad con ID ${especialidadId} no encontrada`);
+    }
+
+    const relaciones = await this.prisma.establecimientoEspecialidad.findMany({
+      where: { especialidadId },
+      include: {
+        establecimiento: {
+          include: {
+            resenias: { select: { id: true, puntuacion: true } },
+          },
+        },
+      },
+      orderBy: { establecimiento: { nombre: 'asc' } },
+    });
+
+    return relaciones.map((r) => ({
+      id:                  r.establecimiento.id,
+      nombre:              r.establecimiento.nombre,
+      tipo:                r.establecimiento.tipo,
+      direccion:           r.establecimiento.direccion,
+      telefono:            r.establecimiento.telefono,
+      lat:                 r.establecimiento.lat,
+      lng:                 r.establecimiento.lng,
+      horariosDisponibles: r.horariosDisponibles,
+      promedioEstrellas:
+        r.establecimiento.resenias.length > 0
+          ? Number(
+              (
+                r.establecimiento.resenias.reduce((s, res) => s + res.puntuacion, 0) /
+                r.establecimiento.resenias.length
+              ).toFixed(1),
+            )
+          : null,
+      totalResenias: r.establecimiento.resenias.length,
+    }));
+  }
+
+  /**
    * Lista todos los establecimientos con paginación
    */
   async findAll(skip?: number, take?: number) {
@@ -189,7 +234,6 @@ export class EstablecimientosService {
         resenias: {
           select: { id: true, puntuacion: true },
         },
-        // NUEVO: incluir especialidades en el listado general
         especialidades: {
           include: {
             especialidad: {

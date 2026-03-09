@@ -1010,4 +1010,348 @@
 
   .compare-btn { font-size: 0.78rem; }
 }
+/* ════════════════════════════════════════════════════════════════
+   BUSCADOR DE ESPECIALIDADES
+   Agregar al final de Turnos.css
+   ════════════════════════════════════════════════════════════════ */
 
+.buscador-especialidades {
+  width: 100%;
+  background: var(--t-bg-card);
+  border: 1.5px solid var(--t-border);
+  border-radius: var(--t-radius);
+  padding: 1rem 1.4rem 1.1rem;
+  box-shadow: var(--t-shadow);
+  box-sizing: border-box;
+  transition: box-shadow 0.25s ease;
+}
+.buscador-especialidades:focus-within {
+  box-shadow: var(--t-shadow-md);
+  border-color: var(--t-border-strong);
+}
+
+/* ── Cabecera ── */
+.buscador__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.buscador__header-icono {
+  font-size: 1rem;
+  line-height: 1;
+}
+.buscador__header-titulo {
+  font-family: var(--t-font-body);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--t-text-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+  flex: 1;
+}
+.buscador__nueva-busqueda {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--t-text-accent);
+  background: transparent;
+  border: 1.5px solid var(--t-border-strong);
+  border-radius: 6px;
+  padding: 0.2rem 0.6rem;
+  cursor: pointer;
+  min-height: unset;
+  transition: var(--t-transition);
+}
+.buscador__nueva-busqueda:hover {
+  background: var(--t-border-strong);
+  color: var(--white);
+}
+
+/* ── Input wrap (posición relativa para el dropdown) ── */
+.buscador__input-wrap {
+  position: relative;
+}
+.buscador__input-row {
+  display: flex;
+  align-items: center;
+  background: var(--t-bg-section);
+  border: 1.5px solid var(--t-border);
+  border-radius: 8px;
+  padding: 0 0.75rem;
+  transition: var(--t-transition);
+}
+.buscador__input-row:focus-within {
+  border-color: var(--t-border-strong);
+  box-shadow: 0 0 0 3px rgba(77,170,144,0.15);
+}
+.buscador__input-icono {
+  font-size: 0.88rem;
+  margin-right: 0.5rem;
+  user-select: none;
+  flex-shrink: 0;
+}
+.buscador__input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--t-text-main);
+  font-family: var(--t-font-body);
+  font-size: 0.88rem;
+  padding: 0.6rem 0;
+  outline: none;
+}
+.buscador__input::placeholder {
+  color: var(--t-text-muted);
+}
+.buscador__limpiar {
+  background: transparent;
+  border: none;
+  color: var(--t-text-muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0 0.1rem;
+  min-height: unset;
+  min-width: unset;
+  line-height: 1;
+  flex-shrink: 0;
+  box-shadow: none;
+  transition: color 0.2s;
+}
+.buscador__limpiar:hover { color: var(--t-error); }
+
+/* ── Dropdown ── */
+.buscador__dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--t-bg-card);
+  border: 1.5px solid var(--t-border-strong);
+  border-radius: 8px;
+  box-shadow: var(--t-shadow-md);
+  list-style: none;
+  margin: 0;
+  padding: 0.3rem 0;
+  z-index: 500;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.buscador__dropdown-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.buscador__dropdown-item:hover,
+.buscador__dropdown-item--focus {
+  background: var(--t-bg-section);
+}
+.buscador__dropdown-nombre {
+  font-size: 0.87rem;
+  font-weight: 600;
+  color: var(--t-text-main);
+}
+.buscador__dropdown-desc {
+  font-size: 0.72rem;
+  color: var(--t-text-muted);
+  font-style: italic;
+}
+
+/* ── Resultados ── */
+.buscador__resultados {
+  margin-top: 0.9rem;
+  border-top: 1.5px solid var(--t-border);
+  padding-top: 0.85rem;
+}
+.buscador__subtitulo {
+  font-size: 0.8rem;
+  color: var(--t-text-muted);
+  margin: 0 0 0.65rem;
+}
+.buscador__loading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--t-text-muted);
+  padding: 0.4rem 0;
+}
+.buscador__spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--t-border);
+  border-top-color: var(--t-border-strong);
+  border-radius: 50%;
+  animation: buscador-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes buscador-spin { to { transform: rotate(360deg); } }
+
+.buscador__vacio {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--t-text-muted);
+  padding: 0.3rem 0;
+}
+.buscador__vacio-icono { font-size: 1.1rem; }
+.buscador__vacio p { margin: 0; }
+
+/* ── Lista de establecimientos ── */
+.buscador__lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.buscador__card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  background: var(--t-bg-section);
+  border: 1.5px solid var(--t-border);
+  border-radius: 8px;
+  transition: var(--t-transition);
+}
+.buscador__card:hover {
+  border-color: var(--t-border-strong);
+  box-shadow: var(--t-shadow);
+  transform: translateY(-1px);
+}
+.buscador__card-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.22rem;
+}
+.buscador__card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.buscador__card-icono {
+  font-size: 1.1rem;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+.buscador__card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.buscador__card-nombre {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--t-text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.buscador__card-tipo {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--t-text-accent);
+}
+.buscador__card-dir,
+.buscador__card-horario {
+  font-size: 0.74rem;
+  color: var(--t-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.buscador__card-btn {
+  flex-shrink: 0;
+  font-size: 0.78rem;
+  padding: 0.42rem 0.85rem;
+  min-height: unset;
+  white-space: nowrap;
+}
+
+/* ── Rating ── */
+.buscador__rating {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1px;
+}
+.buscador__estrellas {
+  color: #f0c44a;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+}
+.buscador__rating-num {
+  font-size: 0.7rem;
+  color: var(--t-text-muted);
+}
+
+/* ── Dark mode ── */
+.dark-theme .buscador-especialidades {
+  background: var(--t-bg-card);
+  border-color: var(--t-border);
+}
+.dark-theme .buscador__input-row {
+  background: var(--t-bg-section);
+  border-color: var(--t-border);
+}
+.dark-theme .buscador__dropdown {
+  background: var(--t-bg-card);
+  border-color: var(--t-border);
+}
+.dark-theme .buscador__dropdown-item:hover,
+.dark-theme .buscador__dropdown-item--focus {
+  background: var(--t-bg-section);
+}
+.dark-theme .buscador__card {
+  background: var(--t-bg-section);
+  border-color: var(--t-border);
+}
+.dark-theme .buscador__card:hover {
+  border-color: var(--t-border-strong);
+}
+
+/* ════════════════════════════════════════════════
+   RESPONSIVE — BUSCADOR
+   ════════════════════════════════════════════════ */
+@media (min-width: 1280px) {
+  .buscador-especialidades { padding: 1.1rem 1.75rem 1.25rem; }
+  .buscador__card-nombre   { font-size: 0.93rem; }
+  .buscador__input         { font-size: 0.93rem; }
+}
+@media (max-width: 1024px) {
+  .buscador-especialidades { padding: 0.9rem 1.2rem 1rem; }
+}
+@media (max-width: 768px) {
+  .buscador-especialidades { padding: 0.8rem 1rem 0.9rem; }
+  .buscador__card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .buscador__card-btn { width: 100%; text-align: center; }
+  .buscador__card-nombre { white-space: normal; }
+  .buscador__card-dir,
+  .buscador__card-horario { white-space: normal; }
+}
+@media (max-width: 480px) {
+  .buscador-especialidades { padding: 0.7rem 0.85rem 0.8rem; border-radius: 10px; }
+  .buscador__header-titulo { font-size: 0.78rem; }
+  .buscador__input         { font-size: 0.82rem; }
+  .buscador__dropdown      { max-height: 180px; }
+  .buscador__card-nombre   { font-size: 0.82rem; }
+  .buscador__card-tipo     { font-size: 0.64rem; }
+  .buscador__card-dir,
+  .buscador__card-horario  { font-size: 0.7rem; }
+  .buscador__card-btn      { font-size: 0.74rem; padding: 0.38rem 0.7rem; }
+}

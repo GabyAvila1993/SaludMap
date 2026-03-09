@@ -10,6 +10,7 @@ import { ProfesionalesList } from './ProfesionalesList2.jsx';
 import { MisTurnosList } from './MisTurnosList2.jsx';
 import { TurnoModal } from './TurnoModal2.jsx';
 import CostComparator from './CostComparator.jsx';
+import BuscadorEspecialidades from './BuscadorEspecialidades.jsx';
 import establecimientosService from '../../services/establecimientosService';
 
 const getTypeFromPlace = (place) => place.type || 'default';
@@ -19,7 +20,6 @@ export default function Turnos() {
 	const { user } = useAuth();
 	const [showAuthModal, setShowAuthModal] = useState(false);
 	const [showRegister, setShowRegister] = useState(false);
-
 	const prettyType = (type) =>
 		t(`appointments.types.${type}`, { defaultValue: t('appointments.types.default') });
 
@@ -38,6 +38,8 @@ export default function Turnos() {
 	const [preSelectedEstablecimiento, setPreSelectedEstablecimiento] = useState(null);
 	const [preSelectedPlace, setPreSelectedPlace] = useState(null);
 	const [showCostComparator, setShowCostComparator] = useState(false);
+	// NUEVO: especialidad pre-seleccionada desde el buscador
+	const [especialidadPreseleccionada, setEspecialidadPreseleccionada] = useState(null);
 
 	const sortTurnosDesc = (arr = []) => {
 		try {
@@ -54,7 +56,6 @@ export default function Turnos() {
 	const openModal = async (prof, establecimientoOverride = null) => {
 		const tags = prof.tags || prof.properties || {};
 		let est = establecimientoOverride || preSelectedEstablecimiento;
-
 		if (!est) {
 			try {
 				const placeForCreate = {
@@ -71,18 +72,40 @@ export default function Turnos() {
 				return;
 			}
 		}
-
 		setSelected({
 			...prof,
-			name: prof.name || tags.name || prof.properties?.name || tags.amenity || 'Establecimiento de salud',
+			name: prof.name || prof.nombre || tags.name || prof.properties?.name || tags.amenity || 'Establecimiento de salud',
 			address: prof.direccion || prof.address || tags.addr_full || tags['addr:full'] || tags.address || prof.properties?.address || '',
 			establecimientoId: est?.id,
-			establecimientoNombre: est?.nombre || tags.name || 'Establecimiento'
+			establecimientoNombre: est?.nombre || prof.nombre || tags.name || 'Establecimiento'
 		});
 		setDatetime('');
 		setNotes('');
 		setSelectedType(getTypeFromPlace(prof));
 		setModalOpen(true);
+	};
+
+	// Handler del buscador: recibe establecimiento Y especialidad
+	const handleSeleccionarDesdeBuscador = async (estData, especialidad) => {
+		const establecimiento = {
+			id:        estData.id,
+			nombre:    estData.nombre,
+			tipo:      estData.tipo,
+			direccion: estData.direccion,
+			lat:       estData.lat,
+			lng:       estData.lng,
+		};
+		const place = {
+			...estData,
+			name:    estData.nombre,
+			address: estData.direccion || '',
+			type:    estData.tipo || 'default',
+		};
+		setPreSelectedEstablecimiento(establecimiento);
+		setPreSelectedPlace(place);
+		// NUEVO: guardar la especialidad para pasarla al modal
+		setEspecialidadPreseleccionada(especialidad || null);
+		await openModal(place, establecimiento);
 	};
 
 	// Suscripción a profesionales
@@ -127,6 +150,8 @@ export default function Turnos() {
 			}
 			setPreSelectedEstablecimiento(establecimiento);
 			setPreSelectedPlace(place);
+			// Al venir del mapa no hay especialidad pre-seleccionada
+			setEspecialidadPreseleccionada(null);
 			setTimeout(() => openModal(place, establecimiento), 100);
 		};
 		const handleRefreshTurnos = () => {
@@ -153,6 +178,7 @@ export default function Turnos() {
 				if (!establecimiento.id) return;
 				setPreSelectedEstablecimiento(establecimiento);
 				setPreSelectedPlace(place);
+				setEspecialidadPreseleccionada(null);
 				setTimeout(() => openModal(place, establecimiento), 100);
 			} catch {
 				sessionStorage.removeItem('selectedEstablecimiento');
@@ -178,7 +204,7 @@ export default function Turnos() {
 					id: t.id,
 					professionalName: t.establecimiento?.nombre || t.professionalName || 'Profesional',
 					professionalType: t.establecimiento?.tipo || t.professionalType || 'default',
-					especialidad: t.especialidad?.nombre || '',  // NUEVO
+					especialidad: t.especialidad?.nombre || '',
 					datetime: (() => {
 						if (t.fecha) {
 							try {
@@ -230,7 +256,6 @@ export default function Turnos() {
 
 	const handleSolicitarTurno = async (datos) => {
 		try {
-			// Completar establecimientoId si falta
 			if (!datos.establecimientoId && preSelectedEstablecimiento?.id) {
 				datos.establecimientoId = preSelectedEstablecimiento.id;
 			}
@@ -248,22 +273,17 @@ export default function Turnos() {
 					}
 				} catch { /* falla silenciosa */ }
 			}
-
 			if (!datos.establecimientoId) {
 				alert('Error: No hay establecimiento seleccionado. Por favor intenta nuevamente.');
 				return;
 			}
-
-			// MODIFICADO: ahora incluye especialidadId
 			const turnoGuardado = await guardarTurno({
 				usuarioId: user.id,
 				establecimientoId: datos.establecimientoId,
-				especialidadId: datos.especialidadId, // NUEVO
+				especialidadId: datos.especialidadId,
 				fecha: datos.fecha,
 				hora: datos.hora
 			});
-
-			// Enviar email de confirmación
 			try {
 				await sendAppointmentEmail(
 					selected,
@@ -277,8 +297,6 @@ export default function Turnos() {
 			} catch (emailError) {
 				console.error('[Turnos] ⚠️ Turno guardado pero error al enviar email:', emailError);
 			}
-
-			// Agregar a lista local
 			try {
 				const fechaStr = turnoGuardado?.fecha ? String(turnoGuardado.fecha) : datos.fecha;
 				const horaStr = turnoGuardado?.hora ?? datos.hora;
@@ -286,7 +304,7 @@ export default function Turnos() {
 					id: turnoGuardado?.id || Date.now(),
 					professionalName: datos.professionalName || selected?.name || 'Profesional',
 					professionalType: datos.professionalType || selectedType,
-					especialidad: datos.especialidadNombre || '', // NUEVO
+					especialidad: datos.especialidadNombre || '',
 					datetime: `${fechaStr.split('T')[0]}T${horaStr}`,
 					notes: datos.observaciones || '',
 					email: datos.correo || user.mail,
@@ -294,9 +312,11 @@ export default function Turnos() {
 					estado: turnoGuardado?.estado || 'pendiente'
 				};
 				setMisTurnos(prev => sortTurnosDesc([...prev, nuevoTurno]));
-			} catch { /* error al agregar localmente, no crítico */ }
+			} catch { /* no crítico */ }
 
 			setModalOpen(false);
+			// NUEVO: limpiar especialidad pre-seleccionada al cerrar
+			setEspecialidadPreseleccionada(null);
 			setPreSelectedEstablecimiento(null);
 			setPreSelectedPlace(null);
 			alert('Turno solicitado exitosamente');
@@ -363,6 +383,12 @@ export default function Turnos() {
 						<strong>{user.nombre} {user.apellido}</strong> · {user.mail}
 					</div>
 				</header>
+
+				{/* Buscador de especialidades */}
+				<BuscadorEspecialidades
+					onSeleccionarEstablecimiento={handleSeleccionarDesdeBuscador}
+				/>
+
 				<div className="turnos-body">
 					{/* Panel izquierdo */}
 					{!preSelectedEstablecimiento ? (
@@ -402,6 +428,7 @@ export default function Turnos() {
 					/>
 				</div>
 
+				{/* NUEVO: se pasa especialidadPreseleccionada al modal */}
 				<TurnoModal
 					modalOpen={modalOpen}
 					selected={selected}
@@ -414,9 +441,13 @@ export default function Turnos() {
 					setCorreo={() => { }}
 					loading={loading}
 					error={error}
-					onClose={() => setModalOpen(false)}
+					onClose={() => {
+						setModalOpen(false);
+						setEspecialidadPreseleccionada(null);
+					}}
 					onConfirm={handleSolicitarTurno}
 					prettyType={prettyType}
+					especialidadPreseleccionada={especialidadPreseleccionada}
 				/>
 
 				{showCostComparator && (

@@ -60,6 +60,18 @@ export class EstablecimientosController {
   }
 
   /**
+   * GET /establecimientos/especialidad/:especialidadId
+   * Devuelve los establecimientos que ofrecen una especialidad
+   * IMPORTANTE: Debe ir ANTES de la ruta :id
+   */
+  @Get('especialidad/:especialidadId')
+  async findByEspecialidad(
+    @Param('especialidadId', ParseIntPipe) especialidadId: number,
+  ) {
+    return await this.service.findByEspecialidad(especialidadId);
+  }
+
+  /**
    * GET /establecimientos/:id/resenias
    * Obtiene las reseñas de un establecimiento con estadísticas
    * IMPORTANTE: Debe ir ANTES de la ruta :id
@@ -70,7 +82,7 @@ export class EstablecimientosController {
   }
 
   /**
-   * NUEVO: GET /establecimientos/:id/especialidades
+   * GET /establecimientos/:id/especialidades
    * Obtiene las especialidades disponibles en un establecimiento
    * IMPORTANTE: Debe ir ANTES de la ruta :id
    */
