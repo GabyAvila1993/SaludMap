@@ -7,7 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-// Chatbot (Integración)
+// Chatbot
 import { ChatbotController } from './controllers/chatbot.controller';
 import { GeminiService } from './services/gemini.service';
 
@@ -17,19 +17,18 @@ import { TurnosModule } from './turnos/turnos.module';
 import { EstablecimientosModule } from './establecimientos/establecimientos.module';
 import { ReseniasModule } from './resenias/resenias.module';
 import { PlacesModule } from './places/places.module';
-import { EspecialidadesModule } from './especialidades/especialidades.module'; // NUEVO
+import { EspecialidadesModule } from './especialidades/especialidades.module';
 
 // Guards
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { RolesGuard } from './guards/roles.guard'; // NUEVO
 
 @Module({
   imports: [
-    // Configuración Global de Variables de Entorno
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env', '.env.production'],
     }),
-    // Configuración Asíncrona de JWT
     JwtModule.registerAsync({
       imports: [ConfigModule],
       global: true,
@@ -43,17 +42,21 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
       }),
       inject: [ConfigService],
     }),
-    // Módulos del Sistema
     PlacesModule,
     ScheduleModule.forRoot(),
     TurnosModule,
     UsuariosModule,
     EstablecimientosModule,
     ReseniasModule,
-    EspecialidadesModule, // NUEVO
+    EspecialidadesModule,
   ],
   controllers: [AppController, ChatbotController],
-  providers: [AppService, JwtAuthGuard, GeminiService],
+  providers: [
+    AppService,
+    JwtAuthGuard,
+    GeminiService,
+    RolesGuard, // NUEVO
+  ],
   exports: [JwtAuthGuard],
 })
 export class AppModule {}

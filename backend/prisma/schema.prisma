@@ -1,7 +1,5 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 generator client {
   provider = "prisma-client"
   output   = "../generated"
@@ -13,44 +11,42 @@ datasource db {
 }
 
 model Establecimiento {
-  id          Int                          @id @default(autoincrement())
-  lat         Float
-  lng         Float
-  nombre      String
-  tipo        String                       // hospital, clinic, doctors, etc.
-  direccion   String?
-  telefono    String?
-  horarios    String?                      @db.Text
-  metadata    Json?                        // datos adicionales de OSM/Leaflet
-  turnos      Turno[]
-  resenias    Resenia[]                    @relation("ReseniasPorEstablecimiento")
+  id             Int                          @id @default(autoincrement())
+  lat            Float
+  lng            Float
+  nombre         String
+  tipo           String
+  direccion      String?
+  telefono       String?
+  horarios       String?                      @db.Text
+  metadata       Json?
+  turnos         Turno[]
+  resenias       Resenia[]                    @relation("ReseniasPorEstablecimiento")
   especialidades EstablecimientoEspecialidad[]
-  createdAt   DateTime                     @default(now())
-  updatedAt   DateTime                     @updatedAt
+  createdAt      DateTime                     @default(now())
+  updatedAt      DateTime                     @updatedAt
 
   @@unique([lat, lng])
   @@index([lat, lng])
 }
 
 model Especialidad {
-  id           Int                          @id @default(autoincrement())
-  nombre       String                       @unique
-  descripcion  String?                      @db.Text
+  id               Int                          @id @default(autoincrement())
+  nombre           String                       @unique
+  descripcion      String?                      @db.Text
   establecimientos EstablecimientoEspecialidad[]
-  turnos       Turno[]
-  createdAt    DateTime                     @default(now())
-  updatedAt    DateTime                     @updatedAt
+  turnos           Turno[]
+  createdAt        DateTime                     @default(now())
+  updatedAt        DateTime                     @updatedAt
 }
 
-// Tabla puente many-to-many entre Establecimiento y Especialidad
 model EstablecimientoEspecialidad {
-  id                Int             @id @default(autoincrement())
-  establecimientoId Int
-  especialidadId    Int
-  // Horarios específicos de esa especialidad en ese establecimiento (opcional)
-  horariosDisponibles String?       @db.Text
-  establecimiento   Establecimiento @relation(fields: [establecimientoId], references: [id])
-  especialidad      Especialidad    @relation(fields: [especialidadId], references: [id])
+  id                  Int             @id @default(autoincrement())
+  establecimientoId   Int
+  especialidadId      Int
+  horariosDisponibles String?         @db.Text
+  establecimiento     Establecimiento @relation(fields: [establecimientoId], references: [id])
+  especialidad        Especialidad    @relation(fields: [especialidadId], references: [id])
 
   @@unique([establecimientoId, especialidadId])
   @@index([establecimientoId])
@@ -63,6 +59,7 @@ model Usuario {
   apellido    String
   mail        String     @unique
   contrasenia String
+  rol         String     @default("usuario") // NUEVO: "usuario" | "admin"
   turnos      Turno[]
   resenias    Resenia[]  @relation("ReseniasPorUsuario")
   createdAt   DateTime   @default(now())
@@ -73,7 +70,7 @@ model Turno {
   id                Int             @id @default(autoincrement())
   usuarioId         Int
   establecimientoId Int
-  especialidadId    Int             // NUEVO: especialidad del turno
+  especialidadId    Int
   fecha             DateTime
   hora              String?
   estado            String          @default("pendiente")
@@ -92,7 +89,7 @@ model Resenia {
   usuarioId         Int
   establecimientoId Int
   turnoId           Int             @unique
-  puntuacion        Int             // 1-5 estrellas
+  puntuacion        Int
   comentario        String          @db.Text
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
@@ -104,7 +101,6 @@ model Resenia {
   @@index([usuarioId])
 }
 
-// Tabla legacy de ubicaciones (mantener por compatibilidad)
 model Ubicacion {
   id        Int      @id @default(autoincrement())
   nombre    String

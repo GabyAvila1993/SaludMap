@@ -13,11 +13,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    // El payload contiene los datos que se firmaron en el token
-    // Típicamente: { sub: userId, mail: userEmail }
-    return { 
-      userId: payload.sub, 
-      mail: payload.mail 
+    // MODIFICADO: ahora también incluye el rol en el objeto user del request
+    return {
+      userId: payload.sub,
+      mail: payload.mail,
+      rol: payload.rol, // NUEVO
     };
   }
 }

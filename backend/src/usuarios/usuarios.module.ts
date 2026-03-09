@@ -1,8 +1,8 @@
-/* --------- INICIO DEL ARCHIVO src/usuarios/usuarios.module.ts ----------- */
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { UsuariosController } from './usuarios.controller';
 import { UsuariosService } from './usuarios.service';
+import { RolesGuard } from '../guards/roles.guard';
 
 @Module({
   imports: [
@@ -12,8 +12,7 @@ import { UsuariosService } from './usuarios.service';
     }),
   ],
   controllers: [UsuariosController],
-  providers: [ UsuariosService],
-  exports: [ UsuariosService],
+  providers: [UsuariosService, RolesGuard],
+  exports: [UsuariosService],
 })
 export class UsuariosModule {}
-/* --------- FIN DEL ARCHIVO src/usuarios/usuarios.module.ts ----------- */

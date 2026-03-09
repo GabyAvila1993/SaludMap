@@ -118,6 +118,7 @@ export const UsuarioScalarFieldEnum = {
   apellido: 'apellido',
   mail: 'mail',
   contrasenia: 'contrasenia',
+  rol: 'rol',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -235,7 +236,8 @@ export const UsuarioOrderByRelevanceFieldEnum = {
   nombre: 'nombre',
   apellido: 'apellido',
   mail: 'mail',
-  contrasenia: 'contrasenia'
+  contrasenia: 'contrasenia',
+  rol: 'rol'
 } as const
 
 export type UsuarioOrderByRelevanceFieldEnum = (typeof UsuarioOrderByRelevanceFieldEnum)[keyof typeof UsuarioOrderByRelevanceFieldEnum]

@@ -6,17 +6,22 @@ import {
   Body,
   Param,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { EspecialidadesService } from './especialidades.service';
 import { CrearEspecialidadDto, AsignarEspecialidadDto } from './dto/especialidad.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard, Roles } from '../guards/roles.guard';
 
 @Controller('especialidades')
 export class EspecialidadesController {
   constructor(private readonly service: EspecialidadesService) {}
 
+  // ── Endpoints públicos (cualquier usuario autenticado o no) ──
+
   /**
    * GET /especialidades
-   * Lista todas las especialidades
+   * Lista todas las especialidades — público
    */
   @Get()
   async findAll() {
@@ -24,17 +29,8 @@ export class EspecialidadesController {
   }
 
   /**
-   * GET /especialidades/:id
-   * Obtiene una especialidad por ID
-   */
-  @Get(':id')
-  async findById(@Param('id', ParseIntPipe) id: number) {
-    return await this.service.findById(id);
-  }
-
-  /**
    * GET /especialidades/establecimiento/:id
-   * Obtiene todas las especialidades de un establecimiento específico
+   * Especialidades de un establecimiento — público
    */
   @Get('establecimiento/:id')
   async findByEstablecimiento(@Param('id', ParseIntPipe) establecimientoId: number) {
@@ -42,9 +38,22 @@ export class EspecialidadesController {
   }
 
   /**
-   * POST /especialidades
-   * Crea una nueva especialidad (admin)
+   * GET /especialidades/:id
+   * Obtiene una especialidad por ID — público
    */
+  @Get(':id')
+  async findById(@Param('id', ParseIntPipe) id: number) {
+    return await this.service.findById(id);
+  }
+
+  // ── Endpoints solo admin ──────────────────────────────────────
+
+  /**
+   * POST /especialidades
+   * Crea una nueva especialidad — solo admin
+   */
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Post()
   async create(@Body() dto: CrearEspecialidadDto) {
     return await this.service.create(dto);
@@ -52,8 +61,10 @@ export class EspecialidadesController {
 
   /**
    * POST /especialidades/asignar
-   * Asigna una especialidad a un establecimiento
+   * Asigna una especialidad a un establecimiento — solo admin
    */
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Post('asignar')
   async asignar(@Body() dto: AsignarEspecialidadDto) {
     return await this.service.asignarAEstablecimiento(dto);
@@ -61,8 +72,10 @@ export class EspecialidadesController {
 
   /**
    * DELETE /especialidades/establecimiento/:establecimientoId/:especialidadId
-   * Desasigna una especialidad de un establecimiento
+   * Desasigna una especialidad de un establecimiento — solo admin
    */
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Delete('establecimiento/:establecimientoId/:especialidadId')
   async desasignar(
     @Param('establecimientoId', ParseIntPipe) establecimientoId: number,

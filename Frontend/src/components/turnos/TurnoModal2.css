@@ -1,107 +1,242 @@
-/* ── TurnoModal2.css ────────────────────────────────────────────────────── */
-/*
-  Todos los colores usan variables definidas en index.css.
-  No hay colores hardcodeados ni !important.
-  Este archivo solo agrega estilos específicos del bloque
-  "establecimiento seleccionado" y el ocultamiento del picker nativo.
-  El resto del modal está cubierto por Turnos.css.
-*/
+/* ── TurnoModal2.css ────────────────────────────────────────────────────────
+   SOLO contiene clases del calendario y slots.
+   Las clases base del modal (.modal, .input, .selected-establishment, etc.)
+   ya están definidas en Turnos.css — no se repiten aquí.
+   ────────────────────────────────────────────────────────────────────────── */
 
-/* ── Establecimiento seleccionado en modal ── */
-.selected-establishment {
-  padding: 0.7rem 0.85rem;
-  background: var(--placeholder-fill);
-  border: 2px solid var(--color-titulo);
-  border-radius: 8px;
-  margin-bottom: 0.95rem;
-  box-shadow: var(--shadow-sm-8);
+/* ════════════════════════════════════════════════
+   CALENDARIO VISUAL
+   ════════════════════════════════════════════════ */
+.calendario {
+  background: var(--t-bg-section);
+  border-radius: 10px;
+  padding: 0.8rem;
+  border: 1.5px solid var(--t-border);
+  box-shadow: var(--t-shadow);
 }
 
-.selected-establishment-header {
+/* ── Navegación mes/año ── */
+.calendario__nav {
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: var(--text-main);
-  font-weight: 600;
-  font-size: 0.81rem;
+  justify-content: space-between;
+  margin-bottom: 0.65rem;
 }
-
-.est-pin { font-size: 1rem; }
-
-.selected-establishment-name {
-  margin-top: 4px;
-  margin-left: 24px;
-  color: var(--text-main);
+.calendario__mes-anio {
   font-weight: 700;
   font-size: 0.95rem;
+  color: var(--t-text-accent);
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
+}
+.calendario__nav-btn {
+  background: var(--t-btn-bg);
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  padding: 0.18rem 0.6rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: unset;
+  min-width: unset;
+  line-height: 1.5;
+  transition: var(--t-transition);
+  box-shadow: none;
+}
+.calendario__nav-btn:hover {
+  filter: brightness(1.1);
+  transform: scale(1.06);
 }
 
-.selected-establishment-note {
-  margin-top: 3px;
-  margin-left: 24px;
-  font-size: 0.78rem;
-  color: var(--text-main);
-  font-style: italic;
+/* ── Grilla 7 columnas ── */
+.calendario__grilla {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
 }
 
-/* ── Input con ícono de calendario ── */
-.input-with-icon {
-  position: relative;
+/* ── Cabeceras ── */
+.calendario__cabecera {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--t-text-accent);
+  padding: 0.25rem 0 0.35rem;
+  letter-spacing: 0.03em;
+}
+
+/* ── Celdas base ── */
+.calendario__celda {
+  aspect-ratio: 1;
   display: flex;
   align-items: center;
-}
-
-.input-with-icon .input__field {
-  width: 100%;
-  padding-right: 40px;
-  box-sizing: border-box;
-  
-  }
-
-/* Ocultar picker nativo del datetime-local para no duplicar íconos */
-.input-with-icon .input__field::-webkit-calendar-picker-indicator {
-  display: none;
-  -webkit-appearance: none;
-  opacity: 0;
-}
-
-.input-with-icon .input__field::-webkit-inner-spin-button {
-  display: none;
-}
-
-.calendar-btn {
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: transparent;
+  justify-content: center;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 500;
   border: none;
-  color: var(--color-titulo);
-  cursor: pointer;
-  padding: 4px;
+  cursor: default;
   min-height: unset;
+  min-width: unset;
+  padding: 0;
+  line-height: 1;
+  background: transparent;
+  color: var(--t-text-muted);
+  transition: var(--t-transition);
   box-shadow: none;
-  transition: var(--transition);
+}
+.calendario__celda--vacia {
+  pointer-events: none;
 }
 
-.calendar-btn:hover {
-  transform: translateY(-50%) scale(1.1);
+/* ── Días disponibles ── */
+.calendario__celda--disponible {
+  background: var(--t-border-strong);
+  color: var(--white);
+  cursor: pointer;
+  font-weight: 700;
+}
+.calendario__celda--disponible:hover {
+  filter: brightness(1.12);
+  transform: scale(1.09);
+  box-shadow: var(--t-shadow);
 }
 
-/* ── Error en modal ── */
-.turnos-error {
-  margin-top: 1rem;
-  color: var(--error-color);
-  font-size: 0.85rem;
-  padding: 0.5rem 0.75rem;
-  background: rgba(192,57,43,0.08);
-  border: 1px solid var(--error-color);
-  border-radius: 8px;
+/* ── Día seleccionado ── */
+.calendario__celda--seleccionado {
+  background: var(--t-btn-bg);
+  color: var(--white);
+  cursor: pointer;
+  font-weight: 700;
+  outline: 2px solid var(--t-border-strong);
+  outline-offset: 2px;
+  box-shadow: var(--t-shadow);
 }
 
-.dark-theme .turnos-error {
-  background: rgba(192,57,43,0.15);
-  border-color: rgba(192,57,43,0.4);
+/* ── Días pasados ── */
+.calendario__celda--pasado {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* ── Días sin atención ── */
+.calendario__celda--no-disponible {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* ── Hoy ── */
+.calendario__celda--hoy:not(.calendario__celda--seleccionado) {
+  outline: 2px solid var(--t-border-strong);
+  outline-offset: 1px;
+  color: var(--t-text-accent);
+  font-weight: 700;
+}
+
+/* ── Leyenda ── */
+.calendario__leyenda {
+  display: flex;
+  gap: 0.9rem;
+  margin-top: 0.7rem;
+  flex-wrap: wrap;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--t-border);
+}
+.leyenda__item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.7rem;
+  color: var(--t-text-muted);
+}
+.leyenda__item::before {
+  content: '';
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.leyenda__item--disponible::before   { background: var(--t-border-strong); }
+.leyenda__item--seleccionado::before { background: var(--t-btn-bg); outline: 1.5px solid var(--t-border-strong); outline-offset: 1px; }
+.leyenda__item--no-disponible::before { background: var(--t-text-muted); opacity: 0.4; }
+
+/* ── Dark mode calendario ── */
+.dark-theme .calendario {
+  background: var(--t-bg-section);
+  border-color: var(--t-border);
+}
+.dark-theme .calendario__celda--disponible {
+  background: var(--t-border-strong);
+  color: var(--t-bg-card);
+}
+.dark-theme .calendario__celda--seleccionado {
+  background: var(--t-btn-bg);
+  color: var(--white);
+}
+.dark-theme .calendario__celda--hoy:not(.calendario__celda--seleccionado) {
+  color: var(--t-text-accent);
+}
+
+/* ════════════════════════════════════════════════
+   SLOTS DE HORA
+   ════════════════════════════════════════════════ */
+.slots-grilla {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 0.4rem;
+}
+.slot-btn {
+  background: var(--t-bg-section);
+  color: var(--t-text-main);
+  border: 1.5px solid var(--t-border);
+  border-radius: 7px;
+  padding: 0.32rem 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  min-height: unset;
+  min-width: unset;
+  line-height: 1.4;
+  transition: var(--t-transition);
+  box-shadow: none;
+}
+.slot-btn:hover {
+  background: var(--t-border-strong);
+  color: var(--white);
+  border-color: var(--t-border-strong);
+  transform: translateY(-1px);
+  box-shadow: var(--t-shadow);
+}
+.slot-btn--activo {
+  background: var(--t-border-strong);
+  color: var(--white);
+  border-color: var(--t-border-strong);
+  font-weight: 700;
+  box-shadow: var(--t-shadow);
+}
+
+/* ── Dark mode slots ── */
+.dark-theme .slot-btn {
+  background: var(--t-bg-section);
+  color: var(--t-text-main);
+  border-color: var(--t-border);
+}
+.dark-theme .slot-btn:hover,
+.dark-theme .slot-btn--activo {
+  background: var(--t-border-strong);
+  color: var(--t-bg-card);
+  border-color: var(--t-border-strong);
+}
+
+/* ── Info especialidad ── */
+.especialidad-info {
+  margin-top: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
 }
 
 /* ════════════════════════════════════════════════
@@ -110,77 +245,42 @@
 
 /* ── Desktop grande (≥ 1280px) ── */
 @media (min-width: 1280px) {
-  .selected-establishment {
-    padding: 0.9rem 1.1rem;
-  }
-
-  .selected-establishment-name {
-    font-size: 1.05rem;
-    margin-left: 28px;
-  }
-
-  .selected-establishment-note {
-    font-size: 0.82rem;
-    margin-left: 28px;
-  }
+  .calendario { padding: 1rem; }
+  .calendario__celda { font-size: 0.9rem; border-radius: 7px; }
+  .calendario__cabecera { font-size: 0.75rem; }
+  .calendario__mes-anio { font-size: 1rem; }
+  .slot-btn { font-size: 0.85rem; padding: 0.35rem 0.75rem; }
 }
 
 /* ── Tablet (≤ 1024px) ── */
 @media (max-width: 1024px) {
-  .selected-establishment {
-    padding: 0.65rem 0.8rem;
-  }
+  .calendario { padding: 0.7rem; }
+  .calendario__grilla { gap: 3px; }
+  .slot-btn { font-size: 0.78rem; padding: 0.3rem 0.6rem; }
 }
 
 /* ── Tablet chica / landscape (≤ 768px) ── */
 @media (max-width: 768px) {
-  .selected-establishment {
-    padding: 0.6rem 0.75rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .selected-establishment-name {
-    font-size: 0.9rem;
-    margin-left: 20px;
-  }
-
-  .selected-establishment-note {
-    font-size: 0.74rem;
-    margin-left: 20px;
-  }
-
-  .selected-establishment-header {
-    font-size: 0.77rem;
-  }
+  .calendario { padding: 0.65rem; }
+  .calendario__celda { font-size: 0.78rem; border-radius: 5px; }
+  .calendario__cabecera { font-size: 0.66rem; }
+  .calendario__mes-anio { font-size: 0.88rem; }
+  .slots-grilla { gap: 5px; }
+  .slot-btn { font-size: 0.76rem; padding: 0.28rem 0.52rem; }
+  .leyenda__item { font-size: 0.67rem; }
 }
 
 /* ── Celular (≤ 480px) ── */
 @media (max-width: 480px) {
-  .selected-establishment {
-    padding: 0.55rem 0.65rem;
-    margin-bottom: 0.65rem;
-    border-radius: 7px;
-  }
-
-  .selected-establishment-header {
-    font-size: 0.72rem;
-    gap: 6px;
-  }
-
-  .est-pin { font-size: 0.9rem; }
-
-  .selected-establishment-name {
-    font-size: 0.85rem;
-    margin-left: 18px;
-  }
-
-  .selected-establishment-note {
-    font-size: 0.7rem;
-    margin-left: 18px;
-  }
-
-  .turnos-error {
-    font-size: 0.8rem;
-    padding: 0.4rem 0.6rem;
-  }
+  .calendario { padding: 0.55rem; }
+  .calendario__grilla { gap: 2px; }
+  .calendario__celda { font-size: 0.72rem; border-radius: 4px; }
+  .calendario__cabecera { font-size: 0.6rem; padding-bottom: 0.28rem; }
+  .calendario__mes-anio { font-size: 0.82rem; }
+  .calendario__nav-btn { font-size: 1rem; padding: 0.15rem 0.5rem; }
+  .calendario__leyenda { gap: 0.55rem; padding-top: 0.4rem; }
+  .leyenda__item { font-size: 0.62rem; }
+  .leyenda__item::before { width: 9px; height: 9px; }
+  .slots-grilla { gap: 4px; }
+  .slot-btn { font-size: 0.72rem; padding: 0.25rem 0.45rem; border-radius: 5px; }
 }

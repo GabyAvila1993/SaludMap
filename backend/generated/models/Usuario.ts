@@ -40,6 +40,7 @@ export type UsuarioMinAggregateOutputType = {
   apellido: string | null
   mail: string | null
   contrasenia: string | null
+  rol: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -50,6 +51,7 @@ export type UsuarioMaxAggregateOutputType = {
   apellido: string | null
   mail: string | null
   contrasenia: string | null
+  rol: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -60,6 +62,7 @@ export type UsuarioCountAggregateOutputType = {
   apellido: number
   mail: number
   contrasenia: number
+  rol: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -80,6 +83,7 @@ export type UsuarioMinAggregateInputType = {
   apellido?: true
   mail?: true
   contrasenia?: true
+  rol?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -90,6 +94,7 @@ export type UsuarioMaxAggregateInputType = {
   apellido?: true
   mail?: true
   contrasenia?: true
+  rol?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -100,6 +105,7 @@ export type UsuarioCountAggregateInputType = {
   apellido?: true
   mail?: true
   contrasenia?: true
+  rol?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -197,6 +203,7 @@ export type UsuarioGroupByOutputType = {
   apellido: string
   mail: string
   contrasenia: string
+  rol: string
   createdAt: Date
   updatedAt: Date
   _count: UsuarioCountAggregateOutputType | null
@@ -230,6 +237,7 @@ export type UsuarioWhereInput = {
   apellido?: Prisma.StringFilter<"Usuario"> | string
   mail?: Prisma.StringFilter<"Usuario"> | string
   contrasenia?: Prisma.StringFilter<"Usuario"> | string
+  rol?: Prisma.StringFilter<"Usuario"> | string
   createdAt?: Prisma.DateTimeFilter<"Usuario"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Usuario"> | Date | string
   turnos?: Prisma.TurnoListRelationFilter
@@ -242,6 +250,7 @@ export type UsuarioOrderByWithRelationInput = {
   apellido?: Prisma.SortOrder
   mail?: Prisma.SortOrder
   contrasenia?: Prisma.SortOrder
+  rol?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   turnos?: Prisma.TurnoOrderByRelationAggregateInput
@@ -258,6 +267,7 @@ export type UsuarioWhereUniqueInput = Prisma.AtLeast<{
   nombre?: Prisma.StringFilter<"Usuario"> | string
   apellido?: Prisma.StringFilter<"Usuario"> | string
   contrasenia?: Prisma.StringFilter<"Usuario"> | string
+  rol?: Prisma.StringFilter<"Usuario"> | string
   createdAt?: Prisma.DateTimeFilter<"Usuario"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Usuario"> | Date | string
   turnos?: Prisma.TurnoListRelationFilter
@@ -270,6 +280,7 @@ export type UsuarioOrderByWithAggregationInput = {
   apellido?: Prisma.SortOrder
   mail?: Prisma.SortOrder
   contrasenia?: Prisma.SortOrder
+  rol?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UsuarioCountOrderByAggregateInput
@@ -288,6 +299,7 @@ export type UsuarioScalarWhereWithAggregatesInput = {
   apellido?: Prisma.StringWithAggregatesFilter<"Usuario"> | string
   mail?: Prisma.StringWithAggregatesFilter<"Usuario"> | string
   contrasenia?: Prisma.StringWithAggregatesFilter<"Usuario"> | string
+  rol?: Prisma.StringWithAggregatesFilter<"Usuario"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Usuario"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Usuario"> | Date | string
 }
@@ -297,6 +309,7 @@ export type UsuarioCreateInput = {
   apellido: string
   mail: string
   contrasenia: string
+  rol?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   turnos?: Prisma.TurnoCreateNestedManyWithoutUsuarioInput
@@ -309,6 +322,7 @@ export type UsuarioUncheckedCreateInput = {
   apellido: string
   mail: string
   contrasenia: string
+  rol?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   turnos?: Prisma.TurnoUncheckedCreateNestedManyWithoutUsuarioInput
@@ -320,6 +334,7 @@ export type UsuarioUpdateInput = {
   apellido?: Prisma.StringFieldUpdateOperationsInput | string
   mail?: Prisma.StringFieldUpdateOperationsInput | string
   contrasenia?: Prisma.StringFieldUpdateOperationsInput | string
+  rol?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   turnos?: Prisma.TurnoUpdateManyWithoutUsuarioNestedInput
@@ -332,6 +347,7 @@ export type UsuarioUncheckedUpdateInput = {
   apellido?: Prisma.StringFieldUpdateOperationsInput | string
   mail?: Prisma.StringFieldUpdateOperationsInput | string
   contrasenia?: Prisma.StringFieldUpdateOperationsInput | string
+  rol?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   turnos?: Prisma.TurnoUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -344,6 +360,7 @@ export type UsuarioCreateManyInput = {
   apellido: string
   mail: string
   contrasenia: string
+  rol?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -353,6 +370,7 @@ export type UsuarioUpdateManyMutationInput = {
   apellido?: Prisma.StringFieldUpdateOperationsInput | string
   mail?: Prisma.StringFieldUpdateOperationsInput | string
   contrasenia?: Prisma.StringFieldUpdateOperationsInput | string
+  rol?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -363,6 +381,7 @@ export type UsuarioUncheckedUpdateManyInput = {
   apellido?: Prisma.StringFieldUpdateOperationsInput | string
   mail?: Prisma.StringFieldUpdateOperationsInput | string
   contrasenia?: Prisma.StringFieldUpdateOperationsInput | string
+  rol?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -379,6 +398,7 @@ export type UsuarioCountOrderByAggregateInput = {
   apellido?: Prisma.SortOrder
   mail?: Prisma.SortOrder
   contrasenia?: Prisma.SortOrder
+  rol?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -393,6 +413,7 @@ export type UsuarioMaxOrderByAggregateInput = {
   apellido?: Prisma.SortOrder
   mail?: Prisma.SortOrder
   contrasenia?: Prisma.SortOrder
+  rol?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -403,6 +424,7 @@ export type UsuarioMinOrderByAggregateInput = {
   apellido?: Prisma.SortOrder
   mail?: Prisma.SortOrder
   contrasenia?: Prisma.SortOrder
+  rol?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -449,6 +471,7 @@ export type UsuarioCreateWithoutTurnosInput = {
   apellido: string
   mail: string
   contrasenia: string
+  rol?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   resenias?: Prisma.ReseniaCreateNestedManyWithoutUsuarioInput
@@ -460,6 +483,7 @@ export type UsuarioUncheckedCreateWithoutTurnosInput = {
   apellido: string
   mail: string
   contrasenia: string
+  rol?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   resenias?: Prisma.ReseniaUncheckedCreateNestedManyWithoutUsuarioInput
@@ -486,6 +510,7 @@ export type UsuarioUpdateWithoutTurnosInput = {
   apellido?: Prisma.StringFieldUpdateOperationsInput | string
   mail?: Prisma.StringFieldUpdateOperationsInput | string
   contrasenia?: Prisma.StringFieldUpdateOperationsInput | string
+  rol?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resenias?: Prisma.ReseniaUpdateManyWithoutUsuarioNestedInput
@@ -497,6 +522,7 @@ export type UsuarioUncheckedUpdateWithoutTurnosInput = {
   apellido?: Prisma.StringFieldUpdateOperationsInput | string
   mail?: Prisma.StringFieldUpdateOperationsInput | string
   contrasenia?: Prisma.StringFieldUpdateOperationsInput | string
+  rol?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resenias?: Prisma.ReseniaUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -507,6 +533,7 @@ export type UsuarioCreateWithoutReseniasInput = {
   apellido: string
   mail: string
   contrasenia: string
+  rol?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   turnos?: Prisma.TurnoCreateNestedManyWithoutUsuarioInput
@@ -518,6 +545,7 @@ export type UsuarioUncheckedCreateWithoutReseniasInput = {
   apellido: string
   mail: string
   contrasenia: string
+  rol?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   turnos?: Prisma.TurnoUncheckedCreateNestedManyWithoutUsuarioInput
@@ -544,6 +572,7 @@ export type UsuarioUpdateWithoutReseniasInput = {
   apellido?: Prisma.StringFieldUpdateOperationsInput | string
   mail?: Prisma.StringFieldUpdateOperationsInput | string
   contrasenia?: Prisma.StringFieldUpdateOperationsInput | string
+  rol?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   turnos?: Prisma.TurnoUpdateManyWithoutUsuarioNestedInput
@@ -555,6 +584,7 @@ export type UsuarioUncheckedUpdateWithoutReseniasInput = {
   apellido?: Prisma.StringFieldUpdateOperationsInput | string
   mail?: Prisma.StringFieldUpdateOperationsInput | string
   contrasenia?: Prisma.StringFieldUpdateOperationsInput | string
+  rol?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   turnos?: Prisma.TurnoUncheckedUpdateManyWithoutUsuarioNestedInput
@@ -606,6 +636,7 @@ export type UsuarioSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   apellido?: boolean
   mail?: boolean
   contrasenia?: boolean
+  rol?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   turnos?: boolean | Prisma.Usuario$turnosArgs<ExtArgs>
@@ -621,11 +652,12 @@ export type UsuarioSelectScalar = {
   apellido?: boolean
   mail?: boolean
   contrasenia?: boolean
+  rol?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UsuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "apellido" | "mail" | "contrasenia" | "createdAt" | "updatedAt", ExtArgs["result"]["usuario"]>
+export type UsuarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nombre" | "apellido" | "mail" | "contrasenia" | "rol" | "createdAt" | "updatedAt", ExtArgs["result"]["usuario"]>
 export type UsuarioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   turnos?: boolean | Prisma.Usuario$turnosArgs<ExtArgs>
   resenias?: boolean | Prisma.Usuario$reseniasArgs<ExtArgs>
@@ -644,6 +676,7 @@ export type $UsuarioPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     apellido: string
     mail: string
     contrasenia: string
+    rol: string
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["usuario"]>
@@ -1022,6 +1055,7 @@ export interface UsuarioFieldRefs {
   readonly apellido: Prisma.FieldRef<"Usuario", 'String'>
   readonly mail: Prisma.FieldRef<"Usuario", 'String'>
   readonly contrasenia: Prisma.FieldRef<"Usuario", 'String'>
+  readonly rol: Prisma.FieldRef<"Usuario", 'String'>
   readonly createdAt: Prisma.FieldRef<"Usuario", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Usuario", 'DateTime'>
 }
