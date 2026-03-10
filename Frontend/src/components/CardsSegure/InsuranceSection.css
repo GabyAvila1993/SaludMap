@@ -467,7 +467,7 @@
   font-family: var(--ins-font);
   font-size: 1.1rem;
   font-weight: 700;
-  color: var(--ins-text-accent);
+  color: #000000;
   margin: 0 0 10px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -475,7 +475,7 @@
 
 .selected-plan-description {
   font-size: 0.9rem;
-  color: var(--ins-text-muted);
+  color: #000000;
   margin: 0 0 20px;
   line-height: 1.5;
 }

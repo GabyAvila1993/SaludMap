@@ -782,7 +782,7 @@
   border-radius: 8px;
   border: 1.5px solid var(--t-border);
   background: var(--t-bg-section);
-  color: var(--modal-text);
+  color: #000000;
   font-family: var(--t-font-body);
   font-size: 0.87rem;
   transition: var(--t-transition);

@@ -243,7 +243,7 @@ export default function BuscadorEspecialidades({ onSeleccionarEstablecimiento })
                                             className="button--primary buscador__card-btn"
                                             onClick={() => onSeleccionarEstablecimiento(est, especialidadSeleccionada)}
                                         >
-                                            📅 Sacar turno
+                                            📅 Solicitar turno
                                         </button>
                                     </li>
                                 ))}

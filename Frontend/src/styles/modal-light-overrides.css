@@ -201,7 +201,7 @@ body.dark-theme .locations-modal input,
 body.dark-theme .locations-modal textarea,
 body.dark-theme select {
   background: var(--placeholder-fill);
-  color: var(--modal-text);
+  color: #000000;
   border: 1.5px solid var(--chat-border);
   border-radius: var(--radius);
   padding: 8px 10px;

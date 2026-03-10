@@ -3,28 +3,47 @@
   margin-left: 16px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 42px;  /* Le damos el ancho exacto del botón */
-  height: 42px; /* Le damos el alto exacto del botón */
+  /* ¡Le quitamos el width y height fijos para que el botón pueda estirarse! */
 }
 
-/* ── Botón Circular S.O.S ── */
-.btn-emergency-nav-circle {
+/* ── Botón S.O.S Expandido (Forma de Píldora) ── */
+.btn-emergency-nav-sos {
   background-color: #E63946;
-  border: 2px solid #ffffff; /* Borde blanquito para resaltar */
-  border-radius: 50%; /* ¡Círculo perfecto! */
-  width: 42px;
-  height: 42px;
+  color: #ffffff;
+  border: 2px solid #ffffff; 
+  border-radius: 24px; /* Bordes bien redondeados pero alargados */
+  padding: 6px 14px; /* Espacio a los costados para el texto */
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 6px; /* Separación entre la sirena y la letra */
   cursor: pointer;
+  font-family: 'Montserrat', 'Roboto', sans-serif;
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
   box-shadow: 0 4px 10px rgba(230, 57, 70, 0.4);
   transition: transform 0.2s ease, background-color 0.2s;
   animation: pulse-red-nav 2s infinite;
-  padding: 0;
 }
 
+body.dark-theme .btn-emergency-nav-sos {
+  border-color: #E63946; /* En oscuro lo dejamos todo rojo para que grite "alerta" */
+}
+
+.btn-emergency-nav-sos:hover {
+  transform: scale(1.05); /* Efecto de zoom leve */
+  background-color: #D62828;
+}
+
+.emergency-icon-nav {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.emergency-text-nav {
+  line-height: 1;
+  margin-top: 1px; /* Para alinear visualmente con el emoji */
+}
 body.dark-theme .btn-emergency-nav-circle {
   border-color: #121c26; /* En modo oscuro el borde se camufla con el fondo */
 }
