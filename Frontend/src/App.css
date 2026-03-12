@@ -470,33 +470,41 @@ body.dark-theme .btn-login {
   color: #76C2B6;
   border-color: #76C2B6;
 }
+/* ── Controles Desktop (Sol/Luna e Idioma) ── */
+.desktop-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Un poco más de espacio para que respiren */
+}
 
-/* ── Botón toggle de tema (sol/luna) ── */
+/* El botón circular del Sol/Luna */
 .theme-toggle-btn {
-  display: inline-flex;
+  background: transparent !important; /* Forzamos que no tenga fondo blanco */
+  border: 1px solid var(--border-ui) !important;
+  border-radius: 50% !important;
+  width: 42px !important;
+  height: 42px !important;
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: transparent;
-  border: 1px solid var(--border-ui);
-  color: var(--color-titulo);
   cursor: pointer;
-  transition: var(--transition);
-  padding: 0;
-  min-height: unset;
-  box-shadow: none;
-  flex-shrink: 0;
+  color: var(--text-main);
+  transition: all 0.2s ease;
+  padding: 0 !important; /* Evita que el SVG se descentre */
+  box-shadow: none !important;
+}
+
+/* 🔥 EL TRUCO PARA MODO OSCURO 🔥 */
+body.dark-theme .theme-toggle-btn {
+  color: #ffffff !important; /* El icono del sol se vuelve blanco */
+  border-color: rgba(255, 255, 255, 0.2) !important; /* Borde gris muy sutil */
+  background: rgba(255, 255, 255, 0.05) !important; /* Fondo oscurito casi invisible */
 }
 
 .theme-toggle-btn:hover {
-  background: var(--btn-primary-bg);
-  transform: scale(1.08);
-  border-color: transparent;
-  box-shadow: var(--shadow-sm-8);
+  background: rgba(150, 150, 150, 0.1) !important;
+  transform: scale(1.05); /* Zoom sutil en lugar de salto hacia arriba */
 }
-
 /* ── Dropdown de usuario ── */
 .user-menu { position: relative; }
 
@@ -811,4 +819,320 @@ button:disabled {
     animation-iteration-count: 1;
     transition-duration: 0.01ms;
   }
+}
+/* ── Menú de Configuración (Tuerca) - OPCIÓN NUCLEAR DEFINITIVA ── */
+.settings-menu-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.btn-nav-icon {
+  background: transparent !important;
+  border: none !important;
+  font-size: 1.6rem;
+  cursor: pointer;
+  padding: 0 8px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none !important;
+  outline: none;
+  filter: grayscale(100%);
+  transition: transform 0.3s ease;
+}
+
+.btn-nav-icon:hover {
+  transform: rotate(45deg);
+  filter: grayscale(0%);
+}
+
+.settings-dropdown {
+  position: absolute;
+  top: calc(100% + 14px);
+  right: 0;
+  background: var(--bg-navbar-modal, #ffffff);
+  border: 1px solid var(--border-ui, #e2e8f0);
+  border-radius: 12px;
+  padding: 0; /* Sin espacios, para que las filas toquen los bordes */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  min-width: 180px; 
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Mantiene las esquinas redonditas intactas */
+  
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+  z-index: 4000;
+}
+
+.settings-dropdown.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.settings-dropdown-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 0.75rem;
+  color: var(--text-muted, #64748b);
+  padding: 14px 16px 8px;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-ui);
+  background: transparent;
+}
+
+.settings-dropdown-items {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* 🔥 DOMANDO LAS FILAS (Obligamos a que dejen de ser botones globales) 🔥 */
+.settings-item-row {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  padding: 14px 16px !important;
+  background: transparent !important; /* Chau fondo verde clarito */
+  border: none !important;            /* Chau borde negro */
+  border-bottom: 1px solid var(--border-ui) !important;
+  border-radius: 0 !important;        /* Chau esquinas redondas individuales */
+  box-shadow: none !important;
+  color: var(--text-main) !important;
+  font-family: 'Roboto', sans-serif !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  margin: 0 !important;
+  min-height: auto !important;
+  text-align: left !important;
+}
+
+.settings-item-row:last-child {
+  border-bottom: none !important;
+}
+
+.settings-item-row:hover {
+  background: rgba(0, 0, 0, 0.04) !important; /* Gris ultra sutil al pasar el dedo */
+}
+
+/* Modo oscuro para el hover de las filas */
+body.dark-theme .settings-item-row:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.settings-icon {
+  font-size: 1.2rem;
+  margin-right: 12px;
+  width: 24px;
+  text-align: center;
+}
+
+.settings-text {
+  flex: 1; /* Empuja la bandera hacia la derecha */
+}
+
+/* 🔥 DOMANDO EL BOTÓN DE LA BANDERITA 🔥 */
+.settings-lang-control {
+  margin-left: auto;
+}
+
+.settings-lang-control button {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  min-height: auto !important;
+  margin: 0 !important;
+}
+
+.settings-lang-control button:hover {
+  transform: scale(1.1) !important; /* Efectito al tocar la bandera */
+  background: transparent !important;
+}
+
+/* ── Controles Desktop (Sol/Luna e Idioma sueltos) ── */
+.desktop-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Botón de Sol/Luna Mejorado (Escritorio) */
+.theme-toggle-btn {
+  background: transparent !important;
+  border: 1px solid var(--border-ui) !important;
+  border-radius: 50% !important;
+  width: 42px !important;
+  height: 42px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-main);
+  transition: all 0.2s ease;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--border-ui) !important;
+  transform: translateY(-2px);
+}
+
+/* MODO OSCURO GLOBAL (Desktop y fondo del dropdown) */
+body.dark-theme .theme-toggle-btn {
+  color: #ffffff !important; 
+  border-color: rgba(255, 255, 255, 0.2) !important; 
+  background: rgba(255, 255, 255, 0.05) !important; 
+}
+
+body.dark-theme .theme-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.dark-theme .settings-dropdown {
+  background: var(--bg-navbar-modal, #1e293b);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+/* ── Ajustes de Visibilidad (Híbrido) ── */
+.mobile-only-settings {
+  display: none; 
+}
+
+@media (max-width: 768px) {
+  .desktop-controls {
+    display: none; 
+  }
+  .mobile-only-settings {
+    display: flex; 
+  }
+}
+/* =========================================================
+   🔥 LA SOLUCIÓN DEFINITIVA A LA BANDERITA Y EL CLIC 🔥
+   ========================================================= */
+
+/* 1. Quitamos la guillotina para que el menú de idiomas pueda salir */
+.settings-dropdown {
+  overflow: visible !important;
+}
+
+/* 2. Preparamos la fila para que ocupe TODO el espacio */
+.settings-item-row.language-row {
+  position: relative !important;
+  padding: 0 !important;
+  display: block !important;
+}
+
+/* 3. Texto fantasma a la izquierda (para que no bloquee tu dedo/mouse) */
+.language-row-content {
+  position: absolute !important;
+  left: 16px !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  pointer-events: none !important; /* ¡Ignora el clic y lo deja pasar al botón! */
+  z-index: 10 !important;
+}
+
+/* 4. ¡LA CLAVE! Rompemos el escudo del LanguageSelector para que ocupe todo */
+.settings-lang-control,
+.settings-lang-control > div {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* 5. El botón de la bandera ahora es GIGANTE, invisible y empuja la bandera a la derecha */
+.settings-lang-control button {
+  width: 100% !important;
+  height: 48px !important; /* Misma altura de la fila */
+  padding: 0 16px 0 0 !important; /* Espacio solo a la derecha */
+  display: flex !important;
+  justify-content: flex-end !important; /* ¡ESTO MUEVE LA BANDERA A LA DERECHA! */
+  align-items: center !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 0 12px 12px !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+}
+
+/* 6. Arreglamos el sub-menú para que sea del mismo ancho que el menú padre y se vea premium */
+.settings-lang-control [class*="menu"],
+.settings-lang-control [class*="dropdown"],
+.settings-lang-control ul {
+  position: absolute !important;
+  top: 100% !important;
+  left: -1px !important; /* Alineado perfecto con el borde */
+  width: calc(100% + 2px) !important; /* Ancho completo */
+  background: var(--bg-navbar-modal, #ffffff) !important;
+  border: 1px solid var(--border-ui) !important;
+  border-top: none !important; /* Lo unimos visualmente al menú de arriba */
+  border-radius: 0 0 12px 12px !important; /* Redondito solo abajo */
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  z-index: 5000 !important;
+  overflow: hidden !important;
+}
+
+/* 7. Estilo limpio para las opciones (ES, EN, FR) */
+.settings-lang-control li,
+.settings-lang-control [class*="option"] {
+  padding: 12px 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  border-bottom: 1px solid var(--border-ui) !important;
+  background: transparent !important;
+  color: var(--text-main) !important;
+  font-family: 'Montserrat', 'Roboto', sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  cursor: pointer !important;
+}
+
+/* Quitamos la línea de la última opción */
+.settings-lang-control li:last-child,
+.settings-lang-control [class*="option"]:last-child {
+  border-bottom: none !important;
+}
+
+/* Efecto al pasar el mouse por los idiomas */
+.settings-lang-control li:hover,
+.settings-lang-control [class*="option"]:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+body.dark-theme .settings-lang-control li:hover,
+body.dark-theme .settings-lang-control [class*="option"]:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+/* 🔥 MATAR EL BORDE NEGRO AL HACER CLIC (Focus Ring) 🔥 */
+.settings-lang-control button:focus,
+.settings-lang-control button:active,
+.settings-lang-control button:focus-visible,
+.settings-item-row:focus,
+.settings-item-row:active {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* 🔥 QUITAR EL DESTELLO AZUL/GRIS AL TOCAR EN CELULARES 🔥 */
+.settings-item-row,
+.settings-lang-control button,
+.settings-lang-control li,
+.settings-lang-control [class*="option"] {
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
 }

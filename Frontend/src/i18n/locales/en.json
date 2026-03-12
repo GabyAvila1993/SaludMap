@@ -20,7 +20,7 @@
     "tutorial": "Tutorial"
   },
   "emergency": {
-    "btn_sos": "S.O.S",
+    "btn_sos": "S.O.S.",
     "title": "Emergency Center",
     "question": "What kind of help do you need?",
     "ambulance_num": "911",

@@ -21,11 +21,11 @@
     "register": "Inscription"
   },
   "emergency": {
-    "btn_sos": "S.O.S",
+    "btn_sos": "S.O.S.",
     "title": "Centre d'urgence",
     "question": "De quel type d'aide avez-vous besoin?",
     "ambulance_num": "15",
-    "ambulance_desc": "Urgences médicales (SAMU)",
+    "ambulance_desc": "Urgences médicales",
     "police_num": "17",
     "police_desc": "Police Secours",
     "find_hospital": "Trouver un hôpital",

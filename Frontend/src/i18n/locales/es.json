@@ -21,11 +21,11 @@
     "register": "Registrarse"
   },
   "emergency": {
-    "btn_sos": "S.O.S",
+    "btn_sos": "S.O.S.",
     "title": "Centro de Emergencia",
     "question": "¿Qué tipo de ayuda necesitas?",
     "ambulance_num": "107",
-    "ambulance_desc": "Emergencias médicas SAME",
+    "ambulance_desc": "Emergencias médicas",
     "police_num": "911",
     "police_desc": "Central de emergencias",
     "find_hospital": "Buscar Hospital",
